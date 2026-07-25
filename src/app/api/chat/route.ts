@@ -37,7 +37,7 @@ If they ask for something you don't know, tell them to use the Contact form.`;
       temperature: 0.7,
     });
 
-    return result.toUIMessageStreamResponse();
+    return result.toDataStreamResponse();
   } catch (error: any) {
     console.error('Chat API Error:', error);
     return NextResponse.json({ error: 'Internal Server Error', details: error?.message || String(error) }, { status: 500 });
