@@ -12,7 +12,7 @@ export default function Chatbot() {
 
   const { formatPrice } = usePricing();
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
+  const { messages, handleSubmit, isLoading } = useChat({
     api: '/api/chat',
     body: {
       bootcampPrice: formatPrice('bootcamp'),
@@ -26,6 +26,12 @@ export default function Chatbot() {
       }
     ]
   });
+
+  const [input, setInput] = useState('');
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
+  };
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
