@@ -91,22 +91,63 @@
    ========================================================================= */
 .heroWrapper {
   position: relative;
-  height: 100vh; /* Takes up exactly one viewport height */
   z-index: 1;
 }
 
 .heroSticky {
   position: relative;
-  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 7rem 6% 5rem;
+  padding: 7rem 6% 6rem;
   text-align: center;
   overflow: hidden;
   border-bottom: 1px solid var(--color-border);
   background: var(--color-bg-main);
   z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .heroSticky {
+    padding: 6rem 1.25rem 4rem;
+    align-items: flex-start;
+  }
+  .heroContent {
+    width: 100%;
+    max-width: 100%;
+  }
+  .heroTitle {
+    font-size: clamp(2.2rem, 9vw, 3.5rem);
+    letter-spacing: -0.02em;
+  }
+  .heroSubtitle {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+  .heroStatsRow {
+    gap: 0.75rem;
+  }
+  .heroStatCard {
+    padding: 0.9rem 1.25rem;
+    min-width: 80px;
+  }
+  .heroActions {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .heroActions a {
+    width: 100%;
+    justify-content: center;
+  }
+  .trustBadges {
+    gap: 0.5rem;
+  }
+  .trustBadge {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.7rem;
+  }
 }
 
 /* Subtle grid texture for hacker feel */
@@ -249,6 +290,35 @@
   position: relative;
   border-top: 1px solid var(--color-border);
 }
+
+@media (max-width: 768px) {
+  .section {
+    padding: 4rem 1.25rem;
+  }
+  .sectionTitle {
+    font-size: clamp(1.6rem, 6vw, 2.5rem);
+  }
+  .sectionHeader {
+    margin-bottom: 2rem;
+  }
+  .bentoGrid {
+    display: flex;
+    flex-direction: column;
+  }
+  .promoBanner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.25rem;
+    margin-top: 64px;
+  }
+  .promoRight {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    width: 100%;
+  }
+}
+
 
 .sectionHeader {
   text-align: center;

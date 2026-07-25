@@ -60,27 +60,65 @@ export default function Chatbot() {
         }),
       });
 
-      if (!res.ok) throw new Error('API error');
+      if (!res.ok) throw new Error(`API error: ${res.status}`);
 
-      const data = await res.json();
-      const assistantContent =
-        data.choices?.[0]?.message?.content ||
-        data.message?.content ||
-        data.content ||
-        data.text ||
-        "Sorry, I couldn't get a response. Please try again.";
+      // The API returns a streaming response (Vercel AI SDK format)
+      // We read it as a text stream and extract the text parts
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error('No response body');
 
-      setMessages(prev => [
-        ...prev,
-        { id: `msg-${Date.now()}-bot`, role: 'assistant', content: assistantContent },
-      ]);
+      const decoder = new TextDecoder();
+      let fullText = '';
+      const botMsgId = `msg-${Date.now()}-bot`;
+
+      // Add empty bot message we'll update in real-time
+      setMessages(prev => [...prev, { id: botMsgId, role: 'assistant', content: '' }]);
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+
+        // Vercel AI SDK streams data in lines: "0:\"text chunk\"\n" or plain text
+        const lines = chunk.split('\n');
+        for (const line of lines) {
+          if (line.startsWith('0:')) {
+            // Extract text from format: 0:"some text"
+            try {
+              const jsonStr = line.slice(2);
+              const parsed = JSON.parse(jsonStr);
+              if (typeof parsed === 'string') fullText += parsed;
+            } catch {
+              // If not valid JSON, just use raw
+              fullText += line.slice(2);
+            }
+          } else if (line.startsWith('text:')) {
+            fullText += line.slice(5);
+          } else if (!line.startsWith('d:') && !line.startsWith('e:') && !line.startsWith('f:') && line.trim()) {
+            // Plain text fallback
+            try {
+              const parsed = JSON.parse(line);
+              if (typeof parsed === 'string') fullText += parsed;
+            } catch { /* skip meta lines */ }
+          }
+        }
+
+        // Update bot message in real-time as text arrives
+        const displayText = fullText || '...';
+        setMessages(prev => prev.map(m => m.id === botMsgId ? { ...m, content: displayText } : m));
+      }
+
+      // Final message — if still empty, show error
+      if (!fullText) fullText = "I received an empty response. Please try again!";
+      setMessages(prev => prev.map(m => m.id === botMsgId ? { ...m, content: fullText } : m));
+
     } catch {
       setMessages(prev => [
         ...prev,
         {
           id: `msg-${Date.now()}-err`,
           role: 'assistant',
-          content: "Sorry, something went wrong. Please try again in a moment!",
+          content: "Sorry, something went wrong connecting to the AI. Please try again!",
         },
       ]);
     } finally {

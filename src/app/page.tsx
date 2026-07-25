@@ -509,7 +509,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '4rem', alignItems: 'center' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: '2.5rem', alignItems: 'center' }}>
               <div>
                 <h2 className={styles.sectionTitle} style={{ marginBottom: '1.25rem', textAlign: 'left' }}>
                   Don't Just Learn Cybersecurity — <span className="text-gradient-secondary">Live It Daily</span>
