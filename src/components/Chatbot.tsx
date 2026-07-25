@@ -10,11 +10,9 @@ export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const [localInput, setLocalInput] = useState('');
-
   const { formatPrice } = usePricing();
 
-  const { messages, append, isLoading } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
     api: '/api/chat',
     body: {
       bootcampPrice: formatPrice('bootcamp'),
@@ -138,22 +136,17 @@ export default function Chatbot() {
               <div ref={messagesEndRef} />
             </div>
 
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              if (!localInput.trim()) return;
-              append({ role: 'user', content: localInput });
-              setLocalInput('');
-            }} className={styles.inputArea}>
+            <form onSubmit={handleSubmit} className={styles.inputArea}>
               <div className={styles.inputWrapper}>
                 <input
                   type="text"
                   placeholder="Type a message..."
                   className={styles.input}
-                  value={localInput}
-                  onChange={(e) => setLocalInput(e.target.value)}
+                  value={input}
+                  onChange={handleInputChange}
                   autoFocus
                 />
-                <button type="submit" className={styles.sendBtn} disabled={!localInput.trim() || isLoading}>
+                <button type="submit" className={styles.sendBtn} disabled={!input.trim() || isLoading}>
                   <i className="fas fa-paper-plane" />
                 </button>
               </div>
