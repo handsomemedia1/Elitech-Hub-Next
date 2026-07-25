@@ -13,7 +13,7 @@ export default function Chatbot() {
   const { formatPrice } = usePricing();
 
   const { messages, sendMessage, status } = useChat({
-    api: '/api/chat',
+    fetch: async (input, init) => fetch('/api/chat', init),
     body: {
       bootcampPrice: formatPrice('bootcamp'),
       professionalPrice: formatPrice('professional'),
