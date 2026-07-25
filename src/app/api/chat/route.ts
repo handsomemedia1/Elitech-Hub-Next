@@ -1,10 +1,9 @@
 import { streamText } from 'ai';
-import { createOpenAI } from '@ai-sdk/openai';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { NextResponse } from 'next/server';
 
-const openrouter = createOpenAI({
-  apiKey: process.env.OPENROUTER_API_KEY || 'dummy_key',
-  baseURL: 'https://openrouter.ai/api/v1',
+const google = createGoogleGenerativeAI({
+  apiKey: process.env.GEMINI_API_KEY || 'dummy_key',
 });
 
 export async function POST(req: Request) {
@@ -29,7 +28,7 @@ CRITICAL RULES:
 If they ask for something you don't know, tell them to use the Contact form.`;
 
     const result = await streamText({
-      model: openrouter('meta-llama/llama-3.1-8b-instruct'),
+      model: google('gemini-1.5-flash'),
       messages: [
         { role: 'system', content: dynamicPrompt },
         ...(messages as any[]),
