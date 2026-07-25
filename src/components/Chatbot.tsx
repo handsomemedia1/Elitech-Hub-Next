@@ -2,40 +2,30 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useChat } from '@ai-sdk/react';
 import { usePricing } from '@/context/PricingContext';
 import styles from "./Chatbot.module.css";
+
+interface Message {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+}
 
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
   const { formatPrice } = usePricing();
 
-  const { messages, sendMessage, status } = useChat({
-    api: '/api/chat',
-    body: {
-      bootcampPrice: formatPrice('bootcamp'),
-      professionalPrice: formatPrice('professional'),
-    },
-    initialMessages: [
-      {
-        id: 'msg-1',
-        role: 'assistant',
-        content: "Hello! 👋 I'm Elitech's AI assistant. How can I help you jumpstart your cybersecurity career today?",
-      }
-    ]
-  } as any);
-
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: 'msg-0',
+      role: 'assistant',
+      content: "Hello! 👋 I'm Elitech's AI assistant. How can I help you jumpstart your cybersecurity career today?",
+    }
+  ]);
   const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const isLoading = status === 'submitted' || status === 'streaming';
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value);
-  };
-
-  // Auto-scroll to bottom when messages change
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -43,6 +33,60 @@ export default function Chatbot() {
   }, [messages, isLoading]);
 
   const handleToggle = () => setIsOpen(!isOpen);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const text = input.trim();
+    if (!text || isLoading) return;
+
+    const userMessage: Message = {
+      id: `msg-${Date.now()}-user`,
+      role: 'user',
+      content: text,
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInput('');
+    setIsLoading(true);
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [...messages, userMessage].map(m => ({ role: m.role, content: m.content })),
+          bootcampPrice: formatPrice('bootcamp'),
+          professionalPrice: formatPrice('professional'),
+        }),
+      });
+
+      if (!res.ok) throw new Error('API error');
+
+      const data = await res.json();
+      const assistantContent =
+        data.choices?.[0]?.message?.content ||
+        data.message?.content ||
+        data.content ||
+        data.text ||
+        "Sorry, I couldn't get a response. Please try again.";
+
+      setMessages(prev => [
+        ...prev,
+        { id: `msg-${Date.now()}-bot`, role: 'assistant', content: assistantContent },
+      ]);
+    } catch {
+      setMessages(prev => [
+        ...prev,
+        {
+          id: `msg-${Date.now()}-err`,
+          role: 'assistant',
+          content: "Sorry, something went wrong. Please try again in a moment!",
+        },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
@@ -140,23 +184,18 @@ export default function Chatbot() {
                   </div>
                 </motion.div>
               )}
-              
+
               <div ref={messagesEndRef} />
             </div>
 
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              if (!input.trim()) return;
-              sendMessage({ role: 'user', content: input });
-              setInput('');
-            }} className={styles.inputArea}>
+            <form onSubmit={handleSubmit} className={styles.inputArea}>
               <div className={styles.inputWrapper}>
                 <input
                   type="text"
                   placeholder="Type a message..."
                   className={styles.input}
                   value={input}
-                  onChange={handleInputChange}
+                  onChange={(e) => setInput(e.target.value)}
                   autoFocus
                 />
                 <button type="submit" className={styles.sendBtn} disabled={!input.trim() || isLoading}>
