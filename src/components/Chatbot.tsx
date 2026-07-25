@@ -13,7 +13,7 @@ export default function Chatbot() {
   const { formatPrice } = usePricing();
 
   const { messages, sendMessage, status } = useChat({
-    fetch: async (input, init) => fetch('/api/chat', init),
+    api: '/api/chat',
     body: {
       bootcampPrice: formatPrice('bootcamp'),
       professionalPrice: formatPrice('professional'),
@@ -25,7 +25,7 @@ export default function Chatbot() {
         content: "Hello! 👋 I'm Elitech's AI assistant. How can I help you jumpstart your cybersecurity career today?",
       }
     ]
-  });
+  } as any);
 
   const [input, setInput] = useState('');
 
