@@ -340,7 +340,7 @@ export default function AboutPage() {
           </div>
         </AnimateOnScroll>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(300px, 100%), 1fr))', gap: '2rem' }}>
           
           <AnimateOnScroll direction="up" delay={100}>
             <div className="glass-panel" style={{ padding: '2rem', height: '100%', display: 'flex', flexDirection: 'column', borderStyle: 'dashed' }}>
@@ -409,3 +409,4 @@ export default function AboutPage() {
     </PageLayout>
   );
 }
+

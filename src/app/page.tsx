@@ -420,7 +420,7 @@ export default function Home() {
           </div>
         </AnimateOnScroll>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem', maxWidth: '900px', margin: '0 auto' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(250px, 100%), 1fr))', gap: '2rem', maxWidth: '900px', margin: '0 auto' }}>
           <AnimateOnScroll direction="up" delay={100}>
             <div style={{ textAlign: 'center' }}>
               <QrCode size={40} color="var(--color-success)" style={{ marginBottom: '1rem' }} />
@@ -601,3 +601,4 @@ export default function Home() {
     </div>
   );
 }
+

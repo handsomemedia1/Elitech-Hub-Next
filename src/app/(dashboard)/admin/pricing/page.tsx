@@ -129,7 +129,7 @@ export default function PricingAdminPage() {
       {isAdding && (
         <form className={styles.formCard} onSubmit={handleAdd} style={{ marginBottom: '2rem', padding: '1.5rem', background: '#1a1d21', borderRadius: '8px' }}>
           <h3 style={{ marginBottom: '1rem' }}>Add New Localized Price</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(150px, 100%), 1fr))', gap: '1rem', marginBottom: '1rem' }}>
             <div>
               <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: '#a1a1aa' }}>Item ID (Course/Service)</label>
               <select 
@@ -290,3 +290,4 @@ export default function PricingAdminPage() {
     </div>
   );
 }
+

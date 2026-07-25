@@ -100,7 +100,7 @@
 
 .portfolioGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
   gap: 1.5rem;
   margin-top: 2rem;
 }
@@ -286,3 +286,4 @@
   background: var(--color-accent);
   box-shadow: var(--shadow-glow);
 }
+

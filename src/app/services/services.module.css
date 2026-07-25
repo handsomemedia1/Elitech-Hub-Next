@@ -120,7 +120,7 @@
 /* Grid Layouts */
 .grid2Col {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   gap: 2rem;
   max-width: 1000px;
   margin: 0 auto;
@@ -130,7 +130,7 @@
 
 .grid3Col {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   gap: 2rem;
   max-width: 1200px;
   margin: 0 auto 4rem;
@@ -345,3 +345,4 @@
   border: 1px solid var(--color-border);
 }
 .btnOutline:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.2); }
+
