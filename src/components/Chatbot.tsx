@@ -12,7 +12,7 @@ export default function Chatbot() {
 
   const { formatPrice } = usePricing();
 
-  const { messages, handleSubmit, isLoading } = useChat({
+  const { messages, sendMessage, isLoading } = useChat({
     api: '/api/chat',
     body: {
       bootcampPrice: formatPrice('bootcamp'),
@@ -142,7 +142,12 @@ export default function Chatbot() {
               <div ref={messagesEndRef} />
             </div>
 
-            <form onSubmit={handleSubmit} className={styles.inputArea}>
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              if (!input.trim()) return;
+              sendMessage({ role: 'user', content: input });
+              setInput('');
+            }} className={styles.inputArea}>
               <div className={styles.inputWrapper}>
                 <input
                   type="text"
