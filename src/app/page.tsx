@@ -359,63 +359,20 @@ export default function Home() {
 
         <AnimateOnScroll direction="up">
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '4rem', padding: '0 1rem' }}>
-            {/* Certificate Mockup */}
-            <div className="glass-panel" style={{ padding: '20px', display: 'inline-block', maxWidth: '100%', position: 'relative' }}>
-              <div style={{ 
-                background: 'var(--color-bg-main)', border: '2px solid var(--color-primary)', borderRadius: '8px', 
-                padding: '20px', textAlign: 'center', color: 'white', fontFamily: 'var(--font-mono)', 
-                width: '100%', maxWidth: '600px', margin: '0 auto', position: 'relative', overflow: 'hidden' 
-              }}>
-                <div style={{ border: '1px dashed rgba(255,255,255,0.2)', padding: '30px 20px', display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '15px' }}>
-                    <ShieldAlert size={48} color="var(--color-primary)" />
-                  </div>
-                  
-                  <h3 style={{ fontFamily: 'var(--font-sans)', color: 'var(--color-primary)', fontSize: 'clamp(1.2rem, 3vw, 1.8rem)', fontWeight: 800, letterSpacing: '2px', marginBottom: '5px' }}>
-                    CERTIFICATE OF LEARNING
-                  </h3>
-                  <p style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '20px' }}>
-                    In recognition of successful course completion
-                  </p>
-                  
-                  <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', marginBottom: '5px' }}>This certificate is awarded to</p>
-                  <h4 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 700, marginBottom: '15px', fontFamily: 'var(--font-sans)', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'inline-block', paddingBottom: '5px' }}>
-                    Student Name
-                  </h4>
-                  
-                  <p style={{ fontSize: '0.85rem', lineHeight: 1.6, maxWidth: '80%', margin: '0 auto 15px' }}>
-                    confirms completion of <strong>Cybersecurity Professional Program</strong> over <strong>Jan - May 2026</strong>.
-                  </p>
-                  
-                  <p style={{ color: 'var(--color-success)', fontSize: '0.85rem', fontWeight: 600, marginBottom: '30px' }}>
-                    covering Mastering Ethical Hacking & Security Operations.
-                  </p>
-                  
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', fontSize: '0.7rem', color: 'var(--color-success)', textAlign: 'left', borderTop: '1px dashed rgba(255,255,255,0.1)', paddingTop: '15px', marginTop: 'auto' }}>
-                    <div>
-                      <div>[AUTH] Certificate verified ✓</div>
-                      <div>[SIGN] Elijah Adeyeye (Founder, Elitech Hub)</div>
-                      <div>[ID]&nbsp;&nbsp;&nbsp;EH-2026-00001</div>
-                    </div>
-                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                      <div style={{ background: 'white', padding: '5px', borderRadius: '4px' }}>
-                        <QrCode color="black" size={32} />
-                      </div>
-                      <div style={{ textAlign: 'right', color: 'white' }}>
-                        <div style={{ fontWeight: 'bold' }}>July 11, 2026</div>
-                        <div style={{ fontSize: '0.6rem', color: 'var(--color-text-muted)' }}>DATE OF ISSUE</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div style={{ 
-                position: 'absolute', bottom: '-15px', right: '-15px', background: 'var(--color-primary)', color: 'white', 
-                width: '80px', height: '80px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', 
-                fontWeight: 'bold', fontFamily: 'var(--font-mono)', fontSize: '0.9rem', transform: 'rotate(15deg)', border: '4px solid var(--color-bg-base)' 
-              }}>
-                VERIFIED
-              </div>
+            {/* Certificate Image Mockup */}
+            <div className="glass-panel" style={{ padding: '10px', display: 'inline-block', maxWidth: '100%' }}>
+              <img 
+                src="/images/certificate-placeholder.jpg" 
+                alt="Elitech Hub Certificate of Learning" 
+                style={{ 
+                  width: '100%', 
+                  maxWidth: '600px', 
+                  height: 'auto', 
+                  borderRadius: '4px', 
+                  border: '1px solid var(--color-border)',
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
+                }} 
+              />
             </div>
           </div>
         </AnimateOnScroll>
