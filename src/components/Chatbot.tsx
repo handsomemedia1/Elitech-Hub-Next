@@ -12,7 +12,7 @@ export default function Chatbot() {
 
   const { formatPrice } = usePricing();
 
-  const { messages, sendMessage, isLoading } = useChat({
+  const { messages, sendMessage, status } = useChat({
     api: '/api/chat',
     body: {
       bootcampPrice: formatPrice('bootcamp'),
@@ -28,6 +28,8 @@ export default function Chatbot() {
   });
 
   const [input, setInput] = useState('');
+
+  const isLoading = status === 'submitted' || status === 'streaming';
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
