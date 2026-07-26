@@ -1,9 +1,37 @@
 "use client";
 
-/**
- * SmoothScroll - passthrough wrapper (Lenis removed for compatibility).
- * Native browser scroll works reliably across all devices.
- */
+import { useEffect, useRef } from "react";
+import Lenis from "lenis";
+
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
+  const lenisRef = useRef<Lenis | null>(null);
+
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      // Do not enable smoothTouch, it causes issues on foldables/mobile
+      touchMultiplier: 2,
+      infinite: false,
+    });
+    lenisRef.current = lenis;
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+      lenisRef.current = null;
+    };
+  }, []);
+
   return <>{children}</>;
 }
