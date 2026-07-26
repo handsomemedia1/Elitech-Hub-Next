@@ -8,17 +8,22 @@
   width: 100%;
   height: 80px;
   z-index: 9999;
-  transition: background 0.3s ease, border-bottom 0.3s ease;
-  background: rgba(10, 2, 3, 0.7); /* Deep Crimson */
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  transition: 
+    background     0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    border-bottom  0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow     0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    backdrop-filter 0.4s ease;
+  background: rgba(10, 2, 3, 0.6);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
   border-bottom: 1px solid transparent;
+  will-change: background, backdrop-filter;
 }
 
 .scrolled {
-  background: rgba(10, 2, 3, 0.95);
+  background: rgba(10, 2, 3, 0.92);
   border-bottom: 1px solid var(--color-border);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(195, 21, 28, 0.15);
 }
 
 .navInner {

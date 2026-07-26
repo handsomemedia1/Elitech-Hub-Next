@@ -5,6 +5,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 import InitialLoader from "@/components/InitialLoader";
 import { FloatingChatbot, TrustBadge } from "@/components/FloatingWidgets";
 import { PricingProvider } from "@/context/PricingContext";
+import ScrollProgressBar from "@/components/ScrollProgressBar";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -275,6 +276,7 @@ export default function RootLayout({
         />
       </head>
       <body suppressHydrationWarning>
+        <ScrollProgressBar />
         <InitialLoader />
         <PricingProvider>
           <SmoothScroll>

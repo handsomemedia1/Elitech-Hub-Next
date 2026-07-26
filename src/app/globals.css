@@ -55,6 +55,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 80px; /* Offset for fixed navbar */
 }
 
 body {
@@ -65,6 +66,8 @@ body {
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none; /* Prevent scroll chaining / bounce on desktop */
+  text-rendering: optimizeLegibility;
 }
 
 a {

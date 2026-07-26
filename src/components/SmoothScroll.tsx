@@ -8,26 +8,27 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      duration: 1.4,                 // Slightly longer for more cinematic feel
+      easing: (t) => 1 - Math.pow(1 - t, 4), // Quartic ease-out: fast start, graceful stop
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 1,
-      // Do not enable smoothTouch, it causes issues on foldables/mobile
+      wheelMultiplier: 0.9,          // Slightly slower wheel for elegance
       touchMultiplier: 2,
       infinite: false,
     });
     lenisRef.current = lenis;
 
+    let rafId: number;
     function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
 
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
     return () => {
+      cancelAnimationFrame(rafId);
       lenis.destroy();
       lenisRef.current = null;
     };
