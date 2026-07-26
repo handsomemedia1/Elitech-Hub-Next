@@ -36,9 +36,39 @@ If they ask for something you don't know, tell them to use the Contact form.`;
       temperature: 0.7,
     });
 
-    return result.toDataStreamResponse();
+    // ai v7 compatible: stream raw text chunks as a plain text stream
+    // The Chatbot component reads lines prefixed with "0:" (Vercel AI data stream format)
+    const stream = new ReadableStream({
+      async start(controller) {
+        const encoder = new TextEncoder();
+        try {
+          for await (const chunk of result.textStream) {
+            // Encode as Vercel AI SDK data stream format: 0:"text chunk"\n
+            const line = `0:${JSON.stringify(chunk)}\n`;
+            controller.enqueue(encoder.encode(line));
+          }
+          // Send finish signal
+          controller.enqueue(encoder.encode('d:{"finishReason":"stop"}\n'));
+        } catch (e) {
+          controller.error(e);
+        } finally {
+          controller.close();
+        }
+      },
+    });
+
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'X-Vercel-AI-Data-Stream': 'v1',
+        'Cache-Control': 'no-cache',
+        'Transfer-Encoding': 'chunked',
+      },
+    });
+
   } catch (error: any) {
     console.error('Chat API Error:', error);
     return NextResponse.json({ error: 'Internal Server Error', details: error?.message || String(error) }, { status: 500 });
   }
 }
+
