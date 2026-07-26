@@ -74,7 +74,6 @@ export const metadata = {
     description:
       'The premier cybersecurity bootcamp in Nigeria with practical internship experience. Enroll today.',
     images: ['https://elitechub.com/images/programs-og.jpg'],
-    site: '@ElitechHub',
   },
   alternates: {
     canonical: 'https://elitechub.com/programs',

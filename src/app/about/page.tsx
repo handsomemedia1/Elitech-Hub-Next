@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     images: [{ url: 'https://elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
     type: 'website',
   },
-  twitter: { card: 'summary_large_image', title: 'About Elitech Hub', site: '@ElitechHub' },
+  twitter: { card: 'summary_large_image', title: 'About Elitech Hub' },
   alternates: { canonical: 'https://elitechub.com/about' },
 };
 

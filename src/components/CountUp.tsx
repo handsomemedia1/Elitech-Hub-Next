@@ -60,7 +60,12 @@ export default function CountUp({
 
   return (
     <span ref={ref} className={className}>
-      {prefix}{count}{suffix}
+      <span className="sr-only">
+        {prefix}{end}{suffix}
+      </span>
+      <span aria-hidden="true">
+        {prefix}{count}{suffix}
+      </span>
     </span>
   );
 }

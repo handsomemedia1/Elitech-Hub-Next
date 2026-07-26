@@ -1,6 +1,6 @@
 .dashboardContainer {
   display: flex;
-  height: 100vh;
+  height: 100dvh;
   width: 100vw;
   background-color: #070d1a;
   overflow: hidden;
@@ -14,7 +14,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  min-height: 100dvh;
   background-color: #070d1a;
 }
 

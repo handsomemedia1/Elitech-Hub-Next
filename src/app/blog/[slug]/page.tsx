@@ -53,7 +53,6 @@ export async function generateMetadata({
       title: post.title,
       description: post.excerpt || "",
       images: post.thumbnail ? [post.thumbnail] : [],
-      creator: "@ElitechHub",
     },
     alternates: { canonical: `https://elitechub.com/blog/${slug}` },
   };

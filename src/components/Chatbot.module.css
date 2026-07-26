@@ -41,7 +41,7 @@
   right: 2rem;
   width: 380px;
   height: 600px;
-  max-height: calc(100vh - 8rem);
+  max-height: calc(100dvh - 8rem);
   background: rgba(10, 15, 30, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);

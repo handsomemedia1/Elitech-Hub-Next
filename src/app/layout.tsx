@@ -6,6 +6,7 @@ import InitialLoader from "@/components/InitialLoader";
 import { FloatingChatbot, TrustBadge } from "@/components/FloatingWidgets";
 import { PricingProvider } from "@/context/PricingContext";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
+import ScrollNavbar from "@/components/ScrollNavbar";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -73,8 +74,6 @@ export const metadata: Metadata = {
     description:
       'Master ethical hacking, AI security, and get guaranteed internship experience.',
     images: [DEFAULT_OG_IMAGE],
-    site: '@ElitechHub',
-    creator: '@ElitechHub',
   },
   // --- VERIFICATION: connect to Google Search Console, Bing etc. ---
   // verification: {
@@ -279,6 +278,7 @@ export default function RootLayout({
         <ScrollProgressBar />
         <InitialLoader />
         <PricingProvider>
+          <ScrollNavbar />
           <SmoothScroll>
             {children}
           </SmoothScroll>

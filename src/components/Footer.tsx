@@ -19,13 +19,6 @@ export default function Footer() {
             placement · SMEDAN certified · RC: 8693883. Serving students from Ibadan to
             London, New York &amp; beyond.
           </p>
-          <div className={styles.footerSocials}>
-            <a href="https://www.linkedin.com/company/elitech-hub/" target="_blank" rel="noopener noreferrer" className={styles.social} aria-label="LinkedIn"><i className="fab fa-linkedin" /></a>
-            <a href="https://x.com/elijahadeyeye5" target="_blank" rel="noopener noreferrer" className={styles.social} aria-label="Twitter/X"><i className="fab fa-twitter" /></a>
-            <a href="https://wa.me/2347081968062" className={styles.social} aria-label="WhatsApp"><i className="fab fa-whatsapp" /></a>
-            <a href="https://t.me/Elitechub" target="_blank" rel="noopener noreferrer" className={styles.social} aria-label="Telegram"><i className="fab fa-telegram-plane" /></a>
-            <a href="mailto:info@elitechub.com" className={styles.social} aria-label="Email"><i className="fas fa-envelope" /></a>
-          </div>
         </div>
 
         {/* Programs */}

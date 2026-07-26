@@ -3,7 +3,7 @@
    ========================================== */
 
 .pageWrapper {
-  min-height: 100vh;
+  min-height: 100dvh;
   background: var(--color-bg-main);
   color: var(--color-text-primary);
   font-family: var(--font-body);

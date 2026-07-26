@@ -49,7 +49,6 @@ export const metadata = {
     title: '6-Week Cybersecurity Bootcamp in Nigeria — ₦75,000',
     description: 'Weekend classes. Real labs. Certificate. No experience needed. Join Elitech Hub.',
     images: ['https://elitechub.com/images/bootcamp-og.jpg'],
-    site: '@ElitechHub',
   },
   alternates: { canonical: 'https://elitechub.com/programs/cybersecurity-bootcamp' },
 };

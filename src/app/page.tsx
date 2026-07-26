@@ -4,7 +4,6 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./page.module.css";
-import ScrollNavbar from "@/components/ScrollNavbar";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import MagneticButton from "@/components/MagneticButton";
 import TestimonialsMarquee from "@/components/TestimonialsMarquee";
@@ -68,6 +67,7 @@ export default function Home() {
     "@graph": [
       {
         "@type": "EducationalOrganization",
+        "@id": "https://elitechub.com/#organization",
         "name": "Elitech Hub",
         "url": "https://elitechub.com",
         "logo": "https://elitechub.com/images/logo.png",
@@ -77,6 +77,24 @@ export default function Home() {
           "addressLocality": "Ibadan",
           "addressCountry": "NG"
         }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://elitechub.com/#website",
+        "url": "https://elitechub.com/",
+        "name": "Elitech Hub",
+        "description": "Nigeria's #1 AI Cybersecurity Training",
+        "publisher": {
+          "@id": "https://elitechub.com/#organization"
+        },
+        "potentialAction": [{
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://elitechub.com/blog?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }]
       }
     ]
   };
@@ -84,8 +102,6 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <ScrollNavbar />
-
 
       {/* ─── HERO STACKING WRAPPER ──────────────────────────────── */}
       <div className={styles.heroWrapper}>
