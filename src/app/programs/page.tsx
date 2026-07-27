@@ -141,6 +141,10 @@ export default function ProgramsPage() {
         '@type': 'Offer',
         price: '75000',
         priceCurrency: 'NGN',
+        eligibleRegion: {
+          '@type': 'Country',
+          name: 'NG',
+        },
         availability: 'https://schema.org/InStock',
         url: 'https://elitechub.com/apply?program=bootcamp6',
       },
@@ -176,6 +180,10 @@ export default function ProgramsPage() {
         '@type': 'Offer',
         price: '200000',
         priceCurrency: 'NGN',
+        eligibleRegion: {
+          '@type': 'Country',
+          name: 'NG',
+        },
         availability: 'https://schema.org/InStock',
         url: 'https://elitechub.com/apply?program=prof16',
       },
@@ -265,14 +273,14 @@ export default function ProgramsPage() {
             <div className={styles.statCard}>
               <div className={styles.statIcon} style={{ color: '#10b981' }}><ShieldCheck size={28} /></div>
               <div className={styles.statText}>
-                <div className={styles.statNumber}><CountUp end={100} suffix="%" /></div>
+                <div className={styles.statNumber}><span className="sr-only">100%</span><CountUp end={100} suffix="%" /></div>
                 <div className={styles.statLabel}>Internship Experience</div>
               </div>
             </div>
             <div className={styles.statCard}>
               <div className={styles.statIcon} style={{ color: '#3b82f6' }}><Briefcase size={28} /></div>
               <div className={styles.statText}>
-                <div className={styles.statNumber}><CountUp end={100} suffix="%" /></div>
+                <div className={styles.statNumber}><span className="sr-only">100%</span><CountUp end={100} suffix="%" /></div>
                 <div className={styles.statLabel}>Hands-on Labs</div>
               </div>
             </div>

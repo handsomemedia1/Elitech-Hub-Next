@@ -6,6 +6,7 @@ import AnimateOnScroll from '@/components/AnimateOnScroll';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/policies' },
   title: 'Terms & Privacy Policy | Elitech Hub Nigeria',
   description: 'Elitech Hub Terms of Service and Privacy Policy. Learn about our data practices, user rights, and platform guidelines.',
   robots: { index: false, follow: false },

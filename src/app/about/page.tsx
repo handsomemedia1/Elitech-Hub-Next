@@ -102,19 +102,19 @@ export default function AboutPage() {
         <AnimateOnScroll direction="up" delay={400}>
           <div className={styles.statsRow}>
             <div className={styles.statItem}>
-              <div className={styles.statNum}><CountUp end={300} suffix="+" /></div>
+              <div className={styles.statNum}><span className="sr-only">300+</span><CountUp end={300} suffix="+" /></div>
               <div className={styles.statLabel}>Students Trained</div>
             </div>
             <div className={styles.statItem}>
-              <div className={styles.statNum} style={{ color: 'white' }}><CountUp end={100} suffix="%" /></div>
+              <div className={styles.statNum} style={{ color: 'white' }}><span className="sr-only">100%</span><CountUp end={100} suffix="%" /></div>
               <div className={styles.statLabel}>Internship Experience</div>
             </div>
             <div className={styles.statItem}>
-              <div className={styles.statNum} style={{ color: 'var(--color-verification)' }}><CountUp end={100} suffix="%" /></div>
+              <div className={styles.statNum} style={{ color: 'var(--color-verification)' }}><span className="sr-only">100%</span><CountUp end={100} suffix="%" /></div>
               <div className={styles.statLabel}>Internship Experience</div>
             </div>
             <div className={styles.statItem}>
-              <div className={styles.statNum} style={{ color: '#3b82f6' }}><CountUp end={10} suffix="+" /></div>
+              <div className={styles.statNum} style={{ color: '#3b82f6' }}><span className="sr-only">10+</span><CountUp end={10} suffix="+" /></div>
               <div className={styles.statLabel}>Partner Companies</div>
             </div>
           </div>

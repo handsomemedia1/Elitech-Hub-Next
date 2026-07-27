@@ -46,9 +46,7 @@ export const metadata: Metadata = {
   ],
   // --- CANONICAL: prevents duplicate content penalties ---
   metadataBase: new URL(SITE_URL),
-  alternates: {
-    canonical: '/',
-  },
+
   // --- OPEN GRAPH: controls every shared link preview ---
   openGraph: {
     type: 'website',

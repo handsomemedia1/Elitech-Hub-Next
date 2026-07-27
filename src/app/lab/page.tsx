@@ -59,7 +59,7 @@ export default function LabPage() {
                 <FlaskConical size={28} />
               </div>
               <div>
-                <div className={styles.statValue}><CountUp end={4} /></div>
+                <div className={styles.statValue}><span className="sr-only">4</span><CountUp end={4} /></div>
                 <div className={styles.statLabel}>Lab Units</div>
               </div>
             </div>
@@ -68,7 +68,7 @@ export default function LabPage() {
                 <FileText size={28} />
               </div>
               <div>
-                <div className={styles.statValue}><CountUp end={12} suffix="+" /></div>
+                <div className={styles.statValue}><span className="sr-only">12+</span><CountUp end={12} suffix="+" /></div>
                 <div className={styles.statLabel}>Papers</div>
               </div>
             </div>
@@ -77,7 +77,7 @@ export default function LabPage() {
                 <Users size={28} />
               </div>
               <div>
-                <div className={styles.statValue}><CountUp end={25} /></div>
+                <div className={styles.statValue}><span className="sr-only">25</span><CountUp end={25} /></div>
                 <div className={styles.statLabel}>Researchers</div>
               </div>
             </div>
@@ -86,7 +86,7 @@ export default function LabPage() {
                 <Eye size={28} />
               </div>
               <div>
-                <div className={styles.statValue}><CountUp end={10} suffix="k+" /></div>
+                <div className={styles.statValue}><span className="sr-only">10k+</span><CountUp end={10} suffix="k+" /></div>
                 <div className={styles.statLabel}>Views</div>
               </div>
             </div>

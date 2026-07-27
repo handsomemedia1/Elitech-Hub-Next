@@ -6,6 +6,7 @@ import AnimateOnScroll from '@/components/AnimateOnScroll';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/researcher-guidelines' },
   title: 'Researcher Guidelines - Elitech Hub',
   description: 'Guidelines for researchers submitting papers to Elitech Hub\'s research platform. Learn about submission requirements, review process, and publication standards.',
 };

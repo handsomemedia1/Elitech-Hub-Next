@@ -89,6 +89,10 @@ export default function BootcampPage() {
         '@type': 'Offer',
         price: '75000',
         priceCurrency: 'NGN',
+        eligibleRegion: {
+          '@type': 'Country',
+          name: 'NG',
+        },
         availability: 'https://schema.org/InStock',
         url: 'https://elitechub.com/apply?program=bootcamp6',
       },

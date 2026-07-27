@@ -5,6 +5,7 @@ import styles from './research-paper.module.css';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/research-paper' },
   title: 'Research Paper - Elitech Hub',
   description: 'Academic research paper published on Elitech Hub',
 };

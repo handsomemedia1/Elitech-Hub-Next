@@ -86,6 +86,10 @@ export default function ProfessionalProgramPage() {
         '@type': 'Offer',
         price: '200000',
         priceCurrency: 'NGN',
+        eligibleRegion: {
+          '@type': 'Country',
+          name: 'NG',
+        },
         category: 'Professional Certificate',
       },
       aggregateRating: {

@@ -59,13 +59,8 @@ export default function CountUp({
   }, [end, duration]);
 
   return (
-    <span ref={ref} className={className}>
-      <span className="sr-only">
-        {prefix}{end}{suffix}
-      </span>
-      <span aria-hidden="true">
-        {prefix}{count}{suffix}
-      </span>
+    <span ref={ref} className={className} aria-hidden="true">
+      {prefix}{count}{suffix}
     </span>
   );
 }
