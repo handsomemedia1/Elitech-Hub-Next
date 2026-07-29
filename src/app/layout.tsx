@@ -28,7 +28,7 @@ const DEFAULT_OG_IMAGE = `${SITE_URL}/images/og-default.jpg`;
 export const metadata: Metadata = {
   // --- TITLE TEMPLATE: Every page title auto-appended with brand ---
   title: {
-    default: `${SITE_NAME} | Nigeria's #1 AI Cybersecurity Training`,
+    default: `${SITE_NAME} | Africa's Leading Cybersecurity Bootcamp`,
     template: `%s | ${SITE_NAME}`,
   },
   description:
@@ -54,9 +54,9 @@ export const metadata: Metadata = {
     locale: 'en_NG',
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: `${SITE_NAME} | Nigeria's #1 AI Cybersecurity Training`,
+    title: `${SITE_NAME} | Africa's Leading Cybersecurity Bootcamp`,
     description:
-      "Join Nigeria's most intensive cybersecurity bootcamp. AI-powered curriculum, live hacking labs, and guaranteed unpaid internships for experience.",
+      "Join Africa's most intensive cybersecurity bootcamp. AI-powered curriculum, live hacking labs, and guaranteed unpaid internships for experience.",
     images: [
       {
         url: DEFAULT_OG_IMAGE,
@@ -69,16 +69,19 @@ export const metadata: Metadata = {
   // --- TWITTER CARD: rich preview for Twitter / X shares ---
   twitter: {
     card: 'summary_large_image',
-    title: `${SITE_NAME} | Nigeria's #1 AI Cybersecurity Training`,
+    title: `${SITE_NAME} | Africa's Leading Cybersecurity Bootcamp`,
     description:
       'Master ethical hacking, AI security, and get guaranteed internship experience.',
     images: [DEFAULT_OG_IMAGE],
   },
   // --- VERIFICATION: connect to Google Search Console, Bing etc. ---
-  // verification: {
-  //   google: 'YOUR_GOOGLE_SITE_VERIFICATION_CODE',
-  //   other: { 'msvalidate.01': 'YOUR_BING_VERIFICATION_CODE' },
-  // },
+  verification: {
+    google: 'piBoWaLCSxsP7CpAkK9fYvSfTCDTLABvvq5bmjYWa1U',
+    other: { 
+      'msvalidate.01': '5C9DBFD3E865819C65965645EF87729F',
+      'yandex-verification': '6d910a5f997cec90'
+    },
+  },
   // --- ROBOTS DIRECTIVE: maximum indexing permissions ---
   robots: {
     index: true,
@@ -96,8 +99,8 @@ export const metadata: Metadata = {
   // --- APP LINKS & MANIFEST ---
   manifest: '/manifest.json',
   icons: {
-    icon: '/favicon.ico',
-    apple: '/apple-touch-icon.png',
+    icon: '/assets/images/logo.png',
+    apple: '/assets/images/logo.png',
   },
 };
 

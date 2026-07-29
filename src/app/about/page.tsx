@@ -347,9 +347,7 @@ export default function AboutPage() {
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-text-secondary)', fontSize: '0.85rem', fontWeight: 600, marginBottom: '1rem', textTransform: 'uppercase' }}>
                 <Building2 size={16} /> Partner
               </div>
-              <div style={{ width: '100%', maxWidth: '200px', height: '40px', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginBottom: '1rem', color: '#fff', fontSize: '0.9rem', fontWeight: 700 }}>
-                [Ceewritingservices Logo]
-              </div>
+              <img src="/assets/images/cee-partner.png" alt="Ceewritingservices Logo" style={{ maxWidth: '180px', maxHeight: '60px', objectFit: 'contain', marginBottom: '1rem' }} />
               <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.6, flexGrow: 1, marginBottom: '1.5rem' }}>
                 Partnering with Elitech Hub to deliver professional writing and documentation services.
               </p>

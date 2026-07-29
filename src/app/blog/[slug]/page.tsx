@@ -34,14 +34,14 @@ export async function generateMetadata({
     openGraph: {
       title: post.title,
       description: post.excerpt || "",
-      images: post.thumbnail ? [
+      images: [
         {
-          url: post.thumbnail,
+          url: post.thumbnail || 'https://elitechub.com/images/og-default.jpg',
           width: 1200,
           height: 630,
           alt: post.title,
         }
-      ] : [],
+      ],
       url: `https://elitechub.com/blog/${slug}`,
       type: "article",
       publishedTime: post.published_at,
@@ -52,7 +52,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: post.title,
       description: post.excerpt || "",
-      images: post.thumbnail ? [post.thumbnail] : [],
+      images: [post.thumbnail || 'https://elitechub.com/images/og-default.jpg'],
     },
     alternates: { canonical: `https://elitechub.com/blog/${slug}` },
   };
