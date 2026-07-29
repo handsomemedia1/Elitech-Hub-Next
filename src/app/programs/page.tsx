@@ -17,7 +17,7 @@ import CountUp from '@/components/CountUp';
 export const metadata = {
   title: 'Best Cybersecurity Bootcamp in Nigeria | 100% Job Guarantee | Elitech Hub',
   description:
-    'Looking for the best cybersecurity training in Lagos or online? Elitech Hub offers AI-powered bootcamps starting at ₦75,000 with hands-on internship experience. No experience needed. Enroll now.',
+    'Industry-Focused Training in Cybersecurity, Artificial Intelligence, Data Science and Emerging Technologies.',
   keywords: [
     // LOCAL (high-intent, low competition)
     'cybersecurity training in Lagos',

@@ -125,13 +125,11 @@ export default function Home() {
               </span>
             </div>
 
-            <h1 className={styles.heroTitle}>
-              Best Defense Is Not Just <br />
-              <span className="text-gradient-primary">Coding</span>
+            <h1 className={styles.heroTitle} style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', lineHeight: 1.2, maxWidth: '1000px', margin: '0 auto 1.5rem' }}>
+              Building Secure Businesses Through <span className="text-gradient-primary">AI, Cybersecurity, Research, Business Consulting</span> and Digital Innovation.
             </h1>
             <p className={styles.heroSubtitle}>
-              We teach you to think like a hacker, research like a scientist, and build like an engineer. 
-              Join Nigeria&apos;s most intensive, affordable AI security bootcamp.
+              Elitech Hub is a Nigeria-based company helping businesses, professionals and organizations build secure, intelligent and future-ready digital solutions worldwide.
             </p>
           </AnimateOnScroll>
 

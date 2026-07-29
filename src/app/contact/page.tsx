@@ -7,11 +7,11 @@ import { MapPin, MessageCircle, Mail, Send, Clock } from 'lucide-react';
 
 export const metadata = {
   title: 'Contact Elitech Hub | Cybersecurity Training Enquiries | Lagos & Ibadan Nigeria',
-  description: 'Contact Elitech Hub to enroll in cybersecurity training, request a penetration test, or inquire about web development and AI chatbot services. Based in Ibadan, Nigeria. WhatsApp: +234 708 196 8062',
+  description: 'Let\'s Build Secure, Intelligent and Scalable Digital Solutions Together.',
   keywords: ['contact Elitech Hub', 'cybersecurity training enquiry Nigeria', 'enroll cybersecurity Nigeria', 'Elitech Hub WhatsApp', 'cybersecurity school contact Lagos', 'cybersecurity Ibadan contact', 'pentesting Nigeria contact'],
   openGraph: {
     title: 'Contact Elitech Hub | Get in Touch',
-    description: 'WhatsApp, email, or Telegram — we are always available. Enroll in cybersecurity training or request a security assessment today.',
+    description: 'Let\'s Build Secure, Intelligent and Scalable Digital Solutions Together.',
     url: 'https://elitechub.com/contact',
     siteName: 'Elitech Hub',
     locale: 'en_NG',

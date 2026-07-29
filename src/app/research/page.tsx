@@ -9,7 +9,7 @@ import ResearchList from '@/components/ResearchList';
 export const metadata: Metadata = {
   title: 'Cybersecurity Research & Publications | Elitech Hub Nigeria',
   description:
-    'Elitech Hub publishes original cybersecurity research covering AI security, threat intelligence, malware analysis, and African cyber threats. View published papers, active projects, and open-source tools.',
+    'Advancing Research in Artificial Intelligence, Cybersecurity, Human Behaviour and Emerging Technologies.',
   keywords: [
     'cybersecurity research Nigeria',
     'cybersecurity publications Nigeria',

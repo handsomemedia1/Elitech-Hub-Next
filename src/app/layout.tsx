@@ -28,11 +28,11 @@ const DEFAULT_OG_IMAGE = `${SITE_URL}/images/og-default.jpg`;
 export const metadata: Metadata = {
   // --- TITLE TEMPLATE: Every page title auto-appended with brand ---
   title: {
-    default: `${SITE_NAME} | Africa's Leading Cybersecurity Bootcamp`,
+    default: `${SITE_NAME} | Nigeria's Leading AI, Cybersecurity, Research & Digital Innovation Hub`,
     template: `%s | ${SITE_NAME}`,
   },
   description:
-    "Elitech Hub is Nigeria's top-ranked cybersecurity training platform offering AI-powered bootcamps in Lagos, Abuja, and online. 100% internship guarantee.",
+    "Elitech Hub is a Nigeria-based AI, Cybersecurity, Research and Digital Innovation company helping businesses, professionals and organizations build secure, intelligent and future-ready digital solutions worldwide.",
   keywords: [
     'cybersecurity training Nigeria',
     'ethical hacking course Lagos',
@@ -54,9 +54,9 @@ export const metadata: Metadata = {
     locale: 'en_NG',
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: `${SITE_NAME} | Africa's Leading Cybersecurity Bootcamp`,
+    title: `${SITE_NAME} | Nigeria's Leading AI, Cybersecurity, Research & Digital Innovation Hub`,
     description:
-      "Join Africa's most intensive cybersecurity bootcamp. AI-powered curriculum, live hacking labs, and guaranteed unpaid internships for experience.",
+      "Elitech Hub is a Nigeria-based AI, Cybersecurity, Research and Digital Innovation company helping businesses, professionals and organizations build secure, intelligent and future-ready digital solutions worldwide.",
     images: [
       {
         url: DEFAULT_OG_IMAGE,
@@ -69,9 +69,9 @@ export const metadata: Metadata = {
   // --- TWITTER CARD: rich preview for Twitter / X shares ---
   twitter: {
     card: 'summary_large_image',
-    title: `${SITE_NAME} | Africa's Leading Cybersecurity Bootcamp`,
+    title: `${SITE_NAME} | Nigeria's Leading AI, Cybersecurity, Research & Digital Innovation Hub`,
     description:
-      'Master ethical hacking, AI security, and get guaranteed internship experience.',
+      "Elitech Hub is a Nigeria-based AI, Cybersecurity, Research and Digital Innovation company helping businesses, professionals and organizations build secure, intelligent and future-ready digital solutions worldwide.",
     images: [DEFAULT_OG_IMAGE],
   },
   // --- VERIFICATION: connect to Google Search Console, Bing etc. ---
@@ -134,7 +134,7 @@ export default function RootLayout({
               },
               image: 'https://elitechub.com/images/og-default.jpg',
               description:
-                "Nigeria's leading AI-powered cybersecurity training platform with a 100% internship guarantee.",
+                "Elitech Hub is a Nigeria-based AI, Cybersecurity, Research and Digital Innovation company helping businesses, professionals and organizations build secure, intelligent and future-ready digital solutions worldwide.",
               foundingDate: '2023',
               address: {
                 '@type': 'PostalAddress',
@@ -183,7 +183,7 @@ export default function RootLayout({
               priceRange: '₦₦',
               image: 'https://elitechub.com/images/og-default.jpg',
               description:
-                'Elitech Hub provides cybersecurity bootcamps and AI security training in Lagos, Nigeria, with guaranteed internship experience.',
+                "Elitech Hub provides AI, Cybersecurity, Research, and Digital Innovation training and solutions in Nigeria and worldwide.",
               address: {
                 '@type': 'PostalAddress',
                 addressLocality: 'Lagos',
@@ -251,7 +251,7 @@ export default function RootLayout({
               url: 'https://elitechub.com',
               name: 'Elitech Hub',
               description:
-                "Nigeria's leading cybersecurity training platform.",
+                "Nigeria's Leading AI, Cybersecurity, Research & Digital Innovation Hub for Businesses and Professionals.",
               publisher: {
                 '@id': 'https://elitechub.com/#organization',
               },

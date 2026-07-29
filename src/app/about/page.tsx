@@ -10,11 +10,11 @@ import { LinkedinLogo, PhosphorGlobe, PhosphorGraduationCap } from '@/components
 
 export const metadata: Metadata = {
   title: "About Elitech Hub | Nigeria's Cybersecurity Training Leader | Lagos & Ibadan",
-  description: "Elitech Hub is a SMEDAN Certified & CAC Registered (RC: 8693883) cybersecurity training organisation. We provide real training, real internships, and real results globally.",
+  description: "Driving Innovation Through AI, Cybersecurity, Research Excellence and Business Transformation.",
   keywords: ['about Elitech Hub', 'SMEDAN certified cybersecurity', 'CAC registered cybersecurity training', 'Elitech Hub founder', 'Elijah Adeyeye', 'cybersecurity training Nigeria', 'cybersecurity school Lagos'],
   openGraph: {
     title: "About Elitech Hub | Nigeria's Cybersecurity Training Leader",
-    description: "Learn the story behind Nigeria's leading cybersecurity training organisation and the team building Africa's digital defenders.",
+    description: "Driving Innovation Through AI, Cybersecurity, Research Excellence and Business Transformation.",
     url: 'https://elitechub.com/about',
     siteName: 'Elitech Hub',
     locale: 'en_NG',

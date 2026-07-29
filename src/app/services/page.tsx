@@ -11,7 +11,7 @@ import { HubCard } from '@/components/HubCard';
 export const metadata: Metadata = {
   title: 'Cybersecurity, Web Development & AI Chatbot Services in Nigeria | Elitech Hub',
   description:
-    'Elitech Hub offers penetration testing, web application security, custom website development, AI chatbot development, custom scripts, and corporate cybersecurity training in Lagos, Ibadan, and Abuja, Nigeria.',
+    'Professional Technology Solutions for Businesses, Institutions and Government Organizations.',
   keywords: [
     // --- CYBERSECURITY SERVICES ---
     'penetration testing Nigeria',

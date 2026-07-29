@@ -12,7 +12,7 @@ import { HubCard } from "@/components/HubCard";
 export const metadata: Metadata = {
   title: 'Cybersecurity Blog Nigeria | Career Guides, Tutorials & Threat Intel | Elitech Hub',
   description:
-    'Read cybersecurity articles, career guides, ethical hacking tutorials, and threat intelligence from Elitech Hub — Nigeria\'s #1 cybersecurity training platform in Lagos, Ibadan, and Abuja.',
+    'Expert Insights on AI, Cybersecurity, Technology, Digital Business and Innovation.',
   keywords: [
     'cybersecurity blog Nigeria',
     'ethical hacking tutorials Nigeria',
