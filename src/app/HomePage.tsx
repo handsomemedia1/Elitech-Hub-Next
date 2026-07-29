@@ -376,7 +376,7 @@ export default function Home() {
             {/* Certificate Image Mockup */}
             <div className="glass-panel" style={{ padding: '10px', display: 'inline-block', maxWidth: '100%' }}>
               <img 
-                src="/images/certificate-placeholder.jpg" 
+                src="/images/certificate-placeholder.png" 
                 alt="Elitech Hub Certificate of Learning" 
                 style={{ 
                   width: '100%', 
