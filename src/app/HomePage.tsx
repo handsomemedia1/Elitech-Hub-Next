@@ -126,10 +126,10 @@ export default function Home() {
             </div>
 
             <h1 className={styles.heroTitle} style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', lineHeight: 1.2, maxWidth: '1000px', margin: '0 auto 1.5rem' }}>
-              Premium Tech Training & <span className="text-gradient-primary">Cybersecurity Solutions</span> for the Future.
+              Elite Cybersecurity Training & <span className="text-gradient-primary">Enterprise Digital Solutions.</span>
             </h1>
             <p className={styles.heroSubtitle}>
-              We train individuals to master elite tech skills, and we partner with businesses to build secure, intelligent, and scalable digital solutions worldwide.
+              We train individuals to become highly skilled cybersecurity professionals, and we partner with businesses to build secure, AI-driven, and future-ready digital solutions worldwide.
             </p>
           </AnimateOnScroll>
 
