@@ -83,7 +83,7 @@ export default function InitialLoader() {
               exit={{ opacity: 0, scale: 1.5, filter: "blur(10px)" }}
               transition={{ duration: 0.5, ease: "easeIn" }}
               style={{
-                fontSize: "8rem", fontWeight: 900, color: "rgba(255,255,255,0.1)",
+                fontSize: "clamp(3rem, 20vw, 8rem)", fontWeight: 900, color: "rgba(255,255,255,0.1)",
                 fontFamily: "var(--font-montserrat)", letterSpacing: "-0.05em"
               }}
             >
@@ -98,7 +98,7 @@ export default function InitialLoader() {
               exit={{ opacity: 0, y: -50 }}
               transition={{ duration: 0.8, ease: "anticipate" }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap", justifyContent: "center", padding: "0 1rem" }}>
                 <motion.div
                   initial={{ scale: 0, rotate: -180, opacity: 0 }}
                   animate={{ scale: 1, rotate: 0, opacity: 1 }}
@@ -119,7 +119,7 @@ export default function InitialLoader() {
                       delay: index * 0.05
                     }}
                     style={{
-                      fontSize: "4rem", fontWeight: 900, color: "white",
+                      fontSize: "clamp(1.8rem, 8vw, 4rem)", fontWeight: 900, color: "white",
                       fontFamily: "var(--font-montserrat)", display: "inline-block"
                     }}
                   >
@@ -139,10 +139,10 @@ export default function InitialLoader() {
                   border: "1px solid rgba(255, 255, 255, 0.1)",
                   borderRadius: "0.5rem",
                   padding: "1rem",
-                  width: "100%",
+                  width: "calc(100vw - 4rem)",
                   maxWidth: "500px",
                   fontFamily: "monospace",
-                  fontSize: "0.85rem",
+                  fontSize: "clamp(0.7rem, 2.5vw, 0.85rem)",
                   color: "#6ee7b7",
                   textAlign: "left"
                 }}

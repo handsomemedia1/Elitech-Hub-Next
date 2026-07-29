@@ -57,12 +57,19 @@
 @media (max-width: 480px) {
   .chatWindow {
     width: calc(100vw - 2rem);
+    height: calc(100dvh - 8rem);
+    max-height: calc(100dvh - 8rem);
     right: 1rem;
+    left: 1rem;
     bottom: 5rem;
+    border-radius: 16px;
   }
   .fab {
     bottom: 1rem;
     right: 1rem;
+    width: 52px;
+    height: 52px;
+    font-size: 1.25rem;
   }
 }
 
