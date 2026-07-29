@@ -343,31 +343,31 @@ export default function AboutPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(300px, 100%), 1fr))', gap: '2rem' }}>
           
           <AnimateOnScroll direction="up" delay={100}>
-            <div className="glass-panel" style={{ padding: '2rem', height: '100%', display: 'flex', flexDirection: 'column', borderStyle: 'dashed' }}>
+            <div className="glass-panel" style={{ padding: '2rem', height: '100%', display: 'flex', flexDirection: 'column', borderStyle: 'solid' }}>
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-text-secondary)', fontSize: '0.85rem', fontWeight: 600, marginBottom: '1rem', textTransform: 'uppercase' }}>
                 <Building2 size={16} /> Partner
               </div>
-              <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--color-text-primary)' }}>Your Organization Here</h3>
+              <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--color-text-primary)' }}>Ceewritingservices</h3>
               <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.6, flexGrow: 1, marginBottom: '1.5rem' }}>
-                Join our network of organizations advancing cybersecurity
+                Partnering with Elitech Hub to deliver professional writing and documentation services.
               </p>
-              <Link href="/contact" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-accent)', fontSize: '0.9rem', fontWeight: 600 }}>
-                Become a Partner <ArrowRight size={16} />
+              <Link href="#" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-accent)', fontSize: '0.9rem', fontWeight: 600 }}>
+                Visit Partner <ArrowRight size={16} />
               </Link>
             </div>
           </AnimateOnScroll>
           
           <AnimateOnScroll direction="up" delay={200}>
-            <div className="glass-panel" style={{ padding: '2rem', height: '100%', display: 'flex', flexDirection: 'column', borderStyle: 'dashed' }}>
+            <div className="glass-panel" style={{ padding: '2rem', height: '100%', display: 'flex', flexDirection: 'column', borderStyle: 'solid' }}>
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-text-secondary)', fontSize: '0.85rem', fontWeight: 600, marginBottom: '1rem', textTransform: 'uppercase' }}>
                 <Building2 size={16} /> Partner
               </div>
-              <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--color-text-primary)' }}>Your Organization Here</h3>
+              <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--color-text-primary)' }}>Optimistic Scholar</h3>
               <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.6, flexGrow: 1, marginBottom: '1.5rem' }}>
-                Partner to provide internship and job opportunities
+                Empowering scholars and researchers through collaborative academic initiatives.
               </p>
-              <Link href="/contact" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-accent)', fontSize: '0.9rem', fontWeight: 600 }}>
-                Become a Partner <ArrowRight size={16} />
+              <Link href="https://optimisticscholar.com/" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-accent)', fontSize: '0.9rem', fontWeight: 600 }}>
+                Visit Partner <ArrowRight size={16} />
               </Link>
             </div>
           </AnimateOnScroll>

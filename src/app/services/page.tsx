@@ -240,7 +240,7 @@ export default function ServicesPage() {
           <h2 style={{ textAlign: 'center', color: 'white', fontSize: 'clamp(1.3rem, 2.5vw, 1.9rem)', fontWeight: 800, marginBottom: '2rem' }}>Every service has its own dedicated page with full details, pricing, and FAQs.</h2>
         </AnimateOnScroll>
         <AnimateOnScroll direction="up">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1rem', maxWidth: '1100px', margin: '0 auto 1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', maxWidth: '1100px', margin: '0 auto 1rem' }}>
             <HubCard href="/services/web-development" icon="🌐" label="Web Development" sub="Custom websites & web apps" color="#3b82f6" />
             <HubCard href="/services/ai-chatbots" icon="🤖" label="AI Chatbots & Agents" sub="GPT-4, Claude, Gemini apps" color="#a855f7" />
             <HubCard href="/services/penetration-testing" icon="🛡️" label="Penetration Testing" sub="Web, network, mobile, cloud" color="#ef4444" />

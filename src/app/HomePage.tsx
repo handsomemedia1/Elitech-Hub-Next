@@ -436,7 +436,7 @@ export default function Home() {
         </AnimateOnScroll>
 
         <AnimateOnScroll direction="up">
-          <div className="glass-panel" style={{ maxWidth: '1100px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0', overflow: 'hidden', padding: 0 }}>
+          <div className="glass-panel" style={{ maxWidth: '1100px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '0', overflow: 'hidden', padding: 0 }}>
             <div style={{ padding: '2.5rem' }}>
               <span style={{ display: 'inline-block', padding: '0.3rem 0.85rem', background: 'rgba(195,21,28,0.1)', color: 'var(--color-primary)', borderRadius: '2rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '1rem' }}>
                 {latestPost?.category || 'THREAT INTEL'}
