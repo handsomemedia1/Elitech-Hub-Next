@@ -1010,3 +1010,9 @@
     padding: 1.5rem;
   }
 }
+
+@media (max-width: 768px) {
+  .compareTable {
+    min-width: 700px;
+  }
+}

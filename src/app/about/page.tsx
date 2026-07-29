@@ -347,7 +347,9 @@ export default function AboutPage() {
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-text-secondary)', fontSize: '0.85rem', fontWeight: 600, marginBottom: '1rem', textTransform: 'uppercase' }}>
                 <Building2 size={16} /> Partner
               </div>
-              <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--color-text-primary)' }}>Ceewritingservices</h3>
+              <div style={{ width: '100%', maxWidth: '200px', height: '40px', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginBottom: '1rem', color: '#fff', fontSize: '0.9rem', fontWeight: 700 }}>
+                [Ceewritingservices Logo]
+              </div>
               <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.6, flexGrow: 1, marginBottom: '1.5rem' }}>
                 Partnering with Elitech Hub to deliver professional writing and documentation services.
               </p>
@@ -362,7 +364,7 @@ export default function AboutPage() {
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-text-secondary)', fontSize: '0.85rem', fontWeight: 600, marginBottom: '1rem', textTransform: 'uppercase' }}>
                 <Building2 size={16} /> Partner
               </div>
-              <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--color-text-primary)' }}>Optimistic Scholar</h3>
+              <img src="https://optimisticscholar.com/wp-content/uploads/2022/01/OptimisticScholar-logo-White-1.png" alt="Optimistic Scholar Logo" style={{ maxWidth: '200px', marginBottom: '1rem' }} />
               <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.6, flexGrow: 1, marginBottom: '1.5rem' }}>
                 Empowering scholars and researchers through collaborative academic initiatives.
               </p>
