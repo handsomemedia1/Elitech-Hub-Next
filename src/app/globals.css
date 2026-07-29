@@ -236,3 +236,36 @@ a {
     padding: 0 1.5rem;
   }
 }
+
+/* GLOBAL MOBILE RESPONSIVENESS FIXES */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+img, video {
+  max-width: 100%;
+  height: auto;
+}
+
+.card, [class*="card"], [class*="Card"] {
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+[class*="grid"], [class*="Grid"], [class*="container"], [class*="Container"] {
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+
+/* Ensure flex containers wrapping on small screens */
+@media (max-width: 768px) {
+  [style*="display: flex"] {
+    flex-wrap: wrap !important;
+  }
+}

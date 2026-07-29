@@ -51,8 +51,9 @@ export async function POST(request: Request) {
     } else {
       const { error } = await supabase.from('leads').insert([{
         email: emailResult.value,
+        whatsapp: body.whatsapp || null,
         segment: 'newsletter',
-        source_page: 'footer',
+        source_page: body.source || 'footer',
         created_at: new Date().toISOString(),
       }]);
       if (error) console.error('[Newsletter] DB insert error:', error.message);

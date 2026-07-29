@@ -7,6 +7,7 @@ import { FloatingChatbot, TrustBadge } from "@/components/FloatingWidgets";
 import { PricingProvider } from "@/context/PricingContext";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import ScrollNavbar from "@/components/ScrollNavbar";
+import LeadPopup from "@/components/LeadPopup";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -282,6 +283,7 @@ export default function RootLayout({
           </SmoothScroll>
           <FloatingChatbot />
           <TrustBadge />
+          <LeadPopup />
         </PricingProvider>
       </body>
     </html>

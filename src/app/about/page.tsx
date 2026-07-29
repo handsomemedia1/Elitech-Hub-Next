@@ -230,9 +230,9 @@ export default function AboutPage() {
               </div>
 
               <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
-                <span className={styles.badge} style={{ background: 'var(--color-bg-panel)', border: '1px solid var(--color-border)', padding: '0.4rem 0.8rem', borderRadius: '4px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <ExternalLink size={12} color="var(--color-accent)" /> ORCID
-                </span>
+                <a href="https://orcid.org/0009-0005-4853-7813" target="_blank" rel="noopener noreferrer" className={styles.badge} style={{ background: 'var(--color-bg-panel)', border: '1px solid var(--color-border)', padding: '0.4rem 0.8rem', borderRadius: '4px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.4rem', textDecoration: 'none', color: 'inherit' }}>
+                  <ExternalLink size={12} color="var(--color-accent)" /> ORCID: 0009-0005-4853-7813
+                </a>
                 <span className={styles.badge} style={{ background: 'var(--color-bg-panel)', border: '1px solid var(--color-border)', padding: '0.4rem 0.8rem', borderRadius: '4px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                   <Award size={12} color="var(--color-accent)" /> B.Sc. Psychology
                 </span>
