@@ -1,0 +1,128 @@
+.container {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--color-bg-alt);
+  min-height: 100%;
+}
+
+.headerRow {
+  width: 100%;
+  max-width: 210mm;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--color-text-main);
+}
+
+.printBtn {
+  background: var(--color-primary);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.printBtn:hover {
+  background: #a01015;
+}
+
+.a4Page {
+  width: 210mm;
+  min-height: 297mm;
+  background: white;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  position: relative;
+  box-sizing: border-box;
+  padding: 20mm 20mm;
+  display: flex;
+  flex-direction: column;
+  color: #333;
+}
+
+.watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.04;
+  pointer-events: none;
+  width: 60%;
+  height: auto;
+  z-index: 0;
+}
+
+.docHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--color-primary);
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+}
+
+.logo {
+  height: 50px;
+  width: auto;
+}
+
+.contactInfo {
+  text-align: right;
+  font-size: 10pt;
+  color: #666;
+  line-height: 1.5;
+}
+
+.contactInfo strong {
+  color: #0F172A;
+  font-size: 11pt;
+  display: block;
+  margin-bottom: 3px;
+}
+
+.content {
+  flex-grow: 1;
+  font-size: 11pt;
+  color: #333;
+  line-height: 1.6;
+  outline: none;
+  position: relative;
+  z-index: 1;
+  min-height: 300px;
+}
+
+.content:empty:before {
+  content: "Click here to start typing your letter...";
+  color: #999;
+  font-style: italic;
+}
+
+.docFooter {
+  margin-top: 30px;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 15px;
+  font-size: 9pt;
+  color: #666;
+  display: flex;
+  justify-content: space-between;
+}
+
+.docFooter span {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.noPrint {
+  display: flex;
+}

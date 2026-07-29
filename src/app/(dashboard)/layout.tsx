@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
   LayoutDashboard, BookOpen, Users, PenTool, MessageSquare, 
-  Settings, LogOut, Menu, X, FileText, FlaskConical, Award, DollarSign
+  Settings, LogOut, Menu, X, FileText, FlaskConical, Award, DollarSign, Mail
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './dashboard.module.css';
@@ -19,6 +19,7 @@ const ADMIN_LINKS = [
   { href: '/admin/writers', label: 'Writers Panel', icon: PenTool },
   { href: '/writer/editor', label: 'Write Blog', icon: FileText },
   { href: '/admin/lab', label: 'Research Lab', icon: FlaskConical },
+  { href: '/admin/letterhead', label: 'Letterhead Gen', icon: Mail },
   { href: '/admin/pricing', label: 'Pricing Engine', icon: DollarSign },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
