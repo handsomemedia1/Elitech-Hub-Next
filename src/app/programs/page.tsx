@@ -901,73 +901,48 @@ export default function ProgramsPage() {
           </div>
         </section>
 
-        {/* NEW: Program Comparison Table */}
+        {/* Program Comparison — responsive card layout */}
         <section className={layoutStyles.section} style={{ padding: '0 5%' }}>
           <AnimateOnScroll direction="up">
             <h2 className={styles.sectionTitle}>Program Comparison</h2>
-            <div className={styles.tableWrapper}>
-              <table className={styles.compareTable}>
-                <thead>
-                  <tr>
-                    <th>Feature</th>
-                    <th>6-Week Bootcamp</th>
-                    <th className={styles.highlightHeader}>16-Week Professional</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Duration</td>
-                    <td>6 Weeks</td>
-                    <td className={styles.highlightCell}>16 Weeks</td>
-                  </tr>
-                  <tr>
-                    <td>Class Schedule</td>
-                    <td>Weekends Only</td>
-                    <td className={styles.highlightCell}>3x per week</td>
-                  </tr>
-                  <tr>
-                    <td>Price</td>
-                    <td><PriceDisplay courseId="bootcamp" fallback="₦75,000" /></td>
-                    <td className={styles.highlightCell}><PriceDisplay courseId="professional" fallback="₦200,000" /></td>
-                  </tr>
-                  <tr>
-                    <td>Hands-on Labs</td>
-                    <td><Check size={20} color="#10b981" /></td>
-                    <td className={styles.highlightCell}><Check size={20} color="#10b981" /></td>
-                  </tr>
-                  <tr>
-                    <td>Industry Project</td>
-                    <td><Check size={20} color="#10b981" /></td>
-                    <td className={styles.highlightCell}><Check size={20} color="#10b981" /></td>
-                  </tr>
-                  <tr>
-                    <td>Internship Experience</td>
-                    <td>-</td>
-                    <td className={styles.highlightCell}><strong className={styles.textGreen}>Yes</strong></td>
-                  </tr>
-                  <tr>
-                    <td>1-on-1 Mentorship</td>
-                    <td>-</td>
-                    <td className={styles.highlightCell}><Check size={20} color="#10b981" /></td>
-                  </tr>
-                  <tr>
-                    <td>Certification Prep</td>
-                    <td>Basic</td>
-                    <td className={styles.highlightCell}>Security+, CEH, OSCP</td>
-                  </tr>
-                  <tr>
-                    <td>Career Support</td>
-                    <td>Basic Resume Help</td>
-                    <td className={styles.highlightCell}>Full Career Services</td>
-                  </tr>
-                  <tr>
-                    <td>Alumni Network Access</td>
-                    <td>-</td>
-                    <td className={styles.highlightCell}><Check size={20} color="#10b981" /></td>
-                  </tr>
-                </tbody>
-              </table>
+
+            {/* Column headers */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', maxWidth: '900px', margin: '0 auto 1rem' }}>
+              <div style={{ background: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.3)', borderRadius: '12px', padding: '1rem', textAlign: 'center' }}>
+                <div style={{ color: '#06b6d4', fontWeight: 800, fontSize: '1rem' }}>⚡ 6-Week Bootcamp</div>
+                <div style={{ color: 'var(--color-text-secondary)', fontSize: '0.8rem', marginTop: '0.25rem' }}>Fast-Track Skills</div>
+              </div>
+              <div style={{ background: 'rgba(195,21,28,0.1)', border: '2px solid rgba(195,21,28,0.4)', borderRadius: '12px', padding: '1rem', textAlign: 'center', position: 'relative' }}>
+                <div style={{ position: 'absolute', top: '-10px', left: '50%', transform: 'translateX(-50%)', background: 'var(--color-primary)', color: 'white', fontSize: '0.65rem', fontWeight: 800, padding: '0.2rem 0.75rem', borderRadius: '20px', letterSpacing: '0.08em', whiteSpace: 'nowrap' }}>MOST POPULAR</div>
+                <div style={{ color: '#ef4444', fontWeight: 800, fontSize: '1rem' }}>👑 16-Week Professional</div>
+                <div style={{ color: 'var(--color-text-secondary)', fontSize: '0.8rem', marginTop: '0.25rem' }}>Complete Career Transformation</div>
+              </div>
             </div>
+
+            {/* Comparison rows */}
+            {[
+              { label: 'Duration', bootcamp: '6 Weeks', pro: '16 Weeks' },
+              { label: 'Class Schedule', bootcamp: 'Weekends Only', pro: '3× per week' },
+              { label: 'Price', bootcamp: null, pro: null, isPrice: true },
+              { label: 'Hands-on Labs', bootcamp: '✅', pro: '✅' },
+              { label: 'Industry Project', bootcamp: '✅', pro: '✅' },
+              { label: 'Internship Experience', bootcamp: '—', pro: '✅ Yes', proHighlight: true },
+              { label: '1-on-1 Mentorship', bootcamp: '—', pro: '✅', proHighlight: true },
+              { label: 'Certification Prep', bootcamp: 'Basic', pro: 'Security+, CEH, OSCP', proHighlight: true },
+              { label: 'Career Support', bootcamp: 'Basic Resume Help', pro: 'Full Career Services', proHighlight: true },
+              { label: 'Alumni Network', bootcamp: '—', pro: '✅', proHighlight: true },
+            ].map((row, i) => (
+              <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', maxWidth: '900px', margin: '0 auto 0.5rem', alignItems: 'stretch' }}>
+                {/* Feature label spans full width above */}
+                <div style={{ gridColumn: '1 / -1', color: 'var(--color-text-secondary)', fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', padding: '0.4rem 0 0.1rem' }}>{row.label}</div>
+                <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--color-border)', borderRadius: '10px', padding: '0.75rem 1rem', color: 'white', fontWeight: 600, fontSize: '0.9rem', textAlign: 'center' }}>
+                  {row.isPrice ? <PriceDisplay courseId="bootcamp" fallback="₦75,000" /> : row.bootcamp}
+                </div>
+                <div style={{ background: 'rgba(195,21,28,0.07)', border: '1px solid rgba(195,21,28,0.25)', borderRadius: '10px', padding: '0.75rem 1rem', color: row.proHighlight ? '#10b981' : 'white', fontWeight: 700, fontSize: '0.9rem', textAlign: 'center' }}>
+                  {row.isPrice ? <PriceDisplay courseId="professional" fallback="₦200,000" /> : row.pro}
+                </div>
+              </div>
+            ))}
           </AnimateOnScroll>
         </section>
 
