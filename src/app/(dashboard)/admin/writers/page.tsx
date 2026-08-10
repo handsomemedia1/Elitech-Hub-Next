@@ -43,6 +43,17 @@ export default function AdminWriters() {
     const timer = setTimeout(() => setLoading(false), 3000);
     return () => clearTimeout(timer);
   }, []);
+  const handleDeleteWriter = async (id: string, name: string) => {
+    if (!window.confirm(`Are you sure you want to delete writer: ${name}?`)) return;
+    
+    // Optimistic UI update
+    setWriters(writers.filter(w => w.id !== id && w.name !== name));
+    
+    // Try to delete from supabase if it has a real UUID
+    if (id && id !== name) {
+      await supabase.from('writers').delete().eq('id', id);
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -105,8 +116,8 @@ export default function AdminWriters() {
                 </td>
                 <td>
                   <div className={styles.actionBtns}>
-                    <button className={styles.iconBtn} title="Edit"><Edit2 size={16} /></button>
-                    <button className={styles.iconBtn} title="Delete"><Trash2 size={16} /></button>
+                    <button className={styles.iconBtn} title="Edit" onClick={() => alert('Edit writer functionality coming soon')}><Edit2 size={16} /></button>
+                    <button className={styles.iconBtn} title="Delete" onClick={() => handleDeleteWriter(writer.id, writer.name)}><Trash2 size={16} /></button>
                   </div>
                 </td>
               </tr>

@@ -23,16 +23,16 @@
   width: 40px;
   height: 40px;
   border-radius: 8px;
-  background-color: #ffffff;
-  border: 1px solid #1e293b;
-  color: #64748b;
+  background-color: var(--color-bg-panel);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .backBtn:hover {
-  background-color: #1e293b;
-  color: #ffffff;
+  background-color: var(--color-bg-alt);
+  color: var(--color-text-primary);
 }
 
 .headerLeft h1 {
@@ -77,10 +77,10 @@
 }
 
 .card {
-  background-color: #ffffff;
+  background-color: var(--color-bg-panel);
   border-radius: 12px;
   padding: 24px;
-  border: 1px solid #1e293b;
+  border: 1px solid var(--color-border);
   margin-bottom: 24px;
 }
 
@@ -128,16 +128,17 @@
 .input {
   width: 100%;
   padding: 12px 16px;
-  border: 1px solid #1e293b;
+  background-color: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 0.95rem;
   outline: none;
   font-family: inherit;
-  color: #ffffff;
+  color: var(--color-text-primary);
 }
 
 .input:focus {
-  border-color: #ff2a55;
+  border-color: var(--color-accent);
 }
 
 .outlineBtn {
@@ -189,13 +190,13 @@
 .moduleDragHandle {
   width: 32px;
   height: 32px;
-  background-color: #e2e8f0;
+  background-color: var(--color-bg-alt);
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  color: #cbd5e1;
+  color: var(--color-text-secondary);
 }
 
 .moduleInfo {

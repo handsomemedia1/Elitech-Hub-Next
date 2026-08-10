@@ -19,6 +19,25 @@ export default function Footer() {
             placement · SMEDAN certified · RC: 8693883. Serving students from Ibadan to
             London, New York &amp; beyond.
           </p>
+          <div className={styles.footerSocials}>
+            <a href="https://www.linkedin.com/company/elitech-hub" target="_blank" rel="noopener noreferrer" className={styles.social} aria-label="LinkedIn">
+              <i className="fab fa-linkedin-in" />
+            </a>
+            <a href="https://www.youtube.com/@elitechub" target="_blank" rel="noopener noreferrer" className={styles.social} aria-label="YouTube">
+              <i className="fab fa-youtube" />
+            </a>
+          </div>
+          <div style={{ marginTop: '1.5rem' }}>
+            <h5 style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Connect with Founder</h5>
+            <div className={styles.footerSocials}>
+              <a href="https://www.threads.com/@thehandsomekvng" target="_blank" rel="noopener noreferrer" className={styles.social} aria-label="Threads">
+                <i className="fab fa-threads" />
+              </a>
+              <a href="mailto:elijah@elitechub.com" className={styles.social} aria-label="Email">
+                <i className="fas fa-envelope" />
+              </a>
+            </div>
+          </div>
         </div>
 
         {/* Programs */}

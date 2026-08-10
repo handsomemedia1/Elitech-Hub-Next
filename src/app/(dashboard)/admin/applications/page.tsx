@@ -16,26 +16,56 @@ export default function AdminApplications() {
 
   async function fetchApplications() {
     setLoading(true);
-    const { data, error } = await supabase
+    
+    // Fetch Applications
+    const { data: appsData, error: appsError } = await supabase
       .from('applications')
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (data) {
-      setApplications(data);
-    }
+    // Fetch Leads
+    const { data: leadsData, error: leadsError } = await supabase
+      .from('leads')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    const formattedLeads = (leadsData || []).map(lead => ({
+      id: `lead_${lead.id}`,
+      original_id: lead.id,
+      full_name: 'Newsletter Lead',
+      email: lead.email,
+      phone_number: lead.whatsapp || '',
+      program_name: `Lead Source: ${lead.source_page || 'popup'}`,
+      status: 'pending',
+      created_at: lead.created_at,
+      is_lead: true
+    }));
+
+    const merged = [...(appsData || []), ...formattedLeads].sort((a, b) => 
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
+
+    setApplications(merged);
     setLoading(false);
   }
 
-  const handleUpdateStatus = async (id: string, newStatus: string) => {
+  const handleUpdateStatus = async (app: any, newStatus: string) => {
+    if (app.is_lead) {
+      // For leads, we might not have a status column yet, but we can fake it in UI
+      setApplications(applications.map(a => 
+        a.id === app.id ? { ...a, status: newStatus } : a
+      ));
+      return;
+    }
+
     const { error } = await supabase
       .from('applications')
       .update({ status: newStatus })
-      .eq('id', id);
+      .eq('id', app.id);
 
     if (!error) {
-      setApplications(applications.map(app => 
-        app.id === id ? { ...app, status: newStatus } : app
+      setApplications(applications.map(a => 
+        a.id === app.id ? { ...a, status: newStatus } : a
       ));
     }
   };
@@ -117,14 +147,14 @@ export default function AdminApplications() {
                     <div className={styles.actions}>
                       <button 
                         className={styles.approveBtn} 
-                        onClick={() => handleUpdateStatus(app.id, 'reviewed')}
+                        onClick={() => handleUpdateStatus(app, 'reviewed')}
                         title="Mark as Reviewed"
                       >
                         <Check size={16} />
                       </button>
                       <button 
                         className={styles.rejectBtn} 
-                        onClick={() => handleUpdateStatus(app.id, 'rejected')}
+                        onClick={() => handleUpdateStatus(app, 'rejected')}
                         title="Reject"
                       >
                         <X size={16} />

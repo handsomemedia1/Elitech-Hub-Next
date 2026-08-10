@@ -4,6 +4,8 @@ import React, { useEffect } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
+import Image from '@tiptap/extension-image';
+import { supabase } from '@/lib/supabase';
 import styles from './RichTextEditor.module.css';
 
 interface RichTextEditorProps {
@@ -30,6 +32,40 @@ const MenuBar = ({ editor }: { editor: any }) => {
     }
 
     editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+  };
+
+  const addImage = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (event) => {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      if (file) {
+        // Upload to Supabase
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+        const filePath = `blog-images/${fileName}`;
+
+        try {
+          const { error: uploadError } = await supabase.storage
+            .from('public-images')
+            .upload(filePath, file);
+
+          if (uploadError) {
+            console.error('Error uploading image:', uploadError);
+            alert('Failed to upload image. Please try again.');
+            return;
+          }
+
+          const { data } = supabase.storage.from('public-images').getPublicUrl(filePath);
+          editor.chain().focus().setImage({ src: data.publicUrl }).run();
+        } catch (error) {
+          console.error(error);
+          alert('An error occurred during upload.');
+        }
+      }
+    };
+    input.click();
   };
 
   return (
@@ -114,6 +150,14 @@ const MenuBar = ({ editor }: { editor: any }) => {
       >
         <i className="fas fa-minus"></i>
       </button>
+      <button
+        type="button"
+        onClick={addImage}
+        className={styles.toolBtn}
+        title="Add Image"
+      >
+        <i className="fas fa-image"></i>
+      </button>
     </div>
   );
 };
@@ -122,6 +166,10 @@ export default function RichTextEditor({ value, onChange }: RichTextEditorProps)
   const editor = useEditor({
     extensions: [
       StarterKit,
+      Image.configure({
+        inline: true,
+        allowBase64: true,
+      }),
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
