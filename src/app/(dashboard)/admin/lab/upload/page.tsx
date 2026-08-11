@@ -128,20 +128,27 @@ export default function AdvancedUploadPortal() {
       const cleanAuthors = authors.filter(a => a.name.trim() !== '');
       const keywordArray = formData.keywords.split(',').map(k => k.trim()).filter(k => k);
 
-      // We simulate file upload to Supabase Storage by saving a pending URL for now,
-      // as the bucket might not exist yet
-      const file_url = `storage/research/${slug}.pdf`;
+      // Upload file to Supabase Storage
+      const fileExt = file.name.split('.').pop();
+      const filePath = `research/${slug}.${fileExt}`;
+      const { error: uploadError } = await supabase.storage.from('public-images').upload(filePath, file);
+      
+      if (uploadError) {
+        throw new Error(`File upload failed: ${uploadError.message}`);
+      }
+      
+      const { data: urlData } = supabase.storage.from('public-images').getPublicUrl(filePath);
+      const file_url = urlData.publicUrl;
 
       // Insert into database
       const newPaper = {
         title: formData.title,
         slug,
-        type: 'pdf',
+        type: fileExt || 'pdf',
         category: formData.category,
         file_url,
         published: true,
-        // Advanced metadata fields (we insert them, they will save if schema is upgraded or be ignored/throw error depending on setup. Supabase usually throws if column missing)
-        // We will try/catch the exact insert, and if it fails due to schema, we fallback
+        // Advanced metadata fields
       };
 
       const { data, error } = await supabase.from('research').insert([newPaper]).select();

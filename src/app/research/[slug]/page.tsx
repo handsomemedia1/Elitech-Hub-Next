@@ -16,10 +16,12 @@ export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
+  const { slug } = await params;
+  
   const { data: paper } = await supabase
     .from('research')
     .select('*')
-    .eq('slug', params.slug)
+    .eq('slug', slug)
     .single();
 
   if (!paper) {
@@ -54,10 +56,12 @@ export async function generateMetadata(
 }
 
 export default async function ResearchPaperPage({ params }: Props) {
+  const { slug } = await params;
+
   const { data: paper } = await supabase
     .from('research')
     .select('*')
-    .eq('slug', params.slug)
+    .eq('slug', slug)
     .single();
 
   if (!paper) {
