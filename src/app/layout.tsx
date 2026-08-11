@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_NAME}`,
   },
   description:
-    "Elitech Hub is a Nigeria-based AI, Cybersecurity, Research and Digital Innovation company helping businesses, professionals and organizations build secure, intelligent and future-ready digital solutions worldwide.",
+    "We train individuals to become highly skilled cybersecurity professionals, and we partner with businesses to build secure, AI-driven, and future-ready digital solutions worldwide.",
   keywords: [
     'cybersecurity training Nigeria',
     'ethical hacking course Lagos',
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     title: `${SITE_NAME} | Nigeria's Leading AI, Cybersecurity, Research & Digital Innovation Hub`,
     description:
-      "Elitech Hub is a Nigeria-based AI, Cybersecurity, Research and Digital Innovation company helping businesses, professionals and organizations build secure, intelligent and future-ready digital solutions worldwide.",
+      "We train individuals to become highly skilled cybersecurity professionals, and we partner with businesses to build secure, AI-driven, and future-ready digital solutions worldwide.",
     images: [
       {
         url: DEFAULT_OG_IMAGE,
