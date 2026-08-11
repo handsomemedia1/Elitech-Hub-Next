@@ -24,6 +24,16 @@ export default function AdminLab() {
     return () => clearTimeout(timer);
   }, []);
 
+  const handleDelete = async (id: string, title: string) => {
+    if (!window.confirm(`Are you sure you want to delete "${title}"?`)) return;
+    
+    // Optimistic UI update
+    setPapers(papers.filter(p => p.id !== id));
+    
+    // Try to delete from supabase
+    await supabase.from('research').delete().eq('id', id);
+  };
+
   // Advanced upload moved to dedicated page
 
   return (
@@ -85,9 +95,9 @@ export default function AdminLab() {
                 </td>
                 <td>
                   <div className={styles.actionBtns}>
-                    <button className={styles.iconBtn} title="View"><ExternalLink size={16} /></button>
-                    <button className={styles.iconBtn} title="Edit"><Edit2 size={16} /></button>
-                    <button className={styles.iconBtn} title="Delete"><Trash2 size={16} /></button>
+                    <Link href={`/research/${paper.slug}`} target="_blank" className={styles.iconBtn} title="View"><ExternalLink size={16} /></Link>
+                    <button className={styles.iconBtn} title="Edit" onClick={() => alert("Edit functionality coming soon. For now, please delete and re-upload.")}><Edit2 size={16} /></button>
+                    <button className={styles.iconBtn} title="Delete" onClick={() => handleDelete(paper.id, paper.title)}><Trash2 size={16} /></button>
                   </div>
                 </td>
               </tr>
