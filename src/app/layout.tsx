@@ -99,8 +99,13 @@ export const metadata: Metadata = {
   // --- APP LINKS & MANIFEST ---
   manifest: '/manifest.json',
   icons: {
-    icon: '/assets/images/logo.png',
-    apple: '/assets/images/logo.png',
+    icon: [
+      { url: '/images/logo.png', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+    shortcut: '/images/logo.png',
   },
 };
 
