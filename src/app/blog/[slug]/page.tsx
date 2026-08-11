@@ -161,7 +161,9 @@ export default async function BlogPostPage({
             <div className={styles.authorAvatar}>{getAuthorInitials(post.author)}</div>
             <div>
               <div className={styles.authorName}>{post.author}</div>
-              <div className={styles.authorRole}>Elitech Hub Writer</div>
+              <div className={styles.authorRole}>
+                {post.author?.toLowerCase().includes('elijah') ? 'Founder & Lead Instructor' : 'Elitech Hub Writer'}
+              </div>
             </div>
           </div>
         </div>

@@ -27,7 +27,9 @@ export default function WriterLogin() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Login failed');
 
-      localStorage.setItem('elitech_user_role', 'writer');
+      // Store session info for role-based UI and API auth
+      localStorage.setItem('elitech_token', data.token);
+      localStorage.setItem('elitech_user_role', data.user?.role || 'writer');
       localStorage.setItem('elitech_user_name', data.user?.name || 'Writer');
       localStorage.setItem('elitech_user_email', data.user?.email || email);
       

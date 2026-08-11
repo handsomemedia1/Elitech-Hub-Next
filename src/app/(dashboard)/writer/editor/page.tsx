@@ -50,24 +50,34 @@ export default function WriterEditor() {
 
   // Load draft if ID is in URL, and check role
   useEffect(() => {
-    // Attempt to fetch actual user profile from API in case localStorage is missing
-    fetch('/api/auth/me').then(res => res.json()).then(data => {
-      if (data.user) {
-        setIsAdmin(data.user.role === 'admin');
-        if (data.user.name) setAuthorName(data.user.name);
-      } else {
-        // Fallback to localStorage
-        const role = localStorage.getItem('elitech_user_role');
-        setIsAdmin(role === 'admin');
-        const name = localStorage.getItem('elitech_user_name');
-        if (name) setAuthorName(name);
-      }
-    }).catch(() => {
-      const role = localStorage.getItem('elitech_user_role');
-      setIsAdmin(role === 'admin');
-      const name = localStorage.getItem('elitech_user_name');
-      if (name) setAuthorName(name);
-    });
+    // Use stored name/role from localStorage as immediate source (set at login time)
+    const storedName = localStorage.getItem('elitech_user_name');
+    const storedRole = localStorage.getItem('elitech_user_role');
+    const storedToken = localStorage.getItem('elitech_token');
+
+    if (storedName && storedName !== 'Writer' && storedName !== 'Admin') {
+      setAuthorName(storedName);
+    }
+    if (storedRole) {
+      setIsAdmin(storedRole === 'admin');
+    }
+
+    // Also verify from API if token is available
+    if (storedToken) {
+      fetch('/api/auth/me', {
+        headers: { Authorization: `Bearer ${storedToken}` }
+      }).then(res => res.json()).then(data => {
+        if (data.user) {
+          setIsAdmin(data.user.role === 'admin');
+          if (data.user.name) {
+            setAuthorName(data.user.name);
+            // Keep localStorage in sync
+            localStorage.setItem('elitech_user_name', data.user.name);
+            localStorage.setItem('elitech_user_role', data.user.role);
+          }
+        }
+      }).catch(() => {/* silent fail, already using localStorage values */});
+    }
 
     const searchParams = new URLSearchParams(window.location.search);
     const id = searchParams.get('id');

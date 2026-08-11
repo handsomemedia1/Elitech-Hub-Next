@@ -27,7 +27,8 @@ export default function AdminLogin() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Login failed');
 
-      localStorage.setItem('elitech_user_role', 'admin');
+      localStorage.setItem('elitech_token', data.token);
+      localStorage.setItem('elitech_user_role', data.user?.role || 'admin');
       localStorage.setItem('elitech_user_name', data.user?.name || 'Admin');
       localStorage.setItem('elitech_user_email', data.user?.email || email);
       
