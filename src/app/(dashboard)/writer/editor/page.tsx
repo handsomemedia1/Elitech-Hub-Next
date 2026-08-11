@@ -181,7 +181,51 @@ export default function WriterEditor() {
     setCategories(categories.map(c => c.id === id ? { ...c, checked: !c.checked } : c));
   };
 
-  return (
+  const [saving, setSaving] = useState(false);
+  const [postId, setPostId] = useState<string | null>(null);
+  const [saveMsg, setSaveMsg] = useState('');
+
+  const generateSlug = (t: string) =>
+    t.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+  const savePost = async (status: 'draft' | 'pending') => {
+    if (!title.trim()) { alert('Please add a title before saving.'); return; }
+    setSaving(true);
+    setSaveMsg('');
+    const selectedCategories = categories.filter(c => c.checked).map(c => c.name);
+    const slug = generateSlug(title);
+    const payload = {
+      title,
+      slug,
+      content,
+      excerpt: description,
+      thumbnail: featuredImage || null,
+      tags,
+      category: selectedCategories[0] || 'Uncategorized',
+      status,
+      published_at: status === 'pending' ? new Date().toISOString() : null,
+      word_count: wordCount,
+    };
+    try {
+      if (postId) {
+        // Update existing post
+        const { error } = await supabase.from('blog_posts').update(payload).eq('id', postId);
+        if (error) throw error;
+      } else {
+        // Insert new post
+        const { data, error } = await supabase.from('blog_posts').insert([payload]).select('id').single();
+        if (error) throw error;
+        if (data) setPostId(data.id);
+      }
+      setSaveMsg(status === 'draft' ? '✓ Draft saved!' : '✓ Submitted for review!');
+      setTimeout(() => setSaveMsg(''), 3000);
+    } catch (err: any) {
+      alert('Save failed: ' + (err.message || 'Unknown error'));
+    } finally {
+      setSaving(false);
+    }
+  };
+
     <div className={styles.editorContainer}>
       <header className={styles.header}>
         <div className={styles.headerLeft}>
@@ -194,10 +238,11 @@ export default function WriterEditor() {
           </div>
         </div>
         <div className={styles.headerRight}>
-          <button className={styles.draftBtn}>
-            <Save size={18} /> Save Draft
+          {saveMsg && <span style={{ color: '#10B981', fontSize: '0.875rem', fontWeight: 500 }}>{saveMsg}</span>}
+          <button className={styles.draftBtn} onClick={() => savePost('draft')} disabled={saving}>
+            <Save size={18} /> {saving ? 'Saving...' : 'Save Draft'}
           </button>
-          <button className={styles.publishBtn}>
+          <button className={styles.publishBtn} onClick={() => savePost('pending')} disabled={saving}>
             <Send size={18} /> Submit for Review
           </button>
         </div>
