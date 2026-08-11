@@ -5,6 +5,7 @@ import type { Metadata, ResolvingMetadata } from 'next';
 import PageLayout from '@/components/PageLayout';
 import { FileText, Download, Clock, ArrowLeft, Quote, User, BookOpen, Tag, Globe, Eye, Share2, Building2, Calendar, Award } from 'lucide-react';
 import Link from 'next/link';
+import styles from './paper.module.css';
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -188,7 +189,7 @@ export default async function ResearchPaperPage({ params }: Props) {
           pointerEvents: 'none',
         }} />
 
-        <div style={{ maxWidth: '960px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+        <div className={styles.heroInner}>
           {/* Back link */}
           <Link href="/research" style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
@@ -293,7 +294,7 @@ export default async function ResearchPaperPage({ params }: Props) {
 
       {/* ── BODY ─────────────────────────────────────────────────────────────── */}
       <div style={{ background: '#f8fafc', color: '#334155' }}>
-        <div style={{ maxWidth: '960px', margin: '0 auto', padding: '4rem 2rem', display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 320px', gap: '3rem', alignItems: 'start' }}>
+        <div className={styles.bodyGrid}>
 
           {/* ── MAIN CONTENT ── */}
           <main>
@@ -541,7 +542,7 @@ export default async function ResearchPaperPage({ params }: Props) {
         {/* ── RELATED PUBLICATIONS ── */}
         {relatedPapers && relatedPapers.length > 0 && (
           <div style={{ background: '#f1f5f9', padding: '4rem 2rem', borderTop: '1px solid #e2e8f0' }}>
-            <div style={{ maxWidth: '960px', margin: '0 auto' }}>
+            <div className={styles.relatedInner}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
                 <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>More from Elitech Research</h2>
                 <Link href="/research" style={{ color: '#3b82f6', fontWeight: 600, textDecoration: 'none', fontSize: '0.9rem' }}>
