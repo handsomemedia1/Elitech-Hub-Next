@@ -226,6 +226,7 @@ export default function WriterEditor() {
     }
   };
 
+  return (
     <div className={styles.editorContainer}>
       <header className={styles.header}>
         <div className={styles.headerLeft}>
