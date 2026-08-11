@@ -6,6 +6,7 @@ import PageLayout from '@/components/PageLayout';
 import { FileText, Download, Clock, ArrowLeft, Quote, User, BookOpen, Tag, Globe, Eye, Share2, Building2, Calendar, Award } from 'lucide-react';
 import Link from 'next/link';
 import styles from './paper.module.css';
+import CiteModal from '@/components/CiteModal';
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -470,17 +471,14 @@ export default async function ResearchPaperPage({ params }: Props) {
                 )}
 
                 {/* Cite button */}
-                <button
-                  id="cite-btn"
-                  onClick={undefined}
-                  style={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem',
-                    background: '#f8fafc', border: '1px solid #e2e8f0', color: '#334155',
-                    padding: '0.9rem', borderRadius: '10px', fontWeight: 600,
-                    width: '100%', cursor: 'pointer', fontSize: '0.95rem',
-                  }}>
-                  <Quote size={18} /> Cite this Paper
-                </button>
+                <CiteModal
+                  title={paper.title}
+                  authors={authorsString}
+                  year={new Date(paper.created_at).getFullYear().toString()}
+                  doi={paper.doi}
+                  publisher="Elitech Hub"
+                  url={`https://elitechub.com/research/${slug}`}
+                />
               </div>
 
               {/* Share card */}
