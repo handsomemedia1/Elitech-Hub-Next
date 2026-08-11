@@ -148,7 +148,12 @@ export default function AdvancedUploadPortal() {
         category: formData.category,
         file_url,
         published: true,
-        // Advanced metadata fields
+        abstract: formData.abstract,
+        authors: cleanAuthors,
+        keywords: keywordArray,
+        doi: formData.doi || null,
+        seo_title: formData.seo_title || null,
+        seo_description: formData.seo_description || null,
       };
 
       const { data, error } = await supabase.from('research').insert([newPaper]).select();

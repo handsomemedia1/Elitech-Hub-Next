@@ -64,6 +64,17 @@ export default async function ResearchPaperPage({ params }: Props) {
     .eq('slug', slug)
     .single();
 
+  // Fetch related publications
+  let relatedPapers: any[] = [];
+  if (paper) {
+    let query = supabase.from('research').select('title, slug, category, created_at, abstract, authors').neq('id', paper.id).eq('published', true).order('created_at', { ascending: false }).limit(3);
+    
+    const { data: relatedData } = await query;
+    if (relatedData) {
+      relatedPapers = relatedData;
+    }
+  }
+
   if (!paper) {
     notFound();
   }
@@ -188,6 +199,30 @@ export default async function ResearchPaperPage({ params }: Props) {
           </aside>
 
         </div>
+
+        {/* Related Publications Section */}
+        {relatedPapers && relatedPapers.length > 0 && (
+          <div style={{ maxWidth: '900px', margin: '4rem auto 0', borderTop: '1px solid #e2e8f0', paddingTop: '3rem' }}>
+            <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem', color: '#0f172a' }}>More from our Researchers</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+              {relatedPapers.map(rp => (
+                <Link key={rp.slug} href={`/research/${rp.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.5rem', transition: 'box-shadow 0.2s', height: '100%', display: 'flex', flexDirection: 'column' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#3b82f6', marginBottom: '0.5rem', display: 'block' }}>{rp.category}</span>
+                    <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem', lineHeight: 1.4 }}>{rp.title}</h3>
+                    <p style={{ fontSize: '0.875rem', color: '#64748b', marginBottom: '1rem', flex: 1, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      {rp.abstract || 'Read full publication...'}
+                    </p>
+                    <div style={{ fontSize: '0.8rem', color: '#94a3b8', display: 'flex', justifyContent: 'space-between' }}>
+                      <span>{new Date(rp.created_at).getFullYear()}</span>
+                      <span style={{ color: '#3b82f6', fontWeight: 600 }}>Read →</span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </PageLayout>
   );

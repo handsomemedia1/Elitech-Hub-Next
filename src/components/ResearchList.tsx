@@ -78,40 +78,52 @@ export default function ResearchList() {
           </div>
         ) : (
           filteredPapers.map(paper => (
-            <article key={paper.id} className={styles.researchCard}>
-              <div className={styles.cardImage} style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)' }}>
-                <span className={styles.cardIcon}>📄</span>
-              </div>
-              <div className={styles.cardContent}>
-                <div className={styles.cardTags}>
-                  <span className={styles.tag} style={{ background: '#D1FAE5', color: '#008751' }}>Published</span>
-                  <span className={styles.tag} style={{ background: '#DBEAFE', color: '#0ea5e9' }}>{paper.category}</span>
+            <article key={paper.id} className={styles.researchCard} style={{ display: 'flex', flexDirection: 'column', background: '#1e293b', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', overflow: 'hidden', transition: 'transform 0.2s, box-shadow 0.2s' }}>
+              <div style={{ padding: '2rem' }}>
+                <div className={styles.cardTags} style={{ marginBottom: '1.5rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <span style={{ padding: '0.25rem 0.75rem', borderRadius: '2rem', fontSize: '0.75rem', fontWeight: 600, background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.2)' }}>Published</span>
+                  <span style={{ padding: '0.25rem 0.75rem', borderRadius: '2rem', fontSize: '0.75rem', fontWeight: 600, background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.2)' }}>{paper.category}</span>
+                  {paper.type === 'pdf' && (
+                    <span style={{ padding: '0.25rem 0.75rem', borderRadius: '2rem', fontSize: '0.75rem', fontWeight: 600, background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', gap: '4px' }}><Download size={10} /> PDF</span>
+                  )}
                 </div>
-                <h3 className={styles.cardTitle}>{paper.title}</h3>
                 
-                <p style={{ fontSize: '0.875rem', color: '#94a3b8', marginBottom: '0.5rem' }}>
-                  {paper.authors && Array.isArray(paper.authors) && paper.authors.length > 0 
-                    ? paper.authors.map((a: any) => a.name).join(', ')
-                    : paper.author || 'Elitech Research Labs'}
-                </p>
-
-                <p className={styles.cardDesc} style={{ flex: 1 }}>
-                  {paper.abstract ? (paper.abstract.length > 150 ? paper.abstract.substring(0, 150) + '...' : paper.abstract) : 'No abstract available.'}
-                </p>
-
-                <div className={styles.cardFooter} style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1rem', marginTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ display: 'flex', gap: '1rem', fontSize: '0.8rem', color: '#64748b' }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Clock size={12} /> {new Date(paper.created_at).getFullYear()}
-                    </span>
-                    {paper.citations_count !== undefined && (
-                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <FileText size={12} /> {paper.citations_count} citations
-                      </span>
-                    )}
+                <h3 className={styles.cardTitle} style={{ fontSize: '1.25rem', fontWeight: 700, color: 'white', marginBottom: '1rem', lineHeight: 1.4 }}>
+                  <Link href={`/research/${paper.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                    {paper.title}
+                  </Link>
+                </h3>
+                
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '0.75rem', fontWeight: 'bold' }}>
+                    EH
                   </div>
-                  <Link href={`/research/${paper.slug}`} className={styles.cardLink}>Read Paper →</Link>
+                  <p style={{ fontSize: '0.875rem', color: '#94a3b8', margin: 0, fontWeight: 500 }}>
+                    {paper.authors && Array.isArray(paper.authors) && paper.authors.length > 0 
+                      ? paper.authors.map((a: any) => a.name).join(', ')
+                      : paper.author || 'Elitech Research Labs'}
+                  </p>
                 </div>
+
+                <p className={styles.cardDesc} style={{ fontSize: '0.95rem', color: '#cbd5e1', lineHeight: 1.6, flex: 1, marginBottom: 0, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                  {paper.abstract || 'The full abstract is available within the research paper document. Click through to read the comprehensive analysis, methodology, and findings.'}
+                </p>
+              </div>
+
+              <div style={{ marginTop: 'auto', background: 'rgba(0,0,0,0.2)', padding: '1.25rem 2rem', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.85rem', color: '#64748b' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Clock size={14} /> {new Date(paper.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                  </span>
+                  {paper.citations_count !== undefined && (
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <FileText size={14} /> {paper.citations_count} Citations
+                    </span>
+                  )}
+                </div>
+                <Link href={`/research/${paper.slug}`} style={{ color: '#3b82f6', fontSize: '0.875rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', textDecoration: 'none' }}>
+                  Read Paper <span style={{ transition: 'transform 0.2s' }}>→</span>
+                </Link>
               </div>
             </article>
           ))
