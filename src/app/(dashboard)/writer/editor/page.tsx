@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { 
   Save, 
@@ -11,12 +11,15 @@ import {
   X,
   Plus,
   AlertCircle,
+  Upload,
   Bold, Italic, Strikethrough, Heading1, Heading2, Heading3, List, ListOrdered, Quote, Undo, Redo
 } from 'lucide-react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import TiptapImage from '@tiptap/extension-image';
 import styles from './editor.module.css';
 import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
 
 // Quill is removed for React 19 compatibility
 // We will use native HTML components or Tiptap if requested
@@ -37,14 +40,57 @@ export default function WriterEditor() {
   ]);
   const [newCatInput, setNewCatInput] = useState('');
 
+  // Refs for hidden file inputs
+  const inlineImageInputRef = useRef<HTMLInputElement>(null);
+  const featuredImageInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingInline, setUploadingInline] = useState(false);
+  const [uploadingFeatured, setUploadingFeatured] = useState(false);
+
   // Tiptap Editor Setup
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [StarterKit, TiptapImage],
     content: content,
     onUpdate: ({ editor }) => {
       setContent(editor.getHTML());
     },
   });
+
+  // Upload image to Supabase and insert into editor
+  const handleInlineImageUpload = async (file: File) => {
+    if (!editor) return;
+    setUploadingInline(true);
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+    const filePath = `blog-images/${fileName}`;
+    try {
+      const { error } = await supabase.storage.from('public-images').upload(filePath, file);
+      if (error) { alert('Upload failed: ' + error.message); return; }
+      const { data } = supabase.storage.from('public-images').getPublicUrl(filePath);
+      editor.chain().focus().setImage({ src: data.publicUrl }).run();
+    } catch (e) {
+      alert('Error uploading image');
+    } finally {
+      setUploadingInline(false);
+    }
+  };
+
+  // Upload featured image to Supabase
+  const handleFeaturedImageUpload = async (file: File) => {
+    setUploadingFeatured(true);
+    const fileExt = file.name.split('.').pop();
+    const fileName = `featured-${Date.now()}.${fileExt}`;
+    const filePath = `blog-images/${fileName}`;
+    try {
+      const { error } = await supabase.storage.from('public-images').upload(filePath, file);
+      if (error) { alert('Upload failed: ' + error.message); return; }
+      const { data } = supabase.storage.from('public-images').getPublicUrl(filePath);
+      setFeaturedImage(data.publicUrl);
+    } catch (e) {
+      alert('Error uploading image');
+    } finally {
+      setUploadingFeatured(false);
+    }
+  };
 
   // Editor modes configured above
 
@@ -208,6 +254,26 @@ export default function WriterEditor() {
                     
                     <button onClick={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()} className={styles.toolbarBtn} title="Undo"><Undo size={16} /></button>
                     <button onClick={() => editor.chain().focus().redo().run()} disabled={!editor.can().redo()} className={styles.toolbarBtn} title="Redo"><Redo size={16} /></button>
+
+                    <div style={{ width: '1px', background: '#1e293b', margin: '0 4px' }}></div>
+
+                    {/* Inline Image Upload */}
+                    <input
+                      ref={inlineImageInputRef}
+                      type="file"
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      onChange={e => { const f = e.target.files?.[0]; if (f) handleInlineImageUpload(f); e.target.value = ''; }}
+                    />
+                    <button
+                      onClick={() => inlineImageInputRef.current?.click()}
+                      className={styles.toolbarBtn}
+                      title="Insert Image"
+                      disabled={uploadingInline}
+                      style={{ gap: '4px', display: 'flex', alignItems: 'center' }}
+                    >
+                      {uploadingInline ? <span style={{ fontSize: '0.7rem' }}>...</span> : <ImageIcon size={16} />}
+                    </button>
                   </div>
                 )}
                 <div className={styles.tiptapEditor}>
@@ -329,13 +395,36 @@ export default function WriterEditor() {
             </div>
 
             <div className={styles.fieldGroup}>
-              <label>Featured Image URL</label>
+              <label>Featured Image</label>
+              {/* Hidden file input */}
+              <input
+                ref={featuredImageInputRef}
+                type="file"
+                accept="image/*"
+                style={{ display: 'none' }}
+                onChange={e => { const f = e.target.files?.[0]; if (f) handleFeaturedImageUpload(f); e.target.value = ''; }}
+              />
+              <button
+                type="button"
+                onClick={() => featuredImageInputRef.current?.click()}
+                disabled={uploadingFeatured}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '8px',
+                  width: '100%', padding: '10px 12px', marginBottom: '8px',
+                  background: '#1e293b', border: '1px dashed #334155',
+                  color: uploadingFeatured ? '#64748b' : '#cbd5e1',
+                  borderRadius: '8px', cursor: 'pointer', fontSize: '0.875rem'
+                }}
+              >
+                <Upload size={16} />
+                {uploadingFeatured ? 'Uploading...' : 'Upload Image from Device'}
+              </button>
               <div className={styles.imageInputWrapper}>
                 <ImageIcon size={16} className={styles.inputIcon} />
                 <input 
                   type="text" 
                   className={styles.inputWithIcon} 
-                  placeholder="https://..." 
+                  placeholder="Or paste URL here..." 
                   value={featuredImage}
                   onChange={(e) => setFeaturedImage(e.target.value)}
                 />
