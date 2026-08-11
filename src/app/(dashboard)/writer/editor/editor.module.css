@@ -208,11 +208,33 @@
 }
 
 .imagePreview {
+  position: relative;
   margin-top: 0.5rem;
   border-radius: 0.5rem;
   overflow: hidden;
   border: 1px solid #1e293b;
   height: 150px;
+}
+
+.removeImageBtn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.removeImageBtn:hover {
+  background: rgba(255, 42, 85, 0.9);
 }
 
 .imagePreview img {

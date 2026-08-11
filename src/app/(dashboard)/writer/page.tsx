@@ -13,17 +13,25 @@ export default function WriterOverview() {
 
   useEffect(() => {
     async function fetchDashboardData() {
-      // In a real app, we'd fetch based on the logged-in writer's ID.
-      // For this UI scaffolding, we'll fetch general blog stats.
-      const { data: posts, error } = await supabase
+      const authorName = localStorage.getItem('elitech_user_name') || 'Writer';
+
+      let query = supabase
         .from('blog_posts')
         .select('*')
         .order('created_at', { ascending: false });
 
+      // Only filter if not an admin
+      const role = localStorage.getItem('elitech_user_role');
+      if (role !== 'admin') {
+        query = query.eq('author', authorName);
+      }
+
+      const { data: posts, error } = await query;
+
       if (posts) {
-        const published = posts.filter(p => p.published).length;
-        // Mock views for now since the DB might not track per-post views yet
-        const views = published * 1250; 
+        const published = posts.filter(p => p.status === 'published').length;
+        // Sum up real views
+        const views = posts.reduce((sum, post) => sum + (post.views || 0), 0); 
 
         setStats({
           totalPosts: posts.length,
@@ -116,8 +124,8 @@ export default function WriterOverview() {
                   <tr key={post.id}>
                     <td className={styles.titleCell}>{post.title}</td>
                     <td>
-                      <span className={`${styles.badge} ${post.published ? styles.badgeSuccess : styles.badgeWarning}`}>
-                        {post.published ? 'Published' : 'Draft'}
+                      <span className={`${styles.badge} ${post.status === 'published' ? styles.badgeSuccess : post.status === 'pending' ? styles.badgeWarning : styles.badgeDraft}`}>
+                        {post.status === 'published' ? 'Published' : post.status === 'pending' ? 'Pending' : 'Draft'}
                       </span>
                     </td>
                     <td className={styles.dateCell}>

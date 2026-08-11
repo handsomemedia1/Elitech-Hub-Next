@@ -17,6 +17,7 @@ const ADMIN_LINKS = [
   { href: '/admin/applications', label: 'CRM & Leads', icon: MessageSquare },
   { href: '/admin/certificates', label: 'Certificates', icon: Award },
   { href: '/admin/writers', label: 'Writers Panel', icon: PenTool },
+  { href: '/admin/posts', label: 'Blog Posts', icon: FileText },
   { href: '/writer', label: 'Writer Portal', icon: LayoutDashboard },
   { href: '/writer/editor', label: 'Write Blog', icon: FileText },
   { href: '/admin/lab', label: 'Research Lab', icon: FlaskConical },

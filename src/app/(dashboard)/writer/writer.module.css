@@ -166,6 +166,11 @@
   color: #854d0e;
 }
 
+.badgeDraft {
+  background-color: #e2e8f0;
+  color: #475569;
+}
+
 .editLink {
   color: #ff2a55;
   text-decoration: none;

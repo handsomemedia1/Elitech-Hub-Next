@@ -45,6 +45,37 @@ export default function WriterEditor() {
   const featuredImageInputRef = useRef<HTMLInputElement>(null);
   const [uploadingInline, setUploadingInline] = useState(false);
   const [uploadingFeatured, setUploadingFeatured] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [authorName, setAuthorName] = useState('Writer');
+
+  // Load draft if ID is in URL, and check role
+  useEffect(() => {
+    const role = localStorage.getItem('elitech_user_role');
+    setIsAdmin(role === 'admin');
+    const name = localStorage.getItem('elitech_user_name');
+    if (name) setAuthorName(name);
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const id = searchParams.get('id');
+    if (id) {
+      setPostId(id);
+      supabase.from('blog_posts').select('*').eq('id', id).single().then(({ data, error }) => {
+        if (data && !error) {
+          setTitle(data.title || '');
+          setContent(data.content || '');
+          setDescription(data.excerpt || '');
+          setFeaturedImage(data.thumbnail || '');
+          if (data.tags) setTags(data.tags);
+          if (data.category) {
+            setCategories(cats => cats.map(c => ({
+              ...c,
+              checked: c.name === data.category
+            })));
+          }
+        }
+      });
+    }
+  }, []);
 
   // Tiptap Editor Setup
   const editor = useEditor({
@@ -202,9 +233,10 @@ export default function WriterEditor() {
       thumbnail: featuredImage || null,
       tags,
       category: selectedCategories[0] || 'Uncategorized',
-      status,
-      published_at: status === 'pending' ? new Date().toISOString() : null,
+      status: status === 'published' ? 'published' : status,
+      published_at: status === 'published' ? new Date().toISOString() : null,
       word_count: wordCount,
+      author: authorName
     };
     try {
       if (postId) {
@@ -243,9 +275,15 @@ export default function WriterEditor() {
           <button className={styles.draftBtn} onClick={() => savePost('draft')} disabled={saving}>
             <Save size={18} /> {saving ? 'Saving...' : 'Save Draft'}
           </button>
-          <button className={styles.publishBtn} onClick={() => savePost('pending')} disabled={saving}>
-            <Send size={18} /> Submit for Review
-          </button>
+          {isAdmin ? (
+            <button className={styles.publishBtn} onClick={() => savePost('published')} disabled={saving}>
+              <Send size={18} /> Publish Immediately
+            </button>
+          ) : (
+            <button className={styles.publishBtn} onClick={() => savePost('pending')} disabled={saving}>
+              <Send size={18} /> Submit for Review
+            </button>
+          )}
         </div>
       </header>
 
@@ -477,6 +515,9 @@ export default function WriterEditor() {
               </div>
               {featuredImage && (
                 <div className={styles.imagePreview}>
+                  <button type="button" onClick={() => setFeaturedImage('')} className={styles.removeImageBtn} title="Remove image">
+                    <X size={14} />
+                  </button>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={featuredImage} alt="Featured" onError={(e) => (e.currentTarget.style.display = 'none')} />
                 </div>

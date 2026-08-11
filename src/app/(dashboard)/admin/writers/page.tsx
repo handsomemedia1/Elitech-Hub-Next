@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { PenTool, Search, Edit2, Trash2, TrendingUp } from 'lucide-react';
+import { PenTool, Search, Edit2, Trash2, TrendingUp, Check, X } from 'lucide-react';
 import styles from '../users/users.module.css';
 
 export default function AdminWriters() {
@@ -52,6 +52,17 @@ export default function AdminWriters() {
     // Try to delete from supabase if it has a real UUID
     if (id && id !== name) {
       await supabase.from('writers').delete().eq('id', id);
+    }
+  };
+
+  const handleToggleBan = async (id: string, name: string, currentlyBanned: boolean) => {
+    const action = currentlyBanned ? 'unban' : 'ban';
+    if (!window.confirm(`Are you sure you want to ${action} writer: ${name}?`)) return;
+
+    setWriters(writers.map(w => w.id === id ? { ...w, banned: !currentlyBanned } : w));
+
+    if (id && id !== name) {
+      await supabase.from('writers').update({ banned: !currentlyBanned }).eq('id', id);
     }
   };
 
@@ -116,7 +127,9 @@ export default function AdminWriters() {
                 </td>
                 <td>
                   <div className={styles.actionBtns}>
-                    <button className={styles.iconBtn} title="Edit" onClick={() => alert('Edit writer functionality coming soon')}><Edit2 size={16} /></button>
+                    <button className={styles.iconBtn} title={writer.banned ? "Unban Writer" : "Ban Writer"} onClick={() => handleToggleBan(writer.id, writer.name, writer.banned)}>
+                      {writer.banned ? <Check size={16} style={{color: '#10b981'}} /> : <X size={16} style={{color: '#ef4444'}} />}
+                    </button>
                     <button className={styles.iconBtn} title="Delete" onClick={() => handleDeleteWriter(writer.id, writer.name)}><Trash2 size={16} /></button>
                   </div>
                 </td>

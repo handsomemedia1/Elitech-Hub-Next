@@ -27,6 +27,10 @@ export default function WriterLogin() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Login failed');
 
+      localStorage.setItem('elitech_user_role', 'writer');
+      localStorage.setItem('elitech_user_name', data.user?.name || 'Writer');
+      localStorage.setItem('elitech_user_email', data.user?.email || email);
+      
       router.push('/writer');
     } catch (err: any) {
       setError(err.message);
