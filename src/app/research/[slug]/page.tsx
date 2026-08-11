@@ -3,21 +3,21 @@ import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import type { Metadata, ResolvingMetadata } from 'next';
 import PageLayout from '@/components/PageLayout';
-import layoutStyles from '@/components/PageLayout.module.css';
-import styles from '../research.module.css';
-import { FileText, Download, Clock, ArrowLeft, Quote } from 'lucide-react';
+import { FileText, Download, Clock, ArrowLeft, Quote, User, BookOpen, Tag, Globe, Eye, Share2, Building2, Calendar, Award } from 'lucide-react';
 import Link from 'next/link';
 
 type Props = {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 };
 
+// ─── DYNAMIC SSR METADATA ────────────────────────────────────────────────────
+// This runs server-side: Google crawls fully-rendered HTML, not JS.
 export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const { slug } = await params;
-  
+
   const { data: paper } = await supabase
     .from('research')
     .select('*')
@@ -25,36 +25,72 @@ export async function generateMetadata(
     .single();
 
   if (!paper) {
-    return {
-      title: 'Paper Not Found',
-    };
+    return { title: 'Paper Not Found | Elitech Hub Research' };
   }
 
-  const authorsString = paper.authors && Array.isArray(paper.authors) && paper.authors.length > 0 
-    ? paper.authors.map((a: any) => a.name).join(', ')
-    : paper.author || 'Elitech Research Labs';
+  const authorsString =
+    paper.authors && Array.isArray(paper.authors) && paper.authors.length > 0
+      ? paper.authors.map((a: any) => a.name).join(', ')
+      : paper.author || 'Elitech Research Labs';
+
+  const description =
+    paper.seo_description ||
+    (paper.abstract ? paper.abstract.substring(0, 200).trim() + '...' : `Read "${paper.title}" — a cybersecurity research paper published by Elitech Hub.`);
+
+  const title = paper.seo_title || `${paper.title} | Elitech Hub Research`;
+
+  const ogImage = paper.og_image || 'https://elitechub.com/images/og-research.jpg';
 
   return {
-    title: paper.seo_title || `${paper.title} | Elitech Hub Research`,
-    description: paper.seo_description || (paper.abstract ? paper.abstract.substring(0, 150) + '...' : ''),
+    title,
+    description,
     authors: [{ name: authorsString }],
+    keywords: paper.keywords
+      ? [...paper.keywords, 'cybersecurity research', 'Elitech Hub', 'Nigeria research']
+      : ['cybersecurity research', 'Elitech Hub', 'Nigeria'],
+    robots: { index: true, follow: true },
+    alternates: {
+      canonical: `https://elitechub.com/research/${slug}`,
+    },
     openGraph: {
       title: paper.title,
-      description: paper.abstract,
+      description,
+      url: `https://elitechub.com/research/${slug}`,
+      siteName: 'Elitech Hub',
+      locale: 'en_NG',
       type: 'article',
       publishedTime: paper.created_at,
+      authors: [authorsString],
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: paper.title,
+        },
+      ],
     },
-    // Adding Google Scholar Highwire Press tags via custom other tags
+    twitter: {
+      card: 'summary_large_image',
+      title: paper.title,
+      description,
+      images: [ogImage],
+    },
+    // Google Scholar / Highwire Press citation meta tags
     other: {
       'citation_title': paper.title,
       'citation_author': authorsString,
-      'citation_publication_date': new Date(paper.created_at).getFullYear().toString(),
-      'citation_pdf_url': paper.file_url ? `https://elitechub.com/${paper.file_url}` : '',
-      ...(paper.doi && { 'citation_doi': paper.doi })
-    }
+      'citation_publication_date': new Date(paper.created_at).toISOString().split('T')[0],
+      'citation_publisher': 'Elitech Hub',
+      'citation_language': 'en',
+      ...(paper.file_url && { 'citation_pdf_url': paper.file_url }),
+      ...(paper.doi && { 'citation_doi': paper.doi }),
+      ...(paper.abstract && { 'DC.description': paper.abstract.substring(0, 300) }),
+    },
   };
 }
 
+// ─── PAGE COMPONENT ───────────────────────────────────────────────────────────
 export default async function ResearchPaperPage({ params }: Props) {
   const { slug } = await params;
 
@@ -64,162 +100,483 @@ export default async function ResearchPaperPage({ params }: Props) {
     .eq('slug', slug)
     .single();
 
+  if (!paper) notFound();
+
   // Fetch related publications
-  let relatedPapers: any[] = [];
-  if (paper) {
-    let query = supabase.from('research').select('title, slug, category, created_at, abstract, authors').neq('id', paper.id).eq('published', true).order('created_at', { ascending: false }).limit(3);
-    
-    const { data: relatedData } = await query;
-    if (relatedData) {
-      relatedPapers = relatedData;
-    }
-  }
+  const { data: relatedPapers } = await supabase
+    .from('research')
+    .select('title, slug, category, created_at, abstract, authors, type')
+    .neq('id', paper.id)
+    .eq('published', true)
+    .order('created_at', { ascending: false })
+    .limit(3);
 
-  if (!paper) {
-    notFound();
-  }
+  const authorsString =
+    paper.authors && Array.isArray(paper.authors) && paper.authors.length > 0
+      ? paper.authors.map((a: any) => a.name).join(', ')
+      : paper.author || 'Elitech Research Labs';
 
-  // Increment views server side or we could do it client side. Let's keep it simple.
-  if (paper.id) {
-    try {
-      await supabase.rpc('increment_research_view', { row_id: paper.id });
-    } catch (e) {
-      // ignore
-    }
-  }
+  const authorsList: any[] =
+    paper.authors && Array.isArray(paper.authors) && paper.authors.length > 0
+      ? paper.authors
+      : [{ name: paper.author || 'Elitech Research Labs', institution: 'Elitech Hub' }];
 
-  const authorsString = paper.authors && Array.isArray(paper.authors) && paper.authors.length > 0 
-    ? paper.authors.map((a: any) => a.name).join(', ')
-    : paper.author || 'Elitech Research Labs';
+  const publishDate = new Date(paper.created_at);
 
+  // ─── JSON-LD SCHEMA (rendered in HTML by Next.js, fully crawlable) ──────────
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'ScholarlyArticle',
     name: paper.title,
     headline: paper.title,
     description: paper.abstract ? paper.abstract.substring(0, 300) : '',
-    datePublished: new Date(paper.created_at).toISOString().split('T')[0],
-    author: paper.authors && Array.isArray(paper.authors) && paper.authors.length > 0
-      ? paper.authors.map((a: any) => ({
-          '@type': 'Person',
-          name: a.name,
-          ...(a.institution && { affiliation: { '@type': 'Organization', name: a.institution } })
-        }))
-      : { '@type': 'Organization', name: paper.author || 'Elitech Research Labs' },
+    datePublished: publishDate.toISOString().split('T')[0],
+    dateModified: publishDate.toISOString().split('T')[0],
+    inLanguage: 'en',
+    url: `https://elitechub.com/research/${slug}`,
+    isAccessibleForFree: true,
+    author:
+      authorsList.length === 1
+        ? {
+            '@type': 'Person',
+            name: authorsList[0].name,
+            ...(authorsList[0].institution && {
+              affiliation: { '@type': 'Organization', name: authorsList[0].institution },
+            }),
+          }
+        : authorsList.map((a: any) => ({
+            '@type': 'Person',
+            name: a.name,
+            ...(a.institution && { affiliation: { '@type': 'Organization', name: a.institution } }),
+          })),
     publisher: {
       '@type': 'Organization',
       name: 'Elitech Hub',
-      logo: {
-        '@type': 'ImageObject',
-        url: 'https://elitechub.com/images/logo.png'
-      }
+      url: 'https://elitechub.com',
+      logo: { '@type': 'ImageObject', url: 'https://elitechub.com/images/logo.png' },
     },
     ...(paper.doi && { sameAs: `https://doi.org/${paper.doi}` }),
     ...(paper.keywords && paper.keywords.length > 0 && { keywords: paper.keywords.join(', ') }),
+    ...(paper.file_url && { encoding: { '@type': 'MediaObject', contentUrl: paper.file_url, encodingFormat: 'application/pdf' } }),
   };
 
   return (
     <PageLayout>
+      {/* ── FULLY SERVER-RENDERED SCHEMA MARKUP ── */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className={layoutStyles.pageHero} style={{ background: '#0f172a', padding: '6rem 2rem 4rem' }}>
-        <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'left' }}>
-          <Link href="/research" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: '#94a3b8', textDecoration: 'none', marginBottom: '2rem' }}>
-            <ArrowLeft size={16} /> Back to Repository
+
+      {/* ── HERO / HEADER ───────────────────────────────────────────────────── */}
+      <div style={{
+        background: 'linear-gradient(160deg, #0a0f1e 0%, #0f172a 50%, #111827 100%)',
+        position: 'relative',
+        overflow: 'hidden',
+        padding: '7rem 2rem 5rem',
+      }}>
+        {/* Background decorative lines */}
+        <div style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.04,
+          backgroundImage: 'repeating-linear-gradient(0deg, #fff 0, #fff 1px, transparent 1px, transparent 60px), repeating-linear-gradient(90deg, #fff 0, #fff 1px, transparent 1px, transparent 60px)',
+        }} />
+
+        {/* Glow orb */}
+        <div style={{
+          position: 'absolute', top: '20%', right: '10%', width: '400px', height: '400px',
+          background: 'radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%)',
+          pointerEvents: 'none',
+        }} />
+
+        <div style={{ maxWidth: '960px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          {/* Back link */}
+          <Link href="/research" style={{
+            display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+            color: '#64748b', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500,
+            marginBottom: '2.5rem', transition: 'color 0.2s',
+          }}>
+            <ArrowLeft size={16} /> Back to Research Repository
           </Link>
 
-          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
-            <span style={{ background: '#1e293b', color: '#3b82f6', padding: '0.25rem 0.75rem', borderRadius: '1rem', fontSize: '0.875rem', fontWeight: 600 }}>
-              {paper.category}
-            </span>
+          {/* Badges row */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '2rem' }}>
+            <span style={{
+              padding: '0.3rem 0.85rem', borderRadius: '2rem', fontSize: '0.75rem', fontWeight: 700,
+              background: 'rgba(16,185,129,0.12)', color: '#10b981',
+              border: '1px solid rgba(16,185,129,0.25)', letterSpacing: '0.05em', textTransform: 'uppercase',
+            }}>● Published</span>
+            <span style={{
+              padding: '0.3rem 0.85rem', borderRadius: '2rem', fontSize: '0.75rem', fontWeight: 700,
+              background: 'rgba(59,130,246,0.12)', color: '#60a5fa',
+              border: '1px solid rgba(59,130,246,0.25)',
+            }}>{paper.category || 'Cybersecurity'}</span>
+            <span style={{
+              padding: '0.3rem 0.85rem', borderRadius: '2rem', fontSize: '0.75rem', fontWeight: 700,
+              background: 'rgba(239,68,68,0.1)', color: '#f87171',
+              border: '1px solid rgba(239,68,68,0.2)',
+              display: 'flex', alignItems: 'center', gap: '4px',
+            }}><FileText size={11} /> {(paper.type || 'pdf').toUpperCase()}</span>
+            {paper.doi && (
+              <a href={`https://doi.org/${paper.doi}`} target="_blank" rel="noopener noreferrer" style={{
+                padding: '0.3rem 0.85rem', borderRadius: '2rem', fontSize: '0.75rem', fontWeight: 700,
+                background: 'rgba(168,85,247,0.1)', color: '#c084fc',
+                border: '1px solid rgba(168,85,247,0.2)', textDecoration: 'none',
+                display: 'flex', alignItems: 'center', gap: '4px',
+              }}><Globe size={11} /> DOI</a>
+            )}
           </div>
-          
-          <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: 'white', marginBottom: '1.5rem', lineHeight: 1.2 }}>
+
+          {/* Title */}
+          <h1 style={{
+            fontSize: 'clamp(1.75rem, 4vw, 2.75rem)', fontWeight: 800, color: 'white',
+            lineHeight: 1.2, marginBottom: '2.5rem', letterSpacing: '-0.02em',
+            maxWidth: '820px',
+          }}>
             {paper.title}
           </h1>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', color: '#94a3b8', fontSize: '0.9rem' }}>
-            <div>
-              <strong>Authors:</strong> {authorsString}
+          {/* Author chips */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '2rem' }}>
+            {authorsList.map((author: any, i: number) => (
+              <div key={i} style={{
+                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: '3rem', padding: '0.4rem 1rem',
+              }}>
+                <div style={{
+                  width: '26px', height: '26px', borderRadius: '50%', flexShrink: 0,
+                  background: `linear-gradient(135deg, hsl(${(i * 80 + 210) % 360}, 70%, 50%), hsl(${(i * 80 + 250) % 360}, 70%, 40%))`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: 'white', fontSize: '0.65rem', fontWeight: 800,
+                }}>
+                  {author.name.charAt(0)}
+                </div>
+                <div>
+                  <div style={{ color: 'white', fontSize: '0.8rem', fontWeight: 600, lineHeight: 1.2 }}>{author.name}</div>
+                  {author.institution && (
+                    <div style={{ color: '#64748b', fontSize: '0.7rem' }}>{author.institution}</div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Stats bar */}
+          <div style={{
+            display: 'flex', flexWrap: 'wrap', gap: '2rem',
+            padding: '1.25rem 0', borderTop: '1px solid rgba(255,255,255,0.06)',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#64748b', fontSize: '0.85rem' }}>
+              <Calendar size={15} style={{ color: '#3b82f6' }} />
+              <span>{publishDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#64748b', fontSize: '0.85rem' }}>
+              <Eye size={15} style={{ color: '#3b82f6' }} />
+              <span>{(paper.views || 0).toLocaleString()} views</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#64748b', fontSize: '0.85rem' }}>
+              <Award size={15} style={{ color: '#3b82f6' }} />
+              <span>{paper.citations_count || 0} citations</span>
             </div>
             {paper.doi && (
-              <div>
-                <strong>DOI:</strong> <a href={`https://doi.org/${paper.doi}`} style={{ color: '#3b82f6' }}>{paper.doi}</a>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#64748b', fontSize: '0.85rem' }}>
+                <Globe size={15} style={{ color: '#3b82f6' }} />
+                <a href={`https://doi.org/${paper.doi}`} target="_blank" rel="noopener noreferrer"
+                  style={{ color: '#60a5fa', textDecoration: 'none', fontFamily: 'monospace' }}>
+                  {paper.doi}
+                </a>
               </div>
             )}
-            <div style={{ display: 'flex', gap: '1rem' }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><Clock size={14} /> {new Date(paper.created_at).toLocaleDateString()}</span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><FileText size={14} /> {paper.citations_count || 0} Citations</span>
-            </div>
           </div>
         </div>
       </div>
 
-      <div style={{ background: '#f8fafc', padding: '4rem 2rem', color: '#334155' }}>
-        <div style={{ maxWidth: '900px', margin: '0 auto', display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '3rem' }}>
-          
-          <main>
-            <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#0f172a' }}>Abstract</h2>
-            <div style={{ fontSize: '1.1rem', lineHeight: 1.8, color: '#475569', marginBottom: '3rem' }}>
-              {paper.abstract ? paper.abstract.split('\n').map((para: string, i: number) => <p key={i} style={{ marginBottom: '1rem' }}>{para}</p>) : 'No abstract available.'}
-            </div>
+      {/* ── BODY ─────────────────────────────────────────────────────────────── */}
+      <div style={{ background: '#f8fafc', color: '#334155' }}>
+        <div style={{ maxWidth: '960px', margin: '0 auto', padding: '4rem 2rem', display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 320px', gap: '3rem', alignItems: 'start' }}>
 
+          {/* ── MAIN CONTENT ── */}
+          <main>
+            {/* Abstract */}
+            <section style={{ marginBottom: '3rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
+                <div style={{
+                  width: '36px', height: '36px', borderRadius: '8px',
+                  background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <BookOpen size={18} color="white" />
+                </div>
+                <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#0f172a', margin: 0 }}>Abstract</h2>
+              </div>
+
+              <div style={{
+                background: 'white', border: '1px solid #e2e8f0',
+                borderLeft: '4px solid #3b82f6',
+                borderRadius: '0 12px 12px 0', padding: '1.75rem',
+                fontSize: '1.05rem', lineHeight: 1.85, color: '#475569',
+              }}>
+                {paper.abstract
+                  ? paper.abstract.split('\n').map((para: string, i: number) => (
+                      <p key={i} style={{ marginBottom: '1rem' }}>{para}</p>
+                    ))
+                  : (
+                    <p style={{ color: '#94a3b8', fontStyle: 'italic' }}>
+                      Abstract not provided. Please download the full PDF to read the complete research paper.
+                    </p>
+                  )}
+              </div>
+            </section>
+
+            {/* Keywords */}
             {paper.keywords && paper.keywords.length > 0 && (
-              <div style={{ marginBottom: '3rem' }}>
-                <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Keywords</h3>
+              <section style={{ marginBottom: '3rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+                  <Tag size={18} style={{ color: '#3b82f6' }} />
+                  <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', margin: 0 }}>Keywords</h3>
+                </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                   {paper.keywords.map((kw: string, i: number) => (
-                    <span key={i} style={{ background: '#e2e8f0', padding: '0.25rem 0.75rem', borderRadius: '4px', fontSize: '0.875rem' }}>
+                    <span key={i} style={{
+                      background: '#eff6ff', color: '#1d4ed8',
+                      border: '1px solid #bfdbfe',
+                      padding: '0.35rem 0.9rem', borderRadius: '2rem',
+                      fontSize: '0.85rem', fontWeight: 500,
+                    }}>
                       {kw}
                     </span>
                   ))}
                 </div>
-              </div>
+              </section>
             )}
-          </main>
 
-          <aside>
-            <div style={{ background: 'white', padding: '2rem', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', position: 'sticky', top: '2rem' }}>
-              <h3 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', color: '#0f172a' }}>Access Options</h3>
-              
-              <p style={{ fontSize: '0.875rem', color: '#64748b', marginBottom: '1.5rem' }}>
-                This research paper is open-access. You must be logged into your Elitech account to download the full PDF manuscript.
-              </p>
+            {/* Authors detail section */}
+            <section style={{ marginBottom: '3rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
+                <div style={{
+                  width: '36px', height: '36px', borderRadius: '8px',
+                  background: 'linear-gradient(135deg, #7c3aed, #4c1d95)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <User size={18} color="white" />
+                </div>
+                <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#0f172a', margin: 0 }}>
+                  {authorsList.length === 1 ? 'Author' : 'Authors'}
+                </h2>
+              </div>
 
-              <Link href="/admin/login" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: '#3b82f6', color: 'white', padding: '1rem', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, width: '100%', marginBottom: '1rem' }}>
-                <Download size={18} /> Download Full PDF
-              </Link>
-
-              <button style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: 'transparent', border: '1px solid #cbd5e1', color: '#334155', padding: '1rem', borderRadius: '8px', fontWeight: 600, width: '100%', cursor: 'pointer' }}>
-                <Quote size={18} /> Cite this paper
-              </button>
-            </div>
-          </aside>
-
-        </div>
-
-        {/* Related Publications Section */}
-        {relatedPapers && relatedPapers.length > 0 && (
-          <div style={{ maxWidth: '900px', margin: '4rem auto 0', borderTop: '1px solid #e2e8f0', paddingTop: '3rem' }}>
-            <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem', color: '#0f172a' }}>More from our Researchers</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
-              {relatedPapers.map(rp => (
-                <Link key={rp.slug} href={`/research/${rp.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                  <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.5rem', transition: 'box-shadow 0.2s', height: '100%', display: 'flex', flexDirection: 'column' }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#3b82f6', marginBottom: '0.5rem', display: 'block' }}>{rp.category}</span>
-                    <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem', lineHeight: 1.4 }}>{rp.title}</h3>
-                    <p style={{ fontSize: '0.875rem', color: '#64748b', marginBottom: '1rem', flex: 1, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                      {rp.abstract || 'Read full publication...'}
-                    </p>
-                    <div style={{ fontSize: '0.8rem', color: '#94a3b8', display: 'flex', justifyContent: 'space-between' }}>
-                      <span>{new Date(rp.created_at).getFullYear()}</span>
-                      <span style={{ color: '#3b82f6', fontWeight: 600 }}>Read →</span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {authorsList.map((author: any, i: number) => (
+                  <div key={i} style={{
+                    background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px',
+                    padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1rem',
+                  }}>
+                    <div style={{
+                      width: '48px', height: '48px', borderRadius: '50%', flexShrink: 0,
+                      background: `linear-gradient(135deg, hsl(${(i * 80 + 210) % 360}, 70%, 50%), hsl(${(i * 80 + 250) % 360}, 70%, 40%))`,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      color: 'white', fontSize: '1.1rem', fontWeight: 800,
+                    }}>
+                      {author.name.charAt(0)}
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '1rem' }}>{author.name}</div>
+                      {author.institution && (
+                        <div style={{ color: '#64748b', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
+                          <Building2 size={13} /> {author.institution}
+                        </div>
+                      )}
+                      {author.orcid && (
+                        <a href={`https://orcid.org/${author.orcid}`} target="_blank" rel="noopener noreferrer"
+                          style={{ color: '#16a34a', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '4px', textDecoration: 'none' }}>
+                          <Globe size={12} /> ORCID: {author.orcid}
+                        </a>
+                      )}
                     </div>
                   </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Publication details */}
+            <section style={{
+              background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px',
+              padding: '1.75rem', marginBottom: '3rem',
+            }}>
+              <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', marginBottom: '1.25rem' }}>Publication Details</h3>
+              <dl style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', margin: 0 }}>
+                {[
+                  { label: 'Publisher', value: 'Elitech Hub' },
+                  { label: 'Type', value: paper.type?.toUpperCase() || 'PDF' },
+                  { label: 'Published', value: publishDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) },
+                  { label: 'Category', value: paper.category || 'Cybersecurity' },
+                  ...(paper.doi ? [{ label: 'DOI', value: paper.doi }] : []),
+                  { label: 'Access', value: 'Open Access' },
+                ].map(({ label, value }) => (
+                  <div key={label}>
+                    <dt style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>{label}</dt>
+                    <dd style={{ fontSize: '0.95rem', color: '#0f172a', fontWeight: 500, margin: 0 }}>{value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          </main>
+
+          {/* ── STICKY SIDEBAR ── */}
+          <aside>
+            <div style={{ position: 'sticky', top: '5rem' }}>
+
+              {/* Download card */}
+              <div style={{
+                background: 'white', border: '1px solid #e2e8f0', borderRadius: '16px',
+                padding: '1.75rem', marginBottom: '1.5rem',
+                boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
+              }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.5rem' }}>Access this Paper</h3>
+                <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '1.5rem', lineHeight: 1.6 }}>
+                  This is an open-access publication by Elitech Hub Research Labs. Download the full PDF manuscript.
+                </p>
+
+                {paper.file_url ? (
+                  <a
+                    href={paper.file_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem',
+                      background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', color: 'white',
+                      padding: '0.9rem', borderRadius: '10px', textDecoration: 'none',
+                      fontWeight: 700, width: '100%', marginBottom: '0.75rem',
+                      boxShadow: '0 4px 12px rgba(37,99,235,0.35)',
+                      fontSize: '0.95rem',
+                    }}
+                  >
+                    <Download size={18} /> Download Full PDF
+                  </a>
+                ) : (
+                  <Link
+                    href="/login"
+                    style={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem',
+                      background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', color: 'white',
+                      padding: '0.9rem', borderRadius: '10px', textDecoration: 'none',
+                      fontWeight: 700, width: '100%', marginBottom: '0.75rem',
+                      fontSize: '0.95rem',
+                    }}
+                  >
+                    <Download size={18} /> Request PDF Access
+                  </Link>
+                )}
+
+                {/* Cite button */}
+                <button
+                  id="cite-btn"
+                  onClick={undefined}
+                  style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem',
+                    background: '#f8fafc', border: '1px solid #e2e8f0', color: '#334155',
+                    padding: '0.9rem', borderRadius: '10px', fontWeight: 600,
+                    width: '100%', cursor: 'pointer', fontSize: '0.95rem',
+                  }}>
+                  <Quote size={18} /> Cite this Paper
+                </button>
+              </div>
+
+              {/* Share card */}
+              <div style={{
+                background: 'white', border: '1px solid #e2e8f0', borderRadius: '16px',
+                padding: '1.5rem', marginBottom: '1.5rem',
+              }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Share2 size={16} /> Share
+                </h3>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                  {[
+                    { label: 'LinkedIn', href: `https://www.linkedin.com/shareArticle?url=https://elitechub.com/research/${slug}`, color: '#0077B5' },
+                    { label: 'Twitter/X', href: `https://twitter.com/intent/tweet?url=https://elitechub.com/research/${slug}&text=${encodeURIComponent(paper.title)}`, color: '#000000' },
+                    { label: 'WhatsApp', href: `https://wa.me/?text=${encodeURIComponent(paper.title + ' - https://elitechub.com/research/' + slug)}`, color: '#25D366' },
+                    { label: 'Email', href: `mailto:?subject=${encodeURIComponent(paper.title)}&body=${encodeURIComponent('Check out this research paper: https://elitechub.com/research/' + slug)}`, color: '#64748b' },
+                  ].map(({ label, href, color }) => (
+                    <a
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        padding: '0.6rem', borderRadius: '8px', border: '1px solid #e2e8f0',
+                        fontSize: '0.8rem', fontWeight: 600, color, textDecoration: 'none',
+                        transition: 'background 0.15s',
+                      }}
+                    >
+                      {label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quick metadata card */}
+              <div style={{
+                background: '#0f172a', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px',
+                padding: '1.5rem',
+              }}>
+                <h3 style={{ fontSize: '0.85rem', fontWeight: 700, color: '#94a3b8', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Quick Info</h3>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {[
+                    { icon: <Eye size={14} />, label: `${(paper.views || 0).toLocaleString()} reads` },
+                    { icon: <Award size={14} />, label: `${paper.citations_count || 0} citations` },
+                    { icon: <FileText size={14} />, label: `${(paper.type || 'PDF').toUpperCase()} document` },
+                    { icon: <Globe size={14} />, label: 'Open Access' },
+                  ].map(({ icon, label }, i) => (
+                    <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#cbd5e1', fontSize: '0.875rem' }}>
+                      <span style={{ color: '#3b82f6' }}>{icon}</span> {label}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        {/* ── RELATED PUBLICATIONS ── */}
+        {relatedPapers && relatedPapers.length > 0 && (
+          <div style={{ background: '#f1f5f9', padding: '4rem 2rem', borderTop: '1px solid #e2e8f0' }}>
+            <div style={{ maxWidth: '960px', margin: '0 auto' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>More from Elitech Research</h2>
+                <Link href="/research" style={{ color: '#3b82f6', fontWeight: 600, textDecoration: 'none', fontSize: '0.9rem' }}>
+                  View all publications →
                 </Link>
-              ))}
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+                {relatedPapers.map((rp: any) => (
+                  <Link key={rp.slug} href={`/research/${rp.slug}`} style={{ textDecoration: 'none' }}>
+                    <article style={{
+                      background: 'white', border: '1px solid #e2e8f0', borderRadius: '14px',
+                      padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column',
+                      transition: 'box-shadow 0.2s, transform 0.2s',
+                    }}>
+                      <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#3b82f6', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.6rem', display: 'block' }}>
+                        {rp.category}
+                      </span>
+                      <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', lineHeight: 1.4, marginBottom: '0.75rem', flex: 1 }}>
+                        {rp.title}
+                      </h3>
+                      <p style={{
+                        fontSize: '0.85rem', color: '#64748b', lineHeight: 1.6, marginBottom: '1rem',
+                        display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                      }}>
+                        {rp.abstract || 'Click to read the full paper.'}
+                      </p>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', color: '#94a3b8' }}>
+                        <span>{new Date(rp.created_at).getFullYear()}</span>
+                        <span style={{ color: '#3b82f6', fontWeight: 600 }}>Read Paper →</span>
+                      </div>
+                    </article>
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         )}
