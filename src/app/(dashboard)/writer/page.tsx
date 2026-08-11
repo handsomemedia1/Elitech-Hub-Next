@@ -13,7 +13,24 @@ export default function WriterOverview() {
 
   useEffect(() => {
     async function fetchDashboardData() {
-      const authorName = localStorage.getItem('elitech_user_name') || 'Writer';
+      // Fetch actual user profile to get the correct name/role
+      let authorName = 'Writer';
+      let role = 'writer';
+      
+      try {
+        const res = await fetch('/api/auth/me');
+        const data = await res.json();
+        if (data.user) {
+          authorName = data.user.name || localStorage.getItem('elitech_user_name') || 'Writer';
+          role = data.user.role || localStorage.getItem('elitech_user_role') || 'writer';
+        } else {
+          authorName = localStorage.getItem('elitech_user_name') || 'Writer';
+          role = localStorage.getItem('elitech_user_role') || 'writer';
+        }
+      } catch (err) {
+        authorName = localStorage.getItem('elitech_user_name') || 'Writer';
+        role = localStorage.getItem('elitech_user_role') || 'writer';
+      }
 
       let query = supabase
         .from('blog_posts')
@@ -21,7 +38,6 @@ export default function WriterOverview() {
         .order('created_at', { ascending: false });
 
       // Only filter if not an admin
-      const role = localStorage.getItem('elitech_user_role');
       if (role !== 'admin') {
         query = query.eq('author', authorName);
       }

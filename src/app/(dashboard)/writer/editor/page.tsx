@@ -50,10 +50,24 @@ export default function WriterEditor() {
 
   // Load draft if ID is in URL, and check role
   useEffect(() => {
-    const role = localStorage.getItem('elitech_user_role');
-    setIsAdmin(role === 'admin');
-    const name = localStorage.getItem('elitech_user_name');
-    if (name) setAuthorName(name);
+    // Attempt to fetch actual user profile from API in case localStorage is missing
+    fetch('/api/auth/me').then(res => res.json()).then(data => {
+      if (data.user) {
+        setIsAdmin(data.user.role === 'admin');
+        if (data.user.name) setAuthorName(data.user.name);
+      } else {
+        // Fallback to localStorage
+        const role = localStorage.getItem('elitech_user_role');
+        setIsAdmin(role === 'admin');
+        const name = localStorage.getItem('elitech_user_name');
+        if (name) setAuthorName(name);
+      }
+    }).catch(() => {
+      const role = localStorage.getItem('elitech_user_role');
+      setIsAdmin(role === 'admin');
+      const name = localStorage.getItem('elitech_user_name');
+      if (name) setAuthorName(name);
+    });
 
     const searchParams = new URLSearchParams(window.location.search);
     const id = searchParams.get('id');
@@ -219,7 +233,7 @@ export default function WriterEditor() {
   const generateSlug = (t: string) =>
     t.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
-  const savePost = async (status: 'draft' | 'pending') => {
+  const savePost = async (status: 'draft' | 'pending' | 'published') => {
     if (!title.trim()) { alert('Please add a title before saving.'); return; }
     setSaving(true);
     setSaveMsg('');
@@ -234,6 +248,7 @@ export default function WriterEditor() {
       tags,
       category: selectedCategories[0] || 'Uncategorized',
       status: status === 'published' ? 'published' : status,
+      published: status === 'published',
       published_at: status === 'published' ? new Date().toISOString() : null,
       word_count: wordCount,
       author: authorName
