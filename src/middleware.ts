@@ -54,11 +54,11 @@ export function middleware(request: NextRequest) {
   if (!path.startsWith('/api/')) {
     const csp = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://widget.senja.io https://cdn.trustpilot.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://widget.senja.io https://cdn.trustpilot.com https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
       "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
-      "img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://i.ytimg.com https://lh3.googleusercontent.com",
-      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.resend.com",
+      "img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://i.ytimg.com https://lh3.googleusercontent.com https://www.googletagmanager.com https://www.google-analytics.com https://stats.g.doubleclick.net",
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.resend.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net",
       "frame-src https://www.youtube.com https://www.linkedin.com https://widget.senja.io https://www.trustpilot.com",
       "object-src 'none'",
       "base-uri 'self'",
