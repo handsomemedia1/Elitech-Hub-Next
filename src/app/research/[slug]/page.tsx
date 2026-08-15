@@ -104,19 +104,36 @@ export default async function ResearchPaperPage({ params }: Props) {
 
   if (!paper) notFound();
 
-  // Fetch related publications
-  const { data: relatedPapers } = await supabase
-    .from('research')
-    .select('title, slug, category, created_at, abstract, authors, type')
-    .neq('id', paper.id)
-    .eq('published', true)
-    .order('created_at', { ascending: false })
-    .limit(3);
-
   const authorsString =
     paper.authors && Array.isArray(paper.authors) && paper.authors.length > 0
       ? paper.authors.map((a: any) => a.name).join(', ')
       : paper.author || 'Elitech Research Labs';
+
+  const leadAuthor = paper.authors && Array.isArray(paper.authors) && paper.authors.length > 0
+      ? paper.authors[0].name
+      : paper.author;
+
+  // Fetch related publications by author or category
+  let { data: relatedPapers } = await supabase
+    .from('research')
+    .select('title, slug, category, created_at, abstract, authors, type')
+    .neq('id', paper.id)
+    .eq('published', true)
+    .ilike('author', `%${leadAuthor || ''}%`)
+    .order('created_at', { ascending: false })
+    .limit(3);
+
+  // Fallback to latest papers if author has no other papers
+  if (!relatedPapers || relatedPapers.length === 0) {
+    const { data: fallbackPapers } = await supabase
+      .from('research')
+      .select('title, slug, category, created_at, abstract, authors, type')
+      .neq('id', paper.id)
+      .eq('published', true)
+      .order('created_at', { ascending: false })
+      .limit(3);
+    relatedPapers = fallbackPapers;
+  }
 
   const authorsList: any[] =
     paper.authors && Array.isArray(paper.authors) && paper.authors.length > 0
@@ -470,7 +487,6 @@ export default async function ResearchPaperPage({ params }: Props) {
                   </Link>
                 )}
 
-                {/* Cite button */}
                 <CiteModal
                   title={paper.title}
                   authors={authorsString}
@@ -478,6 +494,7 @@ export default async function ResearchPaperPage({ params }: Props) {
                   doi={paper.doi}
                   publisher="Elitech Hub"
                   url={`https://elitechub.com/research/${slug}`}
+                  slug={slug}
                 />
               </div>
 

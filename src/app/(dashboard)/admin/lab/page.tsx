@@ -95,8 +95,8 @@ export default function AdminLab() {
                 </td>
                 <td>
                   <div className={styles.actionBtns}>
-                    <Link href={`/research/${paper.slug}`} target="_blank" className={styles.iconBtn} title="View"><ExternalLink size={16} /></Link>
-                    <button className={styles.iconBtn} title="Edit" onClick={() => alert("Edit functionality coming soon. For now, please delete and re-upload.")}><Edit2 size={16} /></button>
+                    <Link href={`/research/${paper.slug || ''}`} target="_blank" className={styles.iconBtn} title="View"><ExternalLink size={16} /></Link>
+                    <Link href={`/admin/lab/edit/${paper.id}`} className={styles.iconBtn} title="Edit"><Edit2 size={16} /></Link>
                     <button className={styles.iconBtn} title="Delete" onClick={() => handleDelete(paper.id, paper.title)}><Trash2 size={16} /></button>
                   </div>
                 </td>

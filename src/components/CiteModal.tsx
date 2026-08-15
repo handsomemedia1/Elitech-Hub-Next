@@ -10,6 +10,7 @@ interface Props {
   doi?: string | null;
   publisher?: string;
   url: string;
+  slug: string;
 }
 
 const FORMATS = ['APA', 'MLA', 'Chicago', 'BibTeX'] as const;
@@ -41,10 +42,48 @@ export default function CiteModal(props: Props) {
 
   const citation = buildCitation(format, props);
 
+  const fallbackCopyTextToClipboard = (text: string) => {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    // Avoid scrolling to bottom
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      document.execCommand('copy');
+    } catch (err) {
+      console.error('Fallback: Oops, unable to copy', err);
+    }
+    document.body.removeChild(textArea);
+  };
+
   const copy = async () => {
-    await navigator.clipboard.writeText(citation);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      if (!navigator.clipboard) {
+        fallbackCopyTextToClipboard(citation);
+      } else {
+        await navigator.clipboard.writeText(citation);
+      }
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+
+      // Log citation
+      fetch('/api/research/cite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug: props.slug })
+      }).catch(err => console.error("Failed to log citation", err));
+
+    } catch (err) {
+      console.error("Failed to copy", err);
+      // Fallback
+      fallbackCopyTextToClipboard(citation);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   return (
