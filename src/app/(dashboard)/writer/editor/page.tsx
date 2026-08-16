@@ -96,6 +96,9 @@ export default function WriterEditor() {
               checked: c.name === data.category
             })));
           }
+          if (data.author) {
+            setAuthorName(data.author);
+          }
         }
       });
     }
@@ -447,6 +450,17 @@ export default function WriterEditor() {
           <div className={styles.settingsCard}>
             <h3>Post Settings</h3>
             
+            <div className={styles.fieldGroup}>
+              <label>Author Name</label>
+              <input 
+                type="text" 
+                className={styles.input} 
+                value={authorName}
+                onChange={(e) => setAuthorName(e.target.value)}
+                placeholder="Author Name"
+              />
+            </div>
+
             <div className={styles.fieldGroup}>
               <label>Meta Description</label>
               <textarea 

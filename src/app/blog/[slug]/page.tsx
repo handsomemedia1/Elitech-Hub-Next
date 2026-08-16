@@ -7,6 +7,8 @@ import styles from "./post.module.css";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import { Send, Briefcase, GraduationCap, MessageCircle } from "lucide-react";
 
+export const revalidate = 60; // Revalidate every 60 seconds
+
 export async function generateMetadata({
   params,
 }: {

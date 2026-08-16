@@ -8,6 +8,7 @@ import AnimateOnScroll from "@/components/AnimateOnScroll";
 import { Mail, ArrowRight } from "lucide-react";
 import { HubCard } from "@/components/HubCard";
 
+export const revalidate = 60; // Revalidate every 60 seconds
 
 export const metadata: Metadata = {
   title: 'Cybersecurity Blog Nigeria | Career Guides, Tutorials & Threat Intel | Elitech Hub',
