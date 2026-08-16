@@ -17,6 +17,7 @@ import {
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import TiptapImage from '@tiptap/extension-image';
+import TiptapLinkExt from '@tiptap/extension-link';
 import styles from './editor.module.css';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
@@ -47,6 +48,8 @@ export default function WriterEditor() {
   const [uploadingFeatured, setUploadingFeatured] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [authorName, setAuthorName] = useState('Writer');
+  // Track whether post data has been loaded so we can push it into the editor
+  const [postLoaded, setPostLoaded] = useState(false);
 
   // Load draft if ID is in URL, and check role
   useEffect(() => {
@@ -99,6 +102,8 @@ export default function WriterEditor() {
           if (data.author) {
             setAuthorName(data.author);
           }
+          // Signal that post data is ready so the editor can sync
+          setPostLoaded(data.content || '');
         }
       });
     }
@@ -106,12 +111,38 @@ export default function WriterEditor() {
 
   // Tiptap Editor Setup
   const editor = useEditor({
-    extensions: [StarterKit, TiptapImage],
-    content: content,
+    extensions: [
+      StarterKit,
+      TiptapImage.configure({
+        // Allow width/height/style attributes so images can be resized
+        HTMLAttributes: {
+          class: 'editor-image',
+        },
+        allowBase64: false,
+      }),
+      TiptapLinkExt.configure({
+        openOnClick: false,
+        HTMLAttributes: { rel: 'noopener noreferrer', target: '_blank' },
+      }),
+    ],
+    content: '',
     onUpdate: ({ editor }) => {
       setContent(editor.getHTML());
     },
+    editorProps: {
+      attributes: {
+        class: 'tiptap-prose',
+      },
+    },
   });
+
+  // When post data arrives asynchronously, push it into the already-mounted editor
+  useEffect(() => {
+    if (editor && postLoaded !== false) {
+      editor.commands.setContent(postLoaded as string, false);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editor, postLoaded]);
 
   // Upload image to Supabase and insert into editor
   const handleInlineImageUpload = async (file: File) => {
@@ -385,6 +416,42 @@ export default function WriterEditor() {
                       style={{ gap: '4px', display: 'flex', alignItems: 'center' }}
                     >
                       {uploadingInline ? <span style={{ fontSize: '0.7rem' }}>...</span> : <ImageIcon size={16} />}
+                    </button>
+
+                    {/* Insert Link */}
+                    <button
+                      onClick={() => {
+                        const url = window.prompt('Enter URL:');
+                        if (url) {
+                          editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+                        }
+                      }}
+                      className={`${styles.toolbarBtn} ${editor.isActive('link') ? styles.toolbarBtnActive : ''}`}
+                      title="Insert Link"
+                    >
+                      <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>🔗</span>
+                    </button>
+
+                    {/* Resize selected image */}
+                    <button
+                      onClick={() => {
+                        const width = window.prompt('Set image width (e.g. 400px, 50%, 100%):');
+                        if (width) {
+                          // Find the selected image node and update its width style
+                          const { state } = editor;
+                          const { from } = state.selection;
+                          const node = state.doc.nodeAt(from);
+                          if (node && node.type.name === 'image') {
+                            editor.chain().focus().updateAttributes('image', { style: `width:${width};max-width:100%;` }).run();
+                          } else {
+                            alert('Please click on an image first, then click Resize.');
+                          }
+                        }
+                      }}
+                      className={styles.toolbarBtn}
+                      title="Resize Selected Image"
+                    >
+                      <span style={{ fontSize: '0.75rem', fontWeight: 700 }}>⟺</span>
                     </button>
                   </div>
                 )}
