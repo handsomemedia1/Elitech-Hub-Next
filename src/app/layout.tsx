@@ -9,6 +9,7 @@ import { PricingProvider } from "@/context/PricingContext";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import ScrollNavbar from "@/components/ScrollNavbar";
 import LeadPopup from "@/components/LeadPopup";
+import PublicWidgets from "@/components/PublicWidgets";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -293,9 +294,7 @@ export default function RootLayout({
           <SmoothScroll>
             {children}
           </SmoothScroll>
-          <FloatingChatbot />
-          <TrustBadge />
-          <LeadPopup />
+          <PublicWidgets />
         </PricingProvider>
       </body>
     </html>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
@@ -35,10 +35,17 @@ const WRITER_LINKS = [
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [loggedInName, setLoggedInName] = useState('');
+
+  useEffect(() => {
+    const name = localStorage.getItem('elitech_user_name') || '';
+    setLoggedInName(name);
+  }, []);
 
   const isAdmin = pathname.startsWith('/admin');
   const links = isAdmin ? ADMIN_LINKS : WRITER_LINKS;
   const roleName = isAdmin ? 'Admin' : 'Writer';
+  const displayName = loggedInName || roleName;
 
   // For /admin/login or /writer/login, don't show the dashboard shell
   if (pathname === '/admin/login' || pathname === '/writer/login') {
@@ -104,9 +111,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className={styles.topbarRight}>
             <div className={styles.userProfile}>
               <div className={styles.avatar}>
-                {roleName[0]}
+                {displayName[0]?.toUpperCase() || roleName[0]}
               </div>
-              <span className={styles.userName}>{roleName} Portal</span>
+              <span className={styles.userName}>{displayName} Portal</span>
             </div>
           </div>
         </header>
