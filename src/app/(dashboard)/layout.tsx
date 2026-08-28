@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 import { 
   LayoutDashboard, BookOpen, Users, PenTool, MessageSquare, 
   Settings, LogOut, Menu, X, FileText, FlaskConical, Award, DollarSign, Mail
@@ -32,23 +33,43 @@ const WRITER_LINKS = [
   { href: '/writer/editor', label: 'Write New', icon: PenTool },
 ];
 
+const RESEARCHER_LINKS = [
+  { href: '/researcher', label: 'Overview', icon: LayoutDashboard },
+  { href: '/researcher/profile', label: 'My Profile', icon: Users },
+  { href: '/researcher/submissions', label: 'My Research', icon: BookOpen },
+  { href: '/researcher/submit', label: 'Submit Paper', icon: FileText },
+];
+
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loggedInName, setLoggedInName] = useState('');
 
+  const router = useRouter();
   useEffect(() => {
     const name = localStorage.getItem('elitech_user_name') || '';
     setLoggedInName(name);
-  }, []);
+
+    if (pathname !== '/admin/login' && pathname !== '/writer/login' && pathname !== '/researcher/login') {
+      supabase.auth.getUser().then(({ data: { user } }) => {
+        if (!user) {
+          if (pathname.startsWith('/researcher')) router.push('/researcher/login');
+          else if (pathname.startsWith('/writer')) router.push('/writer/login');
+          else if (pathname.startsWith('/admin')) router.push('/admin/login');
+        }
+      });
+    }
+  }, [pathname, router]);
 
   const isAdmin = pathname.startsWith('/admin');
-  const links = isAdmin ? ADMIN_LINKS : WRITER_LINKS;
-  const roleName = isAdmin ? 'Admin' : 'Writer';
+  const isResearcher = pathname.startsWith('/researcher');
+  
+  const links = isAdmin ? ADMIN_LINKS : isResearcher ? RESEARCHER_LINKS : WRITER_LINKS;
+  const roleName = isAdmin ? 'Admin' : isResearcher ? 'Researcher' : 'Writer';
   const displayName = loggedInName || roleName;
 
-  // For /admin/login or /writer/login, don't show the dashboard shell
-  if (pathname === '/admin/login' || pathname === '/writer/login') {
+  // For /admin/login, /writer/login, or /researcher/login don't show the dashboard shell
+  if (pathname === '/admin/login' || pathname === '/writer/login' || pathname === '/researcher/login') {
     return <div className={styles.authWrapper}>{children}</div>;
   }
 

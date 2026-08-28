@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/admin/', '/api/', '/thank-you', '/verify'],
+        disallow: ['/admin/', '/api/', '/thank-you', '/verify', '/researcher/', '/writer/'],
       },
       // --- LLM / AI Crawlers: explicitly allow for indexing ---
       // This is what gets you into ChatGPT, Perplexity, Gemini etc.

@@ -104,7 +104,7 @@ const projects = [
     tag: 'Agentic AI',
     description: 'An autonomous AI system for discovering prospects, generating content, and automating complex outreach workflows. Features real-time system health monitoring and action tracking.',
     image: '/assets/images/portfolio/cyberoutreach.png',
-    link: '#',
+    link: '/portfolio/cyberoutreach-agent',
     external: false
   },
   {
@@ -131,7 +131,7 @@ const projects = [
     tag: 'Threat Hunting / Network Scanning',
     description: 'A private, autonomous threat hunting and network scanning bot built for Elitech-Hub\'s internal security operations. Also features a custom engine for tracking writer performance metrics.',
     image: '/assets/images/portfolio/elitech-admin-bot.png',
-    link: '#',
+    link: '/portfolio/elitech-admin-bot',
     external: false
   },
   {
@@ -149,7 +149,7 @@ const projects = [
     tag: 'Agentic AI / Rust',
     description: 'A high-performance autonomous agentic AI built in Rust. It manages complex content generation and publishing workflows across Threads and LinkedIn.',
     image: '/assets/images/portfolio/rusty-threads-bot.png',
-    link: '#',
+    link: '/portfolio/rusty-threads-bot',
     external: false
   }
 ];
@@ -201,7 +201,7 @@ export default function PortfolioPage() {
                         rel={project.external ? 'noopener noreferrer' : ''}
                         className={styles.visitBtn}
                       >
-                        {project.external ? <><ExternalLink size={14} /> Visit Site</> : <><Lock size={14} /> Private Tool</>}
+                        {project.external ? <><ExternalLink size={14} /> Visit Site</> : <><ExternalLink size={14} /> View Case Study</>}
                       </a>
                     </div>
                   </div>
@@ -215,8 +215,8 @@ export default function PortfolioPage() {
                       rel={project.external ? 'noopener noreferrer' : ''}
                       className={styles.link}
                     >
-                      {project.external ? 'View Live Project' : 'Internal System'}
-                      {project.external ? <ExternalLink size={16} /> : <Lock size={16} />}
+                      {project.external ? 'View Live Project' : 'View Case Study'}
+                      {project.external ? <ExternalLink size={16} /> : <ExternalLink size={16} />}
                     </a>
                   </div>
                 </div>

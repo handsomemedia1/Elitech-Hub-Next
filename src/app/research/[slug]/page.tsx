@@ -30,9 +30,11 @@ export async function generateMetadata(
     return { title: 'Paper Not Found | Elitech Hub Research' };
   }
 
+  const isPublished = paper.published === true || paper.publication_status === 'published';
+
   const authorsString =
     paper.authors && Array.isArray(paper.authors) && paper.authors.length > 0
-      ? paper.authors.map((a: any) => a.name).join(', ')
+      ? paper.authors.map((a: any) => a.name || a.full_name).join(', ')
       : paper.author || 'Elitech Research Labs';
 
   const description =
@@ -43,14 +45,16 @@ export async function generateMetadata(
 
   const ogImage = paper.og_image || 'https://elitechub.com/images/og-research.jpg';
 
-  return {
+  const publishDate = paper.published_at ? new Date(paper.published_at) : new Date(paper.created_at);
+
+  const baseMeta: Metadata = {
     title,
     description,
     authors: [{ name: authorsString }],
     keywords: paper.keywords
       ? [...paper.keywords, 'cybersecurity research', 'Elitech Hub', 'Nigeria research']
       : ['cybersecurity research', 'Elitech Hub', 'Nigeria'],
-    robots: { index: true, follow: true },
+    robots: isPublished ? { index: true, follow: true } : { index: false, follow: false },
     alternates: {
       canonical: `https://elitechub.com/research/${slug}`,
     },
@@ -61,7 +65,7 @@ export async function generateMetadata(
       siteName: 'Elitech Hub',
       locale: 'en_NG',
       type: 'article',
-      publishedTime: paper.created_at,
+      publishedTime: publishDate.toISOString(),
       authors: [authorsString],
       images: [
         {
@@ -78,11 +82,18 @@ export async function generateMetadata(
       description,
       images: [ogImage],
     },
-    // Google Scholar / Highwire Press citation meta tags
+  };
+
+  if (!isPublished) {
+    return baseMeta;
+  }
+
+  return {
+    ...baseMeta,
     other: {
       'citation_title': paper.title,
       'citation_author': authorsString,
-      'citation_publication_date': new Date(paper.created_at).toISOString().split('T')[0],
+      'citation_publication_date': publishDate.toISOString().split('T')[0],
       'citation_publisher': 'Elitech Hub',
       'citation_language': 'en',
       ...(paper.file_url && { 'citation_pdf_url': paper.file_url }),
@@ -104,6 +115,15 @@ export default async function ResearchPaperPage({ params }: Props) {
 
   if (!paper) notFound();
 
+  const isPublished = paper.published === true || paper.publication_status === 'published';
+
+  if (!isPublished) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user || user.id !== paper.submitter_id) {
+      notFound();
+    }
+  }
+
   const authorsString =
     paper.authors && Array.isArray(paper.authors) && paper.authors.length > 0
       ? paper.authors.map((a: any) => a.name).join(', ')
@@ -115,10 +135,10 @@ export default async function ResearchPaperPage({ params }: Props) {
 
   // Fetch related publications by author or category
   let { data: relatedPapers } = await supabase
-    .from('research')
-    .select('title, slug, category, created_at, abstract, authors, type')
-    .neq('id', paper.id)
-    .eq('published', true)
+      .from('research')
+      .select('title, slug, category, created_at, abstract, authors, type')
+      .neq('id', paper.id)
+      .or('published.eq.true,publication_status.eq.published')
     .ilike('author', `%${leadAuthor || ''}%`)
     .order('created_at', { ascending: false })
     .limit(3);
@@ -129,7 +149,7 @@ export default async function ResearchPaperPage({ params }: Props) {
       .from('research')
       .select('title, slug, category, created_at, abstract, authors, type')
       .neq('id', paper.id)
-      .eq('published', true)
+      .or('published.eq.true,publication_status.eq.published')
       .order('created_at', { ascending: false })
       .limit(3);
     relatedPapers = fallbackPapers;

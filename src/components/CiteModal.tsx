@@ -29,7 +29,7 @@ function buildCitation(format: Format, { title, authors, year, doi, publisher, u
       return `${authors}. "${title}." ${pub} (${year}). ${doiLine}.`;
     case 'BibTeX':
       const key = authors.split(' ').pop()?.replace(/[^a-zA-Z]/g, '') + year;
-      return `@article{${key},\n  title   = {${title}},\n  author  = {${authors}},\n  year    = {${year}},\n  publisher = {${pub}},\n  url     = {${doiLine}}\n}`;
+      return `@article{${key},\n  title   = {${title}},\n  author  = {${authors}},\n  journal = {Elitech Hub Research Repository},\n  year    = {${year}},\n  publisher = {${pub}},\n  url     = {${doiLine}}\n}`;
     default:
       return '';
   }

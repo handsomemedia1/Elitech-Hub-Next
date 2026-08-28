@@ -6,6 +6,8 @@ import { supabase } from '@/lib/supabase';
 import { Search, FileText, Download, Clock } from 'lucide-react';
 import styles from '@/app/research/research.module.css';
 
+import { RESEARCH_CATEGORIES } from '@/lib/constants';
+
 export default function ResearchList() {
   const [papers, setPapers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -17,7 +19,7 @@ export default function ResearchList() {
       const { data, error } = await supabase
         .from('research')
         .select('*')
-        .eq('published', true)
+        .or('published.eq.true,publication_status.eq.published')
         .order('created_at', { ascending: false });
       
       if (data) setPapers(data);
@@ -33,14 +35,14 @@ export default function ResearchList() {
     return matchesSearch && matchesCategory;
   });
 
-  const categories = ['All', 'Computer Science', 'Artificial Intelligence', 'Information Security', 'Data Science', 'Other'];
+  const categories = ['All', ...RESEARCH_CATEGORIES];
 
   return (
     <>
       <div className={styles.filtersContainer} style={{ marginTop: '2rem' }}>
         <div className={styles.filtersWrapper}>
           <div className={styles.filtersList}>
-            {categories.slice(0, 5).map(cat => (
+            {categories.map(cat => (
               <button 
                 key={cat}
                 onClick={() => setCategory(cat)}
@@ -128,6 +130,16 @@ export default function ResearchList() {
             </article>
           ))
         )}
+      </div>
+
+      <div style={{ marginTop: '3rem', padding: '2rem', background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(29, 78, 216, 0.1))', borderRadius: '16px', border: '1px solid rgba(59, 130, 246, 0.2)', textAlign: 'center' }}>
+        <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'white', marginBottom: '1rem' }}>Have Research to Share?</h3>
+        <p style={{ color: '#cbd5e1', marginBottom: '1.5rem', maxWidth: '600px', margin: '0 auto 1.5rem' }}>
+          Submit your cybersecurity research, whitepapers, or threat intelligence reports for peer review and publication in our repository.
+        </p>
+        <Link href="/researcher/submit" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', fontWeight: 600, textDecoration: 'none' }}>
+          Submit Research
+        </Link>
       </div>
     </>
   );

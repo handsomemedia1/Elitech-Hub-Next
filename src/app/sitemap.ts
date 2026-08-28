@@ -9,6 +9,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   
   let blogPosts = null;
   let researchPapers = null;
+  let caseStudies = null;
 
   try {
     const supabase = getSupabaseServerClient();
@@ -25,6 +26,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .from('research')
       .select('slug, updated_at, created_at');
     researchPapers = rPapers;
+
+    // Fetch dynamic case studies
+    const { data: cStudies } = await supabase
+      .from('web_case_studies')
+      .select('slug, created_at')
+      .eq('published', true);
+    caseStudies = cStudies;
   } catch (error) {
     console.error('Failed to fetch dynamic routes for sitemap:', error);
   }
@@ -112,7 +120,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${baseUrl}/research`,
       lastModified: now,
       changeFrequency: 'weekly',
-      priority: 0.8,
+      priority: 0.85,
     },
     {
       url: `${baseUrl}/ai-training`,
@@ -200,6 +208,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }));
     routes.push(...researchUrls);
+  }
+
+  // Add static portfolio routes explicitly
+  routes.push(
+    { url: `${baseUrl}/portfolio/cyberoutreach-agent`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${baseUrl}/portfolio/elitech-admin-bot`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${baseUrl}/portfolio/rusty-threads-bot`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 }
+  );
+
+  if (caseStudies) {
+    const caseStudyUrls: MetadataRoute.Sitemap = caseStudies.map((cs) => ({
+      url: `${baseUrl}/portfolio/${cs.slug}`,
+      lastModified: cs.created_at || now,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    }));
+    routes.push(...caseStudyUrls);
   }
 
   return routes;

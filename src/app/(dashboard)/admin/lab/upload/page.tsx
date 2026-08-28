@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Upload, Plus, Trash2, CheckCircle2, ArrowLeft, FileText } from 'lucide-react';
 import Link from 'next/link';
+import { RESEARCH_CATEGORIES } from '@/lib/constants';
 import styles from './upload.module.css';
 
 export default function AdvancedUploadPortal() {
@@ -19,7 +20,7 @@ export default function AdvancedUploadPortal() {
   const [formData, setFormData] = useState({
     title: '',
     abstract: '',
-    category: 'Computer Science',
+    category: RESEARCH_CATEGORIES[0],
     keywords: '',
     doi: '',
     seo_title: '',
@@ -147,7 +148,7 @@ export default function AdvancedUploadPortal() {
         type: fileExt || 'pdf',
         category: formData.category,
         file_url,
-        published: true,
+        publication_status: 'published',
         abstract: formData.abstract,
         authors: cleanAuthors,
         keywords: keywordArray,
@@ -165,6 +166,12 @@ export default function AdvancedUploadPortal() {
             throw new Error("Database schema update pending. Please run the SQL migration to enable advanced metadata.");
         }
         throw error;
+      }
+
+      if (data && data.length > 0 && formData.doi) {
+        await supabase.from('research_identifiers').insert([
+          { research_id: data[0].id, identifier_type: 'DOI', identifier_value: formData.doi }
+        ]);
       }
 
       setSuccess(true);
@@ -236,11 +243,9 @@ export default function AdvancedUploadPortal() {
             <div className={styles.formGroup}>
               <label>Category</label>
               <select name="category" className={styles.select} value={formData.category} onChange={handleInputChange}>
-                <option value="Computer Science">Computer Science</option>
-                <option value="Artificial Intelligence">Artificial Intelligence</option>
-                <option value="Information Security">Information Security</option>
-                <option value="Data Science">Data Science</option>
-                <option value="Other">Other</option>
+                {RESEARCH_CATEGORIES.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
               </select>
             </div>
             <div className={styles.formGroup}>

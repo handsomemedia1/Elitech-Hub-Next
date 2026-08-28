@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import PageLayout from "@/components/PageLayout";
 import styles from "./post.module.css";
 import { getSupabaseServerClient } from "@/lib/supabase";
-import { Send, Briefcase, GraduationCap, MessageCircle } from "lucide-react";
+import { Send, Briefcase, GraduationCap, MessageCircle, BookOpen } from "lucide-react";
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
@@ -242,6 +242,15 @@ export default async function BlogPostPage({
               <p className={styles.sidebarText}>Enroll in our industry-recognized practical training programs.</p>
               <Link href="/programs" className={styles.sidebarLink}>
                 Enroll Now →
+              </Link>
+            </div>
+
+            <div className={styles.sidebarCard}>
+              <BookOpen className={styles.sidebarIcon} size={28} />
+              <h3 className={styles.sidebarTitle}>Cybersecurity Research</h3>
+              <p className={styles.sidebarText}>Read our latest published papers and open-source threat intelligence.</p>
+              <Link href="/research" className={styles.sidebarLink}>
+                Read Research →
               </Link>
             </div>
 

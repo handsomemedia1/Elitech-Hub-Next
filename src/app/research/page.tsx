@@ -5,6 +5,7 @@ import styles from './research.module.css';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 import Link from 'next/link';
 import ResearchList from '@/components/ResearchList';
+import { getSupabaseServerClient } from '@/lib/supabase';
 
 export const metadata: Metadata = {
   title: 'Cybersecurity Research & Publications | Elitech Hub Nigeria',
@@ -35,7 +36,16 @@ export const metadata: Metadata = {
 };
 
 
-export default function ResearchPage() {
+export default async function ResearchPage() {
+  const supabase = getSupabaseServerClient();
+  const { data: featuredPaper } = await supabase
+    .from('research')
+    .select('title, slug, abstract, category, authors, author, published_at, created_at, keywords')
+    .or('published.eq.true,publication_status.eq.published')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single();
+
   const jsonLd = [
     // BreadcrumbList
     {
@@ -46,19 +56,19 @@ export default function ResearchPage() {
         { '@type': 'ListItem', position: 2, name: 'Research', item: 'https://elitechub.com/research' },
       ],
     },
-    // Published paper: Can AI Express Empathy?
-    {
+    // Published paper (Dynamic)
+    ...(featuredPaper ? [{
       '@context': 'https://schema.org',
       '@type': 'ScholarlyArticle',
-      name: 'Can AI Express Empathy?',
-      headline: 'Can AI Express Empathy?',
-      description: 'A research paper exploring the limits and possibilities of artificial empathy in AI systems, published in Springer Nature, May 2026.',
-      datePublished: '2026-05-01',
-      publisher: { '@type': 'Organization', name: 'Springer Nature' },
+      name: featuredPaper.title,
+      headline: featuredPaper.title,
+      description: featuredPaper.abstract ? featuredPaper.abstract.substring(0, 200) + '...' : `Read "${featuredPaper.title}"`,
+      datePublished: featuredPaper.published_at ? new Date(featuredPaper.published_at).toISOString().split('T')[0] : (featuredPaper.created_at ? new Date(featuredPaper.created_at).toISOString().split('T')[0] : undefined),
+      publisher: { '@type': 'Organization', name: 'Elitech Hub Research Repository' },
       author: { '@type': 'Organization', name: 'Elitech Hub Research Team', url: 'https://elitechub.com/research' },
-      about: ['Artificial Intelligence', 'Empathy', 'Machine Learning', 'Cybersecurity Psychology'],
-      url: 'https://elitechub.com/research',
-    },
+      about: featuredPaper.keywords || [featuredPaper.category || 'Cybersecurity'],
+      url: `https://elitechub.com/research/${featuredPaper.slug}`,
+    }] : []),
     // Project: PSEDS
     {
       '@context': 'https://schema.org',
@@ -92,7 +102,7 @@ export default function ResearchPage() {
 
       {/* Hero Section */}
       <AnimateOnScroll>
-        <div className={layoutStyles.pageHero} style={{ backgroundImage: 'linear-gradient(to bottom, rgba(15, 23, 42, 0.3), rgba(15, 23, 42, 0.8)), url(/assets/images/research-hero-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        <div className={layoutStyles.pageHero} style={{ backgroundImage: 'linear-gradient(to bottom, rgba(15, 23, 42, 0.3), rgba(15, 23, 42, 0.8)), url(/assets/images/research-hero-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center', paddingBottom: featuredPaper ? '8rem' : '4rem' }}>
           <div style={{ display: 'inline-block', background: 'rgba(255, 255, 255, 0.1)', padding: '0.5rem 1.5rem', borderRadius: '3rem', marginBottom: '2rem', fontSize: '0.875rem', fontWeight: 800, letterSpacing: '0.1em', color: 'white' }}>
             🔬 RESEARCH & PROJECTS
           </div>
@@ -103,28 +113,55 @@ export default function ResearchPage() {
             Innovative systems, research, and publishable projects from our team.
           </p>
 
-          <div style={{ display: 'flex', gap: '3rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '3rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'rgba(255, 255, 255, 0.05)', padding: '1rem 2rem', borderRadius: '1rem', border: '1px solid rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(10px)' }}>
-              <span style={{ color: '#6ee7b7', fontSize: '1.5rem' }}>🧪</span>
-              <div style={{ textAlign: 'left' }}>
-                <div style={{ color: 'white', fontWeight: 800, fontSize: '1.125rem' }}>Active</div>
-                <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.875rem' }}>Research Projects</div>
+          {!featuredPaper && (
+            <div style={{ display: 'flex', gap: '3rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '3rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'rgba(255, 255, 255, 0.05)', padding: '1rem 2rem', borderRadius: '1rem', border: '1px solid rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(10px)' }}>
+                <span style={{ color: '#6ee7b7', fontSize: '1.5rem' }}>🧪</span>
+                <div style={{ textAlign: 'left' }}>
+                  <div style={{ color: 'white', fontWeight: 800, fontSize: '1.125rem' }}>Active</div>
+                  <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.875rem' }}>Research Projects</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'rgba(255, 255, 255, 0.05)', padding: '1rem 2rem', borderRadius: '1rem', border: '1px solid rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(10px)' }}>
+                <span style={{ color: '#c3151c', fontSize: '1.5rem' }}>💻</span>
+                <div style={{ textAlign: 'left' }}>
+                  <div style={{ color: 'white', fontWeight: 800, fontSize: '1.125rem' }}>Open Source</div>
+                  <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.875rem' }}>Contributions</div>
+                </div>
               </div>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'rgba(255, 255, 255, 0.05)', padding: '1rem 2rem', borderRadius: '1rem', border: '1px solid rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(10px)' }}>
-              <span style={{ color: '#c3151c', fontSize: '1.5rem' }}>💻</span>
-              <div style={{ textAlign: 'left' }}>
-                <div style={{ color: 'white', fontWeight: 800, fontSize: '1.125rem' }}>Open Source</div>
-                <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.875rem' }}>Contributions</div>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </AnimateOnScroll>
 
       <section className={layoutStyles.section}>
         <div className={styles.researchContainer}>
-          <div style={{ marginTop: '2rem' }}>
+          {featuredPaper && (
+            <div style={{ marginTop: '-6rem', position: 'relative', zIndex: 10, background: 'linear-gradient(135deg, #1e293b, #0f172a)', borderRadius: '16px', padding: '2rem', border: '1px solid rgba(255, 255, 255, 0.1)', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                <span style={{ padding: '0.25rem 0.75rem', borderRadius: '2rem', fontSize: '0.75rem', fontWeight: 700, background: 'rgba(59, 130, 246, 0.2)', color: '#60a5fa', border: '1px solid rgba(59, 130, 246, 0.3)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Featured Research</span>
+                <span style={{ padding: '0.25rem 0.75rem', borderRadius: '2rem', fontSize: '0.75rem', fontWeight: 600, background: 'rgba(255, 255, 255, 0.05)', color: '#cbd5e1', border: '1px solid rgba(255, 255, 255, 0.1)' }}>{featuredPaper.category || 'Cybersecurity'}</span>
+              </div>
+              <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'white', marginBottom: '1rem', lineHeight: 1.3 }}>
+                <Link href={`/research/${featuredPaper.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                  {featuredPaper.title}
+                </Link>
+              </h2>
+              <p style={{ color: '#94a3b8', fontSize: '1rem', lineHeight: 1.6, marginBottom: '1.5rem', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                {featuredPaper.abstract}
+              </p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                <div style={{ color: '#cbd5e1', fontSize: '0.875rem', fontWeight: 500 }}>
+                  By {featuredPaper.authors && Array.isArray(featuredPaper.authors) && featuredPaper.authors.length > 0 ? featuredPaper.authors.map((a: any) => a.name).join(', ') : featuredPaper.author || 'Elitech Research Labs'}
+                </div>
+                <Link href={`/research/${featuredPaper.slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.25rem', borderRadius: '0.5rem', background: 'white', color: '#0f172a', fontWeight: 600, textDecoration: 'none', transition: 'background 0.2s' }}>
+                  Read Full Paper →
+                </Link>
+              </div>
+            </div>
+          )}
+
+          <div style={{ marginTop: featuredPaper ? '3rem' : '2rem' }}>
             <ResearchList />
           </div>
 

@@ -52,8 +52,15 @@ export default function WebDevelopmentPage() {
         "name": "Custom Website Development Nigeria",
         "serviceType": "Web Development",
         "provider": {
-          "@type": "Organization",
-          "name": "Elitech Hub"
+          "@type": "LocalBusiness",
+          "name": "Elitech Hub",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Lagos",
+            "addressRegion": "LA",
+            "addressCountry": "NG"
+          },
+          "url": "https://elitechub.com"
         },
         "areaServed": ["Lagos", "Ibadan", "Abuja", "Nigeria"],
         "description": "Premium custom websites and web applications built for performance, security, and SEO."
@@ -304,6 +311,30 @@ export default function WebDevelopmentPage() {
                 <p>Implementing Content Security Policies and modern security headers.</p>
               </div>
             </div>
+          </AnimateOnScroll>
+        </section>
+
+        {/* Case Studies / See Our Work */}
+        <section className={styles.processSection} style={{ background: '#f8fafc', padding: '4rem 5%', textAlign: 'center' }}>
+          <AnimateOnScroll direction="up">
+            <h2 className={styles.sectionTitle} style={{ color: '#0f172a' }}>See Our Security-First Work</h2>
+            <p className={styles.sectionSubtitle} style={{ color: '#475569', marginBottom: '2rem' }}>
+              Explore how we've helped organizations build secure, high-performance web applications.
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center', marginBottom: '2rem' }}>
+              <Link href="/portfolio/cyberoutreach-agent" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'white', border: '1px solid #e2e8f0', padding: '1rem 1.5rem', borderRadius: '12px', color: '#0f172a', fontWeight: 600, textDecoration: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
+                <Globe size={18} color="#3b82f6" /> CyberOutreach Platform
+              </Link>
+              <Link href="/portfolio/elitech-admin-bot" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'white', border: '1px solid #e2e8f0', padding: '1rem 1.5rem', borderRadius: '12px', color: '#0f172a', fontWeight: 600, textDecoration: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
+                <Code size={18} color="#10b981" /> Elitech Admin System
+              </Link>
+              <Link href="/portfolio/rusty-threads-bot" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'white', border: '1px solid #e2e8f0', padding: '1rem 1.5rem', borderRadius: '12px', color: '#0f172a', fontWeight: 600, textDecoration: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
+                <Zap size={18} color="#f59e0b" /> Rusty Threads Bot
+              </Link>
+            </div>
+            <Link href="/portfolio" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: '#3b82f6', fontWeight: 700, textDecoration: 'none' }}>
+              View all case studies <ArrowRight size={16} />
+            </Link>
           </AnimateOnScroll>
         </section>
 
