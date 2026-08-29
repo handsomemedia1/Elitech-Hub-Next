@@ -115,74 +115,80 @@ END;
 $$;
 
 -- 4. Enforce Read Security for Unpublished Papers (C6)
+-- ARCHITECTURE NOTE:
+-- This application uses a CUSTOM JWT system (elitech_token) signed with JWT_SECRET
+-- and is NOT integrated with Supabase Auth. auth.uid() is always NULL for all
+-- anon-key or direct API requests. Therefore:
+--   - All auth.uid()-based RLS policies have been REMOVED (they are dead code).
+--   - Application-layer enforcement (requireAuth, getServerUser) in Next.js API routes
+--     uses the service_role key (bypasses RLS) and validates elitech_token.
+--   - RLS here implements DENY-BY-DEFAULT for anonymous direct DB access only.
 ALTER TABLE research ENABLE ROW LEVEL SECURITY;
 
--- Drop existing public read policy if it exists (usually "Research visible to all")
--- Let's make sure we safely recreate policies.
 DROP POLICY IF EXISTS "Research visible to all" ON research;
 DROP POLICY IF EXISTS "Public can view published research" ON research;
+DROP POLICY IF EXISTS "Anon can view published research only" ON research;
+DROP POLICY IF EXISTS "Submitters can view their own unpublished research" ON research;
 DROP POLICY IF EXISTS "Submitter can manage own research" ON research;
+DROP POLICY IF EXISTS "Admins can view all research" ON research;
+DROP POLICY IF EXISTS "Admins can update all research" ON research;
+DROP POLICY IF EXISTS "Admins can delete research" ON research;
 
-CREATE POLICY "Public can view published research" ON research
-  FOR SELECT USING (published = true OR publication_status = 'published');
+-- Only policy: anon key sees published rows only.
+-- Service role (used in all API routes) bypasses this.
+CREATE POLICY "Anon can view published research only" ON research
+  FOR SELECT
+  USING (published = true OR publication_status = 'published');
 
-CREATE POLICY "Submitters can view their own unpublished research" ON research
-  FOR SELECT USING (auth.uid() = submitter_id);
-
-CREATE POLICY "Submitter can manage own research" ON research
-  FOR ALL USING (auth.uid() = submitter_id);
-
--- (Admins bypass RLS normally using the service_role key on the backend, 
--- or you would need an admin role policy here if using anon key for admins).
-
--- 5. RLS for New Tables
+-- 5. RLS for New Tables (same architecture)
 ALTER TABLE researcher_profiles ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Public profiles are viewable by everyone." ON researcher_profiles FOR SELECT USING (true);
-CREATE POLICY "Users can insert their own profile." ON researcher_profiles FOR INSERT WITH CHECK (auth.uid() = id);
-CREATE POLICY "Users can update their own profile." ON researcher_profiles FOR UPDATE USING (auth.uid() = id);
+DROP POLICY IF EXISTS "Public profiles are viewable by everyone." ON researcher_profiles;
+DROP POLICY IF EXISTS "Users can insert their own profile." ON researcher_profiles;
+DROP POLICY IF EXISTS "Users can update their own profile." ON researcher_profiles;
+DROP POLICY IF EXISTS "Profiles publicly readable" ON researcher_profiles;
+CREATE POLICY "Profiles publicly readable" ON researcher_profiles
+  FOR SELECT USING (true);
+-- INSERT/UPDATE via service_role in API routes only
 
 ALTER TABLE research_authors ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Public authors viewable" ON research_authors FOR SELECT USING (true);
-CREATE POLICY "Submitter can manage authors" ON research_authors FOR ALL USING (
-    EXISTS (SELECT 1 FROM research WHERE research.id = research_authors.research_id AND research.submitter_id = auth.uid())
-);
+DROP POLICY IF EXISTS "Public authors viewable" ON research_authors;
+DROP POLICY IF EXISTS "Submitter can manage authors" ON research_authors;
+DROP POLICY IF EXISTS "Authors publicly readable" ON research_authors;
+CREATE POLICY "Authors publicly readable" ON research_authors
+  FOR SELECT USING (true);
 
 ALTER TABLE research_versions ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Public versions viewable" ON research_versions FOR SELECT USING (true);
-CREATE POLICY "Submitter can manage versions" ON research_versions FOR ALL USING (
-    EXISTS (SELECT 1 FROM research WHERE research.id = research_versions.research_id AND research.submitter_id = auth.uid())
-);
+DROP POLICY IF EXISTS "Public versions viewable" ON research_versions;
+DROP POLICY IF EXISTS "Submitter can manage versions" ON research_versions;
+-- No anon SELECT on versions: only accessible via service_role in API routes
 
 ALTER TABLE research_identifiers ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Public identifiers viewable" ON research_identifiers FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public identifiers viewable" ON research_identifiers;
+DROP POLICY IF EXISTS "Identifiers publicly readable" ON research_identifiers;
+CREATE POLICY "Identifiers publicly readable" ON research_identifiers
+  FOR SELECT USING (true);
 
 ALTER TABLE web_case_studies ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Public case studies viewable" ON web_case_studies FOR SELECT USING (published = true);
+DROP POLICY IF EXISTS "Public case studies viewable" ON web_case_studies;
+DROP POLICY IF EXISTS "Published case studies publicly readable" ON web_case_studies;
+CREATE POLICY "Published case studies publicly readable" ON web_case_studies
+  FOR SELECT USING (published = true);
 
 -- 6. Storage Bucket Security (M7)
--- Protect unpublished files in 'public-images' or 'research' bucket.
--- Assuming files are currently in a public bucket, we should enforce RLS on storage.objects.
--- However, storage policies depend on the exact bucket name (usually "public-images").
--- This allows anyone to download the file if the research is published, or if they are the submitter.
-/*
-CREATE POLICY "Protect unpublished PDFs" ON storage.objects
-  FOR SELECT USING (
-    bucket_id = 'public-images' AND
-    (
-      -- Either the file is linked to a published paper
-      EXISTS (
-        SELECT 1 FROM research 
-        WHERE research.file_url LIKE '%' || storage.objects.name 
-        AND (research.published = true OR research.publication_status = 'published')
-      )
-      -- OR the user is the submitter
-      OR EXISTS (
-        SELECT 1 FROM research 
-        WHERE research.file_url LIKE '%' || storage.objects.name 
-        AND research.submitter_id = auth.uid()
-      )
-    )
-  );
-*/
--- (Note: Storage policies can be complex if files are shared, so leaving commented as an example.
--- We will handle C2/M7 in the app layer primarily to avoid breaking existing image assets).
+-- Create a private bucket. ALL direct access is blocked.
+-- Files are served ONLY via /api/research/download (service_role signed URL + app-layer auth).
+INSERT INTO storage.buckets (id, name, public)
+  VALUES ('research-files', 'research-files', false)
+  ON CONFLICT (id) DO UPDATE SET public = false;
+
+-- Remove any old storage policies
+DROP POLICY IF EXISTS "Block anon access to research files" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated users can upload research files" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated can read own research files" ON storage.objects;
+-- No new storage SELECT policies: service_role bypasses all storage RLS.
+
+-- OPERATOR ACTION REQUIRED:
+-- After running this migration, the admin/lab page (admin/lab/page.tsx line 17)
+-- uses an anon-key client-side Supabase query and will be restricted to
+-- published-only rows by RLS. Drafts will not appear in the admin lab.
+-- Fix: migrate admin/lab to fetch via a protected server-side API route using service_role.

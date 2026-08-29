@@ -129,17 +129,23 @@ export default function AdvancedUploadPortal() {
       const cleanAuthors = authors.filter(a => a.name.trim() !== '');
       const keywordArray = formData.keywords.split(',').map(k => k.trim()).filter(k => k);
 
-      // Upload file to Supabase Storage
-      const fileExt = file.name.split('.').pop();
-      const filePath = `research/${slug}.${fileExt}`;
-      const { error: uploadError } = await supabase.storage.from('public-images').upload(filePath, file);
-      
-      if (uploadError) {
-        throw new Error(`File upload failed: ${uploadError.message}`);
+      // Upload file to private research-files bucket via secure API
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', file);
+      uploadFormData.append('researchId', slug);
+
+      const uploadRes = await fetch('/api/research/upload', {
+        method: 'POST',
+        body: uploadFormData,
+      });
+
+      if (!uploadRes.ok) {
+        const uploadJson = await uploadRes.json();
+        throw new Error(`File upload failed: ${uploadJson.error}`);
       }
-      
-      const { data: urlData } = supabase.storage.from('public-images').getPublicUrl(filePath);
-      const file_url = urlData.publicUrl;
+
+      const uploadJson = await uploadRes.json();
+      const file_url = uploadJson.filePath; // Stored as private path; served via /api/research/download
 
       // Insert into database
       const newPaper = {

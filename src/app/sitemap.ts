@@ -21,10 +21,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .eq('published', true);
     blogPosts = bPosts;
       
-    // Fetch dynamic research papers
+    // Fetch dynamic research papers (only published)
     const { data: rPapers } = await supabase
       .from('research')
-      .select('slug, updated_at, created_at');
+      .select('slug, updated_at, created_at')
+      .or('published.eq.true,publication_status.eq.published');
     researchPapers = rPapers;
 
     // Fetch dynamic case studies

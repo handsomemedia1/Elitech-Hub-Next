@@ -233,7 +233,7 @@ export default function PortfolioPage() {
             <div className={styles.ctaContent}>
               <h2 className={styles.ctaTitle}>Ready to build your digital presence?</h2>
               <p className={styles.ctaDescription}>
-                Let's collaborate to create a secure, high-performing website that perfectly represents your brand.
+                Let's collaborate on your next <Link href="/services/web-development" style={{ color: 'inherit', textDecoration: 'underline' }}>custom web development project</Link> to create a secure, high-performing website that perfectly represents your brand.
               </p>
               <Link href="/contact" className={styles.ctaBtn}>
                 Start a Project Today

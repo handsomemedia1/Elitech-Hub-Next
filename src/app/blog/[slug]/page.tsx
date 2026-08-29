@@ -236,23 +236,46 @@ export default async function BlogPostPage({
               </a>
             </div>
 
-            <div className={styles.sidebarCard}>
-              <GraduationCap className={styles.sidebarIcon} size={28} />
-              <h3 className={styles.sidebarTitle}>Master Cybersecurity</h3>
-              <p className={styles.sidebarText}>Enroll in our industry-recognized practical training programs.</p>
-              <Link href="/programs" className={styles.sidebarLink}>
-                Enroll Now →
-              </Link>
-            </div>
-
-            <div className={styles.sidebarCard}>
-              <BookOpen className={styles.sidebarIcon} size={28} />
-              <h3 className={styles.sidebarTitle}>Cybersecurity Research</h3>
-              <p className={styles.sidebarText}>Read our latest published papers and open-source threat intelligence.</p>
-              <Link href="/research" className={styles.sidebarLink}>
-                Read Research →
-              </Link>
-            </div>
+            {/* Conditionally render Web Dev or Cyber CTA based on category */}
+            {post.category?.toLowerCase().includes('development') || post.category?.toLowerCase().includes('web') || post.category?.toLowerCase().includes('ai') ? (
+              <>
+                <div className={styles.sidebarCard}>
+                  <Briefcase className={styles.sidebarIcon} size={28} />
+                  <h3 className={styles.sidebarTitle}>Custom Web Development</h3>
+                  <p className={styles.sidebarText}>Build secure, high-performing websites and web applications.</p>
+                  <Link href="/services/web-development" className={styles.sidebarLink}>
+                    View Services →
+                  </Link>
+                </div>
+                <div className={styles.sidebarCard}>
+                  <BookOpen className={styles.sidebarIcon} size={28} />
+                  <h3 className={styles.sidebarTitle}>AI & Chatbot Solutions</h3>
+                  <p className={styles.sidebarText}>Automate your business with custom agentic AI applications.</p>
+                  <Link href="/services/ai-chatbots" className={styles.sidebarLink}>
+                    Learn More →
+                  </Link>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className={styles.sidebarCard}>
+                  <GraduationCap className={styles.sidebarIcon} size={28} />
+                  <h3 className={styles.sidebarTitle}>Master Cybersecurity</h3>
+                  <p className={styles.sidebarText}>Enroll in our industry-recognized practical training programs.</p>
+                  <Link href="/programs" className={styles.sidebarLink}>
+                    Enroll Now →
+                  </Link>
+                </div>
+                <div className={styles.sidebarCard}>
+                  <BookOpen className={styles.sidebarIcon} size={28} />
+                  <h3 className={styles.sidebarTitle}>Cybersecurity Research</h3>
+                  <p className={styles.sidebarText}>Read our latest published papers and open-source threat intelligence.</p>
+                  <Link href="/research" className={styles.sidebarLink}>
+                    Read Research →
+                  </Link>
+                </div>
+              </>
+            )}
 
             <div className={styles.sidebarCard}>
               <Briefcase className={styles.sidebarIcon} size={28} />

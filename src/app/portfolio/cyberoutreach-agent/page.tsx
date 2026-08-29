@@ -42,7 +42,7 @@ export default function CyberOutreachCaseStudy() {
                   <div>
                     <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1rem', color: '#0f172a' }}>Our Solution</h3>
                     <p style={{ color: '#475569', lineHeight: 1.7 }}>
-                      We developed a fully automated SaaS platform leveraging Next.js for a lightning-fast frontend, coupled with a highly secure Supabase backend. The platform integrates LLMs to generate context-aware phishing simulations, deployed within isolated, secure sandboxes to prevent data leakage.
+                      Through our <Link href="/services/web-development" style={{ color: '#3b82f6', textDecoration: 'underline' }}>custom web development services</Link>, we developed a fully automated SaaS platform leveraging Next.js for a lightning-fast frontend, coupled with a highly secure Supabase backend. The platform integrates LLMs to generate context-aware phishing simulations, deployed within isolated, secure sandboxes to prevent data leakage.
                     </p>
                   </div>
                 </div>

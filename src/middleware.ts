@@ -83,6 +83,27 @@ export function middleware(request: NextRequest) {
     response.headers.set('Access-Control-Allow-Credentials', 'true');
   }
 
+  // ── Route Protection (Basic Cookie Check) ──────────────────────
+  // The actual crypto validation happens in Server Components / API routes.
+  // This just ensures unauthenticated users are bounced early.
+  if (path.startsWith('/admin') && path !== '/admin/login') {
+    if (!request.cookies.has('elitech_token')) {
+      return NextResponse.redirect(new URL('/admin/login', request.url));
+    }
+  }
+  
+  if (path.startsWith('/writer') && path !== '/writer/login') {
+    if (!request.cookies.has('elitech_token')) {
+      return NextResponse.redirect(new URL('/writer/login', request.url));
+    }
+  }
+
+  if (path.startsWith('/researcher') && path !== '/researcher/login') {
+    if (!request.cookies.has('elitech_token')) {
+      return NextResponse.redirect(new URL('/researcher/login', request.url));
+    }
+  }
+
   return response;
 }
 

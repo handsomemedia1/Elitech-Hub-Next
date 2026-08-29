@@ -21,8 +21,9 @@ export default function ResearcherProfile() {
 
   useEffect(() => {
     async function loadProfile() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
+      const res = await fetch('/api/auth/me');
+      if (res.ok) {
+        const { user } = await res.json();
         const { data } = await supabase
           .from('researcher_profiles')
           .select('*')
@@ -45,8 +46,9 @@ export default function ResearcherProfile() {
     setSaving(true);
     setMessage('');
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    const res = await fetch('/api/auth/me');
+    if (!res.ok) return;
+    const { user } = await res.json();
 
     const { error } = await supabase
       .from('researcher_profiles')

@@ -13,8 +13,9 @@ export default function ResearcherSubmissions() {
 
   useEffect(() => {
     async function fetchSubmissions() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      const res = await fetch('/api/auth/me');
+      if (!res.ok) return;
+      const { user } = await res.json();
 
       const { data, error } = await supabase
         .from('research')
@@ -119,11 +120,19 @@ export default function ResearcherSubmissions() {
                             onChange={async (e) => {
                               const file = e.target.files?.[0];
                               if (!file || !item.id) return;
-                              const filePath = `research/${item.id}-v${Date.now()}.pdf`;
-                              const { error: uploadErr } = await supabase.storage.from('public-images').upload(filePath, file);
-                              if (uploadErr) { alert('Upload failed: ' + uploadErr.message); return; }
-                              const { data: urlData } = supabase.storage.from('public-images').getPublicUrl(filePath);
-                              const newUrl = urlData.publicUrl;
+                              const formData = new FormData();
+                              formData.append('file', file);
+                              formData.append('researchId', item.id);
+                              
+                              const res = await fetch('/api/research/upload', {
+                                method: 'POST',
+                                body: formData
+                              });
+                              
+                              const data = await res.json();
+                              if (!res.ok) { alert('Upload failed: ' + data.error); return; }
+                              
+                              const newUrl = data.filePath;
                               await supabase.from('research_versions').insert([{
                                 research_id: item.id,
                                 file_url: newUrl,

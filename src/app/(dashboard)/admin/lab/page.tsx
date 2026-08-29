@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
 import { FlaskConical, Search, FileText, Edit2, Trash2, ExternalLink, CheckCircle } from 'lucide-react';
 import styles from '../users/users.module.css';
 
@@ -14,7 +13,9 @@ export default function AdminLab() {
 
   useEffect(() => {
     async function fetchResearch() {
-      const { data, error } = await supabase.from('research').select('*, submitter:users(name, email)').order('created_at', { ascending: false });
+      const res = await fetch('/api/admin/research');
+      if (!res.ok) { setLoading(false); return; }
+      const { data } = await res.json();
       if (data) setPapers(data);
       setLoading(false);
     }
@@ -24,13 +25,17 @@ export default function AdminLab() {
   const handleDelete = async (id: string, title: string) => {
     if (!window.confirm(`Are you sure you want to delete "${title}"?`)) return;
     setPapers(papers.filter(p => p.id !== id));
-    await supabase.from('research').delete().eq('id', id);
+    await fetch('/api/admin/research?id=' + id, { method: 'DELETE' });
   };
 
   const handleStatusChange = async (id: string, newStatus: string) => {
-    const isPublished = newStatus === 'published';
-    const { error } = await supabase.from('research').update({ publication_status: newStatus, published: isPublished }).eq('id', id);
-    if (!error) {
+    const res = await fetch('/api/admin/research', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, publication_status: newStatus }),
+    });
+    if (res.ok) {
+      const isPublished = newStatus === 'published';
       setPapers(papers.map(p => p.id === id ? { ...p, publication_status: newStatus, published: isPublished } : p));
     } else {
       alert('Error updating status');

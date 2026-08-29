@@ -65,7 +65,7 @@ export async function POST(request: Request) {
     tokenVersion: user.token_version ?? 0,
   });
 
-  return NextResponse.json({
+  const response = NextResponse.json({
     message: 'Login successful',
     user: {
       id: user.id,
@@ -77,4 +77,15 @@ export async function POST(request: Request) {
     },
     token,
   });
+
+  // Set secure HttpOnly cookie for server-side authentication
+  response.cookies.set('elitech_token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 7 * 24 * 60 * 60, // 7 days
+    path: '/',
+  });
+
+  return response;
 }

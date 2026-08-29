@@ -10,20 +10,13 @@ export const metadata = {
   title: 'Custom Website Development in Nigeria | Secure, SEO-Optimised | Elitech Hub',
   description: 'Elitech Hub builds premium custom websites and web applications for businesses in Lagos, Ibadan, Abuja, and across Nigeria. Fast, secure, SEO-optimised, and built to convert.',
   keywords: [
-    'custom website development Nigeria',
-    'web development company Lagos',
-    'website development Ibadan',
-    'web development agency Nigeria',
-    'custom web application Nigeria',
-    'secure website development Nigeria',
-    'SEO website Nigeria',
-    'Next.js developer Nigeria',
-    'React developer Lagos',
-    'ecommerce website Nigeria',
-    'business website Nigeria',
-    'web developer Ibadan',
-    'affordable web development Nigeria',
-    'professional website design Nigeria',
+    'custom website development',
+    'web development company',
+    'business website design',
+    'ecommerce website development',
+    'custom web application',
+    'secure website development',
+    'Elitech Hub web development',
   ],
   alternates: {
     canonical: 'https://elitechub.com/services/web-development',
@@ -52,14 +45,8 @@ export default function WebDevelopmentPage() {
         "name": "Custom Website Development Nigeria",
         "serviceType": "Web Development",
         "provider": {
-          "@type": "LocalBusiness",
+          "@type": "Organization",
           "name": "Elitech Hub",
-          "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "Lagos",
-            "addressRegion": "LA",
-            "addressCountry": "NG"
-          },
           "url": "https://elitechub.com"
         },
         "areaServed": ["Lagos", "Ibadan", "Abuja", "Nigeria"],

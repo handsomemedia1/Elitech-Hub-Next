@@ -42,7 +42,7 @@ export default function AdminBotCaseStudy() {
                   <div>
                     <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1rem', color: '#0f172a' }}>Our Solution</h3>
                     <p style={{ color: '#475569', lineHeight: 1.7 }}>
-                      We built a bespoke Next.js admin dashboard connected to our Supabase backend. The system features strict Role-Based Access Control (RBAC), allowing fine-grained permissions for writers, researchers, and super-admins, ensuring each role only sees the data they are authorized to interact with.
+                      Through our <Link href="/services/web-development" style={{ color: '#10b981', textDecoration: 'underline' }}>custom web development services</Link>, we built a bespoke Next.js admin dashboard connected to our Supabase backend. The system features strict Role-Based Access Control (RBAC), allowing fine-grained permissions for writers, researchers, and super-admins, ensuring each role only sees the data they are authorized to interact with.
                     </p>
                   </div>
                 </div>

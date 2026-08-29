@@ -13,8 +13,9 @@ export default function ResearcherOverview() {
 
   useEffect(() => {
     async function fetchDashboardData() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      const res = await fetch('/api/auth/me');
+      if (!res.ok) return;
+      const { user } = await res.json();
 
       const { data: researchItems, error } = await supabase
         .from('research')

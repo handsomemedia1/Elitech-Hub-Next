@@ -71,7 +71,16 @@ export function extractBearerToken(authHeader: string | null): string | null {
 export async function requireAuth(
   request: Request
 ): Promise<{ user: AuthUser } | { error: string; status: number }> {
-  const token = extractBearerToken(request.headers.get('authorization'));
+  // Check authorization header first, then fallback to cookie
+  let token = extractBearerToken(request.headers.get('authorization'));
+  
+  if (!token) {
+    const cookieHeader = request.headers.get('cookie');
+    if (cookieHeader) {
+      const match = cookieHeader.match(/(?:^|;\s*)elitech_token=([^;]+)/);
+      if (match) token = match[1];
+    }
+  }
 
   if (!token) {
     return { error: 'Authentication required', status: 401 };
@@ -98,8 +107,6 @@ export async function requireAuth(
   }
 
   // ── Token version check ───────────────────────────────────────────────
-  // If the DB has a token_version set, the JWT must carry a matching version.
-  // Bumping the DB column instantly invalidates ALL previously issued JWTs.
   if (
     user.token_version !== undefined &&
     user.token_version !== null &&
@@ -109,6 +116,39 @@ export async function requireAuth(
   }
 
   return { user: user as AuthUser };
+}
+
+import { cookies } from 'next/headers';
+
+/** Server Component utility to get the currently logged-in user via cookie */
+export async function getServerUser(): Promise<AuthUser | null> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('elitech_token')?.value;
+  if (!token) return null;
+
+  const payload = verifyToken(token);
+  if (!payload) return null;
+
+  const supabase = createServiceClient();
+  if (!supabase) return null;
+
+  const { data: user } = await supabase
+    .from('users')
+    .select('id, email, name, country, has_access, role, token_version')
+    .eq('id', payload.userId)
+    .single();
+
+  if (!user) return null;
+
+  if (
+    user.token_version !== undefined &&
+    user.token_version !== null &&
+    payload.tokenVersion !== user.token_version
+  ) {
+    return null;
+  }
+
+  return user as AuthUser;
 }
 
 /** Check admin role — call after requireAuth */

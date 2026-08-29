@@ -42,7 +42,7 @@ export default function RustyThreadsCaseStudy() {
                   <div>
                     <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1rem', color: '#0f172a' }}>Our Solution</h3>
                     <p style={{ color: '#475569', lineHeight: 1.7 }}>
-                      We re-wrote our entire bot infrastructure from scratch using Rust and the Serenity framework. The new bot architecture handles thousands of concurrent events with an incredibly tiny memory footprint, utilizing asynchronous programming to avoid any blocking operations during moderation tasks.
+                      Using our expertise in <Link href="/services/ai-chatbots" style={{ color: '#f59e0b', textDecoration: 'underline' }}>custom AI chatbot development</Link>, we re-wrote our entire bot infrastructure from scratch using Rust and the Serenity framework. The new bot architecture handles thousands of concurrent events with an incredibly tiny memory footprint, utilizing asynchronous programming to avoid any blocking operations during moderation tasks.
                     </p>
                   </div>
                 </div>

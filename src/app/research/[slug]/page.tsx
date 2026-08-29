@@ -1,5 +1,6 @@
 import React from 'react';
-import { supabase } from '@/lib/supabase';
+import { getServerUser } from '@/lib/auth';
+import { createServiceClient } from '@/lib/supabase-server';
 import { notFound } from 'next/navigation';
 import type { Metadata, ResolvingMetadata } from 'next';
 import PageLayout from '@/components/PageLayout';
@@ -19,8 +20,11 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const { slug } = await params;
+  // Use service client so metadata generation works for all papers
+  const supabaseAdmin = createServiceClient();
+  if (!supabaseAdmin) return { title: 'Paper Not Found | Elitech Hub Research' };
 
-  const { data: paper } = await supabase
+  const { data: paper } = await supabaseAdmin
     .from('research')
     .select('*')
     .eq('slug', slug)
@@ -84,6 +88,10 @@ export async function generateMetadata(
     },
   };
 
+  const authorList = paper.authors && Array.isArray(paper.authors) && paper.authors.length > 0
+    ? paper.authors.map((a: any) => a.name || a.full_name)
+    : [paper.author || 'Elitech Hub'];
+
   if (!isPublished) {
     return baseMeta;
   }
@@ -92,11 +100,11 @@ export async function generateMetadata(
     ...baseMeta,
     other: {
       'citation_title': paper.title,
-      'citation_author': authorsString,
+      'citation_author': authorList,
       'citation_publication_date': publishDate.toISOString().split('T')[0],
       'citation_publisher': 'Elitech Hub',
       'citation_language': 'en',
-      ...(paper.file_url && { 'citation_pdf_url': paper.file_url }),
+      ...(paper.file_url && { 'citation_pdf_url': `https://elitechub.com/api/research/download?id=${paper.id}` }),
       ...(paper.doi && { 'citation_doi': paper.doi }),
       ...(paper.abstract && { 'DC.description': paper.abstract.substring(0, 300) }),
     },
@@ -107,7 +115,11 @@ export async function generateMetadata(
 export default async function ResearchPaperPage({ params }: Props) {
   const { slug } = await params;
 
-  const { data: paper } = await supabase
+  // Use service_role client to fetch — RLS bypass. Auth is enforced below in app code.
+  const supabaseAdmin = createServiceClient();
+  if (!supabaseAdmin) notFound();
+
+  const { data: paper } = await supabaseAdmin!
     .from('research')
     .select('*')
     .eq('slug', slug)
@@ -118,8 +130,9 @@ export default async function ResearchPaperPage({ params }: Props) {
   const isPublished = paper.published === true || paper.publication_status === 'published';
 
   if (!isPublished) {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user || user.id !== paper.submitter_id) {
+    // App-layer gate: only the submitter or an admin can view a draft
+    const user = await getServerUser();
+    if (!user || (user.id !== paper.submitter_id && user.role !== 'admin')) {
       notFound();
     }
   }
@@ -160,7 +173,7 @@ export default async function ResearchPaperPage({ params }: Props) {
       ? paper.authors
       : [{ name: paper.author || 'Elitech Research Labs', institution: 'Elitech Hub' }];
 
-  const publishDate = new Date(paper.created_at);
+  const publishDate = paper.published_at ? new Date(paper.published_at) : new Date(paper.created_at);
 
   // ─── JSON-LD SCHEMA (rendered in HTML by Next.js, fully crawlable) ──────────
   const jsonLd = {
@@ -307,16 +320,18 @@ export default async function ResearchPaperPage({ params }: Props) {
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#64748b', fontSize: '0.85rem' }}>
               <Calendar size={15} style={{ color: '#3b82f6' }} />
-              <span>{publishDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+              <span>Published {publishDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#64748b', fontSize: '0.85rem' }}>
               <Eye size={15} style={{ color: '#3b82f6' }} />
-              <span>{(paper.views || 0).toLocaleString()} views</span>
+              <span>{(paper.views || 0).toLocaleString()} reads</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#64748b', fontSize: '0.85rem' }}>
-              <Award size={15} style={{ color: '#3b82f6' }} />
-              <span>{paper.citations_count || 0} citations</span>
-            </div>
+            {paper.citations_count > 0 && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#64748b', fontSize: '0.85rem' }}>
+                <Award size={15} style={{ color: '#3b82f6' }} />
+                <span>{paper.citations_count} citation {paper.citations_count === 1 ? 'export' : 'exports'}</span>
+              </div>
+            )}
             {paper.doi && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#64748b', fontSize: '0.85rem' }}>
                 <Globe size={15} style={{ color: '#3b82f6' }} />
@@ -371,8 +386,8 @@ export default async function ResearchPaperPage({ params }: Props) {
             {paper.keywords && paper.keywords.length > 0 && (
               <section style={{ marginBottom: '3rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
-                  <Tag size={18} style={{ color: '#3b82f6' }} />
-                  <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', margin: 0 }}>Keywords</h3>
+                  <Tag size={20} style={{ color: '#3b82f6' }} />
+                  <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#0f172a', margin: 0 }}>Keywords</h2>
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                   {paper.keywords.map((kw: string, i: number) => (
@@ -442,22 +457,70 @@ export default async function ResearchPaperPage({ params }: Props) {
               background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px',
               padding: '1.75rem', marginBottom: '3rem',
             }}>
-              <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', marginBottom: '1.25rem' }}>Publication Details</h3>
-              <dl style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', margin: 0 }}>
+              <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#0f172a', marginBottom: '1.25rem' }}>Paper Information</h2>
+              <dl style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '1.25rem', margin: 0 }}>
                 {[
                   { label: 'Publisher', value: 'Elitech Hub' },
-                  { label: 'Type', value: paper.type?.toUpperCase() || 'PDF' },
+                  { label: 'Research Type', value: paper.research_type || paper.type?.toUpperCase() || 'PDF' },
                   { label: 'Published', value: publishDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) },
                   { label: 'Category', value: paper.category || 'Cybersecurity' },
                   ...(paper.doi ? [{ label: 'DOI', value: paper.doi }] : []),
                   { label: 'Access', value: 'Open Access' },
+                  ...(paper.version ? [{ label: 'Version', value: `v${paper.version}` }] : []),
+                  ...(paper.license ? [{ label: 'License', value: paper.license }] : []),
                 ].map(({ label, value }) => (
                   <div key={label}>
                     <dt style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>{label}</dt>
-                    <dd style={{ fontSize: '0.95rem', color: '#0f172a', fontWeight: 500, margin: 0 }}>{value}</dd>
+                    <dd style={{ fontSize: '0.95rem', color: '#0f172a', fontWeight: 500, margin: 0, wordBreak: 'break-all' }}>{value}</dd>
                   </div>
                 ))}
               </dl>
+            </section>
+
+            {/* Full Paper section */}
+            {paper.file_url && (
+              <section style={{
+                background: 'linear-gradient(135deg, #eff6ff, #dbeafe)',
+                border: '1px solid #bfdbfe', borderRadius: '12px',
+                padding: '1.75rem', marginBottom: '3rem', textAlign: 'center',
+              }}>
+                <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#1e3a8a', marginBottom: '0.5rem' }}>Full Paper</h2>
+                <p style={{ color: '#3b82f6', fontSize: '0.95rem', marginBottom: '1.25rem' }}>
+                  Access the published research paper in PDF format.
+                </p>
+                <a
+                  href={`/api/research/download?id=${paper.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+                    background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', color: 'white',
+                    padding: '0.8rem 1.75rem', borderRadius: '8px', textDecoration: 'none',
+                    fontWeight: 700, fontSize: '0.95rem', boxShadow: '0 4px 12px rgba(37,99,235,0.3)',
+                  }}
+                >
+                  Download PDF
+                </a>
+              </section>
+            )}
+
+            {/* Inline Cite Section */}
+            <section style={{
+              background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px',
+              padding: '1.75rem', marginBottom: '3rem',
+            }}>
+              <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#0f172a', marginBottom: '1.25rem' }}>Cite This Research</h2>
+              <div style={{ maxWidth: '400px' }}>
+                <CiteModal
+                  title={paper.title}
+                  authors={authorsString}
+                  year={publishDate.getFullYear().toString()}
+                  doi={paper.doi}
+                  publisher="Elitech Hub"
+                  url={`https://elitechub.com/research/${slug}`}
+                  slug={slug}
+                />
+              </div>
             </section>
           </main>
 
@@ -478,7 +541,7 @@ export default async function ResearchPaperPage({ params }: Props) {
 
                 {paper.file_url ? (
                   <a
-                    href={paper.file_url}
+                    href={`/api/research/download?id=${paper.id}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{
@@ -510,7 +573,7 @@ export default async function ResearchPaperPage({ params }: Props) {
                 <CiteModal
                   title={paper.title}
                   authors={authorsString}
-                  year={new Date(paper.created_at).getFullYear().toString()}
+                  year={publishDate.getFullYear().toString()}
                   doi={paper.doi}
                   publisher="Elitech Hub"
                   url={`https://elitechub.com/research/${slug}`}
@@ -560,7 +623,7 @@ export default async function ResearchPaperPage({ params }: Props) {
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   {[
                     { icon: <Eye size={14} />, label: `${(paper.views || 0).toLocaleString()} reads` },
-                    { icon: <Award size={14} />, label: `${paper.citations_count || 0} citations` },
+                    ...(paper.citations_count > 0 ? [{ icon: <Award size={14} />, label: `${paper.citations_count} citation exports` }] : []),
                     { icon: <FileText size={14} />, label: `${(paper.type || 'PDF').toUpperCase()} document` },
                     { icon: <Globe size={14} />, label: 'Open Access' },
                   ].map(({ icon, label }, i) => (
@@ -574,14 +637,14 @@ export default async function ResearchPaperPage({ params }: Props) {
           </aside>
         </div>
 
-        {/* ── RELATED PUBLICATIONS ── */}
+        {/* ── RELATED RESEARCH ── */}
         {relatedPapers && relatedPapers.length > 0 && (
           <div style={{ background: '#f1f5f9', padding: '4rem 2rem', borderTop: '1px solid #e2e8f0' }}>
             <div className={styles.relatedInner}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>More from Elitech Research</h2>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>Related Research</h2>
                 <Link href="/research" style={{ color: '#3b82f6', fontWeight: 600, textDecoration: 'none', fontSize: '0.9rem' }}>
-                  View all publications →
+                  Browse all publications →
                 </Link>
               </div>
 
@@ -606,8 +669,8 @@ export default async function ResearchPaperPage({ params }: Props) {
                         {rp.abstract || 'Click to read the full paper.'}
                       </p>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', color: '#94a3b8' }}>
-                        <span>{new Date(rp.created_at).getFullYear()}</span>
-                        <span style={{ color: '#3b82f6', fontWeight: 600 }}>Read Paper →</span>
+                        <span>{new Date(rp.published_at || rp.created_at).getFullYear()}</span>
+                        <span style={{ color: '#3b82f6', fontWeight: 600 }}>Read Research →</span>
                       </div>
                     </article>
                   </Link>

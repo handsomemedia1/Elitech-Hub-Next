@@ -26,29 +26,35 @@ export default function SubmitResearch() {
   const [message, setMessage] = useState({ type: '', text: '' });
 
   useEffect(() => {
-    if (editId) {
-      fetchResearchData();
+    async function fetchResearchData() {
+      setLoading(true);
+      const res = await fetch('/api/researcher/submit?id=' + editId);
+      if (res.ok) {
+        const { data } = await res.json();
+        if (data) {
+          setFormData({
+            title: data.title,
+            abstract: data.abstract || '',
+            category: data.category,
+            file_url: data.file_url || '',
+            keywords: data.keywords ? data.keywords.join(', ') : '',
+            research_type: data.research_type || data.type || 'article',
+            rights_confirmed: data.rights_confirmed || false,
+          });
+          if (data.authors && typeof data.authors === 'string') {
+            try {
+              const parsed = JSON.parse(data.authors);
+              if (Array.isArray(parsed)) setAuthors(parsed);
+            } catch {
+              // fallback
+            }
+          }
+        }
+      }
+      setLoading(false);
     }
+    if (editId) fetchResearchData();
   }, [editId]);
-
-  async function fetchResearchData() {
-    setLoading(true);
-    const { data, error } = await supabase.from('research').select('*').eq('id', editId).single();
-    if (data) {
-      setFormData({
-        title: data.title || '',
-        abstract: data.abstract || '',
-        keywords: data.keywords ? data.keywords.join(', ') : '',
-        research_type: data.research_type || data.type || 'article',
-        file_url: data.file_url || '',
-        category: data.category || 'Cybersecurity',
-        rights_confirmed: data.rights_confirmed || false,
-      });
-      // Fetch authors if relational, or parse JSONB
-      // For simplicity in this UI before full backend integration, we'll leave authors empty on load
-    }
-    setLoading(false);
-  }
 
   const handleAuthorChange = (index: number, field: string, value: string) => {
     const newAuthors = [...authors];
@@ -76,8 +82,9 @@ export default function SubmitResearch() {
     }
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Authentication required.");
+      const res = await fetch('/api/auth/me');
+      if (!res.ok) throw new Error("Authentication required.");
+      const { user } = await res.json();
 
       const slug = formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
       const keywordsArray = formData.keywords.split(',').map(k => k.trim()).filter(k => k);
@@ -96,28 +103,24 @@ export default function SubmitResearch() {
         published: false, // Force false until admin review
         submitter_id: user.id
       };
+      const submitRes = await fetch('/api/researcher/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          editId,
+          researchPayload,
+          authorsPayload: authors.filter(a => a.name).map((a, i) => ({ 
+            full_name: a.name, 
+            institution: a.institution, 
+            orcid: a.orcid, 
+            author_order: i + 1 
+          }))
+        })
+      });
 
-      let researchId = editId;
-
-      if (editId) {
-        const { error } = await supabase.from('research').update(researchPayload).eq('id', editId);
-        if (error) throw error;
-      } else {
-        const { data, error } = await supabase.from('research').insert([researchPayload]).select('id').single();
-        if (error) throw error;
-        researchId = data.id;
-      }
-
-      if (researchId) {
-        await supabase.from('research_authors').delete().eq('research_id', researchId);
-        const authorsPayload = authors.filter(a => a.name).map((a, i) => ({ 
-          full_name: a.name, 
-          institution: a.institution, 
-          orcid: a.orcid, 
-          research_id: researchId, 
-          author_order: i + 1 
-        }));
-        await supabase.from('research_authors').insert(authorsPayload);
+      if (!submitRes.ok) {
+        const err = await submitRes.json();
+        throw new Error(err.error || 'Submission failed');
       }
 
       setMessage({ type: 'success', text: 'Research submitted successfully and is pending admin review.' });
