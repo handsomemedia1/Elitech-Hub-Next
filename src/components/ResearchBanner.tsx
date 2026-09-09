@@ -49,7 +49,7 @@ export default function ResearchBanner() {
       return;
     }
 
-    // Normal behavior: wait 30s to expand, then 25s to minimize
+    // Normal behavior: wait 5s to expand (keeps the page usable), then 25s to minimize
     const expandTimer = setTimeout(() => {
       setBannerState('expanded');
       
@@ -64,7 +64,7 @@ export default function ResearchBanner() {
       }, 25000);
       
       return () => clearTimeout(minimizeTimer);
-    }, 30000);
+    }, 5000);
 
     return () => clearTimeout(expandTimer);
   }, [pathname, mounted]);
@@ -119,7 +119,7 @@ export default function ResearchBanner() {
 
           <div className={styles.actionWrapper}>
             <Link 
-              href="/researcher-guidelines" 
+              href="/research/membership" 
               className={styles.cta}
               onClick={handleCTAClick}
               tabIndex={bannerState === 'expanded' ? 0 : -1}
