@@ -192,6 +192,36 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
+      url: `${baseUrl}/faq`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/founder`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.85,
+    },
+    {
+      url: `${baseUrl}/advisors`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/research/membership`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.85,
+    },
+    {
+      url: `${baseUrl}/research/membership/apply`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.75,
+    },
+    {
       url: `${baseUrl}/policies`,
       lastModified: now,
       changeFrequency: 'yearly',
@@ -250,10 +280,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const supabase = getSupabaseServerClient();
     
-    // Add advisors
+    // Add individual advisor profile pages (dynamic slugs from DB)
     const { data: advisors } = await supabase.from('advisors').select('slug, updated_at').eq('status', 'active');
     if (advisors) {
-      routes.push({ url: `${baseUrl}/advisors`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 });
       routes.push(...advisors.map(a => ({
         url: `${baseUrl}/advisors/${a.slug}`,
         lastModified: a.updated_at || now,
@@ -262,15 +291,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })));
     }
 
-    // Add Founder
-    routes.push({ url: `${baseUrl}/founder`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 });
+    // NOTE: /founder, /advisors, /research/membership are already added as static routes above.
 
-    // Add Topics
-    const { data: topics } = await supabase.from('content_relationships').select('target_id').eq('target_type', 'topic');
-    // For now we assume topics are dynamic but don't have a dedicated table yet, so we just skip dynamic topic listing or wait for topics table
-
-    // Add Membership
-    routes.push({ url: `${baseUrl}/research/membership`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 });
+    // Add Topics (no dedicated topics table yet — skip for now)
 
     // Add Resources
     const { data: resources } = await supabase.from('resources').select('slug, updated_at').eq('status', 'published');

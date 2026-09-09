@@ -56,7 +56,12 @@ export default async function AdvisorsPage() {
             {advisors?.map((advisor, index) => (
               <AnimateOnScroll key={advisor.slug} direction="up" delay={index * 100}>
                 <Link href={`/advisors/${advisor.slug}`} style={{ display: 'block', height: '100%', textDecoration: 'none', color: 'inherit' }}>
-                  <div className="glass-panel" style={{ padding: '2rem', height: '100%', display: 'flex', flexDirection: 'column', transition: 'transform 0.2s ease, box-shadow 0.2s ease' }} className="hover:transform hover:-translate-y-1 hover:shadow-lg hover:shadow-red-900/20">
+                  <div
+                    className="glass-panel"
+                    style={{ padding: '2rem', height: '100%', display: 'flex', flexDirection: 'column', transition: 'transform 0.2s ease, box-shadow 0.2s ease' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-4px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 12px 32px rgba(195,21,28,0.2)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLDivElement).style.boxShadow = ''; }}
+                  >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1.5rem' }}>
                       <div style={{ width: '80px', height: '80px', borderRadius: '50%', overflow: 'hidden', border: '2px solid var(--color-border)', flexShrink: 0, position: 'relative', background: 'var(--color-bg-raised)' }}>
                         {advisor.profile_image_url ? (

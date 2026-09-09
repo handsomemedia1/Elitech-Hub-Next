@@ -3,11 +3,41 @@
 import { useActionState } from 'react';
 import { submitApplication } from './actions';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, CheckCircle } from 'lucide-react';
 
 const initialState = {
   success: false,
   message: '',
+};
+
+/** Shared input style applied via inline style prop */
+const inputStyle: React.CSSProperties = {
+  width: '100%',
+  background: 'var(--color-bg-raised)',
+  color: 'var(--color-text-primary)',
+  border: '1px solid var(--color-border-light)',
+  borderRadius: '8px',
+  padding: '0.65rem 0.9rem',
+  fontSize: '0.95rem',
+  outline: 'none',
+  transition: 'border-color 0.2s ease',
+};
+
+const labelStyle: React.CSSProperties = {
+  display: 'block',
+  fontSize: '0.85rem',
+  fontWeight: 600,
+  color: 'var(--color-text-secondary)',
+  marginBottom: '0.4rem',
+};
+
+const sectionHeadingStyle: React.CSSProperties = {
+  fontSize: '1.1rem',
+  fontWeight: 700,
+  color: 'var(--color-text-primary)',
+  marginBottom: '1.25rem',
+  paddingBottom: '0.75rem',
+  borderBottom: '1px solid var(--color-border)',
 };
 
 export default function ApplicationFormPage() {
@@ -15,22 +45,62 @@ export default function ApplicationFormPage() {
 
   if (state.success) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-        <div className="bg-white p-10 rounded-lg shadow-sm border border-gray-100 max-w-2xl w-full text-center">
-          <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-            </svg>
-          </div>
-          <h1 className="text-3xl font-bold mb-4 text-primary">Application Received</h1>
-          <p className="text-lg text-gray-600 mb-8">
-            Thank you for applying to the Elitech Hub Research Membership. 
-            We will review your application and be in touch before the January 2027 launch.
-          </p>
-          <Link
-            href="/research/membership"
-            className="inline-block bg-primary text-white font-bold py-3 px-8 rounded hover:bg-primary/90 transition-colors"
+      <div
+        style={{
+          minHeight: '100vh',
+          background: 'var(--color-bg-main)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '1.5rem',
+        }}
+      >
+        <div
+          className="glass-panel"
+          style={{
+            maxWidth: '560px',
+            width: '100%',
+            padding: '3rem 2.5rem',
+            textAlign: 'center',
+          }}
+        >
+          <div
+            style={{
+              width: '4rem',
+              height: '4rem',
+              borderRadius: '50%',
+              background: 'var(--color-success-dim)',
+              border: '1px solid var(--color-success)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 1.5rem',
+              color: 'var(--color-success)',
+            }}
           >
+            <CheckCircle size={28} />
+          </div>
+          <h1
+            style={{
+              fontSize: '1.8rem',
+              fontWeight: 800,
+              color: 'var(--color-text-primary)',
+              marginBottom: '1rem',
+            }}
+          >
+            Application Received
+          </h1>
+          <p
+            style={{
+              color: 'var(--color-text-secondary)',
+              lineHeight: 1.7,
+              marginBottom: '2rem',
+            }}
+          >
+            Thank you for applying to the Elitech Hub Research Membership. We will review your
+            application and be in touch before the January 2027 launch.
+          </p>
+          <Link href="/research/membership" className="premium-button">
             Return to Overview
           </Link>
         </div>
@@ -39,182 +109,176 @@ export default function ApplicationFormPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <Link href="/research/membership" className="inline-flex items-center text-primary hover:underline font-medium">
-            <ArrowLeft className="w-4 h-4 mr-2" />
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'var(--color-bg-main)',
+        padding: '3rem 1.5rem',
+      }}
+    >
+      <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+        {/* Back link */}
+        <div style={{ marginBottom: '2rem' }}>
+          <Link href="/research/membership" className="back-link">
+            <ArrowLeft size={16} />
             Back to Membership Overview
           </Link>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-8 md:p-12">
-          <h1 className="text-3xl font-bold mb-2 text-primary">Research Membership Application</h1>
-          <p className="text-gray-600 mb-8 pb-8 border-b">
-            Please provide your details below to apply for the inaugural January 2027 cohort. 
+        {/* Form card */}
+        <div
+          className="glass-panel"
+          style={{ padding: 'clamp(1.5rem, 5vw, 3rem)' }}
+        >
+          <h1
+            style={{
+              fontSize: 'clamp(1.5rem, 4vw, 2rem)',
+              fontWeight: 800,
+              color: 'var(--color-text-primary)',
+              marginBottom: '0.5rem',
+            }}
+          >
+            Research Membership Application
+          </h1>
+          <p
+            style={{
+              color: 'var(--color-text-secondary)',
+              lineHeight: 1.7,
+              marginBottom: '2rem',
+              paddingBottom: '2rem',
+              borderBottom: '1px solid var(--color-border)',
+            }}
+          >
+            Please provide your details below to apply for the inaugural January 2027 cohort.
             The cohort is strictly limited to 30 researchers.
           </p>
 
+          {/* Error banner */}
           {state.message && (
-            <div className="mb-6 p-4 bg-red-50 text-red-600 rounded border border-red-100">
+            <div
+              style={{
+                marginBottom: '1.5rem',
+                padding: '1rem 1.25rem',
+                background: 'rgba(195, 21, 28, 0.1)',
+                border: '1px solid var(--color-error)',
+                borderRadius: '8px',
+                color: 'var(--color-accent-bright)',
+                fontSize: '0.95rem',
+              }}
+            >
               {state.message}
             </div>
           )}
 
-          <form action={formAction} className="space-y-8">
-            {/* Personal Information */}
-            <div>
-              <h2 className="text-xl font-bold mb-4 text-gray-800">Personal Information</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <form action={formAction} style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+
+            {/* ── Personal Information ── */}
+            <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
+              <legend style={sectionHeadingStyle}>Personal Information</legend>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                  gap: '1.25rem',
+                }}
+              >
                 <div>
-                  <label htmlFor="full_name" className="block text-sm font-medium text-gray-700 mb-1">
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    id="full_name"
-                    name="full_name"
-                    required
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2 border"
-                  />
+                  <label htmlFor="full_name" style={labelStyle}>Full Name *</label>
+                  <input type="text" id="full_name" name="full_name" required style={inputStyle} />
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                    Email Address *
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2 border"
-                  />
+                  <label htmlFor="email" style={labelStyle}>Email Address *</label>
+                  <input type="email" id="email" name="email" required style={inputStyle} />
                 </div>
                 <div>
-                  <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
-                    Country of Residence
-                  </label>
-                  <input
-                    type="text"
-                    id="country"
-                    name="country"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2 border"
-                  />
+                  <label htmlFor="country" style={labelStyle}>Country of Residence</label>
+                  <input type="text" id="country" name="country" style={inputStyle} />
                 </div>
               </div>
-            </div>
+            </fieldset>
 
-            {/* Professional Background */}
-            <div>
-              <h2 className="text-xl font-bold mb-4 text-gray-800 pt-4 border-t">Professional Background</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* ── Professional Background ── */}
+            <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
+              <legend style={sectionHeadingStyle}>Professional Background</legend>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                  gap: '1.25rem',
+                }}
+              >
                 <div>
-                  <label htmlFor="professional_title" className="block text-sm font-medium text-gray-700 mb-1">
-                    Professional Title / Role
-                  </label>
+                  <label htmlFor="professional_title" style={labelStyle}>Professional Title / Role</label>
                   <input
                     type="text"
                     id="professional_title"
                     name="professional_title"
                     placeholder="e.g. Principal Researcher, Postdoc"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2 border"
+                    style={inputStyle}
                   />
                 </div>
                 <div>
-                  <label htmlFor="institution" className="block text-sm font-medium text-gray-700 mb-1">
-                    Institution / Organization
-                  </label>
-                  <input
-                    type="text"
-                    id="institution"
-                    name="institution"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2 border"
-                  />
+                  <label htmlFor="institution" style={labelStyle}>Institution / Organization</label>
+                  <input type="text" id="institution" name="institution" style={inputStyle} />
                 </div>
                 <div>
-                  <label htmlFor="department" className="block text-sm font-medium text-gray-700 mb-1">
-                    Department
-                  </label>
-                  <input
-                    type="text"
-                    id="department"
-                    name="department"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2 border"
-                  />
+                  <label htmlFor="department" style={labelStyle}>Department</label>
+                  <input type="text" id="department" name="department" style={inputStyle} />
                 </div>
                 <div>
-                  <label htmlFor="specialization" className="block text-sm font-medium text-gray-700 mb-1">
-                    Primary Specialization
-                  </label>
+                  <label htmlFor="specialization" style={labelStyle}>Primary Specialization</label>
                   <input
                     type="text"
                     id="specialization"
                     name="specialization"
                     placeholder="e.g. Behavioral Cybersecurity"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2 border"
+                    style={inputStyle}
                   />
                 </div>
               </div>
-            </div>
+            </fieldset>
 
-            {/* Online Profiles */}
-            <div>
-              <h2 className="text-xl font-bold mb-4 text-gray-800 pt-4 border-t">Online Profiles</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* ── Online Profiles ── */}
+            <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
+              <legend style={sectionHeadingStyle}>Online Profiles</legend>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                  gap: '1.25rem',
+                }}
+              >
                 <div>
-                  <label htmlFor="orcid" className="block text-sm font-medium text-gray-700 mb-1">
-                    ORCID
-                  </label>
+                  <label htmlFor="orcid" style={labelStyle}>ORCID</label>
                   <input
                     type="text"
                     id="orcid"
                     name="orcid"
                     placeholder="0000-0000-0000-0000"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2 border"
+                    style={inputStyle}
                   />
                 </div>
                 <div>
-                  <label htmlFor="google_scholar_url" className="block text-sm font-medium text-gray-700 mb-1">
-                    Google Scholar URL
-                  </label>
-                  <input
-                    type="url"
-                    id="google_scholar_url"
-                    name="google_scholar_url"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2 border"
-                  />
+                  <label htmlFor="google_scholar_url" style={labelStyle}>Google Scholar URL</label>
+                  <input type="url" id="google_scholar_url" name="google_scholar_url" style={inputStyle} />
                 </div>
                 <div>
-                  <label htmlFor="linkedin_url" className="block text-sm font-medium text-gray-700 mb-1">
-                    LinkedIn URL
-                  </label>
-                  <input
-                    type="url"
-                    id="linkedin_url"
-                    name="linkedin_url"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2 border"
-                  />
+                  <label htmlFor="linkedin_url" style={labelStyle}>LinkedIn URL</label>
+                  <input type="url" id="linkedin_url" name="linkedin_url" style={inputStyle} />
                 </div>
                 <div>
-                  <label htmlFor="website_url" className="block text-sm font-medium text-gray-700 mb-1">
-                    Personal Website URL
-                  </label>
-                  <input
-                    type="url"
-                    id="website_url"
-                    name="website_url"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2 border"
-                  />
+                  <label htmlFor="website_url" style={labelStyle}>Personal Website URL</label>
+                  <input type="url" id="website_url" name="website_url" style={inputStyle} />
                 </div>
               </div>
-            </div>
+            </fieldset>
 
-            {/* Research Details */}
-            <div>
-              <h2 className="text-xl font-bold mb-4 text-gray-800 pt-4 border-t">Research Details</h2>
-              <div className="space-y-6">
+            {/* ── Research Details ── */}
+            <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
+              <legend style={sectionHeadingStyle}>Research Details</legend>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div>
-                  <label htmlFor="research_interests" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="research_interests" style={labelStyle}>
                     Research Interests (comma separated)
                   </label>
                   <input
@@ -222,92 +286,96 @@ export default function ApplicationFormPage() {
                     id="research_interests"
                     name="research_interests"
                     placeholder="e.g. Usable Security, Social Engineering, Phishing"
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2 border"
+                    style={inputStyle}
                   />
                 </div>
                 <div>
-                  <label htmlFor="research_background" className="block text-sm font-medium text-gray-700 mb-1">
-                    Research Background Summary
-                  </label>
+                  <label htmlFor="research_background" style={labelStyle}>Research Background Summary</label>
                   <textarea
                     id="research_background"
                     name="research_background"
                     rows={4}
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2 border"
+                    style={{ ...inputStyle, resize: 'vertical' }}
                   />
                 </div>
                 <div>
-                  <label htmlFor="publications" className="block text-sm font-medium text-gray-700 mb-1">
-                    Key Publications (Top 3-5)
-                  </label>
+                  <label htmlFor="publications" style={labelStyle}>Key Publications (Top 3–5)</label>
                   <textarea
                     id="publications"
                     name="publications"
                     rows={4}
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2 border"
+                    style={{ ...inputStyle, resize: 'vertical' }}
                   />
                 </div>
                 <div>
-                  <label htmlFor="current_projects" className="block text-sm font-medium text-gray-700 mb-1">
-                    Current Projects
-                  </label>
+                  <label htmlFor="current_projects" style={labelStyle}>Current Projects</label>
                   <textarea
                     id="current_projects"
                     name="current_projects"
                     rows={3}
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2 border"
+                    style={{ ...inputStyle, resize: 'vertical' }}
                   />
                 </div>
               </div>
-            </div>
+            </fieldset>
 
-            {/* Motivation & Expectations */}
-            <div>
-              <h2 className="text-xl font-bold mb-4 text-gray-800 pt-4 border-t">Motivation & Expectations</h2>
-              <div className="space-y-6">
+            {/* ── Motivation & Expectations ── */}
+            <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
+              <legend style={sectionHeadingStyle}>Motivation &amp; Expectations</legend>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div>
-                  <label htmlFor="motivation" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="motivation" style={labelStyle}>
                     Why do you want to join the Elitech Hub Research Membership?
                   </label>
                   <textarea
                     id="motivation"
                     name="motivation"
                     rows={4}
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2 border"
+                    style={{ ...inputStyle, resize: 'vertical' }}
                   />
                 </div>
                 <div>
-                  <label htmlFor="contribution" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="contribution" style={labelStyle}>
                     How do you plan to contribute to the cohort?
                   </label>
                   <textarea
                     id="contribution"
                     name="contribution"
                     rows={4}
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2 border"
+                    style={{ ...inputStyle, resize: 'vertical' }}
                   />
                 </div>
                 <div>
-                  <label htmlFor="expectations" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="expectations" style={labelStyle}>
                     What are your expectations from this membership?
                   </label>
                   <textarea
                     id="expectations"
                     name="expectations"
                     rows={4}
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2 border"
+                    style={{ ...inputStyle, resize: 'vertical' }}
                   />
                 </div>
               </div>
-            </div>
+            </fieldset>
 
-            <div className="pt-6 border-t">
+            {/* ── Submit ── */}
+            <div
+              style={{
+                paddingTop: '1.5rem',
+                borderTop: '1px solid var(--color-border)',
+              }}
+            >
               <button
                 type="submit"
                 disabled={isPending}
-                className="w-full md:w-auto bg-primary text-white font-bold py-3 px-8 rounded hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="premium-button"
+                style={{
+                  opacity: isPending ? 0.6 : 1,
+                  cursor: isPending ? 'not-allowed' : 'pointer',
+                }}
               >
-                {isPending ? 'Submitting Application...' : 'Submit Application'}
+                {isPending ? 'Submitting Application…' : 'Submit Application →'}
               </button>
             </div>
           </form>
