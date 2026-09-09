@@ -3,28 +3,31 @@ import Link from 'next/link';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 import layoutStyles from '@/components/PageLayout.module.css';
 import styles from './web-development.module.css';
-import { Globe, CheckCircle2, ChevronDown, ArrowRight, ArrowLeft, Code, Zap, Shield, Star, Layout, Smartphone, Search, TrendingUp } from 'lucide-react';
+import { Globe, CheckCircle2, ChevronDown, ArrowRight, ArrowLeft, Code, Zap, Shield, Star, Layout, Smartphone, Search, TrendingUp, Lock } from 'lucide-react';
 import { PricingTiers, PricingTierProps } from '@/components/PricingTiers';
 
 export const metadata = {
-  title: 'Custom Website Development in Nigeria | Secure, SEO-Optimised | Elitech Hub',
-  description: 'Elitech Hub builds premium custom websites and web applications for businesses in Lagos, Ibadan, Abuja, and across Nigeria. Fast, secure, SEO-optimised, and built to convert.',
+  title: 'Secure Digital Infrastructure & Web Development | Elitech Hub',
+  description: 'Elitech Hub builds premium custom websites, web applications, and secure digital infrastructure for businesses. Fast, secure-by-design, Next.js, and Supabase.',
   keywords: [
+    'secure digital infrastructure',
     'custom website development',
     'web development company',
     'business website design',
     'ecommerce website development',
     'custom web application',
     'secure website development',
-    'Elitech Hub web development',
+    'RBAC web apps',
+    'Next.js development Nigeria',
+    'Supabase developers'
   ],
   alternates: {
     canonical: 'https://elitechub.com/services/web-development',
   },
   openGraph: {
     url: 'https://elitechub.com/services/web-development',
-    title: 'Custom Website Development in Nigeria | Secure, SEO-Optimised | Elitech Hub',
-    description: 'Elitech Hub builds premium custom websites and web applications for businesses in Lagos, Ibadan, Abuja, and across Nigeria. Fast, secure, SEO-optimised, and built to convert.',
+    title: 'Secure Digital Infrastructure & Web Development | Elitech Hub',
+    description: 'Elitech Hub builds premium custom websites, web applications, and secure digital infrastructure for businesses. Fast, secure-by-design, Next.js, and Supabase.',
   }
 };
 
@@ -42,41 +45,49 @@ export default function WebDevelopmentPage() {
       },
       {
         "@type": "Service",
-        "name": "Custom Website Development Nigeria",
+        "name": "Secure Digital Infrastructure & Web Development",
         "serviceType": "Web Development",
         "provider": {
           "@type": "Organization",
           "name": "Elitech Hub",
           "url": "https://elitechub.com"
         },
-        "areaServed": ["Lagos", "Ibadan", "Abuja", "Nigeria"],
-        "description": "Premium custom websites and web applications built for performance, security, and SEO."
+        "areaServed": ["Lagos", "Ibadan", "Abuja", "Nigeria", "Global"],
+        "description": "Premium custom websites and secure digital infrastructure built for performance, security, and scalability using Next.js and Supabase."
       },
       {
         "@type": "FAQPage",
         "mainEntity": [
           {
             "@type": "Question",
-            "name": "How much does website development cost in Nigeria?",
+            "name": "How much does website development cost for a Nigerian business?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "The cost of website development varies depending on the complexity, features, and requirements of your project. We offer customized solutions tailored to your budget and business goals. Contact us for a free quote."
+              "text": "The cost of website development varies depending on the complexity, features, and requirements of your project. We offer transparent pricing tiers starting at ₦250,000 for secure landing pages, scaling up to ₦700,000+ for complex full-stack web applications with RBAC."
             }
           },
           {
             "@type": "Question",
-            "name": "How long to build a website?",
+            "name": "How long does it take to build a website?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "A standard business website typically takes 2-4 weeks from discovery to launch. Complex web applications or ecommerce platforms may take 6-12 weeks depending on the scope."
+              "text": "A standard business website typically takes 2-4 weeks from discovery to launch. Complex secure web applications or enterprise digital infrastructure platforms may take 6-12 weeks depending on the scope."
             }
           },
           {
             "@type": "Question",
-            "name": "Do you build ecommerce sites?",
+            "name": "What do you mean by Secure Digital Infrastructure?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes, we build robust, secure, and scalable ecommerce websites that provide excellent user experiences and integrate seamlessly with local and international payment gateways."
+              "text": "As a cybersecurity firm, we don't just build websites; we build secure-by-design digital infrastructure. This means integrating Role-Based Access Control (RBAC), end-to-end encryption, input sanitization, and enterprise-grade authentication using technologies like Next.js, TypeScript, and Supabase."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do you provide hosting and maintenance?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, we handle the deployment via Vercel or your preferred infrastructure, ensuring zero-downtime deployments. We also offer ongoing maintenance packages to keep your software secure, updated, and performing optimally."
             }
           },
           {
@@ -84,7 +95,15 @@ export default function WebDevelopmentPage() {
             "name": "Is the website SEO optimised?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Absolutely. We build all our websites with technical SEO best practices in mind from day one, ensuring your site is fast, mobile-friendly, and easily discoverable by search engines."
+              "text": "Absolutely. We build all our websites with technical SEO best practices in mind from day one. Using Next.js Server-Side Rendering (SSR) and advanced caching, we ensure your site is fast, mobile-friendly, and easily discoverable by search engines."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do you build ecommerce sites?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, we build robust, secure, and scalable ecommerce websites that provide excellent user experiences and integrate seamlessly with local (Paystack, Flutterwave) and international payment gateways."
             }
           }
         ]
@@ -111,13 +130,12 @@ export default function WebDevelopmentPage() {
         <section className={styles.heroSection} style={{ backgroundImage: "linear-gradient(135deg, rgba(10, 10, 10, 0.4) 0%, rgba(10, 10, 10, 0.75) 100%), url('/assets/images/programs-hero.png')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
           <AnimateOnScroll direction="up">
             <div className={styles.badge}>
-              <Globe className={styles.badgeIcon} />
-              <span>WEB DEVELOPMENT</span>
+              <Shield className={styles.badgeIcon} />
+              <span>SECURE BY DESIGN</span>
             </div>
-            <h1 className={styles.heroTitle}>Premium Websites Built for Nigerian Businesses</h1>
+            <h1 className={styles.heroTitle}>Secure Digital Infrastructure & Web Development</h1>
             <p className={styles.heroSubtitle}>
-              We craft fast, secure, and SEO-ready web experiences that drive results,
-              engage users, and scale with your business.
+              We craft fast, secure, and SEO-ready web applications that drive results. Built with enterprise-grade tech: Next.js, TypeScript, and Supabase.
             </p>
             <div className={styles.metaIcons}>
               <div className={styles.metaItem}>
@@ -129,8 +147,8 @@ export default function WebDevelopmentPage() {
                 <span>SEO Optimised</span>
               </div>
               <div className={styles.metaItem}>
-                <Smartphone className={styles.metaIcon} />
-                <span>Mobile First</span>
+                <Lock className={styles.metaIcon} />
+                <span>RBAC & Auth</span>
               </div>
               <div className={styles.metaItem}>
                 <Zap className={styles.metaIcon} />
@@ -155,23 +173,33 @@ export default function WebDevelopmentPage() {
             <h2 className={styles.sectionTitle}>What We Build</h2>
             <div className={styles.cardsGrid}>
               <div className={styles.card}>
-                <Layout className={styles.cardIcon} />
-                <h3>Business Websites</h3>
-                <p>Professional online presence for corporate brands and SMEs.</p>
+                <Code className={styles.cardIcon} />
+                <h3>Custom Web Applications</h3>
+                <p>Complex, secure, and interactive web apps tailored to your business logic.</p>
                 <ul className={styles.cardFeatures}>
-                  <li><CheckCircle2 size={16} /> Lead generation forms</li>
-                  <li><CheckCircle2 size={16} /> CMS integration</li>
-                  <li><CheckCircle2 size={16} /> Mobile-responsive</li>
+                  <li><CheckCircle2 size={16} /> Role-Based Access Control (RBAC)</li>
+                  <li><CheckCircle2 size={16} /> API integrations</li>
+                  <li><CheckCircle2 size={16} /> Next.js & TypeScript</li>
                 </ul>
               </div>
               <div className={styles.card}>
-                <Code className={styles.cardIcon} />
-                <h3>Web Applications</h3>
-                <p>Complex, interactive web apps tailored to your business logic.</p>
+                <Shield className={styles.cardIcon} />
+                <h3>Secure Digital Infrastructure</h3>
+                <p>Backend systems and databases built to withstand modern cyber threats.</p>
                 <ul className={styles.cardFeatures}>
-                  <li><CheckCircle2 size={16} /> Custom dashboards</li>
-                  <li><CheckCircle2 size={16} /> API integrations</li>
-                  <li><CheckCircle2 size={16} /> Scalable architecture</li>
+                  <li><CheckCircle2 size={16} /> Supabase / PostgreSQL</li>
+                  <li><CheckCircle2 size={16} /> Data Encryption</li>
+                  <li><CheckCircle2 size={16} /> Enterprise Auth</li>
+                </ul>
+              </div>
+              <div className={styles.card}>
+                <Layout className={styles.cardIcon} />
+                <h3>Corporate Websites</h3>
+                <p>Professional, SEO-optimised online presence for corporate brands.</p>
+                <ul className={styles.cardFeatures}>
+                  <li><CheckCircle2 size={16} /> Fast SSR delivery</li>
+                  <li><CheckCircle2 size={16} /> Lead generation forms</li>
+                  <li><CheckCircle2 size={16} /> Mobile-responsive</li>
                 </ul>
               </div>
               <div className={styles.card}>
@@ -181,17 +209,7 @@ export default function WebDevelopmentPage() {
                 <ul className={styles.cardFeatures}>
                   <li><CheckCircle2 size={16} /> Payment gateway setup</li>
                   <li><CheckCircle2 size={16} /> Inventory management</li>
-                  <li><CheckCircle2 size={16} /> Cart abandonment recovery</li>
-                </ul>
-              </div>
-              <div className={styles.card}>
-                <Zap className={styles.cardIcon} />
-                <h3>Landing Pages</h3>
-                <p>High-converting, lightning-fast pages for marketing campaigns.</p>
-                <ul className={styles.cardFeatures}>
-                  <li><CheckCircle2 size={16} /> A/B testing ready</li>
-                  <li><CheckCircle2 size={16} /> Analytics integration</li>
-                  <li><CheckCircle2 size={16} /> Fast loading speeds</li>
+                  <li><CheckCircle2 size={16} /> Secure checkout</li>
                 </ul>
               </div>
             </div>
@@ -245,11 +263,11 @@ export default function WebDevelopmentPage() {
                 id: "web-ecommerce",
                 title: "Premium Fullstack Site",
                 priceNgn: 700000,
-                description: "Dynamic website with database and backend for blogs, etc.",
+                description: "Dynamic digital infrastructure with database and backend.",
                 features: [
-                  "Dynamic Backend & Database",
-                  "Custom Blog / CMS Integration",
-                  "Advanced Security & Auth",
+                  "Supabase Backend & Database",
+                  "RBAC & Enterprise Auth",
+                  "Advanced Security & APIs",
                   "WhatsApp CRM & Full SEO"
                 ]
               }
@@ -270,6 +288,7 @@ export default function WebDevelopmentPage() {
               <span className={styles.chip}>PostgreSQL</span>
               <span className={styles.chip}>Vercel</span>
               <span className={styles.chip}>Tailwind</span>
+              <span className={styles.chip}>RBAC</span>
             </div>
           </AnimateOnScroll>
         </section>
@@ -279,13 +298,13 @@ export default function WebDevelopmentPage() {
           <AnimateOnScroll direction="fade">
             <h2 className={styles.sectionTitle}>Why Security-First?</h2>
             <p className={styles.securityIntro}>
-              Our cybersecurity background means security is built into your website from day 1, not bolted on as an afterthought.
+              Our cybersecurity background means security is built into your digital infrastructure from day 1, not bolted on as an afterthought.
             </p>
             <div className={styles.securityPoints}>
               <div className={styles.securityPoint}>
-                <Shield className={styles.securityIcon} />
-                <h4>SSL & HTTPS by default</h4>
-                <p>Ensuring encrypted data transfer for user trust and better SEO rankings.</p>
+                <Lock className={styles.securityIcon} />
+                <h4>Role-Based Access Control (RBAC)</h4>
+                <p>Strict access policies ensuring users only see data they are authorized to view.</p>
               </div>
               <div className={styles.securityPoint}>
                 <Code className={styles.securityIcon} />
@@ -293,9 +312,9 @@ export default function WebDevelopmentPage() {
                 <p>Sanitizing all user inputs to prevent malicious script injections.</p>
               </div>
               <div className={styles.securityPoint}>
-                <CheckCircle2 className={styles.securityIcon} />
-                <h4>Security Headers & CSP</h4>
-                <p>Implementing Content Security Policies and modern security headers.</p>
+                <Shield className={styles.securityIcon} />
+                <h4>Data Security & Encryption</h4>
+                <p>Encrypting data at rest and in transit via Supabase and HTTPS protocols.</p>
               </div>
             </div>
           </AnimateOnScroll>
@@ -332,8 +351,8 @@ export default function WebDevelopmentPage() {
             <div className={styles.processSteps}>
               <div className={styles.step}>
                 <div className={styles.stepNumber}>1</div>
-                <h4>Discovery & Requirements</h4>
-                <p>We analyze your needs and outline a strategic roadmap.</p>
+                <h4>Discovery & Architecture</h4>
+                <p>We analyze your business needs and design a scalable database and system architecture.</p>
               </div>
               <div className={styles.step}>
                 <div className={styles.stepNumber}>2</div>
@@ -342,13 +361,13 @@ export default function WebDevelopmentPage() {
               </div>
               <div className={styles.step}>
                 <div className={styles.stepNumber}>3</div>
-                <h4>Build & Test</h4>
-                <p>Developing the solution with rigorous quality assurance.</p>
+                <h4>Secure Development</h4>
+                <p>Building the solution with Next.js, Supabase, and rigorous security testing.</p>
               </div>
               <div className={styles.step}>
                 <div className={styles.stepNumber}>4</div>
-                <h4>Launch & SEO</h4>
-                <p>Deploying the website and optimizing for search engines.</p>
+                <h4>Launch & Maintenance</h4>
+                <p>Deploying the app and providing continuous updates and SEO optimizations.</p>
               </div>
             </div>
           </AnimateOnScroll>
@@ -361,29 +380,38 @@ export default function WebDevelopmentPage() {
             <div className={styles.faqContainer}>
               <details className={styles.faqItem}>
                 <summary className={styles.faqSummary}>
-                  How much does website development cost in Nigeria?
+                  How much does website development cost for a Nigerian business?
                   <ChevronDown className={styles.faqIcon} />
                 </summary>
                 <p className={styles.faqContent}>
-                  The cost of website development varies depending on the complexity, features, and requirements of your project. We offer customized solutions tailored to your budget and business goals. Contact us for a free quote.
+                  The cost of website development varies depending on the complexity, features, and requirements of your project. We offer transparent pricing tiers starting at ₦250,000 for secure landing pages, scaling up to ₦700,000+ for complex full-stack web applications with RBAC.
                 </p>
               </details>
               <details className={styles.faqItem}>
                 <summary className={styles.faqSummary}>
-                  How long to build a website?
+                  How long does it take to build a website?
                   <ChevronDown className={styles.faqIcon} />
                 </summary>
                 <p className={styles.faqContent}>
-                  A standard business website typically takes 2-4 weeks from discovery to launch. Complex web applications or ecommerce platforms may take 6-12 weeks depending on the scope.
+                  A standard business website typically takes 2-4 weeks from discovery to launch. Complex secure web applications or enterprise digital infrastructure platforms may take 6-12 weeks depending on the scope.
                 </p>
               </details>
               <details className={styles.faqItem}>
                 <summary className={styles.faqSummary}>
-                  Do you build ecommerce sites?
+                  What do you mean by Secure Digital Infrastructure?
                   <ChevronDown className={styles.faqIcon} />
                 </summary>
                 <p className={styles.faqContent}>
-                  Yes, we build robust, secure, and scalable ecommerce websites that provide excellent user experiences and integrate seamlessly with local and international payment gateways.
+                  As a cybersecurity firm, we don't just build websites; we build secure-by-design digital infrastructure. This means integrating Role-Based Access Control (RBAC), end-to-end encryption, input sanitization, and enterprise-grade authentication using technologies like Next.js, TypeScript, and Supabase.
+                </p>
+              </details>
+              <details className={styles.faqItem}>
+                <summary className={styles.faqSummary}>
+                  Do you provide hosting and maintenance?
+                  <ChevronDown className={styles.faqIcon} />
+                </summary>
+                <p className={styles.faqContent}>
+                  Yes, we handle the deployment via Vercel or your preferred infrastructure, ensuring zero-downtime deployments. We also offer ongoing maintenance packages to keep your software secure, updated, and performing optimally.
                 </p>
               </details>
               <details className={styles.faqItem}>
@@ -392,9 +420,22 @@ export default function WebDevelopmentPage() {
                   <ChevronDown className={styles.faqIcon} />
                 </summary>
                 <p className={styles.faqContent}>
-                  Absolutely. We build all our websites with technical SEO best practices in mind from day one, ensuring your site is fast, mobile-friendly, and easily discoverable by search engines.
+                  Absolutely. We build all our websites with technical SEO best practices in mind from day one. Using Next.js Server-Side Rendering (SSR) and advanced caching, we ensure your site is fast, mobile-friendly, and easily discoverable by search engines.
                 </p>
               </details>
+              <details className={styles.faqItem}>
+                <summary className={styles.faqSummary}>
+                  Do you build ecommerce sites?
+                  <ChevronDown className={styles.faqIcon} />
+                </summary>
+                <p className={styles.faqContent}>
+                  Yes, we build robust, secure, and scalable ecommerce websites that provide excellent user experiences and integrate seamlessly with local (Paystack, Flutterwave) and international payment gateways.
+                </p>
+              </details>
+            </div>
+            
+            <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+              <Link href="/faq" style={{ color: 'var(--brand-primary)', textDecoration: 'underline' }}>View Full FAQ</Link>
             </div>
           </AnimateOnScroll>
         </section>
@@ -402,7 +443,7 @@ export default function WebDevelopmentPage() {
         {/* CTA Section */}
         <section className={styles.ctaSection}>
           <AnimateOnScroll direction="up">
-            <h2 className={styles.ctaTitle}>Ready to Build Your Website?</h2>
+            <h2 className={styles.ctaTitle}>Ready to Build Your Secure Digital Infrastructure?</h2>
             <div className={styles.ctaButtons} style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
               <Link href="/contact" className="premium-button">
                 Get a Free Quote <ArrowRight size={20} />

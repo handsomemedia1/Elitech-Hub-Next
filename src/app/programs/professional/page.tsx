@@ -4,10 +4,10 @@ import AnimateOnScroll from '@/components/AnimateOnScroll';
 import PriceDisplay from '@/components/PriceDisplay';
 import layoutStyles from '@/components/PageLayout.module.css';
 import styles from './professional.module.css';
-import { Crown, CheckCircle2, ChevronDown, ArrowRight, ArrowLeft, Award, Shield, Code, Target, Briefcase, Users, UserPlus, Network, FileSearch, Star, Clock, Calendar, BookOpen } from 'lucide-react';
+import { Crown, CheckCircle2, ChevronDown, ArrowRight, ArrowLeft, Award, Shield, Code, Target, Briefcase, Users, UserPlus, Network, FileSearch, Star, Clock, Calendar, BookOpen, Repeat } from 'lucide-react';
 
 export const metadata = {
-  title: '16-Week Professional Cybersecurity Program Nigeria | Guaranteed Internship | Elitech Hub',
+  title: '16-Week Professional Cybersecurity Program Nigeria | Internship Experience | Elitech Hub',
   description: 'Nigeria\'s most comprehensive cybersecurity career transformation program. 16 weeks of intensive training, unpaid internship experience, CompTIA Security+, CEH preparation, 1-on-1 mentorship, and career support.',
   keywords: ['16 week cybersecurity program Nigeria', 'professional cybersecurity training Nigeria', 'cybersecurity career program Lagos', 'internship experience cybersecurity Nigeria', 'CompTIA Security+ training Nigeria', 'CEH certification Nigeria', 'cybersecurity mentorship Nigeria', 'cybersecurity career support Nigeria'],
   openGraph: {
@@ -104,6 +104,30 @@ export default function ProfessionalProgramPage() {
       mainEntity: [
         {
           '@type': 'Question',
+          name: 'Can I become a cybersecurity professional in just 16 weeks?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Honestly, no. Training is an entry point. It gives you the foundational knowledge and basic practical skills required to start. True mastery requires continuous learning and practice. We bridge this gap by transitioning you into an internship to gain workflow experience.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'What if I don\'t know my specialization yet?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'That\'s perfectly normal. Our core methodology involves learning the basics and applying them first. Over the 16 weeks, you will be exposed to different domains like ethical hacking and network security, allowing you to discover what interests you before specializing.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'What happens after the training?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'After training, you enter the 4-week internship phase. Short-term training only introduces concepts; the internship bridges your learning to professional workflow experience. While we do not guarantee employment, we equip you with real-world project portfolios, career support, and verifiable certificates to make you highly employable.',
+          },
+        },
+        {
+          '@type': 'Question',
           name: 'Do I need prior IT experience for the 16-week program?',
           acceptedAnswer: {
             '@type': 'Answer',
@@ -115,7 +139,7 @@ export default function ProfessionalProgramPage() {
           name: 'How does the internship experience work?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'Upon successful completion of the 16-week program, you will be placed in a 1-to-3-month remote or hybrid internship with one of our partner tech companies or within Elitech Hub to gain real-world experience.',
+            text: 'Upon successful completion of the 16-week training, you transition into a 4-week remote or hybrid unpaid internship with one of our partner tech companies or within Elitech Hub to gain real-world workflow experience.',
           },
         },
         {
@@ -162,7 +186,7 @@ export default function ProfessionalProgramPage() {
             </div>
             <h1 className={styles.title}>16-Week Professional Cybersecurity Program</h1>
             <p className={styles.subtitle}>
-              Nigeria&apos;s most comprehensive cybersecurity career transformation. Go from beginner to an industry-ready professional with hands-on labs, unpaid internship experience, and robust career support.
+              Training is an entry point, not the finish line. Go from beginner to an industry-ready professional with hands-on labs, 4-week internship experience to bridge your learning to professional workflow, and robust career support.
             </p>
             
             <div className={styles.statCards}>
@@ -171,8 +195,8 @@ export default function ProfessionalProgramPage() {
                   <Briefcase className={styles.statIcon} />
                 </div>
                 <div className={styles.statInfo}>
-                  <h3>100% Internship Guarantee</h3>
-                  <p>Gain real-world experience post-training</p>
+                  <h3>Internship Experience</h3>
+                  <p>Gain real-world workflow experience</p>
                 </div>
               </div>
               <div className={styles.statCard}>
@@ -194,6 +218,27 @@ export default function ProfessionalProgramPage() {
           </AnimateOnScroll>
         </section>
 
+        {/* ── METHODOLOGY SECTION ── */}
+        <section className={styles.methodologySection} style={{ padding: '4rem 2rem', backgroundColor: 'var(--bg-secondary)', textAlign: 'center' }}>
+          <AnimateOnScroll direction="fade">
+            <h2 className={styles.sectionTitle} style={{ fontSize: '2rem', marginBottom: '1rem' }}>Our Methodology</h2>
+            <p className={styles.sectionSub} style={{ maxWidth: '800px', margin: '0 auto 2rem', color: 'var(--text-secondary)' }}>
+              We do not believe in overnight success or false guarantees. Cybersecurity requires continuous evolution. Our process ensures you build competence through deliberate practice.
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '1rem', alignItems: 'center', fontWeight: 'bold', color: 'var(--text-primary)' }}>
+              <span>Learn</span> <ArrowRight size={16} className="text-gradient-primary" />
+              <span>Apply</span> <ArrowRight size={16} className="text-gradient-primary" />
+              <span>Relearn</span> <ArrowRight size={16} className="text-gradient-primary" />
+              <span>Apply Again</span> <ArrowRight size={16} className="text-gradient-primary" />
+              <span>Specialise</span> <ArrowRight size={16} className="text-gradient-primary" />
+              <span>Practice</span> <ArrowRight size={16} className="text-gradient-primary" />
+              <span>Intern</span> <ArrowRight size={16} className="text-gradient-primary" />
+              <span>Certify</span> <ArrowRight size={16} className="text-gradient-primary" />
+              <span>Continue Learning</span>
+            </div>
+          </AnimateOnScroll>
+        </section>
+
         {/* Pricing Card */}
         <section className={styles.pricingSection}>
           <AnimateOnScroll direction="fade">
@@ -207,7 +252,7 @@ export default function ProfessionalProgramPage() {
               </div>
               <ul className={styles.pricingFeatures}>
                 <li><CheckCircle2 className={styles.checkIcon} /> 16 weeks of intensive practical training</li>
-                <li><CheckCircle2 className={styles.checkIcon} /> Guaranteed post-training internship</li>
+                <li><CheckCircle2 className={styles.checkIcon} /> 4-week post-training internship experience</li>
                 <li><CheckCircle2 className={styles.checkIcon} /> 1-on-1 industry mentorship</li>
                 <li><CheckCircle2 className={styles.checkIcon} /> Dedicated career support assistance</li>
                 <li><CheckCircle2 className={styles.checkIcon} /> Access to premium cyber labs</li>
@@ -367,6 +412,36 @@ export default function ProfessionalProgramPage() {
             <div className={styles.faqList}>
               <details className={styles.faqItem}>
                 <summary className={styles.faqSummary}>
+                  Can I become a cybersecurity professional in just 16 weeks?
+                  <ChevronDown className={styles.faqIcon} />
+                </summary>
+                <div className={styles.faqContent}>
+                  Honestly, no. Training is an entry point. It gives you the foundational knowledge and basic practical skills required to start. True mastery requires continuous learning and practice. We bridge this gap by transitioning you into an internship to gain workflow experience.
+                </div>
+              </details>
+
+              <details className={styles.faqItem}>
+                <summary className={styles.faqSummary}>
+                  What if I do not know my specialization yet?
+                  <ChevronDown className={styles.faqIcon} />
+                </summary>
+                <div className={styles.faqContent}>
+                  That is perfectly normal. Our core methodology involves learning the basics and applying them first. Over the 16 weeks, you will be exposed to different domains like ethical hacking and network security, allowing you to discover what interests you before specializing.
+                </div>
+              </details>
+
+              <details className={styles.faqItem}>
+                <summary className={styles.faqSummary}>
+                  What happens after the training?
+                  <ChevronDown className={styles.faqIcon} />
+                </summary>
+                <div className={styles.faqContent}>
+                  After training, you enter the 4-week internship phase. Short-term training only introduces concepts; the internship bridges your learning to professional workflow experience. While we do not guarantee employment, we equip you with real-world project portfolios, career support, and verifiable certificates to make you highly employable.
+                </div>
+              </details>
+
+              <details className={styles.faqItem}>
+                <summary className={styles.faqSummary}>
                   Do I need prior IT experience for the 16-week program?
                   <ChevronDown className={styles.faqIcon} />
                 </summary>
@@ -377,11 +452,11 @@ export default function ProfessionalProgramPage() {
 
               <details className={styles.faqItem}>
                 <summary className={styles.faqSummary}>
-                  How does the guaranteed internship work?
+                  How does the internship experience work?
                   <ChevronDown className={styles.faqIcon} />
                 </summary>
                 <div className={styles.faqContent}>
-                  Upon successful completion of the 16-week program, you will be placed in a 1-to-3-month remote or hybrid internship with one of our partner tech companies or within Elitech Hub to gain real-world experience.
+                  Upon successful completion of the 16-week training, you transition into a 4-week remote or hybrid unpaid internship with one of our partner tech companies or within Elitech Hub to gain real-world workflow experience.
                 </div>
               </details>
 
@@ -401,6 +476,10 @@ export default function ProfessionalProgramPage() {
                   The curriculum thoroughly prepares you for CompTIA Security+, Certified Ethical Hacker (CEH), and provides foundational knowledge for OSCP. Note that exam voucher fees are separate from the tuition.
                 </div>
               </details>
+            </div>
+            
+            <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+              <Link href="/faq" style={{ color: 'var(--brand-primary)', textDecoration: 'underline' }}>View Full FAQ</Link>
             </div>
           </AnimateOnScroll>
         </section>

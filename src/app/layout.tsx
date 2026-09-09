@@ -10,6 +10,7 @@ import ScrollProgressBar from "@/components/ScrollProgressBar";
 import ScrollNavbar from "@/components/ScrollNavbar";
 import LeadPopup from "@/components/LeadPopup";
 import PublicWidgets from "@/components/PublicWidgets";
+import CloudflareAnalytics from "@/components/CloudflareAnalytics";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -296,6 +297,7 @@ export default function RootLayout({
           </SmoothScroll>
           <PublicWidgets />
         </PricingProvider>
+        <CloudflareAnalytics />
       </body>
     </html>
   );

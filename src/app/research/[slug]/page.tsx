@@ -1,6 +1,7 @@
 import React from 'react';
 import { getServerUser } from '@/lib/auth';
 import { createServiceClient } from '@/lib/supabase-server';
+import { getSupabaseServerClient } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import type { Metadata, ResolvingMetadata } from 'next';
 import PageLayout from '@/components/PageLayout';
@@ -8,6 +9,7 @@ import { FileText, Download, Clock, ArrowLeft, Quote, User, BookOpen, Tag, Globe
 import Link from 'next/link';
 import styles from './paper.module.css';
 import CiteModal from '@/components/CiteModal';
+import { ClientTracker } from '@/components/ClientTracker';
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -106,6 +108,11 @@ export async function generateMetadata(
       'citation_language': 'en',
       ...(paper.file_url && { 'citation_pdf_url': `https://elitechub.com/api/research/download?id=${paper.id}` }),
       ...(paper.doi && { 'citation_doi': paper.doi }),
+      ...(paper.journal_title && { 'citation_journal_title': paper.journal_title }),
+      ...(paper.volume && { 'citation_volume': paper.volume }),
+      ...(paper.issue && { 'citation_issue': paper.issue }),
+      ...(paper.pages && { 'citation_firstpage': paper.pages.split('-')[0] }),
+      ...(paper.pages && paper.pages.includes('-') && { 'citation_lastpage': paper.pages.split('-')[1] }),
       ...(paper.abstract && { 'DC.description': paper.abstract.substring(0, 300) }),
     },
   };
@@ -147,6 +154,7 @@ export default async function ResearchPaperPage({ params }: Props) {
       : paper.author;
 
   // Fetch related publications by author or category
+  const supabase = getSupabaseServerClient();
   let { data: relatedPapers } = await supabase
       .from('research')
       .select('title, slug, category, created_at, abstract, authors, type')

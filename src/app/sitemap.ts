@@ -10,6 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let blogPosts = null;
   let researchPapers = null;
   let caseStudies = null;
+  let labEntries = null;
 
   try {
     const supabase = getSupabaseServerClient();
@@ -34,6 +35,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .select('slug, created_at')
       .eq('published', true);
     caseStudies = cStudies;
+    // Fetch published labs
+    const { data: lData } = await supabase
+      .from('labs')
+      .select('slug, updated_at, published_at')
+      .eq('status', 'published');
+    labEntries = lData;
+
   } catch (error) {
     console.error('Failed to fetch dynamic routes for sitemap:', error);
   }
@@ -226,6 +234,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }));
     routes.push(...caseStudyUrls);
+  }
+
+  
+  if (labEntries) {
+    const labUrls: MetadataRoute.Sitemap = labEntries.map((lab) => ({
+      url: `${baseUrl}/lab/${lab.slug}`,
+      lastModified: lab.updated_at || lab.published_at || now,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    }));
+    routes.push(...labUrls);
   }
 
   return routes;

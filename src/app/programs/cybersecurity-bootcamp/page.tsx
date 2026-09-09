@@ -6,7 +6,7 @@ import layoutStyles from '@/components/PageLayout.module.css';
 import styles from './bootcamp.module.css';
 import {
   Zap, CheckCircle2, ChevronDown, ArrowRight, ArrowLeft, Shield, Terminal,
-  Clock, Calendar, Globe, Award, Target, Code, Network, ShieldCheck,
+  Clock, Calendar, Globe, Award, Target, Code, Network, ShieldCheck, Repeat, Briefcase
 } from 'lucide-react';
 
 export const metadata = {
@@ -109,6 +109,14 @@ export default function BootcampPage() {
       mainEntity: [
         {
           '@type': 'Question',
+          name: 'Can I become a cybersecurity professional in just 6 weeks?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Honestly, no. A 6-week bootcamp is an entry point. It gives you the foundational knowledge and basic practical skills required to start. True mastery requires continuous learning and practice. We bridge this gap by transitioning you into an internship to gain workflow experience.',
+          },
+        },
+        {
+          '@type': 'Question',
           name: 'Do I need prior experience to join the 6-week cybersecurity bootcamp?',
           acceptedAnswer: {
             '@type': 'Answer',
@@ -117,26 +125,26 @@ export default function BootcampPage() {
         },
         {
           '@type': 'Question',
+          name: 'What if I don\'t know my specialization yet?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'That\'s perfectly normal. Our core methodology involves learning the basics and applying them first. Over the 6 weeks, you will be exposed to different domains like ethical hacking and network security, allowing you to discover what interests you before specializing.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'What happens after the training?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'After training, you enter the internship phase. Short-term training only introduces concepts; the internship bridges your learning to professional workflow experience. While we do not guarantee employment, we equip you with real-world project portfolios and verifiable certificates to make you highly employable.',
+          },
+        },
+        {
+          '@type': 'Question',
           name: 'When are the 6-week bootcamp classes held?',
           acceptedAnswer: {
             '@type': 'Answer',
             text: 'Classes run on weekends (Saturdays and Sundays), so you can keep your current job or studies while learning. All sessions are live and virtual.',
-          },
-        },
-        {
-          '@type': 'Question',
-          name: 'What will I learn in the 6-week cybersecurity bootcamp?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'You will cover cybersecurity fundamentals, Linux basics, ethical hacking tools (Kali Linux, Nmap, Metasploit), network security, web application security basics, and hands-on labs simulating real attacks.',
-          },
-        },
-        {
-          '@type': 'Question',
-          name: 'How much does the Elitech Hub 6-week bootcamp cost?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'The 6-week cybersecurity bootcamp costs ₦75,000 as a one-time payment. No hidden fees.',
           },
         },
       ],
@@ -215,12 +223,11 @@ export default function BootcampPage() {
           <div className={styles.heroBadge}><Zap size={15} /> 6-WEEK BOOTCAMP</div>
           <h1 className={layoutStyles.pageHeroTitle}>
             Go From Zero to<br />
-            <span className="text-gradient-primary">Cybersecurity Ready</span><br />
+            <span className="text-gradient-primary">Cybersecurity Fundamentals</span><br />
             in 6 Weeks
           </h1>
           <p className={layoutStyles.pageHeroSub}>
-            Our 6-week curriculum is designed for complete beginners. You will learn the foundations of Linux, Networking, and Ethical Hacking, complete a hands-on 
-            industry project, and a certificate of completion — all for <PriceDisplay courseId="bootcamp" fallback="₦75,000" />.
+            Short-term training is your entry point, not the finish line. Our 6-week curriculum builds your foundational knowledge. You will learn Linux, Networking, and Ethical Hacking, bridging the gap to professional workflow experience.
           </p>
 
           <div className={styles.heroMeta}>
@@ -241,6 +248,27 @@ export default function BootcampPage() {
         </AnimateOnScroll>
       </section>
 
+      {/* ── METHODOLOGY SECTION ── */}
+      <section className={styles.methodologySection} style={{ padding: '4rem 2rem', backgroundColor: 'var(--bg-secondary)', textAlign: 'center' }}>
+        <AnimateOnScroll direction="fade">
+          <h2 className={styles.sectionTitle}>Our Methodology</h2>
+          <p className={styles.sectionSub} style={{ maxWidth: '800px', margin: '0 auto 2rem' }}>
+            We do not believe in overnight success or false guarantees. Cybersecurity requires continuous evolution. Our process ensures you build competence through deliberate practice.
+          </p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '1rem', alignItems: 'center', fontWeight: 'bold', color: 'var(--text-primary)' }}>
+            <span>Learn</span> <ArrowRight size={16} className="text-gradient-primary" />
+            <span>Apply</span> <ArrowRight size={16} className="text-gradient-primary" />
+            <span>Relearn</span> <ArrowRight size={16} className="text-gradient-primary" />
+            <span>Apply Again</span> <ArrowRight size={16} className="text-gradient-primary" />
+            <span>Specialise</span> <ArrowRight size={16} className="text-gradient-primary" />
+            <span>Practice</span> <ArrowRight size={16} className="text-gradient-primary" />
+            <span>Intern</span> <ArrowRight size={16} className="text-gradient-primary" />
+            <span>Certify</span> <ArrowRight size={16} className="text-gradient-primary" />
+            <span>Continue Learning</span>
+          </div>
+        </AnimateOnScroll>
+      </section>
+
       {/* ── WHAT'S INCLUDED ── */}
       <section className={styles.includesSection}>
         <AnimateOnScroll direction="up">
@@ -249,10 +277,10 @@ export default function BootcampPage() {
             {[
               { icon: <Terminal size={22} />, label: '6 Weeks of Live Training', sub: 'Weekend sessions, not pre-recorded' },
               { icon: <Shield size={22} />, label: 'Hands-on Hacking Labs', sub: 'Real environments, real attacks' },
-              { icon: <Code size={22} />, label: 'Industry Project', sub: 'Full pentest report you can show employers' },
+              { icon: <Briefcase size={22} />, label: 'Internship Experience', sub: 'Bridges learning to professional workflow' },
               { icon: <Award size={22} />, label: 'Certificate of Completion', sub: 'Verifiable at elitechub.com/verify' },
               { icon: <Network size={22} />, label: 'Community Access', sub: 'Lifetime alumni group membership' },
-              { icon: <Target size={22} />, label: 'Career Guidance', sub: 'CV review and basic interview prep' },
+              { icon: <Repeat size={22} />, label: 'Continuous Learning', sub: 'Foundations to grow in the industry' },
             ].map((item, i) => (
               <div key={i} className={styles.includeCard}>
                 <div className={styles.includeIcon}>{item.icon}</div>
@@ -311,10 +339,10 @@ export default function BootcampPage() {
               <h3 className={styles.forYouTitle} style={{ color: '#10b981' }}>✅ This is for you if...</h3>
               <ul className={styles.forYouList}>
                 {[
-                  <span key="1">You want to break into cybersecurity fast</span>,
+                  <span key="1">You want a solid entry point into cybersecurity</span>,
                   <span key="2">You have no prior IT experience</span>,
                   <span key="3">You can commit to weekends for 6 weeks</span>,
-                  <span key="4">You want a certificate to show employers</span>,
+                  <span key="4">You are ready to learn, apply, and relearn</span>,
                   <span key="5">You need something affordable (<PriceDisplay courseId="bootcamp" fallback="₦75,000" />)</span>,
                 ].map((t, i) => <li key={i}>{t}</li>)}
               </ul>
@@ -323,8 +351,8 @@ export default function BootcampPage() {
               <h3 className={styles.forYouTitle} style={{ color: '#ef4444' }}>❌ Consider the 16-week if...</h3>
               <ul className={styles.forYouList}>
                 {[
-                  'You want a full career transformation',
-                  'You want our full 4-week internship and capstone projects',
+                  'You want a deeper career transformation',
+                  'You want our full internship and capstone projects',
                   'You want 1-on-1 mentorship',
                   'You want CompTIA Security+ / CEH prep',
                   'You want hands-on career support',
@@ -345,6 +373,18 @@ export default function BootcampPage() {
           <div className={styles.faqList}>
             {[
               {
+                q: 'Can I become a cybersecurity professional in just 6 weeks?',
+                a: 'Honestly, no. A 6-week bootcamp is an entry point. It gives you the foundational knowledge and basic practical skills required to start. True mastery requires continuous learning and practice. We bridge this gap by transitioning you into an internship to gain workflow experience.',
+              },
+              {
+                q: 'What if I do not know my specialization yet?',
+                a: 'That is perfectly normal. Our core methodology involves learning the basics and applying them first. Over the 6 weeks, you will be exposed to different domains like ethical hacking and network security, allowing you to discover what interests you before specializing.',
+              },
+              {
+                q: 'What happens after the training?',
+                a: 'After training, you enter the internship phase. Short-term training only introduces concepts; the internship bridges your learning to professional workflow experience. While we do not guarantee employment, we equip you with real-world project portfolios and verifiable certificates to make you highly employable.',
+              },
+              {
                 q: 'Do I need prior experience?',
                 a: 'No. Zero experience required. If you can use a computer and have internet access, you are ready to start.',
               },
@@ -356,20 +396,15 @@ export default function BootcampPage() {
                 q: 'What equipment do I need?',
                 a: 'A laptop with at least 8GB RAM (16GB recommended) and a reliable internet connection. All software used is free and open-source.',
               },
-              {
-                q: 'Will I get a certificate?',
-                a: 'Yes. Upon completing the program and your industry project, you receive a verifiable certificate of completion from Elitech Hub.',
-              },
-              {
-                q: 'Is there internship experience?',
-                a: 'The 6-week bootcamp includes a 2-week unpaid internship experience. For our full 4-week internship and comprehensive career support, see the 16-Week Professional Program.',
-              },
             ].map((item, i) => (
               <details key={i} className={styles.faqItem}>
                 <summary className={styles.faqQ}>{item.q} <ChevronDown size={18} /></summary>
                 <div className={styles.faqA}>{item.a}</div>
               </details>
             ))}
+          </div>
+          <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+            <Link href="/faq" style={{ color: 'var(--brand-primary)', textDecoration: 'underline' }}>View Full FAQ</Link>
           </div>
         </AnimateOnScroll>
       </section>
@@ -395,3 +430,4 @@ export default function BootcampPage() {
     </PageLayout>
   );
 }
+

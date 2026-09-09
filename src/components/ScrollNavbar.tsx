@@ -82,7 +82,10 @@ export default function ScrollNavbar() {
         { href: "/blog", label: "Blog" },
         { href: "/testimonials", label: "Testimonials" },
         { href: "/research", label: "Research" },
+        { href: "/research/behavioral-cybersecurity", label: "Behavioral Research" },
         { href: "/lab", label: "Security Lab" },
+        { href: "/security-check", label: "Security Check" },
+        { href: "/faq", label: "FAQ" },
       ]
     },
     { href: "/get-involved", label: "Get Involved" },

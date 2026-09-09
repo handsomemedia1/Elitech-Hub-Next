@@ -1,3 +1,4 @@
+import { getSupabaseServerClient } from '@/lib/supabase';
 import PageLayout from '@/components/PageLayout';
 import Link from 'next/link';
 import styles from './lab.module.css';
@@ -38,7 +39,10 @@ export const metadata = {
 };
 
 
-export default function LabPage() {
+export default async function LabPage() {
+  const supabase = getSupabaseServerClient();
+  const { data: labs, error } = await supabase.from('labs').select('*').eq('status', 'published').order('published_at', { ascending: false });
+
   return (
     <PageLayout>
       <section className={styles.hero}>
@@ -295,101 +299,40 @@ export default function LabPage() {
           </div>
         </AnimateOnScroll>
 
-        <div className={styles.artifactsGrid}>
-          {/* Card 1 */}
-          <AnimateOnScroll direction="up" delay={100}>
-            <div className={styles.artifactCard}>
-              <div className={styles.artifactHeader}>
-                <div className={`${styles.artifactIcon} ${styles.yara}`}>
-                  <Crosshair size={28} />
+                <div className={styles.artifactsGrid}>
+          {labs && labs.length > 0 ? (
+            labs.map((lab: any, index: number) => (
+              <AnimateOnScroll key={lab.id} direction="up" delay={100 * (index + 1)}>
+                <div className={styles.artifactCard}>
+                  <div className={styles.artifactHeader}>
+                    <div className={`${styles.artifactIcon} ${styles.yara}`}>
+                      <Crosshair size={28} />
+                    </div>
+                    <div className={styles.artifactMeta}>
+                      <div className={`${styles.artifactCategory} ${styles.yara}`}>{lab.category || 'Research'}</div>
+                      <div className={styles.artifactTitle}>{lab.title}</div>
+                      <div className={styles.artifactFile}><FileCode2 size={14} /> {lab.slug}</div>
+                    </div>
+                  </div>
+                  <div className={styles.artifactCode} style={{ maxHeight: '150px', overflow: 'hidden' }}>
+                    {lab.short_description || "No description provided."}
+                  </div>
+                  <div className={styles.artifactFooter}>
+                    <span className={`${styles.artifactTag} ${styles.high}`}>
+                      <ShieldAlert size={14} /> {lab.difficulty || 'Intermediate'}
+                    </span>
+                    <Link href={`/lab/${lab.slug}`} className={`${styles.artifactAction} ${styles.yara}`}>
+                      <FileText size={16} /> View Lab
+                    </Link>
+                  </div>
                 </div>
-                <div className={styles.artifactMeta}>
-                  <div className={`${styles.artifactCategory} ${styles.yara}`}>Detection Engineering</div>
-                  <div className={styles.artifactTitle}>Suspicious PowerShell Execution</div>
-                  <div className={styles.artifactFile}><FileCode2 size={14} /> suspicious_powershell.yar</div>
-                </div>
-              </div>
-              <div className={styles.artifactCode}>
-{`rule Suspicious_PowerShell_Execution {
-    meta:
-        author      = "Elitech Hub Lab"
-        severity    = "High"
-        mitre_attck = "T1059.001"
-    strings:
-        $ = "encodedcommand" nocase
-        $ = "executionpolicy bypass" nocase
-        $ = "-windowstyle hidden" nocase
-    condition:
-        any of ($)
-}`}
-              </div>
-              <div className={styles.artifactFooter}>
-                <span className={`${styles.artifactTag} ${styles.high}`}><ShieldAlert size={14} /> High</span>
-                <a href="https://codeberg.org/ElitechHub/detection-rules" target="_blank" rel="noopener noreferrer" className={`${styles.artifactAction} ${styles.yara}`}>
-                  <GitBranch size={16} /> Fork
-                </a>
-              </div>
+              </AnimateOnScroll>
+            ))
+          ) : (
+            <div style={{ textAlign: 'center', width: '100%', color: 'var(--color-text-secondary)' }}>
+              No published labs found. Please check back later.
             </div>
-          </AnimateOnScroll>
-
-          {/* Card 2 */}
-          <AnimateOnScroll direction="up" delay={300}>
-            <div className={styles.artifactCard}>
-              <div className={styles.artifactHeader}>
-                <div className={`${styles.artifactIcon} ${styles.diagram}`}>
-                  <Workflow size={28} />
-                </div>
-                <div className={styles.artifactMeta}>
-                  <div className={`${styles.artifactCategory} ${styles.diagram}`}>Threat Analysis</div>
-                  <div className={styles.artifactTitle}>APT29 Kill Chain</div>
-                  <div className={styles.artifactFile}><Terminal size={14} /> apt29_attack_chain.mermaid</div>
-                </div>
-              </div>
-              <div className={styles.artifactCode}>
-{`graph TD
-    A[Initial Access] --> B[Execution]
-    B --> C[Credential Access]
-    C --> D[Lateral Movement]
-    D --> E[Domain Control]`}
-              </div>
-              <div className={styles.artifactFooter}>
-                <span className={`${styles.artifactTag} ${styles.critical}`}><Bug size={14} /> Critical</span>
-                <a href="https://codeberg.org/ElitechHub/detection-rules" target="_blank" rel="noopener noreferrer" className={`${styles.artifactAction} ${styles.diagram}`}>
-                  <GitBranch size={16} /> Contribute
-                </a>
-              </div>
-            </div>
-          </AnimateOnScroll>
-
-          {/* Card 3 */}
-          <AnimateOnScroll direction="up" delay={500}>
-            <div className={styles.artifactCard}>
-              <div className={styles.artifactHeader}>
-                <div className={`${styles.artifactIcon} ${styles.checklist}`}>
-                  <ShieldCheck size={28} />
-                </div>
-                <div className={styles.artifactMeta}>
-                  <div className={`${styles.artifactCategory} ${styles.checklist}`}>Defensive Infrastructure</div>
-                  <div className={styles.artifactTitle}>Windows Server 2022 Baseline</div>
-                  <div className={styles.artifactFile}><FileText size={14} /> windows_server_2022_baseline.md</div>
-                </div>
-              </div>
-              <div className={styles.artifactCode}>
-{`- [x] Enable Credential Guard (VBS)
-- [x] Disable NTLMv1 via Group Policy
-- [x] Deploy LAPS for local admin accounts
-- [x] Disable WDigest authentication
-- [x] Enable PowerShell Script Block Logging
-- [x] Enable Command Line Auditing (4688)`}
-              </div>
-              <div className={styles.artifactFooter}>
-                <span className={`${styles.artifactTag} ${styles.tested}`}><CheckSquare size={14} /> Lab Tested</span>
-                <a href="https://codeberg.org/ElitechHub/detection-rules" target="_blank" rel="noopener noreferrer" className={`${styles.artifactAction} ${styles.checklist}`}>
-                  <FileText size={16} /> Full Checklist
-                </a>
-              </div>
-            </div>
-          </AnimateOnScroll>
+          )}
         </div>
 
         <div style={{ textAlign: 'center', marginTop: '4rem' }}>
