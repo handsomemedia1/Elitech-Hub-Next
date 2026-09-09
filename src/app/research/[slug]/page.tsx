@@ -230,22 +230,16 @@ export default async function ResearchPaperPage({ params }: Props) {
 
       {/* ── HERO / HEADER ───────────────────────────────────────────────────── */}
       <div style={{
-        background: 'linear-gradient(160deg, #0a0f1e 0%, #0f172a 50%, #111827 100%)',
+        background: 'linear-gradient(145deg, #0f172a 0%, #020617 100%)',
         position: 'relative',
         overflow: 'hidden',
-        padding: '7rem 2rem 5rem',
+        padding: '8rem 2rem 6rem',
+        borderBottom: '1px solid rgba(255,255,255,0.05)',
       }}>
-        {/* Background decorative lines */}
+        {/* Subtle premium accent line at the top */}
         <div style={{
-          position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.04,
-          backgroundImage: 'repeating-linear-gradient(0deg, #fff 0, #fff 1px, transparent 1px, transparent 60px), repeating-linear-gradient(90deg, #fff 0, #fff 1px, transparent 1px, transparent 60px)',
-        }} />
-
-        {/* Glow orb */}
-        <div style={{
-          position: 'absolute', top: '20%', right: '10%', width: '400px', height: '400px',
-          background: 'radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%)',
-          pointerEvents: 'none',
+          position: 'absolute', top: 0, left: 0, right: 0, height: '1px',
+          background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%)',
         }} />
 
         <div className={styles.heroInner}>
