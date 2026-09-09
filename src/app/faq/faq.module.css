@@ -32,7 +32,7 @@
   color: var(--text-primary);
   margin-bottom: 1.5rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--border-color, #e2e8f0);
+  border-bottom: 2px solid var(--border-color, #1f2937);
 }
 
 .faqList {
@@ -42,8 +42,8 @@
 }
 
 .faqItem {
-  background: var(--bg-card, #ffffff);
-  border: 1px solid var(--border-color, #e2e8f0);
+  background: var(--bg-card, #111317);
+  border: 1px solid var(--border-color, #1f2937);
   border-radius: 8px;
   overflow: hidden;
   transition: all 0.3s ease;

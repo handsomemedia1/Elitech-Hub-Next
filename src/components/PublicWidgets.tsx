@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { FloatingChatbot, TrustBadge } from "./FloatingWidgets";
 import LeadPopup from "./LeadPopup";
+import ResearchBanner from "./ResearchBanner";
 
 /**
  * Renders public-facing floating widgets (chatbot, trust badge, lead popup)
@@ -14,7 +15,7 @@ export default function PublicWidgets() {
 
   // Hide all floating widgets inside the admin / writer dashboards
   const isDashboard =
-    pathname.startsWith("/admin") || pathname.startsWith("/writer");
+    pathname.startsWith("/admin") || pathname.startsWith("/writer") || pathname.startsWith("/researcher");
 
   if (isDashboard) return null;
 
@@ -23,6 +24,7 @@ export default function PublicWidgets() {
       <FloatingChatbot />
       <TrustBadge />
       <LeadPopup />
+      <ResearchBanner />
     </>
   );
 }

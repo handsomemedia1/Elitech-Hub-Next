@@ -512,6 +512,50 @@ export default async function ResearchPaperPage({ params }: Props) {
               </section>
             )}
 
+            {/* Versioning UI */}
+            <section style={{
+              background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px',
+              padding: '1.75rem', marginBottom: '3rem',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
+                <Clock size={20} style={{ color: '#64748b' }} />
+                <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#0f172a', margin: 0 }}>Version History</h2>
+              </div>
+              
+              {paper.version_history && Array.isArray(paper.version_history) && paper.version_history.length > 0 ? (
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                  {paper.version_history.map((v: any, i: number) => (
+                    <li key={i} style={{ 
+                      padding: '1rem 0', 
+                      borderBottom: i === paper.version_history.length - 1 ? 'none' : '1px solid #e2e8f0',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.25rem'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span style={{ fontWeight: 600, color: '#334155' }}>Version {v.version || (paper.version_history.length - i)}</span>
+                        <span style={{ fontSize: '0.85rem', color: '#64748b' }}>{v.date ? new Date(v.date).toLocaleDateString() : ''}</span>
+                      </div>
+                      <div style={{ fontSize: '0.9rem', color: '#475569' }}>
+                        Status: <span style={{ textTransform: 'capitalize' }}>{v.status || 'Archived'}</span>
+                      </div>
+                      {v.notes && <div style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '0.25rem' }}>{v.notes}</div>}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div style={{ fontSize: '0.95rem', color: '#475569', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span>Current Version: <strong>v{paper.version || '1.0'}</strong></span>
+                  <span style={{
+                    padding: '0.25rem 0.75rem', borderRadius: '2rem', fontSize: '0.75rem', fontWeight: 600,
+                    background: '#f1f5f9', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em'
+                  }}>
+                    {paper.status || paper.publication_status || (isPublished ? 'Published' : 'Draft')}
+                  </span>
+                </div>
+              )}
+            </section>
+
             {/* Inline Cite Section */}
             <section style={{
               background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px',
