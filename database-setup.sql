@@ -532,3 +532,307 @@ CREATE TRIGGER update_labs_updated_at
   BEFORE UPDATE ON labs
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
+-- Elitech Hub Migration 003: Ecosystem Entities, Gamification & Knowledge Graph
+
+-- 1. Writers Gamification Additions
+ALTER TABLE public.writers
+ADD COLUMN IF NOT EXISTS points INT DEFAULT 0,
+ADD COLUMN IF NOT EXISTS badges JSONB DEFAULT '[]'::jsonb,
+ADD COLUMN IF NOT EXISTS achievements JSONB DEFAULT '[]'::jsonb;
+
+-- 2. Knowledge Graph (Content Relationships)
+CREATE TABLE IF NOT EXISTS public.content_relationships (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    source_type TEXT NOT NULL, -- e.g., 'blog', 'research', 'lab', 'resource', 'topic', 'researcher', 'writer', 'advisor'
+    source_id UUID NOT NULL,
+    target_type TEXT NOT NULL,
+    target_id UUID NOT NULL,
+    relationship_type TEXT, -- e.g., 'related_to', 'authored', 'has_lab', 'expertise_in'
+    confidence_score NUMERIC DEFAULT 1.0, -- for AI suggestions
+    created_by UUID REFERENCES auth.users(id),
+    approved BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    UNIQUE(source_type, source_id, target_type, target_id, relationship_type)
+);
+
+-- RLS for content_relationships
+ALTER TABLE public.content_relationships ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can view approved content_relationships"
+ON public.content_relationships FOR SELECT
+USING (approved = true);
+
+-- 3. Research Membership Applications (Jan 2027)
+CREATE TABLE IF NOT EXISTS public.research_membership_applications (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id UUID REFERENCES auth.users(id), -- Nullable if they haven't created a login account yet
+    full_name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    country TEXT,
+    professional_title TEXT,
+    institution TEXT,
+    department TEXT,
+    research_interests TEXT[],
+    specialization TEXT,
+    orcid TEXT,
+    google_scholar_url TEXT,
+    linkedin_url TEXT,
+    website_url TEXT,
+    research_background TEXT,
+    publications TEXT,
+    current_projects TEXT,
+    motivation TEXT,
+    contribution TEXT,
+    expectations TEXT,
+    supporting_file_url TEXT,
+    status TEXT DEFAULT 'New' CHECK (status IN ('New', 'Under Review', 'Shortlisted', 'Accepted', 'Waitlisted', 'Rejected', 'Withdrawn')),
+    admin_notes TEXT,
+    reviewed_by UUID REFERENCES auth.users(id),
+    reviewed_at TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- RLS for research_membership_applications
+ALTER TABLE public.research_membership_applications ENABLE ROW LEVEL SECURITY;
+
+-- Admins can view and manage all applications (assuming auth.users role logic is managed externally, or restricting to just authenticated for now, but usually it's handled via a profile role. For safety, we deny public access.)
+CREATE POLICY "Users can insert their own application"
+ON public.research_membership_applications FOR INSERT
+WITH CHECK (true); -- Anyone can apply (public form)
+
+CREATE POLICY "Users can view their own application"
+ON public.research_membership_applications FOR SELECT
+USING (user_id = auth.uid()); 
+
+-- 4. Advisors Table
+CREATE TABLE IF NOT EXISTS public.advisors (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id UUID REFERENCES auth.users(id),
+    full_name TEXT NOT NULL,
+    slug TEXT UNIQUE NOT NULL,
+    professional_title TEXT,
+    biography TEXT,
+    expertise TEXT[],
+    areas_of_specialization TEXT[],
+    organization TEXT,
+    role_at_elitech TEXT,
+    advisor_start_date DATE,
+    achievements TEXT,
+    credentials TEXT,
+    publications TEXT,
+    profile_image_url TEXT,
+    linkedin_url TEXT,
+    x_url TEXT,
+    personal_website_url TEXT,
+    status TEXT DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'former')),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- RLS for advisors
+ALTER TABLE public.advisors ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can view active advisors"
+ON public.advisors FOR SELECT
+USING (status = 'active');
+
+-- 5. Researchers Profiles
+-- (Assuming researchers are currently stored in users or profiles, we will create a dedicated table or extend existing. A dedicated table is cleaner.)
+CREATE TABLE IF NOT EXISTS public.researchers (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id UUID REFERENCES auth.users(id) NOT NULL UNIQUE,
+    full_name TEXT NOT NULL,
+    slug TEXT UNIQUE NOT NULL,
+    biography TEXT,
+    profile_image_url TEXT,
+    institution TEXT,
+    department TEXT,
+    country TEXT,
+    affiliation TEXT,
+    orcid TEXT,
+    research_interests TEXT[],
+    publications TEXT,
+    projects TEXT,
+    datasets TEXT,
+    linkedin_url TEXT,
+    personal_website_url TEXT,
+    status TEXT DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'suspended')),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- RLS for researchers
+ALTER TABLE public.researchers ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can view active researchers"
+ON public.researchers FOR SELECT
+USING (status = 'active');
+
+CREATE POLICY "Researchers can update their own profile"
+ON public.researchers FOR UPDATE
+USING (user_id = auth.uid());
+
+-- 6. Resources Table (for PDF landing pages)
+CREATE TABLE IF NOT EXISTS public.resources (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    title TEXT NOT NULL,
+    slug TEXT UNIQUE NOT NULL,
+    description TEXT,
+    author TEXT,
+    resource_type TEXT, -- e.g., 'guide', 'report', 'checklist', 'template'
+    topic TEXT,
+    publication_date DATE,
+    version TEXT,
+    file_url TEXT NOT NULL,
+    references TEXT,
+    status TEXT DEFAULT 'draft' CHECK (status IN ('draft', 'review', 'published', 'archived')),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- RLS for resources
+ALTER TABLE public.resources ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can view published resources"
+ON public.resources FOR SELECT
+USING (status = 'published');
+
+-- Create trigger functions to automatically update the updated_at timestamp
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = timezone('utc'::text, now());
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+CREATE TRIGGER update_content_relationships_modtime
+    BEFORE UPDATE ON public.content_relationships
+    FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+
+CREATE TRIGGER update_research_membership_applications_modtime
+    BEFORE UPDATE ON public.research_membership_applications
+    FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+
+CREATE TRIGGER update_advisors_modtime
+    BEFORE UPDATE ON public.advisors
+    FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+
+CREATE TRIGGER update_researchers_modtime
+    BEFORE UPDATE ON public.researchers
+    FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+
+CREATE TRIGGER update_resources_modtime
+    BEFORE UPDATE ON public.resources
+    FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+-- Elitech Hub Migration 004: Testimonials System Expansion
+
+-- Add necessary fields to the existing testimonials table
+ALTER TABLE public.testimonials
+ADD COLUMN IF NOT EXISTS organization TEXT,
+ADD COLUMN IF NOT EXISTS avatar_url TEXT,
+ADD COLUMN IF NOT EXISTS author_type TEXT DEFAULT 'client' CHECK (author_type IN ('client', 'student', 'partner', 'researcher', 'community')),
+ADD COLUMN IF NOT EXISTS featured BOOLEAN DEFAULT false,
+ADD COLUMN IF NOT EXISTS service_id TEXT,
+ADD COLUMN IF NOT EXISTS project_id TEXT,
+ADD COLUMN IF NOT EXISTS display_order INT DEFAULT 0,
+ADD COLUMN IF NOT EXISTS published_at TIMESTAMP WITH TIME ZONE,
+ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
+
+-- Add trigger for updated_at
+DROP TRIGGER IF EXISTS update_testimonials_modtime ON public.testimonials;
+CREATE TRIGGER update_testimonials_modtime
+    BEFORE UPDATE ON public.testimonials
+    FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+-- Elitech Hub Migration 005: Testimonial Collection System
+
+-- 1. Create the testimonial_collection_requests table
+CREATE TABLE IF NOT EXISTS public.testimonial_collection_requests (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    token UUID UNIQUE NOT NULL DEFAULT gen_random_uuid(),
+    recipient_name TEXT NOT NULL,
+    recipient_email TEXT,
+    relationship_type TEXT,
+    context TEXT,
+    requested_by UUID,
+    status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'submitted', 'expired', 'revoked')),
+    expires_at TIMESTAMPTZ,
+    submitted_at TIMESTAMPTZ,
+    testimonial_id UUID, -- Will be linked after submission
+    created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
+);
+
+-- Trigger for updated_at
+CREATE TRIGGER update_testimonial_requests_modtime
+    BEFORE UPDATE ON public.testimonial_collection_requests
+    FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+
+-- Enable RLS
+ALTER TABLE public.testimonial_collection_requests ENABLE ROW LEVEL SECURITY;
+
+-- Policies for requests: Only authenticated users (admins) can view or manage requests
+CREATE POLICY "Admins can view collection requests" 
+    ON public.testimonial_collection_requests FOR SELECT TO authenticated USING (true);
+CREATE POLICY "Admins can insert collection requests" 
+    ON public.testimonial_collection_requests FOR INSERT TO authenticated WITH CHECK (true);
+CREATE POLICY "Admins can update collection requests" 
+    ON public.testimonial_collection_requests FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admins can delete collection requests" 
+    ON public.testimonial_collection_requests FOR DELETE TO authenticated USING (true);
+-- Note: Service Role will be used by the public collection form server action to read token validity and update status, bypassing RLS safely.
+
+-- 2. Expand testimonials table
+ALTER TABLE public.testimonials
+ADD COLUMN IF NOT EXISTS collection_token UUID REFERENCES public.testimonial_collection_requests(token) ON DELETE SET NULL,
+ADD COLUMN IF NOT EXISTS email TEXT,
+ADD COLUMN IF NOT EXISTS relationship_type TEXT,
+ADD COLUMN IF NOT EXISTS relationship_context TEXT,
+ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected', 'archived')),
+ADD COLUMN IF NOT EXISTS consent_to_publish BOOLEAN DEFAULT false,
+ADD COLUMN IF NOT EXISTS consent_to_use_name BOOLEAN DEFAULT false,
+ADD COLUMN IF NOT EXISTS consent_to_use_photo BOOLEAN DEFAULT false,
+ADD COLUMN IF NOT EXISTS consent_to_use_organization BOOLEAN DEFAULT false,
+ADD COLUMN IF NOT EXISTS submitted_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()),
+ADD COLUMN IF NOT EXISTS approved_at TIMESTAMPTZ,
+ADD COLUMN IF NOT EXISTS rejected_at TIMESTAMPTZ;
+
+-- Migrate existing 'is_published' state to 'status'
+UPDATE public.testimonials SET status = 'approved' WHERE is_published = true;
+UPDATE public.testimonials SET status = 'pending' WHERE is_published = false;
+
+-- Allow source to be 'first_party' or 'imported' in addition to existing check
+-- Wait, to alter a CHECK constraint in Postgres, we have to drop it and recreate it.
+-- Let's drop the constraint if we know its name. Typically it's table_column_check. 
+-- Since we didn't name it explicitly in 001, it might be named `testimonials_source_check`.
+DO $$
+DECLARE constraint_name text;
+BEGIN
+    SELECT conname INTO constraint_name
+    FROM pg_constraint
+    WHERE conrelid = 'public.testimonials'::regclass AND contype = 'c' AND pg_get_constraintdef(oid) LIKE '%source%';
+    
+    IF constraint_name IS NOT NULL THEN
+        EXECUTE 'ALTER TABLE public.testimonials DROP CONSTRAINT ' || constraint_name;
+    END IF;
+END $$;
+-- Re-add source constraint with expanded options
+ALTER TABLE public.testimonials ADD CONSTRAINT testimonials_source_check 
+CHECK (source IN ('senja', 'trustpilot', 'manual', 'first_party', 'imported', 'linkedin'));
+
+-- Update existing policies for testimonials to use 'status' instead of 'is_published'
+DROP POLICY IF EXISTS "Public can view published testimonials" ON public.testimonials;
+CREATE POLICY "Public can view published testimonials" 
+    ON public.testimonials FOR SELECT TO anon USING (status = 'approved');
+
+-- Allow anonymous users to INSERT into testimonials IF they are using the server action / valid flow.
+-- Usually, we restrict INSERT to authenticated users and let the Server Action (using Service Role) handle it, 
+-- which is much safer than allowing anon INSERTs. So we will rely on Service Role for the public form submission.
+-- No anon INSERT policy needed.
+
+-- Add foreign key from requests to testimonials now that testimonials exists
+ALTER TABLE public.testimonial_collection_requests
+ADD CONSTRAINT fk_testimonial 
+FOREIGN KEY (testimonial_id) REFERENCES public.testimonials(id) ON DELETE SET NULL;
