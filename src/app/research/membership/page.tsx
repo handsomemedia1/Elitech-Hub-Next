@@ -76,10 +76,11 @@ const eligibilityItems = [
 export default function ResearchMembershipPage() {
   return (
     <PageLayout>
-      {/* ── Hero ── */}
       <section
         style={{
-          background: 'linear-gradient(135deg, var(--color-bg-main) 0%, var(--color-bg-panel) 100%)',
+          background: "linear-gradient(135deg, rgba(10, 12, 16, 0.8) 0%, rgba(10, 12, 16, 0.95) 100%), url('/assets/images/research_membership_bg.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
           borderBottom: '1px solid var(--color-border)',
           padding: '6rem 1.5rem 5rem',
           textAlign: 'center',
@@ -128,12 +129,14 @@ export default function ResearchMembershipPage() {
               }}
             >
               An exclusive ecosystem for pioneering researchers in Behavioral Cybersecurity.
-              We are accepting early applications for our inaugural cohort \u2014 limited to exactly{' '}
+              We are accepting early applications for our inaugural cohort — limited to exactly{' '}
               <strong style={{ color: 'var(--color-text-primary)' }}>30 researchers</strong> globally.
+              <br /><br />
+              <strong style={{ color: 'var(--color-accent-bright)', fontSize: '1.1em' }}>Founding Cohort Membership: NGN 50,000</strong>
             </p>
 
             <Link href="/research/membership/apply" className="premium-button">
-              Apply Now \u2192
+              Apply Now →
             </Link>
           </AnimateOnScroll>
         </div>
@@ -419,7 +422,7 @@ export default function ResearchMembershipPage() {
                 for the January 2027 launch.
               </p>
               <Link href="/research/membership/apply" className="premium-button">
-                Submit Application \u2192
+                Submit Application →
               </Link>
             </div>
           </AnimateOnScroll>
