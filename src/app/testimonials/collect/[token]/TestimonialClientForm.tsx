@@ -44,10 +44,12 @@ export default function TestimonialClientForm({
 
   if (success) {
     return (
-      <div className="text-center py-10">
-        <CheckCircle size={64} className="text-green-500 mx-auto mb-6" />
-        <h2 className="text-2xl font-bold text-white mb-4">Thank you for sharing your experience.</h2>
-        <p className="text-gray-400">
+      <div style={{ textAlign: 'center', padding: '3rem 0' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+          <CheckCircle size={64} style={{ color: '#22c55e' }} />
+        </div>
+        <h2 style={{ fontSize: '1.8rem', fontWeight: 700, color: 'white', marginBottom: '1rem', marginTop: 0 }}>Thank you for sharing your experience.</h2>
+        <p style={{ color: '#94a3b8', fontSize: '1.1rem', maxWidth: '500px', margin: '0 auto', lineHeight: 1.5 }}>
           Your testimonial has been submitted for review. If approved, it may be published on this website.
         </p>
       </div>
@@ -55,80 +57,84 @@ export default function TestimonialClientForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 text-left">
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', textAlign: 'left' }}>
       {error && (
-        <div className="bg-red-500/10 border border-red-500/30 text-red-500 p-4 rounded-lg text-sm">
+        <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#ef4444', padding: '1rem', borderRadius: '8px', fontSize: '0.9rem' }}>
           {error}
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Name *</label>
+          <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 500, color: '#cbd5e1', marginBottom: '0.5rem' }}>Name *</label>
           <input 
             type="text" 
             name="name" 
             required 
             defaultValue={defaultName}
-            className="w-full bg-[#0a0c10] border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500"
+            style={{ width: '100%', background: '#0a0c10', border: '1px solid #334155', borderRadius: '8px', padding: '0.75rem 1rem', color: 'white', fontSize: '1rem', outline: 'none' }}
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+          <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 500, color: '#cbd5e1', marginBottom: '0.5rem' }}>Email</label>
           <input 
             type="email" 
             name="email" 
             defaultValue={defaultEmail}
-            className="w-full bg-[#0a0c10] border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500"
+            style={{ width: '100%', background: '#0a0c10', border: '1px solid #334155', borderRadius: '8px', padding: '0.75rem 1rem', color: 'white', fontSize: '1rem', outline: 'none' }}
           />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Professional Role / Title</label>
+          <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 500, color: '#cbd5e1', marginBottom: '0.5rem' }}>Professional Role / Title</label>
           <input 
             type="text" 
             name="role" 
             placeholder="e.g. Software Engineer, Student"
-            className="w-full bg-[#0a0c10] border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500"
+            style={{ width: '100%', background: '#0a0c10', border: '1px solid #334155', borderRadius: '8px', padding: '0.75rem 1rem', color: 'white', fontSize: '1rem', outline: 'none' }}
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Organization</label>
+          <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 500, color: '#cbd5e1', marginBottom: '0.5rem' }}>Organization</label>
           <input 
             type="text" 
             name="organization"
             placeholder="e.g. Acme Corp, University of Lagos"
-            className="w-full bg-[#0a0c10] border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500"
+            style={{ width: '100%', background: '#0a0c10', border: '1px solid #334155', borderRadius: '8px', padding: '0.75rem 1rem', color: 'white', fontSize: '1rem', outline: 'none' }}
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-2">How do you know Elijah? *</label>
+        <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 500, color: '#cbd5e1', marginBottom: '0.5rem' }}>How do you know Elijah? *</label>
         <select 
           name="relationship_type" 
           defaultValue={defaultRelationship || relationshipTypes[0]}
-          className="w-full bg-[#0a0c10] border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500"
+          style={{ width: '100%', background: '#0a0c10', border: '1px solid #334155', borderRadius: '8px', padding: '0.75rem 1rem', color: 'white', fontSize: '1rem', outline: 'none' }}
         >
           {relationshipTypes.map(t => <option key={t} value={t}>{t}</option>)}
         </select>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-2">Rating</label>
-        <div className="flex gap-2">
+        <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 500, color: '#cbd5e1', marginBottom: '0.5rem' }}>Rating</label>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
           {[1, 2, 3, 4, 5].map((star) => (
             <button
               key={star}
               type="button"
               onClick={() => setRating(star)}
-              className="focus:outline-none"
+              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.2rem', outline: 'none' }}
             >
               <Star 
-                size={32} 
-                className={`transition-colors ${star <= rating ? 'text-yellow-500 fill-yellow-500' : 'text-gray-700'}`} 
+                size={36} 
+                style={{ 
+                  color: star <= rating ? '#eab308' : '#334155',
+                  fill: star <= rating ? '#eab308' : 'transparent',
+                  transition: 'all 0.2s'
+                }} 
               />
             </button>
           ))}
@@ -136,7 +142,7 @@ export default function TestimonialClientForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-2">Your Experience *</label>
+        <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 500, color: '#cbd5e1', marginBottom: '0.5rem' }}>Your Experience *</label>
         <textarea 
           name="quote" 
           required 
@@ -144,43 +150,59 @@ export default function TestimonialClientForm({
           maxLength={2000}
           rows={6}
           placeholder="Share your experience working or learning with us..."
-          className="w-full bg-[#0a0c10] border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 resize-y"
+          style={{ width: '100%', background: '#0a0c10', border: '1px solid #334155', borderRadius: '8px', padding: '0.75rem 1rem', color: 'white', fontSize: '1rem', outline: 'none', resize: 'vertical', fontFamily: 'inherit' }}
         ></textarea>
-        <p className="text-xs text-gray-500 mt-2">Between 20 and 2000 characters.</p>
+        <p style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.5rem', marginBottom: 0 }}>Between 20 and 2000 characters.</p>
       </div>
 
-      <div className="space-y-3 pt-4 border-t border-gray-800">
-        <h4 className="text-white font-medium mb-4">Consent</h4>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', paddingTop: '1.5rem', borderTop: '1px solid #1e293b' }}>
+        <h4 style={{ color: 'white', fontWeight: 500, marginBottom: '0.5rem', marginTop: 0 }}>Consent</h4>
         
-        <label className="flex items-start gap-3 cursor-pointer group">
-          <input type="checkbox" name="consent_to_publish" required className="mt-1 w-4 h-4 rounded bg-gray-900 border-gray-700 text-blue-600 focus:ring-blue-600 focus:ring-offset-gray-900" />
-          <span className="text-sm text-gray-400 group-hover:text-gray-300">
+        <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', cursor: 'pointer' }}>
+          <input type="checkbox" name="consent_to_publish" required style={{ marginTop: '0.2rem', width: '1.2rem', height: '1.2rem', accentColor: '#3b82f6' }} />
+          <span style={{ fontSize: '0.9rem', color: '#94a3b8', lineHeight: 1.4 }}>
             I give permission for this testimonial to be published on Elijah Adeyeye's website. *
           </span>
         </label>
         
-        <label className="flex items-start gap-3 cursor-pointer group">
-          <input type="checkbox" name="consent_to_use_name" defaultChecked className="mt-1 w-4 h-4 rounded bg-gray-900 border-gray-700 text-blue-600 focus:ring-blue-600 focus:ring-offset-gray-900" />
-          <span className="text-sm text-gray-400 group-hover:text-gray-300">
+        <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', cursor: 'pointer' }}>
+          <input type="checkbox" name="consent_to_use_name" defaultChecked style={{ marginTop: '0.2rem', width: '1.2rem', height: '1.2rem', accentColor: '#3b82f6' }} />
+          <span style={{ fontSize: '0.9rem', color: '#94a3b8', lineHeight: 1.4 }}>
             I am happy for my name and professional role to be displayed.
           </span>
         </label>
         
-        <label className="flex items-start gap-3 cursor-pointer group">
-          <input type="checkbox" name="consent_to_use_organization" defaultChecked className="mt-1 w-4 h-4 rounded bg-gray-900 border-gray-700 text-blue-600 focus:ring-blue-600 focus:ring-offset-gray-900" />
-          <span className="text-sm text-gray-400 group-hover:text-gray-300">
+        <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', cursor: 'pointer' }}>
+          <input type="checkbox" name="consent_to_use_organization" defaultChecked style={{ marginTop: '0.2rem', width: '1.2rem', height: '1.2rem', accentColor: '#3b82f6' }} />
+          <span style={{ fontSize: '0.9rem', color: '#94a3b8', lineHeight: 1.4 }}>
             I am happy for my organization to be displayed.
           </span>
         </label>
       </div>
 
-      <div className="pt-6">
+      <div style={{ paddingTop: '1.5rem' }}>
         <button 
           type="submit" 
           disabled={loading}
-          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3 px-8 rounded-lg transition-colors flex items-center justify-center gap-2"
+          style={{ 
+            width: '100%', 
+            background: '#3b82f6', 
+            color: 'white', 
+            fontWeight: 700, 
+            fontSize: '1.1rem',
+            padding: '1rem', 
+            borderRadius: '8px', 
+            border: 'none', 
+            cursor: loading ? 'not-allowed' : 'pointer',
+            opacity: loading ? 0.7 : 1,
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            gap: '0.5rem',
+            transition: 'background 0.2s'
+          }}
         >
-          {loading && <Loader2 size={18} className="animate-spin" />}
+          {loading && <Loader2 size={20} className="animate-spin" />}
           {loading ? 'Submitting...' : 'Submit Testimonial'}
         </button>
       </div>

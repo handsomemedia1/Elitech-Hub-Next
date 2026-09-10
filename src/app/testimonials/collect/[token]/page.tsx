@@ -60,16 +60,18 @@ export default async function TestimonialCollectPage({ params }: { params: Promi
 
   return (
     <PageLayout>
-      <section className="py-20 px-4 md:px-8 max-w-4xl mx-auto">
-        <div className="text-center mb-12">
-          <MessageCircle size={48} className="text-blue-500 mx-auto mb-4" />
-          <h1 className="text-4xl font-extrabold text-white mb-4">Share Your Experience</h1>
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+      <section style={{ padding: '5rem 1rem', maxWidth: '900px', margin: '0 auto', fontFamily: 'inherit' }}>
+        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+            <MessageCircle size={48} style={{ color: '#3b82f6' }} />
+          </div>
+          <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: 'white', marginBottom: '1rem', marginTop: 0 }}>Share Your Experience</h1>
+          <p style={{ fontSize: '1.1rem', color: '#94a3b8', maxWidth: '600px', margin: '0 auto', lineHeight: 1.6 }}>
             You have been invited to share your experience working, learning, researching, or collaborating with Elijah Adeyeye and Elitech Hub.
           </p>
         </div>
 
-        <div className="bg-[#111317] border border-gray-800 rounded-2xl p-6 md:p-10 shadow-xl">
+        <div style={{ background: '#111317', border: '1px solid #1e293b', borderRadius: '16px', padding: '2.5rem', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)' }}>
           <TestimonialClientForm 
             token={token} 
             defaultName={request.recipient_name} 
