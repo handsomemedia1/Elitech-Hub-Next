@@ -77,6 +77,7 @@ export default function ScrollNavbar() {
     {
       label: "Resources",
       dropdown: [
+        { href: "/resources", label: "Resources Library" },
         { href: "/about", label: "About Us" },
         { href: "/portfolio", label: "Portfolio" },
         { href: "/blog", label: "Blog" },

@@ -57,6 +57,7 @@ export default function Footer() {
           <ul className={styles.footerLinks}>
             <li><Link href="/about"><i className="fas fa-info-circle" /><span>About Us</span></Link></li>
             <li><Link href="/research"><i className="fas fa-flask" /><span>Research</span></Link></li>
+            <li><Link href="/resources"><i className="fas fa-file-alt" /><span>Resources</span></Link></li>
             <li><Link href="/lab"><i className="fas fa-microscope" /><span>Security Lab</span></Link></li>
             <li><Link href="/security-check"><i className="fas fa-shield-alt" /><span>Security Check</span></Link></li>
             <li><Link href="/blog"><i className="fas fa-blog" /><span>Blog</span></Link></li>

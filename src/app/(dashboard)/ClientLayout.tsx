@@ -21,6 +21,7 @@ const ADMIN_LINKS = [
   { href: '/writer', label: 'Writer Portal', icon: LayoutDashboard },
   { href: '/writer/editor', label: 'Write Blog', icon: FileText },
   { href: '/admin/lab', label: 'Research Lab', icon: FlaskConical },
+  { href: '/admin/resources', label: 'Resources Library', icon: BookOpen },
   { href: '/admin/letterhead', label: 'Letterhead Gen', icon: Mail },
   { href: '/admin/pricing', label: 'Pricing Engine', icon: DollarSign },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
