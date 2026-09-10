@@ -9,7 +9,14 @@ import { ChevronRight, Building2, Globe, ArrowRight } from 'lucide-react';
 export const metadata: Metadata = {
   title: 'Our Advisors | Elitech Hub',
   description: 'Meet the experienced professionals and industry leaders guiding Elitech Hub.',
+  keywords: 'Elitech Hub advisors, cybersecurity advisory board, tech industry leaders Nigeria, cybersecurity mentors',
   alternates: { canonical: 'https://elitechub.com/advisors' },
+  openGraph: {
+    title: 'Our Advisors | Elitech Hub',
+    description: 'Meet the experienced professionals and industry leaders guiding Elitech Hub.',
+    url: 'https://elitechub.com/advisors',
+    type: 'website',
+  }
 };
 
 export default async function AdvisorsPage() {

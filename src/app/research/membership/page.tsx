@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: 'Research Membership | Elitech Hub',
   description:
     'Join the Elitech Hub Research Membership. An exclusive ecosystem for pioneering researchers in Behavioral Cybersecurity. Limited to 30 researchers globally. Applications open for January 2027.',
+  keywords: 'behavioral cybersecurity, research membership, cybersecurity researchers, Elitech Hub research, cybersecurity ecosystem, January 2027 cohort',
   alternates: {
     canonical: 'https://elitechub.com/research/membership',
   },

@@ -5,9 +5,16 @@ import styles from './research-paper.module.css';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  alternates: { canonical: '/research-paper' },
-  title: 'Research Paper - Elitech Hub',
-  description: 'Academic research paper published on Elitech Hub',
+  title: 'Research Publications & Academic Papers | Elitech Hub',
+  description: 'Read the latest academic research papers, threat analyses, and cybersecurity journals published by Elitech Hub and our global research fellows.',
+  keywords: 'cybersecurity research papers, academic journals, threat analysis publications, Elitech Hub research, peer-reviewed security papers',
+  alternates: { canonical: 'https://elitechub.com/research-paper' },
+  openGraph: {
+    title: 'Research Publications & Academic Papers | Elitech Hub',
+    description: 'Read the latest academic research papers, threat analyses, and cybersecurity journals published by Elitech Hub and our global research fellows.',
+    url: 'https://elitechub.com/research-paper',
+    type: 'website',
+  }
 };
 
 export default function ResearchPaperPage() {

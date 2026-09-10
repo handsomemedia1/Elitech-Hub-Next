@@ -26,8 +26,8 @@ export const metadata = {
     'cyber threat analysis Nigeria',
   ],
   openGraph: {
-    title: 'Cybersecurity R&D Lab | Elitech Hub Nigeria',
-    description: 'Active R&D in detection engineering, threat analysis, and defensive infrastructure.',
+    title: 'Cybersecurity R&D Lab | Threat Intelligence & Tactical Operations',
+    description: 'Explore the Elitech Hub Cybersecurity Lab. We conduct active research and development in detection engineering, threat analysis, defensive infrastructure, and secure development.',
     url: 'https://elitechub.com/lab',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
