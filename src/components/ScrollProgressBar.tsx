@@ -7,6 +7,7 @@ import styles from "./ScrollProgressBar.module.css";
 export default function ScrollProgressBar() {
   const [progress, setProgress] = useState(0);
   const pathname = usePathname();
+  const isDashboard = pathname.startsWith('/admin') || pathname.startsWith('/writer') || pathname.startsWith('/researcher');
 
   useEffect(() => {
     // Reset on route change
@@ -25,6 +26,8 @@ export default function ScrollProgressBar() {
     update();
     return () => window.removeEventListener("scroll", update);
   }, []);
+
+  if (isDashboard) return null;
 
   return (
     <div className={styles.track} aria-hidden="true">

@@ -11,6 +11,9 @@ export default function ScrollNavbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Hide the public navbar on all dashboard/admin/writer/researcher routes
+  const isDashboard = pathname.startsWith('/admin') || pathname.startsWith('/writer') || pathname.startsWith('/researcher');
   
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
@@ -51,6 +54,9 @@ export default function ScrollNavbar() {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [mobileOpen]);
+
+  // Don't render the public navbar on dashboard routes
+  if (isDashboard) return null;
 
   const navLinks = [
     { href: "/", label: "Home" },
