@@ -16,6 +16,7 @@ const ADMIN_LINKS = [
   { href: '/admin/users', label: 'Students', icon: Users },
   { href: '/admin/applications', label: 'CRM & Leads', icon: MessageSquare },
   { href: '/admin/certificates', label: 'Certificates', icon: Award },
+  { href: '/admin/testimonials', label: 'Testimonials', icon: MessageSquare },
   { href: '/admin/writers', label: 'Writers Panel', icon: PenTool },
   { href: '/admin/posts', label: 'Blog Posts', icon: FileText },
   { href: '/writer', label: 'Writer Portal', icon: LayoutDashboard },
