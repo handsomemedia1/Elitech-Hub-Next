@@ -125,12 +125,35 @@ export default function LabForm() {
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem' }}>YARA Rules</label>
-            <textarea name="yara_rules" value={formData.yara_rules || ''} onChange={handleChange} rows={6} style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', background: '#0d1117', border: '1px solid #334155', color: '#67e8f9', fontFamily: 'monospace' }} />
+            <label style={{ display: 'block', marginBottom: '0.5rem' }}>Objectives</label>
+            <textarea name="objectives" value={formData.objectives || ''} onChange={handleChange} rows={4} placeholder="What this lab aims to demonstrate or achieve..." style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', background: '#1e293b', border: '1px solid #334155', color: 'white' }} />
           </div>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem' }}>MITRE Mappings (JSON Array)</label>
-            <textarea name="mitre_mappings" value={formData.mitre_mappings || ''} onChange={handleChange} placeholder='["T1059.001", "T1078"]' rows={6} style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', background: '#0d1117', border: '1px solid #334155', color: '#a5d6ff', fontFamily: 'monospace' }} />
+            <label style={{ display: 'block', marginBottom: '0.5rem' }}>Methodology</label>
+            <textarea name="methodology" value={formData.methodology || ''} onChange={handleChange} rows={4} placeholder="Research approach and techniques used..." style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', background: '#1e293b', border: '1px solid #334155', color: 'white' }} />
+          </div>
+        </div>
+
+        <div>
+          <label style={{ display: 'block', marginBottom: '0.5rem' }}>Findings / Results (Markdown)</label>
+          <textarea name="findings" value={formData.findings || ''} onChange={handleChange} rows={5} placeholder="Document the findings, results, or conclusions from this lab..." style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', background: '#1e293b', border: '1px solid #334155', color: 'white', fontFamily: 'monospace' }} />
+        </div>
+
+        <div style={{ borderTop: '1px solid #334155', paddingTop: '1.5rem' }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#94a3b8', marginBottom: '1rem' }}>🔬 Detection Engineering</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+            <div>
+              <label style={{ display: 'block', marginBottom: '0.5rem' }}>YARA Rules</label>
+              <textarea name="yara_rules" value={formData.yara_rules || ''} onChange={handleChange} rows={7} placeholder="rule ExampleRule { condition: false }" style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', background: '#0d1117', border: '1px solid #334155', color: '#67e8f9', fontFamily: 'monospace', fontSize: '0.85rem' }} />
+            </div>
+            <div>
+              <label style={{ display: 'block', marginBottom: '0.5rem' }}>Sigma Rules</label>
+              <textarea name="sigma_rules" value={formData.sigma_rules || ''} onChange={handleChange} rows={7} placeholder="title: Example&#10;logsource:&#10;  category: process_creation" style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', background: '#0d1117', border: '1px solid #334155', color: '#86efac', fontFamily: 'monospace', fontSize: '0.85rem' }} />
+            </div>
+          </div>
+          <div style={{ marginTop: '1.5rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem' }}>MITRE ATT&amp;CK Mappings (JSON Array)</label>
+            <textarea name="mitre_mappings" value={formData.mitre_mappings || ''} onChange={handleChange} placeholder='["T1059.001", "T1078"]' rows={3} style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', background: '#0d1117', border: '1px solid #334155', color: '#a5d6ff', fontFamily: 'monospace' }} />
           </div>
         </div>
 

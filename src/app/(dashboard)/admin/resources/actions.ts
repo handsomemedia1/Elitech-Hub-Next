@@ -20,6 +20,9 @@ export async function saveResource(formData: FormData) {
   const topic = formData.get('topic') as string;
   const resource_type = formData.get('resource_type') as string;
   const status = formData.get('status') as string;
+  const publication_date = formData.get('publication_date') as string | null;
+  const version = formData.get('version') as string | null;
+  const references = formData.get('references') as string | null;
   let file_url = formData.get('file_url') as string;
   const file = formData.get('file') as File | null;
 
@@ -53,14 +56,17 @@ export async function saveResource(formData: FormData) {
   // Generate slug
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') + '-' + Date.now().toString().slice(-4);
 
-  const payload = {
+  const payload: Record<string, any> = {
     title,
-    description,
-    author,
-    topic,
+    description: description || null,
+    author: author || null,
+    topic: topic || null,
     resource_type,
     status,
     file_url,
+    version: version || null,
+    references: references || null,
+    ...(publication_date ? { publication_date } : {}),
     ...(id ? {} : { slug })
   };
 
