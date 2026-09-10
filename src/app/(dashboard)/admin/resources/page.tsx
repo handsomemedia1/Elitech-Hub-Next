@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { Plus, Edit, Trash2, X, FileText, BookOpen, ExternalLink, Upload } from 'lucide-react';
 import { saveResource, deleteResource } from './actions';
 import styles from '../admin.module.css';
+import AdminModal from '@/components/AdminModal';
 
 const RESOURCE_TYPES = ['Guide', 'Report', 'Whitepaper', 'Research Paper', 'Template', 'Cheatsheet', 'Toolkit', 'Case Study', 'Other'];
 const STATUS_OPTIONS = ['published', 'draft', 'review', 'archived'];
@@ -243,17 +244,12 @@ export default function AdminResourcesPage() {
         )}
       </div>
 
-      {/* Modal */}
+      {/* Modal — rendered via portal to escape dashboard z-index stacking context */}
       {isModalOpen && (
-        <div style={{
-          position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.65)', zIndex: 9999,
-          display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
-          padding: '2rem 1rem 4rem', overflowY: 'auto',
-        }}>
+        <AdminModal onClose={() => setIsModalOpen(false)}>
           <div style={{
             background: '#1e293b', border: '1px solid #334155', borderRadius: '12px',
-            width: '100%', maxWidth: '680px', padding: '2rem',
-            margin: 'auto',
+            width: '100%', maxWidth: '680px', padding: '2rem', margin: '0 auto',
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#f1f5f9', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -361,7 +357,7 @@ export default function AdminResourcesPage() {
               </div>
             </form>
           </div>
-        </div>
+        </AdminModal>
       )}
     </div>
   );

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { PenTool, Search, TrendingUp, Check, X, Trash2, Plus } from 'lucide-react';
 import styles from '../users/users.module.css';
+import AdminModal from '@/components/AdminModal';
 
 const inputStyle: React.CSSProperties = {
   width: '100%', padding: '0.6rem 0.75rem',
@@ -183,12 +184,8 @@ export default function AdminWriters() {
 
       {/* Add Writer Modal */}
       {showModal && (
-        <div style={{
-          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)',
-          zIndex: 9999, display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
-          padding: '2rem 1rem 4rem', overflowY: 'auto',
-        }}>
-          <div style={{ ...modalStyle, margin: 'auto' }}>
+        <AdminModal onClose={() => setShowModal(false)}>
+          <div style={{ ...modalStyle, margin: '0 auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#f1f5f9' }}>
                 <PenTool size={18} style={{ marginRight: '0.5rem', verticalAlign: 'text-bottom', color: '#3b82f6' }} />
@@ -231,7 +228,7 @@ export default function AdminWriters() {
               </div>
             </form>
           </div>
-        </div>
+        </AdminModal>
       )}
     </div>
   );

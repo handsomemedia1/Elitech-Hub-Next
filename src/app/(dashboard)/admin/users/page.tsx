@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Users, Search, Edit2, Trash2, X } from 'lucide-react';
 import styles from './users.module.css';
+import AdminModal from '@/components/AdminModal';
 
 export default function AdminUsers() {
   const [users, setUsers] = useState<any[]>([]);
@@ -142,8 +143,8 @@ export default function AdminUsers() {
       </div>
 
       {showAddModal && (
-        <div className="modal-overlay" onClick={() => setShowAddModal(false)} style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '2rem 1rem 4rem', overflowY: 'auto' }}>
-          <div className="modal-content" onClick={e => e.stopPropagation()} style={{ background: 'var(--color-bg-panel)', padding: '2rem', borderRadius: '12px', width: '100%', maxWidth: '400px', margin: 'auto' }}>
+        <AdminModal onClose={() => setShowAddModal(false)}>
+          <div className="modal-content" style={{ background: 'var(--color-bg-panel)', padding: '2rem', borderRadius: '12px', width: '100%', maxWidth: '400px', margin: '0 auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
               <h2 style={{ color: 'white', margin: 0 }}>Add New User</h2>
               <button onClick={() => setShowAddModal(false)} style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer' }}>
@@ -183,7 +184,7 @@ export default function AdminUsers() {
               </button>
             </form>
           </div>
-        </div>
+        </AdminModal>
       )}
     </div>
   );
