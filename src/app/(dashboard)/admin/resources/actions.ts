@@ -20,10 +20,34 @@ export async function saveResource(formData: FormData) {
   const topic = formData.get('topic') as string;
   const resource_type = formData.get('resource_type') as string;
   const status = formData.get('status') as string;
-  const file_url = formData.get('file_url') as string;
+  let file_url = formData.get('file_url') as string;
+  const file = formData.get('file') as File | null;
+
+  // Handle file upload
+  if (file && file.size > 0) {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `resource-${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+    const filePath = `resources/${fileName}`;
+
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    const { error: uploadError } = await supabaseAdmin.storage
+      .from('research-files')
+      .upload(filePath, buffer, {
+        contentType: file.type || 'application/pdf',
+        upsert: false
+      });
+
+    if (uploadError) {
+      throw new Error(`Failed to upload file: ${uploadError.message}`);
+    }
+
+    file_url = filePath;
+  }
 
   if (!title || !file_url) {
-    throw new Error('Title and File URL are required');
+    throw new Error('Title and File/URL are required');
   }
 
   // Generate slug

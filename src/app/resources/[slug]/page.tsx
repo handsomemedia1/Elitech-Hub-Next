@@ -39,6 +39,9 @@ export async function generateMetadata(
       title,
       description,
       type: 'article',
+    },
+    alternates: {
+      canonical: `https://elitechub.com/resources/${slug}`
     }
   };
 }
@@ -166,7 +169,7 @@ export default async function ResourcePage({ params }: Props) {
               
               {resource.file_url ? (
                 <a
-                  href={resource.file_url}
+                  href={`/api/resources/download?slug=${resource.slug}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
@@ -221,6 +224,26 @@ export default async function ResourcePage({ params }: Props) {
           
         </div>
       </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": resource.title,
+            "description": resource.description || undefined,
+            "author": resource.author ? {
+              "@type": "Person",
+              "name": resource.author
+            } : {
+              "@type": "Organization",
+              "name": "Elitech Hub"
+            },
+            "datePublished": publishDate.toISOString(),
+            "url": `https://elitechub.com/resources/${resource.slug}`
+          })
+        }}
+      />
     </PageLayout>
   );
 }

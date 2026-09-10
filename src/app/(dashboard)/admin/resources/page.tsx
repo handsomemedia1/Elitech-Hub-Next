@@ -69,39 +69,20 @@ export default function AdminResourcesPage() {
     setIsSubmitting(true);
     
     try {
-      let finalFileUrl = fileUrl;
-
-      // Handle PDF upload if a file is selected
-      if (file) {
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Date.now()}.${fileExt}`;
-        const filePath = `public/${fileName}`;
-        
-        // We assume 'resources' bucket exists. If not, use 'research-files' or whatever is available.
-        // Actually, Elitech uses 'research-files' for research. Let's just use it to be safe, or just provide direct URL if preferred.
-        // For simplicity, we'll try 'research-files'.
-        const { error: uploadError } = await supabase.storage
-          .from('research-files')
-          .upload(filePath, file);
-          
-        if (uploadError) throw new Error(`Upload failed: ${uploadError.message}`);
-        
-        // Get public URL or download API route
-        // We know from research that it uses /api/research/download?path=...
-        // Let's just store the direct Supabase URL for public resources, or standard link
-        const { data: { publicUrl } } = supabase.storage.from('research-files').getPublicUrl(filePath);
-        finalFileUrl = publicUrl;
-      }
-
       const formData = new FormData();
       if (editingId) formData.append('id', editingId);
       formData.append('title', title);
+      
+      if (file) {
+        formData.append('file', file);
+      } else {
+        formData.append('file_url', fileUrl);
+      }
       formData.append('description', description);
       formData.append('author', author);
       formData.append('topic', topic);
       formData.append('resource_type', resourceType);
       formData.append('status', status);
-      formData.append('file_url', finalFileUrl);
 
       await saveResource(formData);
       
