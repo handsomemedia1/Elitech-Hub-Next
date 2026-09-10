@@ -77,7 +77,7 @@ export async function submitTestimonial(formData: FormData) {
 
     if (insertError) {
       console.error('Insert Error:', insertError);
-      return { error: 'Failed to save testimonial.' };
+      return { error: `Database Error: ${insertError.message}` };
     }
 
     // 4. Update the token request to "submitted"

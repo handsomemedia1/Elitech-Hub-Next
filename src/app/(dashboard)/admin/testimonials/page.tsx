@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { MessageSquare, Star, Link as LinkIcon, Check, X, ShieldAlert, Plus, Copy } from 'lucide-react';
-import { createCollectionRequestAction, revokeCollectionRequestAction, updateTestimonialStatusAction, toggleTestimonialFeaturedAction } from './actions';
+import { createCollectionRequestAction, revokeCollectionRequestAction, updateTestimonialStatusAction, toggleTestimonialFeaturedAction, fetchAdminTestimonialsData } from './actions';
+
 
 type Testimonial = {
   id: string;
@@ -57,22 +58,12 @@ export default function AdminTestimonialsPage() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [testRes, reqRes] = await Promise.all([
-        supabase.from('testimonials').select('*').order('created_at', { ascending: false }),
-        supabase.from('testimonial_collection_requests').select('*').order('created_at', { ascending: false })
-      ]);
-        
-      if (testRes.error) throw testRes.error;
-      if (reqRes.error) throw reqRes.error;
-      
-      // Fallback mapping in case migration hasn't run yet
-      const mappedTestimonials = (testRes.data || []).map(t => ({
-        ...t,
-        status: t.status || (t.is_published ? 'approved' : 'pending')
-      }));
-
-      setTestimonials(mappedTestimonials);
-      setCollectionRequests(reqRes.data || []);
+      const result = await fetchAdminTestimonialsData();
+      if (result.error && result.testimonials.length === 0) {
+        console.error('fetchAdminTestimonialsData error:', result.error);
+      }
+      setTestimonials(result.testimonials);
+      setCollectionRequests(result.collectionRequests);
     } catch (err) {
       console.error('Error fetching data', err);
     } finally {
