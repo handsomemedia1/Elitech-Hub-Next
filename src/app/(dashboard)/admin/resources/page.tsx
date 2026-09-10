@@ -246,12 +246,14 @@ export default function AdminResourcesPage() {
       {/* Modal */}
       {isModalOpen && (
         <div style={{
-          position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.65)', zIndex: 1000,
-          display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem',
+          position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.65)', zIndex: 9999,
+          display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
+          padding: '2rem 1rem 4rem', overflowY: 'auto',
         }}>
           <div style={{
             background: '#1e293b', border: '1px solid #334155', borderRadius: '12px',
-            width: '100%', maxWidth: '680px', maxHeight: '92vh', overflowY: 'auto', padding: '2rem',
+            width: '100%', maxWidth: '680px', padding: '2rem',
+            margin: 'auto',
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#f1f5f9', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
