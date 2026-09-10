@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { MessageSquare, Star, Link as LinkIcon, Check, X, ShieldAlert, Plus, Copy } from 'lucide-react';
+import { createCollectionRequestAction, revokeCollectionRequestAction, updateTestimonialStatusAction, toggleTestimonialFeaturedAction } from './actions';
 
 type Testimonial = {
   id: string;
@@ -81,29 +82,23 @@ export default function AdminTestimonialsPage() {
 
   const updateStatus = async (id: string, newStatus: string) => {
     try {
-      const { error } = await supabase
-        .from('testimonials')
-        .update({ status: newStatus })
-        .eq('id', id);
+      const res = await updateTestimonialStatusAction(id, newStatus);
+      if (!res.success) throw new Error(res.error);
         
-      if (error) throw error;
       setTestimonials(items => items.map(item => item.id === id ? { ...item, status: newStatus as any } : item));
-    } catch (err) {
-      alert(`Failed to update status`);
+    } catch (err: any) {
+      alert(`Failed to update status: ${err.message}`);
     }
   };
 
   const toggleFeatured = async (id: string, currentValue: boolean) => {
     try {
-      const { error } = await supabase
-        .from('testimonials')
-        .update({ featured: !currentValue })
-        .eq('id', id);
+      const res = await toggleTestimonialFeaturedAction(id, currentValue);
+      if (!res.success) throw new Error(res.error);
         
-      if (error) throw error;
       setTestimonials(items => items.map(item => item.id === id ? { ...item, featured: !currentValue } : item));
-    } catch (err) {
-      alert(`Failed to update featured state`);
+    } catch (err: any) {
+      alert(`Failed to update featured state: ${err.message}`);
     }
   };
 
@@ -112,43 +107,30 @@ export default function AdminTestimonialsPage() {
     if (!newReqName) return;
     
     try {
-      const { data, error } = await supabase
-        .from('testimonial_collection_requests')
-        .insert([{
-          recipient_name: newReqName,
-          recipient_email: newReqEmail,
-          relationship_type: newReqRel,
-          context: newReqContext,
-          status: 'active'
-        }])
-        .select()
-        .single();
+      const res = await createCollectionRequestAction(newReqName, newReqEmail, newReqRel, newReqContext);
         
-      if (error) throw error;
+      if (!res.success || !res.data) throw new Error(res.error || 'Unknown error');
       
-      setCollectionRequests([data, ...collectionRequests]);
+      setCollectionRequests([res.data as any, ...collectionRequests]);
       setShowNewRequestForm(false);
       setNewReqName('');
       setNewReqEmail('');
       setNewReqContext('');
       
-    } catch (err) {
-      alert('Failed to create request');
+    } catch (err: any) {
+      alert(`Failed to create request: ${err.message}`);
       console.error(err);
     }
   };
 
   const revokeRequest = async (id: string) => {
     try {
-      const { error } = await supabase
-        .from('testimonial_collection_requests')
-        .update({ status: 'revoked' })
-        .eq('id', id);
+      const res = await revokeCollectionRequestAction(id);
         
-      if (error) throw error;
+      if (!res.success) throw new Error(res.error);
       setCollectionRequests(items => items.map(item => item.id === id ? { ...item, status: 'revoked' } : item));
-    } catch (err) {
-      alert('Failed to revoke request');
+    } catch (err: any) {
+      alert(`Failed to revoke request: ${err.message}`);
     }
   };
 
