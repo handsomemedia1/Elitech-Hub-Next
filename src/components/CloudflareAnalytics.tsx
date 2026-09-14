@@ -15,7 +15,8 @@ export default function CloudflareAnalytics() {
     return null;
   }
 
-  const token = process.env.NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN;
+  // Use env variable or fallback to the provided token
+  const token = process.env.NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN || "411fc70a36974f2e86415d364ce0ff91";
   if (!token) {
     return null;
   }

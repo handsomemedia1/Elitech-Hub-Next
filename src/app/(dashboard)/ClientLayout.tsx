@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
   LayoutDashboard, BookOpen, Users, PenTool, MessageSquare, 
-  Settings, LogOut, Menu, X, FileText, FlaskConical, Award, DollarSign, Mail
+  Settings, LogOut, Menu, X, FileText, FlaskConical, Award, DollarSign, Mail, Laptop
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './dashboard.module.css';
@@ -15,6 +15,7 @@ const ADMIN_LINKS = [
   { href: '/admin/courses', label: 'LMS Manager', icon: BookOpen },
   { href: '/admin/users', label: 'Students', icon: Users },
   { href: '/admin/applications', label: 'CRM & Leads', icon: MessageSquare },
+  { href: '/admin/laptops', label: 'Laptops Inventory', icon: Laptop },
   { href: '/admin/certificates', label: 'Certificates', icon: Award },
   { href: '/admin/testimonials', label: 'Testimonials', icon: MessageSquare },
   { href: '/admin/membership', label: 'Memberships', icon: FlaskConical },

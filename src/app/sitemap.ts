@@ -11,6 +11,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let researchPapers = null;
   let caseStudies = null;
   let labEntries = null;
+  let laptops = null;
 
   try {
     const supabase = getSupabaseServerClient();
@@ -41,6 +42,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .select('slug, updated_at, published_at')
       .eq('status', 'published');
     labEntries = lData;
+
+    // Fetch published laptops
+    const { data: laptopData } = await supabase
+      .from('laptops')
+      .select('slug, updated_at')
+      .eq('published', true)
+      .eq('archived', false);
+    laptops = laptopData;
 
   } catch (error) {
     console.error('Failed to fetch dynamic routes for sitemap:', error);
@@ -249,6 +258,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     }));
     routes.push(...blogUrls);
+  }
+
+  // Add /laptops catalog explicitly
+  routes.push({
+    url: `${baseUrl}/laptops`,
+    lastModified: now,
+    changeFrequency: 'weekly',
+    priority: 0.9,
+  });
+
+  if (laptops) {
+    const laptopUrls: MetadataRoute.Sitemap = (laptops as any[]).map((laptop) => ({
+      url: `${baseUrl}/laptops/${laptop.slug}`,
+      lastModified: laptop.updated_at || now,
+      changeFrequency: 'daily',
+      priority: 0.85,
+    }));
+    routes.push(...laptopUrls);
   }
 
   if (researchPapers) {

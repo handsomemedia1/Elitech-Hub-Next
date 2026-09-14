@@ -6,6 +6,7 @@ import PageLayout from "@/components/PageLayout";
 import styles from "./post.module.css";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import { Send, Briefcase, GraduationCap, MessageCircle, BookOpen } from "lucide-react";
+import { ArticleFeedback } from "@/components/ArticleFeedback";
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
@@ -194,6 +195,8 @@ export default async function BlogPostPage({
               </div>
             </div>
           )}
+
+          <ArticleFeedback slug={slug} />
 
           {/* Share */}
           <div className={styles.shareSection}>
