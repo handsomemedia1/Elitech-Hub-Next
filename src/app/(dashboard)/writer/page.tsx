@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
+import { getWriterDashboardAction } from './actions';
 import { PenTool, FileText, Eye, TrendingUp, PlusCircle } from 'lucide-react';
 import styles from './writer.module.css';
 
@@ -11,50 +11,18 @@ export default function WriterOverview() {
   const [recentPosts, setRecentPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+    const [profile, setProfile] = useState<any>(null);
+
   useEffect(() => {
     async function fetchDashboardData() {
-      // Fetch actual user profile to get the correct name/role
-      let authorName = 'Writer';
-      let role = 'writer';
-      
-      try {
-        const res = await fetch('/api/auth/me');
-        const data = await res.json();
-        if (data.user) {
-          authorName = data.user.name || localStorage.getItem('elitech_user_name') || 'Writer';
-          role = data.user.role || localStorage.getItem('elitech_user_role') || 'writer';
-        } else {
-          authorName = localStorage.getItem('elitech_user_name') || 'Writer';
-          role = localStorage.getItem('elitech_user_role') || 'writer';
-        }
-      } catch (err) {
-        authorName = localStorage.getItem('elitech_user_name') || 'Writer';
-        role = localStorage.getItem('elitech_user_role') || 'writer';
-      }
-
-      let query = supabase
-        .from('blog_posts')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      // Only filter if not an admin
-      if (role !== 'admin') {
-        query = query.eq('author', authorName);
-      }
-
-      const { data: posts, error } = await query;
-
-      if (posts) {
-        const published = posts.filter(p => p.status === 'published').length;
-        // Sum up real views
-        const views = posts.reduce((sum, post) => sum + (post.views || 0), 0); 
-
-        setStats({
-          totalPosts: posts.length,
-          publishedPosts: published,
-          totalViews: views
-        });
-        setRecentPosts(posts.slice(0, 5));
+      setLoading(true);
+      const res = await getWriterDashboardAction();
+      if (res.error) {
+        console.error(res.error);
+      } else {
+        setStats(res.stats || { totalPosts: 0, publishedPosts: 0, totalViews: 0, draftPosts: 0 });
+        setRecentPosts(res.recentPosts || []);
+        setProfile(res.profile || null);
       }
       setLoading(false);
     }
@@ -162,3 +130,5 @@ export default function WriterOverview() {
     </div>
   );
 }
+
+

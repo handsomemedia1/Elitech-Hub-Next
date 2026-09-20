@@ -70,6 +70,11 @@ export default async function AdvisorProfilePage({ params }: { params: Promise<{
           name: advisor.organization,
         }
       }),
+      affiliation: {
+        '@type': 'Organization',
+        name: 'Elitech Hub',
+        url: 'https://elitechub.com',
+      },
       image: advisor.profile_image_url || undefined,
       description: advisor.biography || undefined,
       sameAs: sameAs.length > 0 ? sameAs : undefined,

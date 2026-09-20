@@ -232,3 +232,69 @@ export function validateResetToken(
 
   return crypto.timingSafeEqual(hashBuf, storedBuf);
 }
+
+export interface AuthWriter {
+  id: string;
+  email: string;
+  name: string;
+  display_name: string;
+  status: string;
+  active: boolean;
+  role: 'writer';
+}
+
+/** Server Component utility to get the currently logged-in writer via cookie */
+export async function getServerWriter(): Promise<AuthWriter | null> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('elitech_writer_token')?.value;
+  if (!token) return null;
+
+  const payload = verifyToken(token);
+  if (!payload || !payload.userId) return null;
+
+  const supabase = createServiceClient();
+  if (!supabase) return null;
+
+  const { data: writer } = await supabase
+    .from('writers')
+    .select('id, email, name, display_name, status, active')
+    .eq('id', payload.userId)
+    .single();
+
+  if (!writer) return null;
+  if (writer.status !== 'approved' || writer.active === false) return null;
+
+  return { ...writer, role: 'writer' } as AuthWriter;
+}
+
+export async function requireWriter(
+  request: Request
+): Promise<{ writer: AuthWriter } | { error: string; status: number }> {
+  let token = extractBearerToken(request.headers.get('authorization'));
+  if (!token) {
+    const cookieHeader = request.headers.get('cookie');
+    if (cookieHeader) {
+      const match = cookieHeader.match(/(?:^|;\s*)elitech_writer_token=([^;]+)/);
+      if (match) token = match[1];
+    }
+  }
+
+  if (!token) return { error: 'Authentication required', status: 401 };
+
+  const payload = verifyToken(token);
+  if (!payload || !payload.userId) return { error: 'Invalid or expired token', status: 401 };
+
+  const supabase = createServiceClient();
+  if (!supabase) return { error: 'Server configuration error', status: 500 };
+
+  const { data: writer, error } = await supabase
+    .from('writers')
+    .select('id, email, name, display_name, status, active')
+    .eq('id', payload.userId)
+    .single();
+
+  if (error || !writer) return { error: 'Writer not found', status: 401 };
+  if (writer.status !== 'approved' || writer.active === false) return { error: 'Account not active', status: 403 };
+
+  return { writer: { ...writer, role: 'writer' } as AuthWriter };
+}

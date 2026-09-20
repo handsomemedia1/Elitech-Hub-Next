@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: '*',
-        allow: ['/', '/research/', '/lab/'],
+        allow: ['/', '/research/', '/lab/', '/authors/', '/writers/'],
         disallow: ['/admin/', '/api/', '/dashboard/', '/thank-you', '/verify', '/researcher/', '/writer/'],
       },
       // --- LLM / AI Crawlers: explicitly allow for indexing ---

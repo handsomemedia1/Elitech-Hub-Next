@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
+import { getWriterPostsAction, deleteWriterPostAction } from '../actions';
 import { FileText, PlusCircle, Search, Filter, MoreVertical, Edit2, Trash2 } from 'lucide-react';
 import styles from './posts.module.css';
 
@@ -20,24 +20,18 @@ export default function PostsManager() {
     fetchPosts();
   }, []);
 
-  async function fetchPosts() {
+    async function fetchPosts() {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('blog_posts')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (data) {
-      setPosts(data);
-    }
+    const { data, error } = await getWriterPostsAction();
+    if (data) setPosts(data);
     setLoading(false);
   }
 
-  const handleDelete = async (id: string) => {
+    const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this article?')) return;
-    
-    await supabase.from('blog_posts').delete().eq('id', id);
-    setPosts(posts.filter(p => p.id !== id));
+    const res = await deleteWriterPostAction(id);
+    if (res.error) alert(res.error);
+    else setPosts(posts.filter(p => p.id !== id));
   };
 
   const filteredPosts = posts.filter(post => 
@@ -133,3 +127,4 @@ export default function PostsManager() {
     </div>
   );
 }
+

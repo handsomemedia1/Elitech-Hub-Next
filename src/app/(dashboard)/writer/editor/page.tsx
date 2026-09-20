@@ -22,6 +22,7 @@ import TiptapLinkExt from '@tiptap/extension-link';
 import styles from './editor.module.css';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import { saveWriterPostAction } from '../actions';
 
 // Quill is removed for React 19 compatibility
 // We will use native HTML components or Tiptap if requested
@@ -304,7 +305,7 @@ export default function WriterEditor() {
   const generateSlug = (t: string) =>
     t.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
-  const savePost = async (status: 'draft' | 'pending' | 'published') => {
+    const savePost = async (status: 'draft' | 'pending' | 'published') => {
     if (!title.trim()) { alert('Please add a title before saving.'); return; }
     setSaving(true);
     setSaveMsg('');
@@ -324,21 +325,15 @@ export default function WriterEditor() {
       published_at: status === 'published'
         ? (publishDate ? new Date(publishDate).toISOString() : new Date().toISOString())
         : null,
-      word_count: wordCount,
-      author: authorName
+      word_count: wordCount
     };
+    
     try {
-      if (postId) {
-        // Update existing post
-        const { error } = await supabase.from('blog_posts').update(payload).eq('id', postId);
-        if (error) throw error;
-      } else {
-        // Insert new post
-        const { data, error } = await supabase.from('blog_posts').insert([payload]).select('id').single();
-        if (error) throw error;
-        if (data) setPostId(data.id);
-      }
-      setSaveMsg(status === 'draft' ? '✓ Draft saved!' : '✓ Submitted for review!');
+      const { success, postId: newId, error } = await saveWriterPostAction(payload, postId || undefined);
+      if (error) throw new Error(error);
+      
+      if (newId) setPostId(newId);
+      setSaveMsg(status === 'draft' ? ' Draft saved!' : ' Submitted for review!');
       setTimeout(() => setSaveMsg(''), 3000);
     } catch (err: any) {
       alert('Save failed: ' + (err.message || 'Unknown error'));
@@ -802,3 +797,4 @@ export default function WriterEditor() {
     </div>
   );
 }
+

@@ -7,50 +7,57 @@ import styles from "./post.module.css";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import { Send, Briefcase, GraduationCap, MessageCircle, BookOpen } from "lucide-react";
 import { ArticleFeedback } from "@/components/ArticleFeedback";
+import { ViewTracker } from "@/components/ViewTracker";
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
-  const { slug } = await params;
-  const supabase = getSupabaseServerClient();
-  const { data: post } = await supabase
-    .from("blog_posts")
-    .select("title, excerpt, thumbnail, category, author, published_at, tags")
-    .eq("slug", slug)
-    .eq("published", true)
-    .single();
-
-  if (!post) {
+  export async function generateMetadata({
+    params,
+  }: {
+    params: Promise<{ slug: string }>;
+  }): Promise<Metadata> {
+    const { slug } = await params;
+    const supabase = getSupabaseServerClient();
+    const { data: post } = await supabase
+      .from("blog_posts")
+      .select("title, excerpt, thumbnail, category, author, published_at, tags, writers(slug, is_public, status)")
+      .eq("slug", slug)
+      .eq("published", true)
+      .single();
+  
+    if (!post) {
+      return {
+        title: "Post Not Found | Elitech Hub Blog",
+      };
+    }
+  
+    const writerData = post.writers as any;
+    const isPublicWriter = writerData?.is_public === true && writerData?.status === "approved" && writerData?.slug;
+    const authorCanonicalUrl = isPublicWriter
+      ? `https://elitechub.com/authors/${writerData.slug}`
+      : `https://elitechub.com/founder`;
+  
     return {
-      title: "Post Not Found | Elitech Hub Blog",
-    };
-  }
-
-  return {
-    title: `${post.title} | Elitech Hub Blog`,
-    description: post.excerpt || "Cybersecurity insights from Elitech Hub.",
-    keywords: post.tags || ["cybersecurity", "tech", "elitech hub", "training", "Zero Trust"],
-    openGraph: {
-      title: post.title,
-      description: post.excerpt || "",
-      images: [
-        {
-          url: post.thumbnail || 'https://elitechub.com/images/og-default.jpg',
-          width: 1200,
-          height: 630,
-          alt: post.title,
-        }
-      ],
-      url: `https://elitechub.com/blog/${slug}`,
-      type: "article",
-      publishedTime: post.published_at,
-      authors: [post.author],
-      siteName: "Elitech Hub",
-    },
+      title: `${post.title} | Elitech Hub Blog`,
+      description: post.excerpt || "Cybersecurity insights from Elitech Hub.",
+      keywords: post.tags || ["cybersecurity", "tech", "elitech hub", "training", "Zero Trust"],
+      openGraph: {
+        title: post.title,
+        description: post.excerpt || "",
+        images: [
+          {
+            url: post.thumbnail || 'https://elitechub.com/images/og-default.jpg',
+            width: 1200,
+            height: 630,
+            alt: post.title,
+          }
+        ],
+        url: `https://elitechub.com/blog/${slug}`,
+        type: "article",
+        publishedTime: post.published_at,
+        authors: [authorCanonicalUrl],
+        siteName: "Elitech Hub",
+      },
     twitter: {
       card: "summary_large_image",
       title: post.title,
@@ -86,7 +93,7 @@ export default async function BlogPostPage({
 
   const { data: post, error } = await supabase
     .from("blog_posts")
-    .select("id, title, slug, excerpt, content, category, author, thumbnail, published_at, views, tags, word_count, writer_id, writers(id, display_name, slug, avatar_url, professional_title, is_public)")
+    .select("id, title, slug, excerpt, content, category, author, thumbnail, published_at, views, tags, word_count, writer_id, writers(id, display_name, slug, avatar_url, professional_title, is_public, status, bio)")
     .eq("slug", slug)
     .eq("published", true)
     .single();
@@ -104,6 +111,19 @@ export default async function BlogPostPage({
     .neq("slug", slug)
     .limit(3);
 
+  // Determine canonical author URL — only link to public profile if writer is approved + public
+  const writerData = post.writers as any;
+  const isPublicWriter = writerData?.is_public === true && writerData?.status === "approved" && writerData?.slug;
+  const authorCanonicalUrl = isPublicWriter
+    ? `https://elitechub.com/authors/${writerData.slug}`
+    : `https://elitechub.com/founder`; // fallback for founder/admin-authored posts
+
+  const elitechHubOrg = {
+    "@type": "Organization",
+    name: "Elitech Hub",
+    url: "https://elitechub.com",
+  };
+
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -112,10 +132,17 @@ export default async function BlogPostPage({
     image: post.thumbnail ? [post.thumbnail] : [],
     datePublished: post.published_at,
     dateModified: post.published_at,
-    author: { "@type": "Person", name: post.author, url: "https://elitechub.com/about" },
+    author: {
+      "@type": "Person",
+      name: isPublicWriter ? writerData.display_name : post.author,
+      url: authorCanonicalUrl,
+      ...(isPublicWriter && writerData.avatar_url ? { image: writerData.avatar_url } : {}),
+      worksFor: elitechHubOrg,
+    },
     publisher: {
       "@type": "Organization",
       name: "Elitech Hub",
+      url: "https://elitechub.com",
       logo: { "@type": "ImageObject", url: "https://elitechub.com/images/logo.png" },
     },
     mainEntityOfPage: { "@type": "WebPage", "@id": `https://elitechub.com/blog/${slug}` },
@@ -124,6 +151,7 @@ export default async function BlogPostPage({
 
   return (
     <PageLayout>
+      <ViewTracker postId={post.id} writerId={post.writer_id} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
@@ -160,33 +188,51 @@ export default async function BlogPostPage({
           {post.excerpt && (
             <p className={styles.articleExcerpt}>{post.excerpt}</p>
           )}
-          <div className={styles.articleAuthor}>
-            {post.writers?.is_public && post.writers?.slug ? (
-              <Link href={`/authors/${post.writers.slug}`} className="flex items-center gap-4 hover:opacity-80 transition" style={{ textDecoration: 'none' }}>
-                <div className={styles.authorAvatar} style={{ overflow: 'hidden' }}>
-                  {post.writers.avatar_url ? (
-                    <img src={post.writers.avatar_url} alt={post.writers.display_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <div className={styles.articleAuthor} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '2rem', padding: '1.5rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
+              Written by
+            </div>
+            {isPublicWriter ? (
+              <Link href={`/authors/${writerData.slug}`} className="flex items-start gap-4 hover:opacity-90 transition" style={{ textDecoration: 'none' }}>
+                <div className={styles.authorAvatar} style={{ overflow: 'hidden', width: '64px', height: '64px', flexShrink: 0, borderRadius: '50%' }}>
+                  {writerData.avatar_url ? (
+                    <img src={writerData.avatar_url} alt={writerData.display_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
-                    getAuthorInitials(post.writers.display_name || post.author)
+                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-bg-raised)', fontSize: '1.2rem', fontWeight: 'bold' }}>
+                      {getAuthorInitials(writerData.display_name || post.author)}
+                    </div>
                   )}
                 </div>
                 <div>
-                  <div className={styles.authorName}>{post.writers.display_name || post.author}</div>
-                  <div className={styles.authorRole}>
-                    {post.writers.professional_title || 'Elitech Hub Writer'}
+                  <div className={styles.authorName} style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--color-text-primary)' }}>
+                    {writerData.display_name || post.author}
                   </div>
+                  <div className={styles.authorRole} style={{ color: 'var(--color-accent)', fontSize: '0.9rem', marginBottom: '0.5rem', fontWeight: 500 }}>
+                    {writerData.professional_title || 'Writer'} at Elitech Hub
+                  </div>
+                  {writerData.bio && (
+                    <div style={{ color: 'var(--color-text-secondary)', fontSize: '0.9rem', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      {writerData.bio}
+                    </div>
+                  )}
                 </div>
               </Link>
             ) : (
-              <>
-                <div className={styles.authorAvatar}>{getAuthorInitials(post.author)}</div>
-                <div>
-                  <div className={styles.authorName}>{post.author}</div>
-                  <div className={styles.authorRole}>
-                    {post.author?.toLowerCase().includes('elijah') ? 'Founder & Lead Instructor' : 'Elitech Hub Writer'}
+              <div className="flex items-center gap-4">
+                <div className={styles.authorAvatar} style={{ overflow: 'hidden', width: '56px', height: '56px', flexShrink: 0, borderRadius: '50%' }}>
+                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-bg-raised)', fontSize: '1.2rem', fontWeight: 'bold' }}>
+                    {getAuthorInitials(post.author)}
                   </div>
                 </div>
-              </>
+                <div>
+                  <div className={styles.authorName} style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--color-text-primary)' }}>
+                    {post.author}
+                  </div>
+                  <div className={styles.authorRole} style={{ color: 'var(--color-text-secondary)', fontSize: '0.9rem' }}>
+                    {post.author?.toLowerCase().includes('elijah') ? 'Founder & Lead Instructor at Elitech Hub' : 'Writer at Elitech Hub'}
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         </div>

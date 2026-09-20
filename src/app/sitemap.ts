@@ -99,12 +99,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/get-involved`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    {
       url: `${baseUrl}/services`,
       lastModified: now,
       changeFrequency: 'weekly',
@@ -177,24 +171,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
     {
-      url: `${baseUrl}/verify`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/researcher-guidelines`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.55,
-    },
-    {
-      url: `${baseUrl}/security`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-    {
       url: `${baseUrl}/security-check`,
       lastModified: now,
       changeFrequency: 'weekly',
@@ -222,6 +198,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${baseUrl}/advisors`,
       lastModified: now,
       changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/writers`,
+      lastModified: now,
+      changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
@@ -305,7 +287,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     routes.push(...caseStudyUrls);
   }
 
-  
   if (labEntries) {
     const labUrls: MetadataRoute.Sitemap = labEntries.map((lab) => ({
       url: `${baseUrl}/lab/${lab.slug}`,
@@ -330,9 +311,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })));
     }
 
-    // NOTE: /founder, /advisors, /research/membership are already added as static routes above.
-
-    // Add Topics (no dedicated topics table yet — skip for now)
+    // Add writers to sitemap (consistent rule: approved + is_public + slug IS NOT NULL)
+    const { data: writers } = await supabase
+      .from('writers')
+      .select('slug, updated_at')
+      .eq('status', 'approved')
+      .eq('is_public', true)
+      .not('slug', 'is', null);
+      
+    if (writers) {
+      routes.push(...writers.map(w => ({
+        url: `${baseUrl}/authors/${w.slug}`,
+        lastModified: w.updated_at || now,
+        changeFrequency: 'monthly' as const,
+        priority: 0.75
+      })));
+    }
 
     // Add Resources
     const { data: resources } = await supabase.from('resources').select('slug, updated_at').eq('status', 'published');
@@ -345,16 +339,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })));
     }
 
-    // Add Researchers
-    const { data: researchers } = await supabase.from('researchers').select('slug, updated_at').eq('status', 'active');
-    if (researchers) {
-      routes.push(...researchers.map(r => ({
-        url: `${baseUrl}/researcher/${r.slug}`,
-        lastModified: r.updated_at || now,
-        changeFrequency: 'monthly' as const,
-        priority: 0.7
-      })));
-    }
   } catch (e) {
     console.error('Failed to add ecosystem routes to sitemap', e);
   }
