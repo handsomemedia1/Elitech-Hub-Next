@@ -215,11 +215,39 @@ export default function WriterSettings() {
           <div className="text-sm text-gray-400 space-y-2">
             <p><span className="font-medium text-gray-300">Email:</span> {profile?.email}</p>
             <p><span className="font-medium text-gray-300">Status:</span> <span className="capitalize text-green-500">{profile?.status}</span></p>
-            <p><span className="font-medium text-gray-300">Author Slug:</span> {profile?.slug || 'Will be generated on save'}</p>
+            <p><span className="font-medium text-gray-300">Author Slug:</span> {profile?.slug || 'Will be generated when you save your display name'}</p>
+            {profile?.slug && (
+              <div className="mt-3 pt-3 border-t border-gray-800">
+                <p className="font-medium text-gray-300 mb-2">Your Public Profile:</p>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <code className="text-green-400 text-xs bg-black/40 px-2 py-1 rounded">
+                    elitechub.com/authors/{profile.slug}
+                  </code>
+                  <a
+                    href={`/authors/${profile.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#C3151C] hover:text-red-400 text-sm font-medium transition"
+                  >
+                    View Public Profile ↗
+                  </a>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        <div className="flex justify-end pt-4">
+        <div className="flex justify-between items-center pt-4 flex-wrap gap-3">
+          {profile?.slug && (
+            <a
+              href={`/authors/${profile.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-gray-400 hover:text-white transition border border-gray-700 hover:border-gray-500 px-4 py-2 rounded-lg"
+            >
+              View Public Profile ↗
+            </a>
+          )}
           <button type="submit" disabled={saving} className="bg-[#C3151C] hover:bg-red-700 text-white px-8 py-3 rounded-lg font-medium transition disabled:opacity-50">
             {saving ? 'Saving...' : 'Save Profile'}
           </button>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Download, Upload, Printer, CheckCircle, Search, Save } from 'lucide-react';
+import { Download, Upload, Printer } from 'lucide-react';
 import styles from './certificates.module.css';
 import { QRCodeSVG } from 'qrcode.react';
 import html2canvas from 'html2canvas';
@@ -14,11 +14,15 @@ import { fetchCertificateCountAction, saveCertificateAction } from './actions';
 export default function AdminCertificates() {
   const currentYear = new Date().getFullYear();
   const [certCount, setCertCount] = useState<number | null>(null);
-  const certRef = useRef<HTMLDivElement>(null);
+
+  // visibleRef → the scaled browser preview (untouched)
+  const visibleRef = useRef<HTMLDivElement>(null);
+  // captureRef → the off-screen 1:1 export target (no CSS transform)
+  const captureRef = useRef<HTMLDivElement>(null);
 
   const [loading, setLoading] = useState(false);
   const [bulkLoading, setBulkLoading] = useState(false);
-  
+
   const [formData, setFormData] = useState({
     type: 'learning',
     name: 'John Doe',
@@ -80,37 +84,74 @@ export default function AdminCertificates() {
 
   const config = getCertConfig(formData.type, formData.role, formData.duration);
 
-  // Capture canvas logic
-  const captureCertificate = async () => {
-    if (!certRef.current) return null;
-    const certEl = certRef.current;
-    
-    // Wait for the main document's fonts
+  /**
+   * Waits for all <img> elements inside `el` to finish loading.
+   * Needed because html2canvas captures a snapshot — images must be decoded first.
+   */
+  const waitForImages = (el: HTMLElement): Promise<void> => {
+    const imgs = Array.from(el.querySelectorAll('img'));
+    if (imgs.length === 0) return Promise.resolve();
+    return Promise.all(
+      imgs.map(img => {
+        if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+        return new Promise<void>(resolve => {
+          img.addEventListener('load', () => resolve(), { once: true });
+          img.addEventListener('error', () => resolve(), { once: true });
+        });
+      })
+    ).then(() => undefined);
+  };
+
+  /**
+   * Core capture function — always targets the off-screen `captureRef` element.
+   *
+   * WHY:  The visible preview sits inside `.scalingWrapper` which applies a
+   *       CSS `transform: scale(0.65)`.  When html2canvas clones the DOM it
+   *       inherits computed styles from ancestor elements, so font sizes,
+   *       letter-spacing and positioned elements are calculated relative to the
+   *       scaled context → scattered / overlapping text in the output.
+   *
+   *       The `captureRef` element is placed in a `.captureTarget` container
+   *       that sits at `position:fixed; left:-9999px` with NO transform,
+   *       so html2canvas always sees a plain 1056×816 artboard.
+   */
+  const captureCertificate = async (): Promise<HTMLCanvasElement | null> => {
+    const el = captureRef.current;
+    if (!el) return null;
+
+    // 1. Wait for the document fonts to be available
     if (document.fonts) {
       await document.fonts.ready;
     }
-    
-    // Temporarily remove transform to capture full resolution
-    const originalTransform = certEl.style.transform;
-    certEl.style.transform = 'scale(1)';
-    
-    const canvas = await html2canvas(certEl, {
+
+    // 2. Wait for all images inside the capture target to load
+    await waitForImages(el);
+
+    // 3. Small paint-settle delay (one animation frame) — ensures React's
+    //    latest state is fully committed to the capture target's DOM.
+    await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
+
+    // 4. Capture the off-screen element at 2× for retina-quality output
+    const canvas = await html2canvas(el, {
       scale: 2,
       useCORS: true,
       backgroundColor: '#0d0f12',
-      onclone: (clonedDoc) => {
-        // Wait for fonts inside the cloned iframe to prevent text squishing
-        return new Promise((resolve) => {
-          if (clonedDoc.fonts) {
-            clonedDoc.fonts.ready.then(resolve);
+      // The captureTarget has no transform so we do NOT need to reset anything.
+      // We still wait for fonts inside the cloned iframe just in case.
+      onclone: (_clonedDoc, clonedEl) => {
+        // Guarantee the clone is also transform-free
+        clonedEl.style.transform = 'none';
+        clonedEl.style.position = 'static';
+        return new Promise<void>(resolve => {
+          if (_clonedDoc.fonts) {
+            _clonedDoc.fonts.ready.then(() => resolve());
           } else {
-            setTimeout(resolve, 500); // Fallback
+            setTimeout(resolve, 200);
           }
         });
       }
     });
-    
-    certEl.style.transform = originalTransform;
+
     return canvas;
   };
 
@@ -179,11 +220,11 @@ export default function AdminCertificates() {
         try {
           const zip = new JSZip();
           let count = certCount || 1;
-          
+
           for (const row of results.data as any[]) {
             if (!row.name) continue;
-            
-            // Force state update and wait for render
+
+            // Update state and wait for React to commit to both preview + capture divs
             setFormData({
               type: row.type?.toLowerCase() || 'learning',
               name: row.name || '',
@@ -194,14 +235,12 @@ export default function AdminCertificates() {
               sigName: formData.sigName,
               sigTitle: formData.sigTitle
             });
-            
-            // A small delay to let React render the DOM changes before capturing
-            await new Promise(resolve => setTimeout(resolve, 100));
-            
+
+            // Allow React to commit the state change to the DOM
+            await new Promise(resolve => setTimeout(resolve, 150));
+
             const currentBulkId = formatCertId(count);
-            // Temporarily set the ID for the QR code to use the correct bulk ID
-            // In a real app we might just render the certificate off-screen, but this is a simple port
-            
+
             const canvas = await captureCertificate();
             if (canvas) {
               const currentData = {
@@ -214,13 +253,13 @@ export default function AdminCertificates() {
               };
               await saveCertificateToDB(currentData, currentBulkId);
               const imgData = canvas.toDataURL('image/png').split(',')[1];
-              zip.file(`${currentBulkId}-${row.name.replace(/[^a-z0-9]/gi, '_')}.png`, imgData, {base64: true});
+              zip.file(`${currentBulkId}-${row.name.replace(/[^a-z0-9]/gi, '_')}.png`, imgData, { base64: true });
               count++;
             }
           }
-          
+
           if (count > (certCount || 0)) {
-            const content = await zip.generateAsync({type: 'blob'});
+            const content = await zip.generateAsync({ type: 'blob' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(content);
             link.download = `ElitechHub_Certificates_${new Date().getTime()}.zip`;
@@ -240,12 +279,110 @@ export default function AdminCertificates() {
     });
   };
 
+  /**
+   * Shared certificate body — renders the exact same content for both
+   * the visible preview and the off-screen capture target.
+   * Accepts the cert ID override needed during bulk generation.
+   */
+  const CertificateBody = ({ certId }: { certId: string }) => {
+    const cfg = getCertConfig(formData.type, formData.role, formData.duration);
+    return (
+      <>
+        <div className={styles.certInnerBorder} />
+        <div className={styles.certContent}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/logo.png"
+            alt="Elitech Hub Logo"
+            className={styles.certLogo}
+            crossOrigin="anonymous"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src =
+                'https://ui-avatars.com/api/?name=Elitech+Hub&background=c3151c&color=fff&size=128';
+            }}
+          />
+
+          <div className={styles.certHeader}>
+            <h1>{cfg.title}</h1>
+            <div className={styles.certSubtitle}>{cfg.subtitle}</div>
+          </div>
+
+          <div className={styles.certPresented}>This certificate is awarded to</div>
+
+          <div className={styles.certNameContainer}>
+            <h2 className={styles.certName}>{formData.name || '...'}</h2>
+          </div>
+
+          <div className={styles.certBody}>
+            <span dangerouslySetInnerHTML={{ __html: cfg.body + (formData.highlight ? ',' : '.') }} />
+            {formData.highlight && (
+              <span className={styles.certHighlight}>
+                {formData.type === 'learning'
+                  ? 'covering '
+                  : formData.type === 'internship'
+                    ? 'demonstrating '
+                    : 'Special recognition: '}
+                {formData.highlight}.
+              </span>
+            )}
+          </div>
+
+          <div className={styles.certFooter}>
+            <div className={styles.footerLeft}>
+              <div className={styles.verificationBlock}>
+                <div>[AUTH] Certificate verified ✓</div>
+                <div>[SIGN] {formData.sigName} ({formData.sigTitle})</div>
+                <div>[ID]&nbsp;&nbsp;&nbsp;{certId}</div>
+              </div>
+            </div>
+
+            <div className={styles.footerRight}>
+              <div className={styles.qrCodeContainer}>
+                <QRCodeSVG
+                  value={`https://elitechub.com/verify?id=${certId}`}
+                  size={64}
+                  bgColor="#ffffff"
+                  fgColor="#000000"
+                  level="L"
+                />
+              </div>
+              <div>
+                <div className={styles.dateContainer}>
+                  <div className={styles.dateLine}>{formatDate(formData.date)}</div>
+                </div>
+                <div className={styles.dateLabel}>Date of Issue</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  };
+
   return (
     <div className={styles.managerWrapper}>
       <div className={styles.header}>
         <div>
           <h1>Certificate Generator</h1>
           <p>Generate verifiable PNG/PDF certificates</p>
+        </div>
+      </div>
+
+      {/*
+        OFF-SCREEN CAPTURE TARGET
+        ─────────────────────────────────────────────────────────────────
+        This div is positioned off-screen (left: -9999px via .captureTarget)
+        and has NO CSS transform — it renders the certificate at its true
+        1056×816 artboard size. html2canvas targets THIS element, not the
+        visually-scaled preview below. The user never sees this div.
+      */}
+      <div className={styles.captureTarget} aria-hidden="true">
+        <div
+          ref={captureRef}
+          className={styles.certWrapper}
+          style={{ width: 1056, height: 816 }}
+        >
+          <CertificateBody certId={currentId} />
         </div>
       </div>
 
@@ -260,33 +397,33 @@ export default function AdminCertificates() {
               <option value="internship">Certificate of Internship</option>
             </select>
           </div>
-          
+
           <div className={styles.formGroup}>
             <label>Full Name</label>
             <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="e.g. John Doe" />
           </div>
-          
+
           <div className={styles.formGroup}>
             <label>Role or Program Name</label>
             <input type="text" name="role" value={formData.role} onChange={handleChange} />
           </div>
-          
+
           <div className={styles.formGroup}>
             <label>Duration or Date Range</label>
             <input type="text" name="duration" value={formData.duration} onChange={handleChange} />
           </div>
-          
+
           <div className={styles.formGroup}>
             <label>Highlight Line (Optional)</label>
             <input type="text" name="highlight" value={formData.highlight} onChange={handleChange} />
             <small>Appears in green within the body.</small>
           </div>
-          
+
           <div className={styles.formGroup}>
             <label>Issue Date</label>
             <input type="date" name="date" value={formData.date} onChange={handleChange} />
           </div>
-          
+
           <div className={styles.buttonGroup}>
             <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={handleDownloadPDF} disabled={loading || bulkLoading}>
               {loading ? 'Generating...' : <><Download size={18} /> Download PDF</>}
@@ -298,82 +435,32 @@ export default function AdminCertificates() {
               <Printer size={18} /> Print Document
             </button>
           </div>
-          
+
           <div className={styles.buttonGroup}>
             <label className={styles.bulkUpload}>
               {bulkLoading ? (
-                <div style={{fontWeight: 600}}>Generating ZIP... Please wait</div>
+                <div style={{ fontWeight: 600 }}>Generating ZIP... Please wait</div>
               ) : (
                 <>
                   <Upload size={24} style={{ color: '#ff2a55', marginBottom: '8px' }} />
-                  <div style={{fontWeight: 600}}>Bulk Generate Zip (CSV)</div>
+                  <div style={{ fontWeight: 600 }}>Bulk Generate Zip (CSV)</div>
                   <small>Cols: name, type, role, duration, highlight, date</small>
-                  <input type="file" accept=".csv" style={{display: 'none'}} onChange={handleBulkUpload} disabled={loading || bulkLoading} />
+                  <input type="file" accept=".csv" style={{ display: 'none' }} onChange={handleBulkUpload} disabled={loading || bulkLoading} />
                 </>
               )}
             </label>
           </div>
         </div>
 
-        {/* Live Preview */}
+        {/* ===== VISIBLE BROWSER PREVIEW (untouched, still uses scalingWrapper) ===== */}
         <div className={styles.mainContent}>
           <div className={styles.scalingWrapper}>
-            <div className={styles.certWrapper} id="certificate" ref={certRef}>
-              <div className={styles.certInnerBorder}></div>
-              <div className={styles.certContent}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/images/logo.png" alt="Elitech Hub Logo" className={styles.certLogo} crossOrigin="anonymous" onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://ui-avatars.com/api/?name=Elitech+Hub&background=c3151c&color=fff&size=128'
-                }} />
-                
-                <div className={styles.certHeader}>
-                  <h1>{config.title}</h1>
-                  <div className={styles.certSubtitle}>{config.subtitle}</div>
-                </div>
-                
-                <div className={styles.certPresented}>This certificate is awarded to</div>
-                
-                <div className={styles.certNameContainer}>
-                  <h2 className={styles.certName}>{formData.name || '...'}</h2>
-                </div>
-                
-                <div className={styles.certBody}>
-                  <span dangerouslySetInnerHTML={{ __html: config.body + (formData.highlight ? ',' : '.') }}></span>
-                  {formData.highlight && (
-                    <span className={styles.certHighlight}>
-                      {formData.type === 'learning' ? 'covering ' : formData.type === 'internship' ? 'demonstrating ' : 'Special recognition: '}{formData.highlight}.
-                    </span>
-                  )}
-                </div>
-                
-                <div className={styles.certFooter}>
-                  <div className={styles.footerLeft}>
-                    <div className={styles.verificationBlock}>
-                      <div>[AUTH] Certificate verified ✓</div>
-                      <div>[SIGN] {formData.sigName} ({formData.sigTitle})</div>
-                      <div>[ID]&nbsp;&nbsp;&nbsp;{currentId}</div>
-                    </div>
-                  </div>
-                  
-                  <div className={styles.footerRight}>
-                    <div className={styles.qrCodeContainer}>
-                      <QRCodeSVG 
-                        value={`https://elitechub.com/verify?id=${currentId}`} 
-                        size={64} 
-                        bgColor="#ffffff" 
-                        fgColor="#000000" 
-                        level="L" 
-                      />
-                    </div>
-                    <div>
-                      <div className={styles.dateContainer}>
-                        <div className={styles.dateLine}>{formatDate(formData.date)}</div>
-                      </div>
-                      <div className={styles.dateLabel}>Date of Issue</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div
+              ref={visibleRef}
+              className={styles.certWrapper}
+              id="certificate"
+            >
+              <CertificateBody certId={currentId} />
             </div>
           </div>
         </div>

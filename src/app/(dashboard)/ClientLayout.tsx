@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
   LayoutDashboard, BookOpen, Users, PenTool, MessageSquare, 
-  Settings, LogOut, Menu, X, FileText, FlaskConical, Award, DollarSign, Mail, Laptop
+  Settings, LogOut, Menu, X, FileText, FlaskConical, Award, DollarSign, Mail, Laptop, Star, UserCircle
 } from 'lucide-react';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './dashboard.module.css';
 
@@ -34,7 +35,10 @@ const WRITER_LINKS = [
   { href: '/writer', label: 'Overview', icon: LayoutDashboard },
   { href: '/writer/posts', label: 'My Articles', icon: FileText },
   { href: '/writer/editor', label: 'Write New', icon: PenTool },
+  { href: '/writer/badges', label: 'My Badges', icon: Star },
+  { href: '/writer/settings', label: 'Author Profile', icon: UserCircle },
 ];
+
 
 const RESEARCHER_LINKS = [
   { href: '/researcher', label: 'Overview', icon: LayoutDashboard },
@@ -56,6 +60,15 @@ export default function DashboardLayout({ children, initialUserName = '' }: { ch
   const links = isAdmin ? ADMIN_LINKS : isResearcher ? RESEARCHER_LINKS : WRITER_LINKS;
   const roleName = isAdmin ? 'Admin' : isResearcher ? 'Researcher' : 'Writer';
   const displayName = loggedInName || roleName;
+
+  useEffect(() => {
+    if (pathname === '/admin/login' || pathname === '/writer/login' || pathname === '/researcher/login') return;
+    if (!loggedInName) {
+      if (isAdmin) router.push('/admin/login');
+      else if (pathname.startsWith('/writer')) router.push('/writer/login');
+      else if (isResearcher) router.push('/researcher/login');
+    }
+  }, [pathname, loggedInName, isAdmin, isResearcher, router]);
 
   // For /admin/login, /writer/login, or /researcher/login don't show the dashboard shell
   if (pathname === '/admin/login' || pathname === '/writer/login' || pathname === '/researcher/login') {

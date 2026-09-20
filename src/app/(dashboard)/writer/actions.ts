@@ -15,9 +15,10 @@ export async function getWriterDashboardAction() {
   // Fetch writer profile stats
   const { data: profile } = await supabase
     .from('writers')
-    .select('posts_count, total_views, level, badges, name, bio, avatar_url')
+    .select('posts_count, total_views, level, badges, name, bio, avatar_url, slug, is_public, display_name')
     .eq('id', writer.id)
     .single();
+
 
   // Fetch recent posts
   const { data: posts } = await supabase

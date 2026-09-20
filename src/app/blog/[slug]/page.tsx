@@ -33,9 +33,13 @@ export const revalidate = 60; // Revalidate every 60 seconds
   
     const writerData = post.writers as any;
     const isPublicWriter = writerData?.is_public === true && writerData?.status === "approved" && writerData?.slug;
-    const authorCanonicalUrl = isPublicWriter
-      ? `https://elitechub.com/authors/${writerData.slug}`
-      : `https://elitechub.com/founder`;
+    
+    let authorCanonicalUrl: string | undefined;
+    if (isPublicWriter) {
+      authorCanonicalUrl = `https://elitechub.com/authors/${writerData.slug}`;
+    } else if (post.author?.toLowerCase().includes("elijah")) {
+      authorCanonicalUrl = `https://elitechub.com/founder`;
+    }
   
     return {
       title: `${post.title} | Elitech Hub Blog`,
@@ -55,7 +59,7 @@ export const revalidate = 60; // Revalidate every 60 seconds
         url: `https://elitechub.com/blog/${slug}`,
         type: "article",
         publishedTime: post.published_at,
-        authors: [authorCanonicalUrl],
+        authors: authorCanonicalUrl ? [authorCanonicalUrl] : undefined,
         siteName: "Elitech Hub",
       },
     twitter: {

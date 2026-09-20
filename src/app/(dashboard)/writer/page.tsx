@@ -74,6 +74,90 @@ export default function WriterOverview() {
         </div>
       </div>
 
+      {!loading && profile && (
+        <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {/* Public Author Profile Card */}
+          <div style={{ padding: '1.5rem', background: 'var(--color-bg-panel)', borderRadius: '12px', border: '1px solid var(--color-border)' }}>
+            <h2 style={{ fontSize: '1.1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              🌐 Your Public Author Profile
+            </h2>
+            {profile.slug ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', background: 'rgba(0,255,65,0.05)', border: '1px solid rgba(0,255,65,0.2)', borderRadius: '8px' }}>
+                  <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>Public URL:</span>
+                  <a
+                    href={`/authors/${profile.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: '#00ff41', fontFamily: 'monospace', fontSize: '0.9rem', textDecoration: 'none', fontWeight: 600 }}
+                  >
+                    elitechub.com/authors/{profile.slug}
+                  </a>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                  <a
+                    href={`/authors/${profile.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ padding: '0.6rem 1.2rem', background: 'var(--color-primary)', color: 'white', borderRadius: '8px', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 600 }}
+                  >
+                    View Public Profile →
+                  </a>
+                  <Link href="/writer/settings" style={{ padding: '0.6rem 1.2rem', background: 'transparent', color: 'var(--color-text-secondary)', border: '1px solid var(--color-border)', borderRadius: '8px', textDecoration: 'none', fontSize: '0.875rem' }}>
+                    Edit Profile
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.9rem', margin: 0 }}>
+                  Your public author profile hasn&apos;t been set up yet. Add a display name and save your profile to get a public URL.
+                </p>
+                <Link href="/writer/settings" style={{ padding: '0.6rem 1.2rem', background: 'var(--color-primary)', color: 'white', borderRadius: '8px', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 600, display: 'inline-block', width: 'fit-content' }}>
+                  Set Up Author Profile →
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Badges Card */}
+          <div style={{ padding: '1.5rem', background: 'var(--color-bg-panel)', borderRadius: '12px', border: '1px solid var(--color-border)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+              <h2 style={{ fontSize: '1.1rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                🏆 Earned Badges
+              </h2>
+              <Link href="/writer/badges" style={{ fontSize: '0.85rem', color: 'var(--color-accent)', textDecoration: 'none' }}>
+                View All →
+              </Link>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+              <div style={{ padding: '0.4rem 0.9rem', background: 'rgba(255, 215, 0, 0.1)', color: '#ca8a04', borderRadius: '999px', fontWeight: 'bold', fontSize: '0.85rem', border: '1px solid #fef08a' }}>
+                Level: {profile.level || 'Newcomer'}
+              </div>
+            </div>
+            {profile.badges && profile.badges.length > 0 ? (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                {profile.badges.slice(0, 4).map((badge: string, idx: number) => (
+                  <span key={idx} style={{ padding: '0.4rem 0.8rem', background: 'var(--color-bg-alt)', borderRadius: '6px', fontSize: '0.85rem', color: 'var(--color-text-primary)', border: '1px solid var(--color-border)', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                    🏆 {badge}
+                  </span>
+                ))}
+                {profile.badges.length > 4 && (
+                  <Link href="/writer/badges" style={{ padding: '0.4rem 0.8rem', background: 'transparent', borderRadius: '6px', fontSize: '0.85rem', color: 'var(--color-accent)', border: '1px solid var(--color-border)', textDecoration: 'none' }}>
+                    +{profile.badges.length - 4} more
+                  </Link>
+                )}
+              </div>
+            ) : (
+              <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', margin: 0 }}>
+                No badges yet. Publish your first article to start earning! 🚀
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+
+
       <div className={styles.recentSection}>
         <div className={styles.sectionHeader}>
           <h2>Recent Articles</h2>

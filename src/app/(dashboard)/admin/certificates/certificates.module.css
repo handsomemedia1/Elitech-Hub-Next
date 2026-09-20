@@ -363,3 +363,23 @@
 @media (max-width: 768px) {
   .scalingWrapper { transform: scale(0.35); }
 }
+
+/*
+  Off-screen 1:1 capture target used exclusively by html2canvas.
+  Positioned outside the viewport so it is NOT visible to the user,
+  but remains in the normal render flow so html2canvas can capture
+  it without any parent CSS transform distorting the output.
+  DO NOT use display:none — html2canvas skips display:none elements.
+  DO NOT use visibility:hidden — html2canvas may skip those too.
+*/
+.captureTarget {
+  position: fixed;
+  left: -9999px;
+  top: 0;
+  width: 1056px;
+  height: 816px;
+  z-index: -9999;
+  pointer-events: none;
+  /* No transform — this is the whole point */
+  transform: none !important;
+}

@@ -246,7 +246,10 @@ export interface AuthWriter {
 /** Server Component utility to get the currently logged-in writer via cookie */
 export async function getServerWriter(): Promise<AuthWriter | null> {
   const cookieStore = await cookies();
-  const token = cookieStore.get('elitech_writer_token')?.value;
+  // Support both the writer-specific cookie and the shared elitech_token cookie
+  // (the login API sets 'elitech_token' for all roles; elitech_writer_token is legacy)
+  const token = cookieStore.get('elitech_writer_token')?.value
+    || cookieStore.get('elitech_token')?.value;
   if (!token) return null;
 
   const payload = verifyToken(token);
@@ -266,6 +269,7 @@ export async function getServerWriter(): Promise<AuthWriter | null> {
 
   return { ...writer, role: 'writer' } as AuthWriter;
 }
+
 
 export async function requireWriter(
   request: Request

@@ -40,6 +40,16 @@ export async function fetchWritersAction() {
   return { data: finalWriters, error: null };
 }
 
+// Helper: generate a URL-safe slug from a name
+function slugify(text: string): string {
+  return text.toString().toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/\-\-+/g, '-')
+    .replace(/^-+/, '')
+    .replace(/-+$/, '');
+}
+
 // 2. Add Writer
 export async function addWriterAction(writerData: any) {
   const user = await getServerUser();
@@ -48,7 +58,29 @@ export async function addWriterAction(writerData: any) {
   const supabase = createServiceClient();
   if (!supabase) return { success: false, error: 'No DB connection' };
 
-  const { error } = await supabase.from('writers').insert([writerData]);
+  // Auto-generate a unique slug from the writer's name
+  let slug: string | null = null;
+  const nameForSlug = writerData.name || writerData.display_name;
+  if (nameForSlug) {
+    let base = slugify(nameForSlug);
+    // Check uniqueness — add a random suffix if taken
+    const { data: existing } = await supabase
+      .from('writers')
+      .select('id')
+      .eq('slug', base)
+      .maybeSingle();
+    if (existing) {
+      base = `${base}-${Math.floor(Math.random() * 9000) + 1000}`;
+    }
+    slug = base;
+  }
+
+  const { error } = await supabase.from('writers').insert([{
+    ...writerData,
+    slug,
+    // Ensure the writer is not accidentally public until approved
+    is_public: writerData.status === 'approved' ? (writerData.is_public ?? false) : false,
+  }]);
 
   if (error) {
     console.error('Add writer error:', error);
@@ -58,6 +90,7 @@ export async function addWriterAction(writerData: any) {
   revalidatePath('/admin/writers');
   return { success: true };
 }
+
 
 // 3. Update Writer Status
 export async function updateWriterStatusAction(id: string, status: string) {
