@@ -89,6 +89,71 @@ export default async function LaptopsPage(props: { searchParams: Promise<{ [key:
         </AnimateOnScroll>
       </section>
       
+      {/* ===== EDUCATIONAL HUB SECTION ===== */}
+      <section style={{ padding: '3rem 5%', maxWidth: '1280px', margin: '0 auto' }}>
+        <AnimateOnScroll direction="up" delay={100}>
+          <div style={{ marginBottom: '1.5rem' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'white', marginBottom: '0.75rem' }}>
+              Before You Browse: Know What You Actually Need
+            </h2>
+            <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.7, maxWidth: '72ch' }}>
+              Choosing the wrong laptop for cybersecurity is a common and expensive mistake. The laptop that works fine for browsing and coding can choke immediately when you start running virtual machines for your lab environment. Our guides below will help you understand exactly what specifications matter — and which ones don&apos;t — before you spend your money.
+            </p>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            gap: '1.25rem',
+            marginTop: '1.5rem'
+          }}>
+            <a href="/blog/what-laptop-do-i-need-to-learn-cybersecurity" style={{ textDecoration: 'none' }}>
+              <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(6, 182, 212, 0.2)', borderRadius: '0.75rem', padding: '1.5rem', height: '100%' }}>
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.75rem' }}>💻</div>
+                <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'white', marginBottom: '0.5rem' }}>
+                  What Laptop Do I Need for Cybersecurity?
+                </h3>
+                <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.875rem', lineHeight: 1.6, margin: 0 }}>
+                  The beginner&apos;s complete guide to CPU, RAM, storage, and virtualization requirements — with realistic scenarios for different learning stages.
+                </p>
+                <span style={{ color: '#06b6d4', fontSize: '0.85rem', marginTop: '1rem', display: 'inline-block' }}>Read guide →</span>
+              </div>
+            </a>
+
+            <a href="/blog/how-much-ram-do-i-need-for-cybersecurity" style={{ textDecoration: 'none' }}>
+              <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(6, 182, 212, 0.2)', borderRadius: '0.75rem', padding: '1.5rem', height: '100%' }}>
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.75rem' }}>🧠</div>
+                <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'white', marginBottom: '0.5rem' }}>
+                  How Much RAM Do I Need for Cybersecurity?
+                </h3>
+                <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.875rem', lineHeight: 1.6, margin: 0 }}>
+                  8GB, 16GB, or 32GB? Understand what your virtual machines actually consume and when upgrading your RAM becomes necessary.
+                </p>
+                <span style={{ color: '#06b6d4', fontSize: '0.85rem', marginTop: '1rem', display: 'inline-block' }}>Read guide →</span>
+              </div>
+            </a>
+
+            <a href="/blog/best-laptop-for-virtualization-cybersecurity" style={{ textDecoration: 'none' }}>
+              <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(6, 182, 212, 0.2)', borderRadius: '0.75rem', padding: '1.5rem', height: '100%' }}>
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.75rem' }}>⚙️</div>
+                <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'white', marginBottom: '0.5rem' }}>
+                  Best Laptop for Virtualization in Cybersecurity
+                </h3>
+                <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.875rem', lineHeight: 1.6, margin: 0 }}>
+                  Why running virtual machines changes your entire hardware decision — covering CPU cores, thermal throttling, storage, and VM disk consumption.
+                </p>
+                <span style={{ color: '#06b6d4', fontSize: '0.85rem', marginTop: '1rem', display: 'inline-block' }}>Read guide →</span>
+              </div>
+            </a>
+          </div>
+        </AnimateOnScroll>
+      </section>
+
+      {/* ===== DIVIDER ===== */}
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 5%' }}>
+        <div style={{ borderTop: '1px solid var(--color-border)' }} />
+      </div>
+
       {/* ===== CATALOG SECTION ===== */}
       <section style={{ padding: '4rem 5%', maxWidth: '1280px', margin: '0 auto', minHeight: '60vh' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
