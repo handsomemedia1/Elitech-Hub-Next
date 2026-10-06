@@ -339,7 +339,7 @@ export default function AdminCertificates() {
             <div className={styles.footerRight}>
               <div className={styles.qrCodeContainer}>
                 <QRCodeSVG
-                  value={`https://elitechub.com/verify?id=${certId}`}
+                  value={`https://www.elitechub.com/verify?id=${certId}`}
                   size={64}
                   bgColor="#ffffff"
                   fgColor="#000000"

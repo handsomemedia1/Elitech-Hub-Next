@@ -1,0 +1,341 @@
+.settingsWrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 16px;
+  color: #ffffff;
+}
+
+.header {
+  margin-bottom: 32px;
+}
+
+.header h1 {
+  font-size: 1.8rem;
+  margin: 0 0 8px 0;
+  color: #ffffff;
+}
+
+.header p {
+  color: #64748b;
+  margin: 0;
+}
+
+.message {
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  font-weight: 500;
+}
+
+.messageSuccess {
+  background-color: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+}
+
+.messageError {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.completionCard {
+  background-color: rgba(234, 179, 8, 0.1);
+  border: 1px solid rgba(234, 179, 8, 0.2);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 32px;
+}
+
+.completionCard h3 {
+  color: #eab308;
+  margin: 0 0 4px 0;
+  font-size: 1.1rem;
+}
+
+.completionCard p {
+  color: rgba(234, 179, 8, 0.8);
+  font-size: 0.9rem;
+  margin: 0 0 12px 0;
+}
+
+.progressBarBg {
+  width: 100%;
+  background-color: #1e293b;
+  border-radius: 999px;
+  height: 10px;
+}
+
+.progressBarFill {
+  background-color: #eab308;
+  height: 10px;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.section {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  border-bottom: 1px solid #1e293b;
+  padding-bottom: 12px;
+  margin: 0 0 20px 0;
+}
+
+.avatarSection {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.avatarCircle {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarUpload h3 {
+  font-size: 1.1rem;
+  margin: 0 0 8px 0;
+}
+
+.avatarUpload p {
+  color: #64748b;
+  font-size: 0.75rem;
+  margin: 8px 0 0 0;
+}
+
+.uploadLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #1e293b;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.uploadLabel:hover {
+  background-color: #334155;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.formGroup label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #94a3b8;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 12px;
+  color: #64748b;
+}
+
+.input {
+  width: 100%;
+  background-color: #070d1a;
+  border: 1px solid #1e293b;
+  color: #ffffff;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #ff2a55;
+}
+
+.inputWithIcon {
+  padding-left: 40px;
+}
+
+.inputReadonly {
+  background-color: #1e293b;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.textarea {
+  width: 100%;
+  background-color: #070d1a;
+  border: 1px solid #1e293b;
+  color: #ffffff;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: #ff2a55;
+}
+
+.accountDetails {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+.accountDetails span {
+  font-weight: 500;
+  color: #cbd5e1;
+}
+
+.statusText {
+  text-transform: capitalize;
+  color: #22c55e !important;
+}
+
+.publicProfileBox {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #1e293b;
+}
+
+.publicProfileBox p {
+  margin: 0 0 12px 0;
+  color: #cbd5e1;
+  font-weight: 500;
+}
+
+.publicProfileLinkWrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.slugCode {
+  background-color: rgba(0, 0, 0, 0.4);
+  color: #4ade80;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.8rem;
+}
+
+.viewProfileLink {
+  color: #ff2a55;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.viewProfileLink:hover {
+  color: #fb7185;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.outlineBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #334155;
+  background: transparent;
+  color: #94a3b8;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.outlineBtn:hover {
+  color: #ffffff;
+  border-color: #64748b;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.primaryBtn {
+  background-color: #ff2a55;
+  color: white;
+  padding: 12px 32px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.primaryBtn:hover:not(:disabled) {
+  background-color: #e60023;
+}
+
+.primaryBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.loadingText {
+  padding: 48px;
+  text-align: center;
+  color: #94a3b8;
+}

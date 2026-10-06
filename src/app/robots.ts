@@ -39,6 +39,6 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
       },
     ],
-    sitemap: 'https://elitechub.com/sitemap.xml',
+    sitemap: 'https://www.elitechub.com/sitemap.xml',
   };
 }

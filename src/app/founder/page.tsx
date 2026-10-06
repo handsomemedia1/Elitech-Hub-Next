@@ -9,7 +9,7 @@ import { LinkedinLogo, PhosphorGlobe } from '@/components/PhosphorIcons';
 export const metadata: Metadata = {
   title: 'Elijah Adeyeye - Founder & Lead Instructor | Elitech Hub',
   description: 'Profile of Elijah Adeyeye, Founder of Elitech Hub. Expert in Behavioral Cybersecurity, Data Analysis, and digital security.',
-  alternates: { canonical: 'https://elitechub.com/founder' },
+  alternates: { canonical: 'https://www.elitechub.com/founder' },
 };
 
 export default function FounderPage() {
@@ -23,9 +23,9 @@ export default function FounderPage() {
       worksFor: {
         '@type': 'Organization',
         name: 'Elitech Hub',
-        url: 'https://elitechub.com'
+        url: 'https://www.elitechub.com'
       },
-      url: 'https://elitechub.com/founder',
+      url: 'https://www.elitechub.com/founder',
       sameAs: [
         'https://elijahadeyeye.vercel.app/',
         'https://orcid.org/0009-0005-4853-7813'

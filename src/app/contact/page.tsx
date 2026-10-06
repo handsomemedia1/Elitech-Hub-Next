@@ -12,12 +12,12 @@ export const metadata = {
   openGraph: {
     title: 'Contact Elitech Hub | Get in Touch',
     description: 'Let\'s Build Secure, Intelligent and Scalable Digital Solutions Together.',
-    url: 'https://elitechub.com/contact',
+    url: 'https://www.elitechub.com/contact',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
     type: 'website',
   },
-  alternates: { canonical: 'https://elitechub.com/contact' },
+  alternates: { canonical: 'https://www.elitechub.com/contact' },
 };
 
 export default function ContactPage() {

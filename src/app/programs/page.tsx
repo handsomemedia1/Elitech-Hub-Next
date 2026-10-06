@@ -55,12 +55,12 @@ export const metadata = {
     title: 'Best Cybersecurity Bootcamp in Nigeria | Internship Experience',
     description:
       'Join Nigeria\'s most brutal and effective cybersecurity bootcamp. Live attack simulations, real tools, AI-powered security curriculum. No experience required.',
-    url: 'https://elitechub.com/programs',
+    url: 'https://www.elitechub.com/programs',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
     images: [
       {
-        url: 'https://elitechub.com/images/programs-og.jpg',
+        url: 'https://www.elitechub.com/images/programs-og.jpg',
         width: 1200,
         height: 630,
         alt: 'Elitech Hub Cybersecurity Programs in Nigeria',
@@ -73,10 +73,10 @@ export const metadata = {
     title: 'Best Cybersecurity Bootcamp in Nigeria — Gain Experience',
     description:
       'The premier cybersecurity bootcamp in Nigeria with practical internship experience. Enroll today.',
-    images: ['https://elitechub.com/images/programs-og.jpg'],
+    images: ['https://www.elitechub.com/images/programs-og.jpg'],
   },
   alternates: {
-    canonical: 'https://elitechub.com/programs',
+    canonical: 'https://www.elitechub.com/programs',
   },
 };
 
@@ -87,55 +87,55 @@ export default function ProgramsPage() {
     {
       '@context': 'https://schema.org',
       '@type': 'Course',
-      '@id': 'https://elitechub.com/programs#ai6week',
+      '@id': 'https://www.elitechub.com/programs#ai6week',
       name: 'Learn AI Powered Cybersecurity in 6 Weeks',
       description:
         'Master AI security systems, Python scripting, PowerShell, and Ubuntu in this intensive 6-week live virtual bootcamp in Nigeria.',
-      url: 'https://elitechub.com/programs',
-      image: 'https://elitechub.com/images/programs-og.jpg',
+      url: 'https://www.elitechub.com/programs',
+      image: 'https://www.elitechub.com/images/programs-og.jpg',
       inLanguage: 'en',
       availableLanguage: ['English'],
       provider: {
         '@type': 'Organization',
-        '@id': 'https://elitechub.com/#organization',
+        '@id': 'https://www.elitechub.com/#organization',
         name: 'Elitech Hub',
-        sameAs: 'https://elitechub.com',
+        sameAs: 'https://www.elitechub.com',
       },
       hasCourseInstance: {
         '@type': 'CourseInstance',
         courseMode: 'Online',
         courseWorkload: 'PT15H',
         startDate: '2026-06-08',
-        location: { '@type': 'VirtualLocation', url: 'https://elitechub.com' },
+        location: { '@type': 'VirtualLocation', url: 'https://www.elitechub.com' },
       },
       offers: {
         '@type': 'Offer',
         price: '100',
         priceCurrency: 'USD',
         availability: 'https://schema.org/InStock',
-        url: 'https://elitechub.com/apply?program=ai6week',
+        url: 'https://www.elitechub.com/apply?program=ai6week',
       },
     },
     // ——— COURSE 2: 6-Week Bootcamp with pricing ———
     {
       '@context': 'https://schema.org',
       '@type': 'Course',
-      '@id': 'https://elitechub.com/programs#bootcamp6',
+      '@id': 'https://www.elitechub.com/programs#bootcamp6',
       name: '6-Week Intensive Cybersecurity Bootcamp',
       description:
         'Fast-track cybersecurity bootcamp in Nigeria covering ethical hacking, network security, and defense fundamentals. Weekend classes, hands-on labs.',
-      url: 'https://elitechub.com/programs',
-      image: 'https://elitechub.com/images/programs-og.jpg',
+      url: 'https://www.elitechub.com/programs',
+      image: 'https://www.elitechub.com/images/programs-og.jpg',
       inLanguage: 'en',
       provider: {
         '@type': 'Organization',
-        '@id': 'https://elitechub.com/#organization',
+        '@id': 'https://www.elitechub.com/#organization',
         name: 'Elitech Hub',
       },
       hasCourseInstance: {
         '@type': 'CourseInstance',
         courseMode: 'Online',
-        location: { '@type': 'VirtualLocation', url: 'https://elitechub.com' },
+        location: { '@type': 'VirtualLocation', url: 'https://www.elitechub.com' },
       },
       offers: {
         '@type': 'Offer',
@@ -146,7 +146,7 @@ export default function ProgramsPage() {
           name: 'NG',
         },
         availability: 'https://schema.org/InStock',
-        url: 'https://elitechub.com/apply?program=bootcamp6',
+        url: 'https://www.elitechub.com/apply?program=bootcamp6',
       },
       aggregateRating: {
         '@type': 'AggregateRating',
@@ -159,22 +159,22 @@ export default function ProgramsPage() {
     {
       '@context': 'https://schema.org',
       '@type': 'Course',
-      '@id': 'https://elitechub.com/programs#prof16',
+      '@id': 'https://www.elitechub.com/programs#prof16',
       name: '16-Week Professional Cybersecurity Program',
       description:
         'Nigeria\'s most comprehensive cybersecurity career program with unpaid internship experience, 1-on-1 mentorship, CompTIA Security+, CEH, and OSCP preparation.',
-      url: 'https://elitechub.com/programs',
-      image: 'https://elitechub.com/images/programs-og.jpg',
+      url: 'https://www.elitechub.com/programs',
+      image: 'https://www.elitechub.com/images/programs-og.jpg',
       inLanguage: 'en',
       provider: {
         '@type': 'Organization',
-        '@id': 'https://elitechub.com/#organization',
+        '@id': 'https://www.elitechub.com/#organization',
         name: 'Elitech Hub',
       },
       hasCourseInstance: {
         '@type': 'CourseInstance',
         courseMode: 'Online',
-        location: { '@type': 'VirtualLocation', url: 'https://elitechub.com' },
+        location: { '@type': 'VirtualLocation', url: 'https://www.elitechub.com' },
       },
       offers: {
         '@type': 'Offer',
@@ -185,7 +185,7 @@ export default function ProgramsPage() {
           name: 'NG',
         },
         availability: 'https://schema.org/InStock',
-        url: 'https://elitechub.com/apply?program=prof16',
+        url: 'https://www.elitechub.com/apply?program=prof16',
       },
       aggregateRating: {
         '@type': 'AggregateRating',
@@ -246,8 +246,8 @@ export default function ProgramsPage() {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://elitechub.com' },
-        { '@type': 'ListItem', position: 2, name: 'Programs', item: 'https://elitechub.com/programs' },
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.elitechub.com' },
+        { '@type': 'ListItem', position: 2, name: 'Programs', item: 'https://www.elitechub.com/programs' },
       ],
     },
   ];

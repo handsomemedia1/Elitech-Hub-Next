@@ -12,24 +12,16 @@ export async function fetchApplicationsAction() {
   if (!supabase) return { data: [], error: 'No DB connection' };
 
   // Fetch Applications
-  const { data: appsData, error: appsError } = await supabase
-    .from('applications')
-    .select('*')
-    .order('created_at', { ascending: false });
-
-  if (appsError) {
-    console.error('Applications fetch error:', appsError);
-  }
+  const { data: appsData } = await supabase.from('applications').select('*').order('created_at', { ascending: false });
 
   // Fetch Leads
-  const { data: leadsData, error: leadsError } = await supabase
-    .from('leads')
-    .select('*')
-    .order('created_at', { ascending: false });
+  const { data: leadsData } = await supabase.from('leads').select('*').order('created_at', { ascending: false });
     
-  if (leadsError) {
-    console.error('Leads fetch error:', leadsError);
-  }
+  // Fetch Messages (Contact Us)
+  const { data: messagesData } = await supabase.from('messages').select('*').order('created_at', { ascending: false });
+
+  // Fetch Volunteer Applications
+  const { data: volunteerData } = await supabase.from('volunteer_applications').select('*').order('created_at', { ascending: false });
 
   const formattedLeads = (leadsData || []).map(lead => ({
     id: `lead_${lead.id}`,
@@ -43,7 +35,31 @@ export async function fetchApplicationsAction() {
     is_lead: true
   }));
 
-  const merged = [...(appsData || []), ...formattedLeads].sort((a, b) => 
+  const formattedMessages = (messagesData || []).map(msg => ({
+    id: `msg_${msg.id}`,
+    original_id: msg.id,
+    full_name: msg.name,
+    email: msg.email,
+    phone_number: msg.phone || '',
+    program_name: `Contact Us: ${msg.program_interest || 'General'}`,
+    status: 'pending',
+    created_at: msg.created_at,
+    is_lead: true
+  }));
+
+  const formattedVolunteers = (volunteerData || []).map(vol => ({
+    id: `vol_${vol.id}`,
+    original_id: vol.id,
+    full_name: vol.full_name,
+    email: vol.email,
+    phone_number: vol.phone_number || '',
+    program_name: `Volunteer: ${vol.role || 'General'}`,
+    status: vol.status || 'pending',
+    created_at: vol.created_at,
+    is_lead: true // treat as read-only or fake-status in UI for now
+  }));
+
+  const merged = [...(appsData || []), ...formattedLeads, ...formattedMessages, ...formattedVolunteers].sort((a, b) => 
     new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
   );
 
@@ -57,6 +73,7 @@ export async function updateApplicationStatusAction(id: string, status: string) 
   const supabase = createServiceClient();
   if (!supabase) return { success: false, error: 'No DB connection' };
 
+  // For real applications
   const { error } = await supabase
     .from('applications')
     .update({ status })

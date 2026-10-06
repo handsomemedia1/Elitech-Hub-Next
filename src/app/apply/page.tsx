@@ -29,14 +29,14 @@ export const metadata = {
   openGraph: {
     title: 'Apply to Elitech Hub | Start Your Cybersecurity Career',
     description: '300+ trained. Unpaid internship experience. Apply now — next cohort filling fast.',
-    url: 'https://elitechub.com/apply',
+    url: 'https://www.elitechub.com/apply',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
-    images: [{ url: 'https://elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
     type: 'website',
   },
   twitter: { card: 'summary_large_image', title: 'Apply to Elitech Hub Nigeria', site: '@ElitechHub' },
-  alternates: { canonical: 'https://elitechub.com/apply' },
+  alternates: { canonical: 'https://www.elitechub.com/apply' },
 };
 
 
@@ -46,19 +46,19 @@ export default function ApplyPage() {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://elitechub.com' },
-        { '@type': 'ListItem', position: 2, name: 'Apply', item: 'https://elitechub.com/apply' },
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.elitechub.com' },
+        { '@type': 'ListItem', position: 2, name: 'Apply', item: 'https://www.elitechub.com/apply' },
       ],
     },
     {
       '@context': 'https://schema.org',
       '@type': 'EducationalOrganization',
       name: 'Elitech Hub',
-      url: 'https://elitechub.com',
+      url: 'https://www.elitechub.com',
       potentialAction: [
-        { '@type': 'ApplyAction', target: 'https://elitechub.com/apply?program=bootcamp6', name: 'Apply for 6-Week Bootcamp' },
-        { '@type': 'ApplyAction', target: 'https://elitechub.com/apply?program=prof16', name: 'Apply for 16-Week Professional Program' },
-        { '@type': 'ApplyAction', target: 'https://elitechub.com/apply?program=corporate', name: 'Apply for Corporate Training' },
+        { '@type': 'ApplyAction', target: 'https://www.elitechub.com/apply?program=bootcamp6', name: 'Apply for 6-Week Bootcamp' },
+        { '@type': 'ApplyAction', target: 'https://www.elitechub.com/apply?program=prof16', name: 'Apply for 16-Week Professional Program' },
+        { '@type': 'ApplyAction', target: 'https://www.elitechub.com/apply?program=corporate', name: 'Apply for Corporate Training' },
       ],
     },
   ];

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { PenTool, Search, TrendingUp, Check, X, Trash2, Plus, Ban, CheckCircle, Clock } from 'lucide-react';
 import styles from '../users/users.module.css';
@@ -19,6 +20,7 @@ const modalStyle: React.CSSProperties = {
   maxWidth: '480px', padding: '2rem', border: '1px solid #334155',
 };
 
+import WriterDetailPanel from './WriterDetailPanel';
 import { fetchWritersAction, addWriterAction, deleteWriterAction, updateWriterStatusAction } from './actions';
 
 export default function AdminWriters() {
@@ -26,6 +28,7 @@ export default function AdminWriters() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [selectedWriter, setSelectedWriter] = useState<any>(null);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', bio: '', status: 'approved' });
   const [formError, setFormError] = useState('');
@@ -164,23 +167,8 @@ export default function AdminWriters() {
                 </td>
                 <td>
                   <div className={styles.actionBtns}>
-                    {writer.status !== 'approved' && (
-                      <button className={styles.iconBtn} title="Approve" onClick={() => handleUpdateStatus(writer.id, writer.name, 'approved')}>
-                        <Check size={16} style={{ color: '#10b981' }} />
-                      </button>
-                    )}
-                    {writer.status === 'pending' && (
-                       <button className={styles.iconBtn} title="Reject" onClick={() => handleUpdateStatus(writer.id, writer.name, 'rejected')}>
-                        <X size={16} style={{ color: '#f59e0b' }} />
-                      </button>
-                    )}
-                    {writer.status === 'approved' && (
-                       <button className={styles.iconBtn} title="Suspend" onClick={() => handleUpdateStatus(writer.id, writer.name, 'suspended')}>
-                        <Ban size={16} style={{ color: '#ef4444' }} />
-                      </button>
-                    )}
-                    <button className={styles.iconBtn} title="Delete" onClick={() => handleDeleteWriter(writer.id, writer.name)}>
-                      <Trash2 size={16} />
+                    <button className={styles.primaryBtn} style={{ padding: "0.4rem 0.75rem", fontSize: "0.85rem", display: "flex", gap: "0.4rem", alignItems: "center" }} onClick={() => setSelectedWriter(writer)}>
+                      <TrendingUp size={14} /> Manage
                     </button>
                   </div>
                 </td>
@@ -241,6 +229,16 @@ export default function AdminWriters() {
           </div>
         </AdminModal>
       )}
+      {selectedWriter && (
+        <WriterDetailPanel 
+          writer={selectedWriter} 
+          onClose={() => setSelectedWriter(null)} 
+          onDelete={(id, name) => { handleDeleteWriter(id, name); setSelectedWriter(null); }} 
+          onSuspend={(id, name) => { handleUpdateStatus(id, name, "suspended"); setSelectedWriter(null); }} 
+          onApprove={(id, name) => { handleUpdateStatus(id, name, "approved"); setSelectedWriter(null); }}
+        />
+      )}
     </div>
   );
 }
+

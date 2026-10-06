@@ -7,12 +7,12 @@ export const metadata = {
   description: 'Conceptual framework for our upcoming research pillar: The Human Firewall. Exploring the intersection of human psychology and technical security systems.',
   keywords: 'behavioral cybersecurity, human firewall, psychological security, cybersecurity research, human-centric security, social engineering research',
   alternates: {
-    canonical: 'https://elitechub.com/research/behavioral-cybersecurity',
+    canonical: 'https://www.elitechub.com/research/behavioral-cybersecurity',
   },
   openGraph: {
     title: 'Behavioral Cybersecurity Research | Elitech Hub',
     description: 'Conceptual framework for our upcoming research pillar: The Human Firewall.',
-    url: 'https://elitechub.com/research/behavioral-cybersecurity',
+    url: 'https://www.elitechub.com/research/behavioral-cybersecurity',
     type: 'website',
   }
 };

@@ -67,10 +67,10 @@ export default function Home() {
     "@graph": [
       {
         "@type": "EducationalOrganization",
-        "@id": "https://elitechub.com/#organization",
+        "@id": "https://www.elitechub.com/#organization",
         "name": "Elitech Hub",
-        "url": "https://elitechub.com",
-        "logo": "https://elitechub.com/images/logo.png",
+        "url": "https://www.elitechub.com",
+        "logo": "https://www.elitechub.com/images/logo.png",
         "description": "Premium cybersecurity training in Ibadan, Nigeria.",
         "address": {
           "@type": "PostalAddress",
@@ -80,18 +80,18 @@ export default function Home() {
       },
       {
         "@type": "WebSite",
-        "@id": "https://elitechub.com/#website",
-        "url": "https://elitechub.com/",
+        "@id": "https://www.elitechub.com/#website",
+        "url": "https://www.elitechub.com/",
         "name": "Elitech Hub",
         "description": "Nigeria's #1 AI Cybersecurity Training",
         "publisher": {
-          "@id": "https://elitechub.com/#organization"
+          "@id": "https://www.elitechub.com/#organization"
         },
         "potentialAction": [{
           "@type": "SearchAction",
           "target": {
             "@type": "EntryPoint",
-            "urlTemplate": "https://elitechub.com/blog?q={search_term_string}"
+            "urlTemplate": "https://www.elitechub.com/blog?q={search_term_string}"
           },
           "query-input": "required name=search_term_string"
         }]

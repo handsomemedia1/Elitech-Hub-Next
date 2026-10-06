@@ -14,13 +14,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Best Laptops for Cybersecurity | Elitech Hub Nigeria',
     description: 'Find the right laptop for cybersecurity, programming, and technology. Brand new and UK-used laptops optimized for performance and actual use cases.',
-    url: 'https://elitechub.com/laptops',
+    url: 'https://www.elitechub.com/laptops',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
-    images: [{ url: 'https://elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
     type: 'website',
   },
-  alternates: { canonical: 'https://elitechub.com/laptops' },
+  alternates: { canonical: 'https://www.elitechub.com/laptops' },
 };
 
 export default async function LaptopsPage(props: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
@@ -48,7 +48,7 @@ export default async function LaptopsPage(props: { searchParams: Promise<{ [key:
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    "url": "https://elitechub.com/laptops",
+    "url": "https://www.elitechub.com/laptops",
     "name": "Laptops for Cybersecurity and Programming",
     "description": "Catalog of recommended brand new and UK-used laptops for technology professionals and students.",
     "itemListElement": laptops.map((laptop, index) => ({
@@ -57,7 +57,7 @@ export default async function LaptopsPage(props: { searchParams: Promise<{ [key:
       "item": {
         "@type": "Product",
         "name": laptop.name,
-        "url": `https://elitechub.com/laptops/${laptop.slug}`,
+        "url": `https://www.elitechub.com/laptops/${laptop.slug}`,
         "image": laptop.laptop_images?.find(img => img.is_primary)?.image_url,
         "offers": {
           "@type": "Offer",

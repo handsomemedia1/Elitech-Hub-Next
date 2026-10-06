@@ -124,8 +124,8 @@ export default function AdminApplications() {
                     <div className={styles.actions}>
                       <button 
                         className={styles.approveBtn} 
-                        onClick={() => handleUpdateStatus(app, 'reviewed')}
-                        title="Mark as Reviewed"
+                        onClick={() => handleUpdateStatus(app, 'approved')}
+                        title="Mark as Approved"
                       >
                         <Check size={16} />
                       </button>

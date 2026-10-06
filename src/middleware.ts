@@ -72,7 +72,7 @@ export function middleware(request: NextRequest) {
   if (path.startsWith('/api/')) {
     const origin = request.headers.get('origin') || '';
     const allowed = IS_PROD
-      ? ['https://elitechub.com', 'https://www.elitechub.com']
+      ? ['https://www.elitechub.com', 'https://www.elitechub.com']
       : ['http://localhost:3000', 'http://127.0.0.1:3000'];
 
     if (!origin || allowed.includes(origin)) {
@@ -91,7 +91,7 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/admin/login', request.url));
     }
   }
-  if (path.startsWith('/writer') && !path.startsWith('/writer/login') && !path.startsWith('/writer/signup')) {
+  if ((path === '/writer' || path.startsWith('/writer/')) && !path.startsWith('/writer/login') && !path.startsWith('/writer/signup')) {
     if (!request.cookies.has('elitech_token')) {
       return NextResponse.redirect(new URL('/writer/login', request.url));
     }

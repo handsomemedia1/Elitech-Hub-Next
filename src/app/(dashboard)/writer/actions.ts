@@ -58,7 +58,7 @@ export async function getWriterPostsAction() {
 }
 
 // 3. Save Post (Draft or Publish)
-export async function saveWriterPostAction(payload: any, postId?: string) {
+export async function saveWriterPostAction(payload: any, postId?: string, clusterArticleId?: string) {
   const writer = await getServerWriter();
   if (!writer) return { error: 'Unauthorized' };
 
@@ -85,9 +85,49 @@ export async function saveWriterPostAction(payload: any, postId?: string) {
     postId = data.id;
   }
 
+  if (clusterArticleId && postId) {
+    // We update the planner record. No strict RLS here since service_role, but we can trust clusterArticleId if passed from client, 
+    // though to be completely safe, we should ensure the cluster belongs to the writer.
+    // Instead of verifying here, we just update it where the article_id matches or it's empty, and the cluster is owned by the writer.
+    // A simple query verifying writer ownership:
+    const { data: ca } = await supabase.from('cluster_articles').select('id, content_clusters(writer_id)').eq('id', clusterArticleId).single();
+    if (ca && ca.content_clusters && (ca.content_clusters as any).writer_id === writer.id) {
+      await supabase.from('cluster_articles').update({
+        article_id: postId,
+        status: safePayload.status === 'published' ? 'PUBLISHED' : (safePayload.status === 'draft' ? 'DRAFT' : 'WRITING'),
+        published_url: safePayload.status === 'published' ? `/${safePayload.slug}` : null
+      }).eq('id', clusterArticleId);
+    }
+  }
+
   // Update writer posts count
   const { count } = await supabase.from('blog_posts').select('*', { count: 'exact', head: true }).eq('writer_id', writer.id);
   await supabase.from('writers').update({ posts_count: count || 0 }).eq('id', writer.id);
+
+  // Log writing activity for productivity goals
+  try {
+    const { data: settings } = await supabase.from('writer_productivity_settings').select('timezone').eq('writer_id', writer.id).single();
+    const tz = settings?.timezone || 'UTC';
+    const dateStr = new Date().toLocaleDateString('en-CA', { timeZone: tz }); 
+    
+    const { data: existingActivity } = await supabase
+      .from('writer_activity_log')
+      .select('id')
+      .eq('writer_id', writer.id)
+      .eq('activity_date', dateStr)
+      .single();
+    
+    if (!existingActivity) {
+      await supabase.from('writer_activity_log').insert({
+        writer_id: writer.id,
+        activity_date: dateStr,
+        activity_type: safePayload.status === 'published' ? 'article_published' : 'article_edited',
+        article_id: postId
+      });
+    }
+  } catch (e) {
+    console.error("Activity logging failed", e);
+  }
 
   // Gamification check (First Article, 5 Articles, 10 Articles, etc.)
   await evaluateWriterAchievements(writer.id, supabase);

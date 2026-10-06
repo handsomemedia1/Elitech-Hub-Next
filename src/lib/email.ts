@@ -37,7 +37,7 @@ export async function sendApplicationConfirmation({
           <p>Questions? Reply to this email or message us on WhatsApp.</p>
           <hr style="border:none;border-top:1px solid #e5e7eb;margin:20px 0;">
           <p style="color:#9ca3af;font-size:12px;text-align:center;">Elitech Hub — Nigeria's #1 AI Cybersecurity Training<br>
-            <a href="https://elitechub.com" style="color:#c3151c;">elitechub.com</a>
+            <a href="https://www.elitechub.com" style="color:#c3151c;">elitechub.com</a>
           </p>
         </div>`,
     });
@@ -104,7 +104,7 @@ export async function sendContactConfirmation({ to, name }: { to: string; name: 
           <p>Thank you for reaching out to Elitech Hub. Our team will get back to you within <strong>1–2 business days</strong>.</p>
           <hr style="border:none;border-top:1px solid #e5e7eb;margin:20px 0;">
           <p style="color:#9ca3af;font-size:12px;text-align:center;">
-            <a href="https://elitechub.com" style="color:#c3151c;">elitechub.com</a>
+            <a href="https://www.elitechub.com" style="color:#c3151c;">elitechub.com</a>
           </p>
         </div>`,
     });
@@ -163,8 +163,8 @@ export async function sendNewsletterWelcome({ to }: { to: string }) {
           <p>Welcome to the Elitech Hub community. You'll receive cybersecurity tips, program updates, and industry news straight to your inbox.</p>
           <hr style="border:none;border-top:1px solid #e5e7eb;margin:20px 0;">
           <p style="color:#9ca3af;font-size:12px;text-align:center;">
-            <a href="https://elitechub.com" style="color:#c3151c;">elitechub.com</a> · 
-            <a href="https://elitechub.com/policies" style="color:#9ca3af;">Unsubscribe</a>
+            <a href="https://www.elitechub.com" style="color:#c3151c;">elitechub.com</a> · 
+            <a href="https://www.elitechub.com/policies" style="color:#9ca3af;">Unsubscribe</a>
           </p>
         </div>`,
     });
@@ -189,7 +189,7 @@ export async function sendVolunteerConfirmation({ to, name, role }: { to: string
           <p>We review applications weekly and will reach out if you're a good fit. Thank you for your interest in contributing to Africa's cybersecurity future!</p>
           <hr style="border:none;border-top:1px solid #e5e7eb;margin:20px 0;">
           <p style="color:#9ca3af;font-size:12px;text-align:center;">
-            <a href="https://elitechub.com" style="color:#c3151c;">elitechub.com</a>
+            <a href="https://www.elitechub.com" style="color:#c3151c;">elitechub.com</a>
           </p>
         </div>`,
     });
@@ -277,11 +277,55 @@ export async function sendPasswordResetEmail({
           <hr style="border:none;border-top:1px solid #e5e7eb;margin:20px 0;">
           <p style="color:#9ca3af;font-size:12px;text-align:center;">
             Elitech Hub — Nigeria's #1 AI Cybersecurity Training<br>
-            <a href="https://elitechub.com" style="color:#c3151c;">elitechub.com</a>
+            <a href="https://www.elitechub.com" style="color:#c3151c;">elitechub.com</a>
           </p>
         </div>`,
     });
   } catch (err) {
     console.error('[Email] Password reset email failed:', err);
+  }
+}
+export async function sendWriterReminder({
+  to,
+  name,
+  target,
+  completed
+}: {
+  to: string;
+  name: string;
+  target: number;
+  completed: number;
+}) {
+  try {
+    const isCompleted = completed >= target;
+    const isBehind = completed < target;
+    
+    let message = '';
+    if (isCompleted) {
+      message = `Your weekly writing goal is already complete (${completed}/${target} days). You can continue writing if you'd like, but you're doing great!`;
+    } else if (completed > 0) {
+      message = `You've completed ${completed} of your ${target} required writing days this week. Keep up the good work!`;
+    } else {
+      message = `Today is one of your scheduled writing days. You have ${target} writing days targeted for this week.`;
+    }
+
+    await resend.emails.send({
+      from: FROM,
+      to: [to],
+      subject: 'Writer Productivity Reminder - Elitech Hub',
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;">
+          <h2 style="color:#c3151c;">Writing Reminder \u270D\uFE0F</h2>
+          <p>Hi ${name},</p>
+          <p>${message}</p>
+          <p>Click below to jump back into your Writer Panel and continue working on your articles.</p>
+          <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.elitechub.com'}/writer" style="display:inline-block;padding:10px 20px;background-color:#c3151c;color:#ffffff;text-decoration:none;border-radius:5px;margin-top:15px;font-weight:bold;">Go to Writer Panel</a>
+        </div>
+      `,
+    });
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to send writer reminder:', error);
+    return { success: false, error };
   }
 }

@@ -31,12 +31,12 @@ export const metadata = {
     title: '6-Week Cybersecurity Bootcamp | ₦75,000 | Elitech Hub Nigeria',
     description:
       'Go from zero to job-ready in 6 weeks. Weekend classes, real hacking labs, and a certificate of completion. No prior IT experience needed.',
-    url: 'https://elitechub.com/programs/cybersecurity-bootcamp',
+    url: 'https://www.elitechub.com/programs/cybersecurity-bootcamp',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
     images: [
       {
-        url: 'https://elitechub.com/images/bootcamp-og.jpg',
+        url: 'https://www.elitechub.com/images/bootcamp-og.jpg',
         width: 1200,
         height: 630,
         alt: '6-Week Cybersecurity Bootcamp Nigeria — Elitech Hub',
@@ -48,9 +48,9 @@ export const metadata = {
     card: 'summary_large_image',
     title: '6-Week Cybersecurity Bootcamp in Nigeria — ₦75,000',
     description: 'Weekend classes. Real labs. Certificate. No experience needed. Join Elitech Hub.',
-    images: ['https://elitechub.com/images/bootcamp-og.jpg'],
+    images: ['https://www.elitechub.com/images/bootcamp-og.jpg'],
   },
-  alternates: { canonical: 'https://elitechub.com/programs/cybersecurity-bootcamp' },
+  alternates: { canonical: 'https://www.elitechub.com/programs/cybersecurity-bootcamp' },
 };
 
 export default function BootcampPage() {
@@ -59,31 +59,31 @@ export default function BootcampPage() {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://elitechub.com' },
-        { '@type': 'ListItem', position: 2, name: 'Programs', item: 'https://elitechub.com/programs' },
-        { '@type': 'ListItem', position: 3, name: '6-Week Cybersecurity Bootcamp', item: 'https://elitechub.com/programs/cybersecurity-bootcamp' },
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.elitechub.com' },
+        { '@type': 'ListItem', position: 2, name: 'Programs', item: 'https://www.elitechub.com/programs' },
+        { '@type': 'ListItem', position: 3, name: '6-Week Cybersecurity Bootcamp', item: 'https://www.elitechub.com/programs/cybersecurity-bootcamp' },
       ],
     },
     {
       '@context': 'https://schema.org',
       '@type': 'Course',
-      '@id': 'https://elitechub.com/programs/cybersecurity-bootcamp#course',
+      '@id': 'https://www.elitechub.com/programs/cybersecurity-bootcamp#course',
       name: '6-Week Intensive Cybersecurity Bootcamp',
       description:
         'A 6-week weekend cybersecurity bootcamp in Nigeria covering ethical hacking, network penetration testing, and hands-on defence labs. No experience required.',
-      url: 'https://elitechub.com/programs/cybersecurity-bootcamp',
-      image: 'https://elitechub.com/images/bootcamp-og.jpg',
+      url: 'https://www.elitechub.com/programs/cybersecurity-bootcamp',
+      image: 'https://www.elitechub.com/images/bootcamp-og.jpg',
       inLanguage: 'en',
       provider: {
         '@type': 'Organization',
-        '@id': 'https://elitechub.com/#organization',
+        '@id': 'https://www.elitechub.com/#organization',
         name: 'Elitech Hub',
-        sameAs: 'https://elitechub.com',
+        sameAs: 'https://www.elitechub.com',
       },
       hasCourseInstance: {
         '@type': 'CourseInstance',
         courseMode: 'Online',
-        location: { '@type': 'VirtualLocation', url: 'https://elitechub.com' },
+        location: { '@type': 'VirtualLocation', url: 'https://www.elitechub.com' },
       },
       offers: {
         '@type': 'Offer',
@@ -94,7 +94,7 @@ export default function BootcampPage() {
           name: 'NG',
         },
         availability: 'https://schema.org/InStock',
-        url: 'https://elitechub.com/apply?program=bootcamp6',
+        url: 'https://www.elitechub.com/apply?program=bootcamp6',
       },
       aggregateRating: {
         '@type': 'AggregateRating',

@@ -28,12 +28,12 @@ export const metadata: Metadata = {
     title: 'Cybersecurity, Web Dev & AI Services | Elitech Hub Nigeria',
     description:
       'From penetration testing and vCISO services to custom websites, AI chatbots, and automation scripts — Elitech Hub is Nigeria\'s full-stack tech and security partner.',
-    url: 'https://elitechub.com/services',
+    url: 'https://www.elitechub.com/services',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
     images: [
       {
-        url: 'https://elitechub.com/images/services-og.jpg',
+        url: 'https://www.elitechub.com/images/services-og.jpg',
         width: 1200,
         height: 630,
         alt: 'Elitech Hub Services — Cybersecurity, Web Dev, AI Chatbots Nigeria',
@@ -46,10 +46,10 @@ export const metadata: Metadata = {
     title: 'Cybersecurity, Web Dev & AI Chatbot Services in Nigeria',
     description:
       'Pentesting, custom websites, agentic AI apps, and corporate training — all from Elitech Hub.',
-    images: ['https://elitechub.com/images/services-og.jpg'],
+    images: ['https://www.elitechub.com/images/services-og.jpg'],
     site: '@ElitechHub',
   },
-  alternates: { canonical: 'https://elitechub.com/services' },
+  alternates: { canonical: 'https://www.elitechub.com/services' },
 };
 
 
@@ -60,20 +60,20 @@ export default function ServicesPage() {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://elitechub.com' },
-        { '@type': 'ListItem', position: 2, name: 'Services', item: 'https://elitechub.com/services' },
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.elitechub.com' },
+        { '@type': 'ListItem', position: 2, name: 'Services', item: 'https://www.elitechub.com/services' },
       ],
     },
     // --- SERVICE 1: Cybersecurity Training ---
     {
       '@context': 'https://schema.org',
       '@type': 'Service',
-      '@id': 'https://elitechub.com/services#training',
+      '@id': 'https://www.elitechub.com/services#training',
       name: 'Corporate Cybersecurity Training Nigeria',
       description:
         'Elitech Hub delivers corporate cybersecurity training, security awareness programs, and custom curriculum for organisations in Lagos, Ibadan, Abuja, and across Nigeria.',
-      url: 'https://elitechub.com/services',
-      provider: { '@type': 'Organization', '@id': 'https://elitechub.com/#organization', name: 'Elitech Hub' },
+      url: 'https://www.elitechub.com/services',
+      provider: { '@type': 'Organization', '@id': 'https://www.elitechub.com/#organization', name: 'Elitech Hub' },
       serviceType: 'Cybersecurity Training',
       areaServed: [{ '@type': 'Country', name: 'Nigeria' }, { '@type': 'City', name: 'Lagos' }, { '@type': 'City', name: 'Ibadan' }],
     },
@@ -81,12 +81,12 @@ export default function ServicesPage() {
     {
       '@context': 'https://schema.org',
       '@type': 'Service',
-      '@id': 'https://elitechub.com/services#pentesting',
+      '@id': 'https://www.elitechub.com/services#pentesting',
       name: 'Penetration Testing & Security Consulting Nigeria',
       description:
         'Web application pentesting, network penetration testing, mobile security assessment, cloud infrastructure auditing, vCISO, ISO 27001, and NDPR compliance consulting for Nigerian businesses.',
-      url: 'https://elitechub.com/services',
-      provider: { '@type': 'Organization', '@id': 'https://elitechub.com/#organization', name: 'Elitech Hub' },
+      url: 'https://www.elitechub.com/services',
+      provider: { '@type': 'Organization', '@id': 'https://www.elitechub.com/#organization', name: 'Elitech Hub' },
       serviceType: 'Penetration Testing',
       areaServed: [{ '@type': 'Country', name: 'Nigeria' }, { '@type': 'City', name: 'Lagos' }, { '@type': 'City', name: 'Ibadan' }],
     },
@@ -94,12 +94,12 @@ export default function ServicesPage() {
     {
       '@context': 'https://schema.org',
       '@type': 'Service',
-      '@id': 'https://elitechub.com/services#webdev',
+      '@id': 'https://www.elitechub.com/services#webdev',
       name: 'Custom Website Development Nigeria',
       description:
         'Elitech Hub builds custom, premium websites and web applications for businesses in Lagos, Ibadan, Abuja, and across Nigeria. Fast, secure, and SEO-optimised.',
-      url: 'https://elitechub.com/services',
-      provider: { '@type': 'Organization', '@id': 'https://elitechub.com/#organization', name: 'Elitech Hub' },
+      url: 'https://www.elitechub.com/services',
+      provider: { '@type': 'Organization', '@id': 'https://www.elitechub.com/#organization', name: 'Elitech Hub' },
       serviceType: 'Web Development',
       areaServed: [{ '@type': 'Country', name: 'Nigeria' }, { '@type': 'City', name: 'Lagos' }, { '@type': 'City', name: 'Ibadan' }, { '@type': 'City', name: 'Abuja' }],
     },
@@ -107,12 +107,12 @@ export default function ServicesPage() {
     {
       '@context': 'https://schema.org',
       '@type': 'Service',
-      '@id': 'https://elitechub.com/services#aichatbot',
+      '@id': 'https://www.elitechub.com/services#aichatbot',
       name: 'AI Chatbot & Agentic AI Application Development Nigeria',
       description:
         'Elitech Hub builds custom AI chatbots, agentic AI applications, and intelligent automation systems for Nigerian businesses. Powered by large language models and real-time data integration.',
-      url: 'https://elitechub.com/services',
-      provider: { '@type': 'Organization', '@id': 'https://elitechub.com/#organization', name: 'Elitech Hub' },
+      url: 'https://www.elitechub.com/services',
+      provider: { '@type': 'Organization', '@id': 'https://www.elitechub.com/#organization', name: 'Elitech Hub' },
       serviceType: 'AI Application Development',
       areaServed: [{ '@type': 'Country', name: 'Nigeria' }],
     },
@@ -120,12 +120,12 @@ export default function ServicesPage() {
     {
       '@context': 'https://schema.org',
       '@type': 'Service',
-      '@id': 'https://elitechub.com/services#scripts',
+      '@id': 'https://www.elitechub.com/services#scripts',
       name: 'Custom Script Development for Organisations Nigeria',
       description:
         'Elitech Hub writes bespoke Python, PowerShell, and Bash automation scripts for organisations. Security scripts, data processing pipelines, DevOps automation, and more.',
-      url: 'https://elitechub.com/services',
-      provider: { '@type': 'Organization', '@id': 'https://elitechub.com/#organization', name: 'Elitech Hub' },
+      url: 'https://www.elitechub.com/services',
+      provider: { '@type': 'Organization', '@id': 'https://www.elitechub.com/#organization', name: 'Elitech Hub' },
       serviceType: 'Custom Software Development',
       areaServed: [{ '@type': 'Country', name: 'Nigeria' }],
     },
@@ -133,12 +133,12 @@ export default function ServicesPage() {
     {
       '@context': 'https://schema.org',
       '@type': 'Service',
-      '@id': 'https://elitechub.com/services#research',
+      '@id': 'https://www.elitechub.com/services#research',
       name: 'Cybersecurity Research & Threat Intelligence Nigeria',
       description:
         'Community-driven cybersecurity research covering threat intelligence, malware analysis, reverse engineering, blockchain security, and open-source security tooling.',
-      url: 'https://elitechub.com/services',
-      provider: { '@type': 'Organization', '@id': 'https://elitechub.com/#organization', name: 'Elitech Hub' },
+      url: 'https://www.elitechub.com/services',
+      provider: { '@type': 'Organization', '@id': 'https://www.elitechub.com/#organization', name: 'Elitech Hub' },
       serviceType: 'Cybersecurity Research',
       areaServed: [{ '@type': 'Country', name: 'Nigeria' }],
     },

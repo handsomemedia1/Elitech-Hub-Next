@@ -28,14 +28,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'AI Powered Cybersecurity Training | 6 Weeks | $100 USD | Elitech Hub Nigeria',
     description: 'The only AI-integrated cybersecurity bootcamp in Nigeria. PowerShell, Python, Ubuntu, AI Security Systems. Virtual. Starts June 2026.',
-    url: 'https://elitechub.com/ai-training',
+    url: 'https://www.elitechub.com/ai-training',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
-    images: [{ url: 'https://elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
     type: 'website',
   },
   twitter: { card: 'summary_large_image', title: 'AI Cybersecurity Bootcamp Nigeria — $100 | Elitech Hub', site: '@ElitechHub' },
-  alternates: { canonical: 'https://elitechub.com/ai-training' },
+  alternates: { canonical: 'https://www.elitechub.com/ai-training' },
 };
 
 

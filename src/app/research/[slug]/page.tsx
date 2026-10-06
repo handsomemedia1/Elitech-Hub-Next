@@ -49,7 +49,7 @@ export async function generateMetadata(
 
   const title = paper.seo_title || `${paper.title} | Elitech Hub Research`;
 
-  const ogImage = paper.og_image || 'https://elitechub.com/images/og-research.jpg';
+  const ogImage = paper.og_image || 'https://www.elitechub.com/images/og-research.jpg';
 
   const publishDate = paper.published_at ? new Date(paper.published_at) : new Date(paper.created_at);
 
@@ -62,12 +62,12 @@ export async function generateMetadata(
       : ['cybersecurity research', 'Elitech Hub', 'Nigeria'],
     robots: isPublished ? { index: true, follow: true } : { index: false, follow: false },
     alternates: {
-      canonical: `https://elitechub.com/research/${slug}`,
+      canonical: `https://www.elitechub.com/research/${slug}`,
     },
     openGraph: {
       title: paper.title,
       description,
-      url: `https://elitechub.com/research/${slug}`,
+      url: `https://www.elitechub.com/research/${slug}`,
       siteName: 'Elitech Hub',
       locale: 'en_NG',
       type: 'article',
@@ -106,7 +106,7 @@ export async function generateMetadata(
       'citation_publication_date': publishDate.toISOString().split('T')[0],
       'citation_publisher': 'Elitech Hub',
       'citation_language': 'en',
-      ...(paper.file_url && { 'citation_pdf_url': `https://elitechub.com/api/research/download?id=${paper.id}` }),
+      ...(paper.file_url && { 'citation_pdf_url': `https://www.elitechub.com/api/research/download?id=${paper.id}` }),
       ...(paper.doi && { 'citation_doi': paper.doi }),
       ...(paper.journal_title && { 'citation_journal_title': paper.journal_title }),
       ...(paper.volume && { 'citation_volume': paper.volume }),
@@ -193,7 +193,7 @@ export default async function ResearchPaperPage({ params }: Props) {
     datePublished: publishDate.toISOString().split('T')[0],
     dateModified: publishDate.toISOString().split('T')[0],
     inLanguage: 'en',
-    url: `https://elitechub.com/research/${slug}`,
+    url: `https://www.elitechub.com/research/${slug}`,
     isAccessibleForFree: true,
     author:
       authorsList.length === 1
@@ -212,8 +212,8 @@ export default async function ResearchPaperPage({ params }: Props) {
     publisher: {
       '@type': 'Organization',
       name: 'Elitech Hub',
-      url: 'https://elitechub.com',
-      logo: { '@type': 'ImageObject', url: 'https://elitechub.com/images/logo.png' },
+      url: 'https://www.elitechub.com',
+      logo: { '@type': 'ImageObject', url: 'https://www.elitechub.com/images/logo.png' },
     },
     ...(paper.doi && { sameAs: `https://doi.org/${paper.doi}` }),
     ...(paper.keywords && paper.keywords.length > 0 && { keywords: paper.keywords.join(', ') }),
@@ -563,7 +563,7 @@ export default async function ResearchPaperPage({ params }: Props) {
                   year={publishDate.getFullYear().toString()}
                   doi={paper.doi}
                   publisher="Elitech Hub"
-                  url={`https://elitechub.com/research/${slug}`}
+                  url={`https://www.elitechub.com/research/${slug}`}
                   slug={slug}
                 />
               </div>
@@ -622,7 +622,7 @@ export default async function ResearchPaperPage({ params }: Props) {
                   year={publishDate.getFullYear().toString()}
                   doi={paper.doi}
                   publisher="Elitech Hub"
-                  url={`https://elitechub.com/research/${slug}`}
+                  url={`https://www.elitechub.com/research/${slug}`}
                   slug={slug}
                 />
               </div>
@@ -637,10 +637,10 @@ export default async function ResearchPaperPage({ params }: Props) {
                 </h3>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
                   {[
-                    { label: 'LinkedIn', href: `https://www.linkedin.com/shareArticle?url=https://elitechub.com/research/${slug}`, color: '#0077B5' },
-                    { label: 'Twitter/X', href: `https://twitter.com/intent/tweet?url=https://elitechub.com/research/${slug}&text=${encodeURIComponent(paper.title)}`, color: '#000000' },
-                    { label: 'WhatsApp', href: `https://wa.me/?text=${encodeURIComponent(paper.title + ' - https://elitechub.com/research/' + slug)}`, color: '#25D366' },
-                    { label: 'Email', href: `mailto:?subject=${encodeURIComponent(paper.title)}&body=${encodeURIComponent('Check out this research paper: https://elitechub.com/research/' + slug)}`, color: '#64748b' },
+                    { label: 'LinkedIn', href: `https://www.linkedin.com/shareArticle?url=https://www.elitechub.com/research/${slug}`, color: '#0077B5' },
+                    { label: 'Twitter/X', href: `https://twitter.com/intent/tweet?url=https://www.elitechub.com/research/${slug}&text=${encodeURIComponent(paper.title)}`, color: '#000000' },
+                    { label: 'WhatsApp', href: `https://wa.me/?text=${encodeURIComponent(paper.title + ' - https://www.elitechub.com/research/' + slug)}`, color: '#25D366' },
+                    { label: 'Email', href: `mailto:?subject=${encodeURIComponent(paper.title)}&body=${encodeURIComponent('Check out this research paper: https://www.elitechub.com/research/' + slug)}`, color: '#64748b' },
                   ].map(({ label, href, color }) => (
                     <a
                       key={label}

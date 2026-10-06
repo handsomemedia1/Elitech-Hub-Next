@@ -39,7 +39,7 @@ export async function generateMetadata(
       images: caseStudy.cover_image ? [{ url: caseStudy.cover_image }] : undefined,
     },
     alternates: {
-      canonical: `https://elitechub.com/portfolio/${slug}`,
+      canonical: `https://www.elitechub.com/portfolio/${slug}`,
     }
   };
 }
@@ -70,7 +70,7 @@ export default async function CaseStudyPage({ params }: Props) {
       "name": "Elitech Hub",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://elitechub.com/images/logo.png"
+        "url": "https://www.elitechub.com/images/logo.png"
       }
     }
   };

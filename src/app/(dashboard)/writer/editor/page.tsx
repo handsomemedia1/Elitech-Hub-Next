@@ -52,6 +52,12 @@ export default function WriterEditor() {
   const [authorName, setAuthorName] = useState('Writer');
   // Track whether post data has been loaded so we can push it into the editor
   const [postLoaded, setPostLoaded] = useState<string | false>(false);
+  
+  // Fix missing cluster state variables
+  const [clusterName, setClusterName] = useState<string | null>(null);
+  const [clusterArticles, setClusterArticles] = useState<any[]>([]);
+  const [clusterArticleIdState, setClusterArticleIdState] = useState<string | null>(null);
+
   // New fields
   const [slug, setSlug] = useState('');
   const [slugEdited, setSlugEdited] = useState(false); // true once user manually edits slug
@@ -92,6 +98,12 @@ export default function WriterEditor() {
 
     const searchParams = new URLSearchParams(window.location.search);
     const id = searchParams.get('id');
+    const clusterId = searchParams.get('cluster');
+    const clusterArticleId = searchParams.get('clusterArticleId');
+    if (clusterArticleId) setClusterArticleIdState(clusterArticleId);
+    const urlTitle = searchParams.get('title');
+    if (urlTitle) setTitle(urlTitle);
+    if (clusterId) { supabase.from('content_clusters').select('name, cluster_articles(*)').eq('id', clusterId).single().then(({data}) => { if (data) { setClusterName(data.name); setClusterArticles(data.cluster_articles || []); } }); }
     if (id) {
       setPostId(id);
       supabase.from('blog_posts').select('*').eq('id', id).single().then(({ data, error }) => {
@@ -329,7 +341,7 @@ export default function WriterEditor() {
     };
     
     try {
-      const { success, postId: newId, error } = await saveWriterPostAction(payload, postId || undefined);
+      const { success, postId: newId, error } = await saveWriterPostAction(payload, postId || undefined, clusterArticleIdState || undefined);
       if (error) throw new Error(error);
       
       if (newId) setPostId(newId);
@@ -373,7 +385,8 @@ export default function WriterEditor() {
 
       <div className={styles.editorLayout}>
         <div className={styles.mainColumn}>
-          <div className={styles.inputGroup}>
+          {clusterName && (<div style={{ backgroundColor: '#f0fdf4', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', border: '1px solid #bbf7d0' }}><h3 style={{ fontSize: '1rem', color: '#166534', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><BookOpen size={16} /> Cluster: {clusterName}</h3><p style={{ fontSize: '0.85rem', color: '#15803d', marginBottom: '1rem' }}>You are writing an article for this content cluster. Here are other published articles in this cluster you can link to:</p><div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>{clusterArticles.filter(a => a.status === 'PUBLISHED' && a.published_url && a.article_id !== postId).map(a => (<button key={a.id} onClick={(e) => { e.preventDefault(); if (editor) editor.chain().focus().setLink({ href: a.published_url }).run(); }} style={{ fontSize: '0.8rem', padding: '0.25rem 0.75rem', backgroundColor: 'white', border: '1px solid #bbf7d0', borderRadius: '1rem', color: '#166534', cursor: 'pointer' }}>+ Link: {a.title}</button>))}</div></div>)}
+            <div className={styles.inputGroup}>
             <input 
               type="text" 
               className={styles.titleInput} 
@@ -764,7 +777,7 @@ export default function WriterEditor() {
             <h3>Search Engine Preview</h3>
             <div className={styles.googlePreview}>
               <div className={styles.gpTitle}>{title || 'Post Title Will Appear Here'} | Elitech Hub</div>
-              <div className={styles.gpUrl}>https://elitechub.com/blog/{slug || 'your-post-slug'}</div>
+              <div className={styles.gpUrl}>https://www.elitechub.com/blog/{slug || 'your-post-slug'}</div>
               <div className={styles.gpDesc}>
                 {description || 'Your meta description will appear here. Write a compelling summary of 120-155 characters to improve your click-through rate in search results.'}
               </div>

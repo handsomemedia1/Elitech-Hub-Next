@@ -22,10 +22,10 @@ export const metadata = {
     'Supabase developers'
   ],
   alternates: {
-    canonical: 'https://elitechub.com/services/web-development',
+    canonical: 'https://www.elitechub.com/services/web-development',
   },
   openGraph: {
-    url: 'https://elitechub.com/services/web-development',
+    url: 'https://www.elitechub.com/services/web-development',
     title: 'Secure Digital Infrastructure & Web Development | Elitech Hub',
     description: 'Elitech Hub builds premium custom websites, web applications, and secure digital infrastructure for businesses. Fast, secure-by-design, Next.js, and Supabase.',
   }
@@ -38,9 +38,9 @@ export default function WebDevelopmentPage() {
       {
         "@type": "BreadcrumbList",
         "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://elitechub.com/" },
-          { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://elitechub.com/services" },
-          { "@type": "ListItem", "position": 3, "name": "Web Development", "item": "https://elitechub.com/services/web-development" }
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.elitechub.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://www.elitechub.com/services" },
+          { "@type": "ListItem", "position": 3, "name": "Web Development", "item": "https://www.elitechub.com/services/web-development" }
         ]
       },
       {
@@ -50,7 +50,7 @@ export default function WebDevelopmentPage() {
         "provider": {
           "@type": "Organization",
           "name": "Elitech Hub",
-          "url": "https://elitechub.com"
+          "url": "https://www.elitechub.com"
         },
         "areaServed": ["Lagos", "Ibadan", "Abuja", "Nigeria", "Global"],
         "description": "Premium custom websites and secure digital infrastructure built for performance, security, and scalability using Next.js and Supabase."

@@ -22,10 +22,10 @@ export const metadata = {
     'Elitech Hub AI services',
   ],
   alternates: {
-    canonical: 'https://elitechub.com/services/ai-chatbots',
+    canonical: 'https://www.elitechub.com/services/ai-chatbots',
   },
   openGraph: {
-    url: 'https://elitechub.com/services/ai-chatbots',
+    url: 'https://www.elitechub.com/services/ai-chatbots',
     title: 'AI Chatbot & Agentic AI Development Nigeria | Custom LLM Apps | Elitech Hub',
     description: 'Elitech Hub builds custom AI chatbots and agentic AI applications for Nigerian businesses. Powered by GPT-4, Claude, and Gemini.',
   }
@@ -38,9 +38,9 @@ export default function AIChatbotsPage() {
       {
         "@type": "BreadcrumbList",
         "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://elitechub.com/" },
-          { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://elitechub.com/services" },
-          { "@type": "ListItem", "position": 3, "name": "AI Chatbots & Agentic AI", "item": "https://elitechub.com/services/ai-chatbots" }
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.elitechub.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://www.elitechub.com/services" },
+          { "@type": "ListItem", "position": 3, "name": "AI Chatbots & Agentic AI", "item": "https://www.elitechub.com/services/ai-chatbots" }
         ]
       },
       {

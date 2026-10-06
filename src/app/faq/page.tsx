@@ -8,7 +8,7 @@ export const metadata = {
   title: 'Frequently Asked Questions | Elitech Hub',
   description: 'Find answers to common questions about our cybersecurity training programs, web development services, and general inquiries at Elitech Hub.',
   alternates: {
-    canonical: 'https://elitechub.com/faq',
+    canonical: 'https://www.elitechub.com/faq',
   },
 };
 

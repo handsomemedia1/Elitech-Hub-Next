@@ -1,0 +1,561 @@
+=== BLOG POSTS ===
+[
+  {
+    "id": "a4dac5a4-6115-4d49-b127-34115fe0f31c",
+    "slug": "best-premium-laptops-for-learning-cybersecurity-in-2026",
+    "title": "Best Premium Laptops for Learning Cybersecurity in 2026",
+    "category": "Cybersecurity",
+    "tags": [
+      "cybersecurity laptops",
+      "virtualization",
+      "Linux laptops"
+    ],
+    "published": true
+  },
+  {
+    "id": "7283c22b-51c7-45e2-8a7b-6dcef1a8540b",
+    "slug": "the-digital-map-navigating-the-8-worlds-of-cybersecurity",
+    "title": "The Digital Map: Navigating the 8 Worlds of Cybersecurity",
+    "category": "Cybersecurity",
+    "tags": [],
+    "published": true
+  },
+  {
+    "id": "072ee044-f4b9-4f8d-8a66-42c20a05c4ae",
+    "slug": "best-cybersecurity-laptops-in-nigeria-2026-guide",
+    "title": "Best Cybersecurity Laptops in Nigeria (2026 Guide)",
+    "category": "Cybersecurity",
+    "tags": [
+      "cybersecurity Nigeria",
+      "laptop buying guide",
+      "UK-used laptops",
+      "ThinkPad",
+      "budget laptops"
+    ],
+    "published": true
+  },
+  {
+    "id": "c2da5205-e43b-479e-bec3-f2736750b268",
+    "slug": "the-seven-phases-of-a-cyber-attack-mo1h84pt",
+    "title": "The Seven Phases of a Cyber Attack",
+    "category": "Cybersecurity",
+    "tags": [
+      "cyber attack stages cyber breach process, cyber kill chain, hacking methods, threat lifecycle, cybersecurity awareness"
+    ],
+    "published": true
+  },
+  {
+    "id": "761ff163-6b5c-4b3c-968f-89f8bc30f971",
+    "slug": "patch-everything-week-your-digital-life-might-be-more-exposed-mo690dji",
+    "title": "Patch Everything Week: Your Digital Life Might Be More Exposed",
+    "category": "Cybersecurity, News",
+    "tags": [],
+    "published": true
+  },
+  {
+    "id": "28f42fcf-6580-4a8c-a7a7-006a5edba909",
+    "slug": "best-laptops-for-cybersecurity-under-300-000",
+    "title": "Best Laptops for Cybersecurity Under ₦300,000 ",
+    "category": "Cybersecurity",
+    "tags": [
+      "cybersecurity Nigeria",
+      "budget laptops",
+      "UK-used laptops",
+      "ThinkPad",
+      "beginner cybersecurity"
+    ],
+    "published": true
+  },
+  {
+    "id": "1deee446-12a4-497c-a81e-9b8d62bcd998",
+    "slug": "foxconn-cyberattack-disrupts-major-tech-supply-chains",
+    "title": "Foxconn Cyberattack Disrupts Major Tech Supply Chains",
+    "category": "Cybersecurity, News",
+    "tags": [
+      "Foxconn",
+      "Ransomware",
+      "Cybersecurity",
+      "Supply Chain Security",
+      "Manufacturing Technology",
+      "Data Breach",
+      "Digital Security",
+      "Cyber Threat",
+      "Apple Supplier",
+      "Tech Industry"
+    ],
+    "published": true
+  },
+  {
+    "id": "37430856-121e-4b7a-b34d-a9e954b3a1f0",
+    "slug": "ransomware-evolution-and-resilience-strategies",
+    "title": "Ransomware Evolution and Resilience Strategies",
+    "category": "Threat Intelligence",
+    "tags": [
+      "ransomware ransomware attacks, cyber resilience, cybersecurity strategy, data recovery, threat mitigation, cyber risk"
+    ],
+    "published": true
+  },
+  {
+    "id": "74b62091-a566-45be-9d23-244358dfad3e",
+    "slug": "it-didnt-begin-with-a-crime-from-curiosity-to-crime",
+    "title": "It Didn't Begin With a Crime: From Curiosity to Crime ",
+    "category": "Cybersecurity, News",
+    "tags": [
+      "Online Safety",
+      "Cybercrime Trends",
+      "Hacking Explained",
+      "Data Breach",
+      "Digital Responsibility",
+      "Privacy and Security",
+      "Personal Data Protection",
+      "Cybersecurity Awareness"
+    ],
+    "published": true
+  },
+  {
+    "id": "c37adefc-b864-46b9-8f24-ca50c2efaa48",
+    "slug": "the-surge-of-double-extortion-and-standalone-data-extortion",
+    "title": "The Surge of Double Extortion and Standalone Data Extortion",
+    "category": "Threat Intelligence",
+    "tags": [
+      "double extortion data extortion, ransomware attacks, cyber extortion, data breach risks, cybersecurity threats, cybercrime"
+    ],
+    "published": true
+  },
+  {
+    "id": "1ceba3fd-a89c-4127-b0d1-db30f377db86",
+    "slug": "regulatory-compliance-and-cyber-risk-governance",
+    "title": "Regulatory Compliance and Cyber Risk Governance",
+    "category": "Regulatory Compliance",
+    "tags": [
+      "cyber risk governance regulatory compliance, cybersecurity frameworks, risk management, data protection, governance strategy"
+    ],
+    "published": true
+  },
+  {
+    "id": "6b713746-2657-424a-b913-119f38c0fe7c",
+    "slug": "agentic-ai-attacks-defenses-the-ai-arms-race-explained",
+    "title": "Agentic AI Attacks & Defenses: The AI Arms Race Explained",
+    "category": "Information Security",
+    "tags": [
+      "agentic AI AI cybersecurity, AI attacks, cyber defense AI, autonomous systems, threat intelligence, AI security risks"
+    ],
+    "published": true
+  },
+  {
+    "id": "0be6ffa8-fa5c-43e0-bc37-afd237d3cfb1",
+    "slug": "how-to-recognize-and-avoid-phishing-scams-in-nigeria-mo31j9uq",
+    "title": "How to Recognize and Avoid Phishing Scams in Nigeria",
+    "category": "Cybersecurity",
+    "tags": [],
+    "published": true
+  },
+  {
+    "id": "6746bef7-739d-4962-bf03-3adb1cc60f7f",
+    "slug": "is-your-phone-hacked-5-hidden-warning-signs",
+    "title": "Is Your Phone Hacked? 5 Hidden Warning Signs",
+    "category": "Cybersecurity",
+    "tags": [
+      "Phone Security",
+      "Mobile hacking",
+      "Cybersecurity awareness",
+      "Spyware protection",
+      "Public Wifi safety"
+    ],
+    "published": true
+  },
+  {
+    "id": "fb31437f-8754-4d00-851f-002377beef0d",
+    "slug": "how-east-africa-plans-to-lead-in-ai",
+    "title": "How East Africa Plans to Lead in AI",
+    "category": "Artificial Intelligence, Tech News",
+    "tags": [
+      "Artificial Intelligence",
+      "Africa Tech",
+      "East African Community",
+      "AI Strategy",
+      "African Innovation",
+      "Digital Transformation",
+      "Tech in Africa",
+      "Emerging Technology",
+      "Future of Work",
+      "African Startups"
+    ],
+    "published": true
+  },
+  {
+    "id": "b8c39de3-edd6-4d7e-9e43-9dedb2594b9c",
+    "slug": "nigerias-rising-exposure-to-cyber-threats-and-the-realities-often-left-unaddressed",
+    "title": "Nigeria’s rising exposure to cyber threats and the realities often left unaddressed",
+    "category": "Cybersecurity, News",
+    "tags": [
+      "cybersecurity",
+      "Nigeria",
+      "data protection",
+      "digital security",
+      "cyber risk",
+      "information security",
+      "threat landscape",
+      "cyber awareness",
+      "cybercrime"
+    ],
+    "published": true
+  },
+  {
+    "id": "d45e6e9e-9ca2-4e29-8224-b74ce7696aa3",
+    "slug": "how-to-set-up-your-first-cybersecurity-lab-at-home-even-with-zero-it-experience",
+    "title": "How to Set Up Your First Cybersecurity Lab at Home (Even With Zero IT Experience)",
+    "category": "Cybersecurity, Tutorial",
+    "tags": [],
+    "published": true
+  },
+  {
+    "id": "524bdc72-1a93-48c0-803e-16f2ab24e087",
+    "slug": "beyond-firewalls-the-hidden-layers-of-modern-cyber-defense",
+    "title": "Beyond Firewalls: The Hidden Layers of Modern Cyber Defense",
+    "category": "Risk Management",
+    "tags": [
+      "cyber defense layers cybersecurity strategy, threat detection, endpoint security, zero trust security, cyber resilience"
+    ],
+    "published": true
+  },
+  {
+    "id": "fa104bd9-0e24-4d83-a78e-32ba3ac2ceff",
+    "slug": "the-1m-firewall-vs-a-tired-employee",
+    "title": "The $1M Firewall vs. A Tired Employee",
+    "category": "Cybersecurity",
+    "tags": [],
+    "published": true
+  },
+  {
+    "id": "54e46be2-d55b-4dae-867e-263546d3dfc8",
+    "slug": "bank-account-hacking-in-nigeria-what-is-really-happening-and-how-to-stay-safe",
+    "title": "Bank Account Hacking in Nigeria: What Is Really Happening and How to Stay Safe",
+    "category": "Cybersecurity",
+    "tags": [
+      "bank account hacking Nigeria cybercrime Nigeria, online banking fraud, phishing scams, SIM swap fraud, financial security Nigeria"
+    ],
+    "published": true
+  },
+  {
+    "id": "cc0d5432-2c6c-4053-a5fb-69f792e942d1",
+    "slug": "curiosity-the-invisible-key-to-cybersecurity",
+    "title": "Curiosity: The Invisible Key to Cybersecurity",
+    "category": "Cybersecurity",
+    "tags": [
+      "Cybersecurity for Beginners",
+      "Cybersecurity Mindset",
+      "Cybersecurity Career Advice"
+    ],
+    "published": true
+  },
+  {
+    "id": "c994cb11-f36d-4de1-acce-fe6bf94d68dd",
+    "slug": "what-cybersecurity-means-and-why-it-is-important-mniuol60",
+    "title": "What Cybersecurity means and why it is important",
+    "category": "Cybersecurity",
+    "tags": [
+      "cybersecurity basics what is cybersecurity, data protection, information security, cyber threats, online safety, digital security"
+    ],
+    "published": true
+  },
+  {
+    "id": "74dfbcc1-ba9e-4225-b005-4574256616d6",
+    "slug": "ai-is-now-both-the-hacker-and-the-guard",
+    "title": "AI Is Now Both the Hacker and the Guard",
+    "category": "Cybersecurity",
+    "tags": [
+      "AI security",
+      "cybersecurity 2026",
+      "cyber threats",
+      "zero trust",
+      "ransomware",
+      "Nigeria cybersecurity",
+      "AI hacking",
+      "business security"
+    ],
+    "published": true
+  },
+  {
+    "id": "74498e19-17b9-46c7-849c-c28a3964fddd",
+    "slug": "the-hackers-new-best-friend-how-ai-is-being-weaponized-against-you",
+    "title": "The Hacker's New Best Friend: How AI Is Being Weaponized Against You",
+    "category": "Cybersecurity, Tutorial, Research",
+    "tags": [],
+    "published": true
+  },
+  {
+    "id": "2ed9d22a-982c-45b6-89ce-fe0c7610c29c",
+    "slug": "nigeria-cybersecurity-outlook-2026-threats-and-trends-mor7igji",
+    "title": "NIGERIA CYBERSECURITY OUTLOOK 2026: THREATS AND TRENDS ",
+    "category": "News",
+    "tags": [
+      "'cybersecurity'",
+      "'NigeriaTech'",
+      "'DigitalSecurity'",
+      "'CyberAwareness'",
+      "'CyberThreats2026'",
+      "'DigitalTrust'"
+    ],
+    "published": true
+  },
+  {
+    "id": "dbce74f1-6508-4df6-80ad-bd520e0dd696",
+    "slug": "clickfix-the-scam-hijacking-laptops-in-2026",
+    "title": "ClickFix: The Scam Hijacking Laptops in 2026",
+    "category": "Cybersecurity, News, Research",
+    "tags": [
+      "cybersecurity for beginners",
+      "ClickFix",
+      "Social Engineering",
+      "Malware",
+      "Online Safety"
+    ],
+    "published": true
+  },
+  {
+    "id": "11523d1a-12d8-4074-9544-5edd24be77d2",
+    "slug": "deepfake-and-synthetic-identity-threats",
+    "title": "Deepfake and Synthetic Identity Threats",
+    "category": "Fraud Prevention",
+    "tags": [
+      "deepfake threats synthetic identity fraud, AI fraud, identity theft, cybersecurity risks, fraud detection, digital identity"
+    ],
+    "published": true
+  },
+  {
+    "id": "602a99a8-33ad-4be3-9a39-f759ce8b265e",
+    "slug": "why-upskilling-is-the-key-to-cybersecurity-career-success",
+    "title": "Why Upskilling Is the Key to Cybersecurity Career Success",
+    "category": "Professional Growth",
+    "tags": [
+      "cybersecurity careers upskilling cybersecurity, tech skills 2026, cybersecurity training, career growth, digital skills"
+    ],
+    "published": true
+  },
+  {
+    "id": "0f722580-392c-41fb-a6dc-49ccb78de291",
+    "slug": "critical-infrastructure-under-cyber-threat",
+    "title": "Critical Infrastructure Under Cyber Threat",
+    "category": "Cybersecurity, News",
+    "tags": [
+      "critical infrastructure",
+      "cyber threat",
+      "data security",
+      "industrial control system",
+      "cybersecurity awareness"
+    ],
+    "published": true
+  },
+  {
+    "id": "f7167c01-92a9-4621-897d-529d4660e753",
+    "slug": "step-by-step-cybersecurity-guide-for-overwhelmed-beginners-moftm94x",
+    "title": "Step-by-Step Cybersecurity Guide for overwhelmed Beginners",
+    "category": "Tutorial",
+    "tags": [
+      "'cybersecurity career'",
+      "'Cybersecurity for begineers'",
+      "'SOC Analyst'",
+      "'Networking Basics'",
+      "'Cybersecurityskills'",
+      "'Career development'"
+    ],
+    "published": true
+  },
+  {
+    "id": "dc44fb08-46a3-4853-ad71-09e6a30be299",
+    "slug": "fintech-growth-and-expanding-cyber-attack-surfaces-in-2026",
+    "title": "Fintech Growth and Expanding Cyber Attack Surfaces in 2026",
+    "category": "Digital Finance",
+    "tags": [
+      "fintech cybersecurity cyber risks 2026, digital finance security, fintech threats, attack surfaces, financial cybercrime"
+    ],
+    "published": true
+  },
+  {
+    "id": "46aad881-77ac-4b30-bd63-575aa7045889",
+    "slug": "safeguarding-electoral-infrastructure",
+    "title": "Safeguarding Electoral Infrastructure",
+    "category": "Digital Governance",
+    "tags": [
+      "electoral infrastructure security election cybersecurity, digital voting security, cyber threats, election protection, critical infrastructure"
+    ],
+    "published": true
+  },
+  {
+    "id": "5b8f26c9-95eb-4558-baf7-9c46cc27f71e",
+    "slug": "biometric-identity-theft-and-data-privacy-risks",
+    "title": "Biometric Identity Theft and Data Privacy Risks",
+    "category": "Identity Security",
+    "tags": [
+      "biometric identity theft data privacy risks, digital identity security, biometric fraud, cybersecurity threats, identity protection"
+    ],
+    "published": true
+  },
+  {
+    "id": "47bf44b3-bddc-4cf6-be8c-e5eb916ba075",
+    "slug": "election-cyber-risks-and-emerging-security-threats-in-2027",
+    "title": "Election Cyber Risks and Emerging Security Threats in 2027",
+    "category": "Digital Governance",
+    "tags": [
+      "election cybersecurity cyber risks 2027, disinformation threats, election hacking, digital security, critical infrastructure protection"
+    ],
+    "published": true
+  },
+  {
+    "id": "1ebeced1-23f1-4a3c-8366-57eae50e17c1",
+    "slug": "supply-chain-and-third-party-fragility",
+    "title": "Supply Chain and Third-Party Fragility",
+    "category": "Supply Chain Security",
+    "tags": [
+      "supply chain cybersecurity third-party risk, vendor security, MSP security, SaaS security risks, cyber resilience, supply chain attacks"
+    ],
+    "published": true
+  },
+  {
+    "id": "895e3ceb-05bc-4ddb-b030-df1847176d03",
+    "slug": "network-reliability-and-digital-forensic-readiness",
+    "title": "Network Reliability and Digital Forensic Readiness",
+    "category": "Network Security",
+    "tags": [
+      "digital forensic readiness network reliability, critical systems security, incident response, cyber resilience, forensic investigation"
+    ],
+    "published": true
+  },
+  {
+    "id": "7fa8f635-e18b-44ef-9324-fe4028ba39a1",
+    "slug": "shai-hulud-worm-a-hacked-package-threat",
+    "title": "Shai-Hulud Worm: A Hacked Package Threat",
+    "category": "Cybersecurity, News, Research",
+    "tags": [
+      "cybersecurity for beginners",
+      "supply chain attack",
+      "npm",
+      "Shai-Hulud",
+      "software security"
+    ],
+    "published": true
+  },
+  {
+    "id": "24479b4c-f63e-4f3d-be0e-a388dd6ae435",
+    "slug": "ai-sovereignty-in-africa-who-controls-your-data-and-future",
+    "title": "AI Sovereignty in Africa: Who Controls Your Data and Future?",
+    "category": "Artificial Intelligence",
+    "tags": [
+      "AI and culture",
+      "AI  Sovereignty",
+      "African Tech Ecosystem",
+      "Digital Independence",
+      "Future of Work Africa",
+      "Artificial Intelligence in Africa",
+      "Local AI Models",
+      "Emerging Technology Africa"
+    ],
+    "published": true
+  },
+  {
+    "id": "c0bbb8eb-0637-4d4a-afdc-d910f207d066",
+    "slug": "emerging-cyber-threats-and-counter-strategies-in-nigeria",
+    "title": "Emerging Cyber Threats and Counter Strategies in Nigeria",
+    "category": "Nigeria Business Insights",
+    "tags": [
+      "cyber threats Nigeria cybersecurity Nigeria, cyber defense strategies, digital security, cyber risk management, cyber resilience"
+    ],
+    "published": true
+  },
+  {
+    "id": "caf8fbf9-beaf-424f-804b-38bad909effd",
+    "slug": "ddos-attacks-on-critical-infrastructure-explained",
+    "title": "DDoS Attacks on Critical Infrastructure Explained",
+    "category": "Risk Management",
+    "tags": [
+      "DDoS attacks critical infrastructure security, cyber resilience, network security, cyber threats, infrastructure protection"
+    ],
+    "published": true
+  },
+  {
+    "id": "6049694b-68bb-4fe3-a750-3eadcc7dabc6",
+    "slug": "cybersecurity-skills-shortage-and-human-ai-defense",
+    "title": "Cybersecurity Skills Shortage and Human-AI Defense",
+    "category": "Workforce Development",
+    "tags": [
+      "cybersecurity skills shortage human-AI defense, AI cybersecurity, cyber workforce gap, threat detection, security operations"
+    ],
+    "published": true
+  },
+  {
+    "id": "5d513094-31a8-4b76-a265-3d535cf4e904",
+    "slug": "zero-trust-and-identity-first-security",
+    "title": "Zero Trust and Identity-First Security",
+    "category": "Identity Security",
+    "tags": [
+      "zero trust security identity-first security, identity and access management, cybersecurity strategy, access control, cyber resilience, digital identity"
+    ],
+    "published": true
+  },
+  {
+    "id": "a88f79c3-fbdc-45ac-af0d-39592780a5d8",
+    "slug": "how-fake-it-support-is-powering-modern-cyber-attacks",
+    "title": "How Fake IT Support Is Powering Modern Cyber Attacks",
+    "category": "Cybersecurity, News",
+    "tags": [
+      "Cybersecurity",
+      "Social Engineering",
+      "MuddyWater",
+      "Microsoft Teams Security",
+      "Data Breach",
+      "Ransomware",
+      "Cyber Espionage",
+      "Phishing Attacks"
+    ],
+    "published": true
+  },
+  {
+    "id": "09f655b6-f358-4327-afd8-b2e42a278767",
+    "slug": "the-canvas-lms-breach-the-human-side-of-cybersecurity",
+    "title": "The Canvas LMS Breach: The Human Side of Cybersecurity",
+    "category": "Cybersecurity, News",
+    "tags": [
+      "Cybersecurity",
+      "Canvas LMS",
+      "Data Breach",
+      "Student Privacy",
+      "Online Learning",
+      "ShinyHunters",
+      "Data Protection",
+      "Cyber Threats"
+    ],
+    "published": true
+  }
+]
+=== LAPTOPS ===
+[
+  {
+    "id": "fbce93d2-1726-4cd7-a27e-72880c0361e0",
+    "slug": "dell-vostro-3530-5355",
+    "name": "Dell Vostro 3530",
+    "condition": "new",
+    "published": true
+  },
+  {
+    "id": "f24ea053-d172-4b5e-a1fd-4a13951df163",
+    "slug": "hp-250-g9-4772",
+    "name": "HP 250 G9",
+    "condition": "new",
+    "published": true
+  },
+  {
+    "id": "f2503caf-9da2-4a26-8172-2783ff735c28",
+    "slug": "lenovo-v15-g3-0005",
+    "name": "Lenovo V15 G3",
+    "condition": "new",
+    "published": true
+  },
+  {
+    "id": "da788531-b2e9-47a5-a96b-504971867753",
+    "slug": "dell-vostro-3530-3235",
+    "name": "Dell Vostro 3530",
+    "condition": "new",
+    "published": false
+  }
+]

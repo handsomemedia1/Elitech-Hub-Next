@@ -20,7 +20,7 @@ export const revalidate = 60; // Revalidate every 60 seconds
     const supabase = getSupabaseServerClient();
     const { data: post } = await supabase
       .from("blog_posts")
-      .select("title, excerpt, thumbnail, category, author, published_at, tags, writers(slug, is_public, status)")
+      .select("title, excerpt, thumbnail, category, author, published_at, created_at, updated_at, tags, writers(slug, is_public, status)")
       .eq("slug", slug)
       .eq("published", true)
       .single();
@@ -36,9 +36,9 @@ export const revalidate = 60; // Revalidate every 60 seconds
     
     let authorCanonicalUrl: string | undefined;
     if (isPublicWriter) {
-      authorCanonicalUrl = `https://elitechub.com/authors/${writerData.slug}`;
+      authorCanonicalUrl = `https://www.elitechub.com/authors/${writerData.slug}`;
     } else if (post.author?.toLowerCase().includes("elijah")) {
-      authorCanonicalUrl = `https://elitechub.com/founder`;
+      authorCanonicalUrl = `https://www.elitechub.com/founder`;
     }
   
     return {
@@ -50,15 +50,16 @@ export const revalidate = 60; // Revalidate every 60 seconds
         description: post.excerpt || "",
         images: [
           {
-            url: post.thumbnail || 'https://elitechub.com/images/og-default.jpg',
+            url: post.thumbnail || 'https://www.elitechub.com/images/og-default.jpg',
             width: 1200,
             height: 630,
             alt: post.title,
           }
         ],
-        url: `https://elitechub.com/blog/${slug}`,
+        url: `https://www.elitechub.com/blog/${slug}`,
         type: "article",
-        publishedTime: post.published_at,
+        publishedTime: post.published_at || post.created_at,
+        modifiedTime: post.updated_at || post.published_at || post.created_at,
         authors: authorCanonicalUrl ? [authorCanonicalUrl] : undefined,
         siteName: "Elitech Hub",
       },
@@ -66,9 +67,9 @@ export const revalidate = 60; // Revalidate every 60 seconds
       card: "summary_large_image",
       title: post.title,
       description: post.excerpt || "",
-      images: [post.thumbnail || 'https://elitechub.com/images/og-default.jpg'],
+      images: [post.thumbnail || 'https://www.elitechub.com/images/og-default.jpg'],
     },
-    alternates: { canonical: `https://elitechub.com/blog/${slug}` },
+    alternates: { canonical: `https://www.elitechub.com/blog/${slug}` },
   };
 }
 
@@ -81,8 +82,11 @@ function getAuthorInitials(name: string): string {
   return name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
 }
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString("en-US", {
+function formatDate(dateStr: string | null | undefined): string {
+  if (!dateStr) return "Unknown Date";
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime()) || date.getFullYear() === 1970) return "Unknown Date";
+  return date.toLocaleDateString("en-US", {
     year: "numeric", month: "long", day: "numeric",
   });
 }
@@ -97,7 +101,7 @@ export default async function BlogPostPage({
 
   const { data: post, error } = await supabase
     .from("blog_posts")
-    .select("id, title, slug, excerpt, content, category, author, thumbnail, published_at, views, tags, word_count, writer_id, writers(id, display_name, slug, avatar_url, professional_title, is_public, status, bio)")
+    .select("id, title, slug, excerpt, content, category, author, thumbnail, published_at, created_at, updated_at, views, tags, word_count, writer_id, writers(id, display_name, name, slug, avatar_url, professional_title, is_public, status, bio, full_bio)")
     .eq("slug", slug)
     .eq("published", true)
     .single();
@@ -119,13 +123,13 @@ export default async function BlogPostPage({
   const writerData = post.writers as any;
   const isPublicWriter = writerData?.is_public === true && writerData?.status === "approved" && writerData?.slug;
   const authorCanonicalUrl = isPublicWriter
-    ? `https://elitechub.com/authors/${writerData.slug}`
-    : `https://elitechub.com/founder`; // fallback for founder/admin-authored posts
+    ? `https://www.elitechub.com/authors/${writerData.slug}`
+    : `https://www.elitechub.com/founder`; // fallback for founder/admin-authored posts
 
   const elitechHubOrg = {
     "@type": "Organization",
     name: "Elitech Hub",
-    url: "https://elitechub.com",
+    url: "https://www.elitechub.com",
   };
 
   const articleJsonLd = {
@@ -134,8 +138,8 @@ export default async function BlogPostPage({
     headline: post.title,
     description: post.excerpt,
     image: post.thumbnail ? [post.thumbnail] : [],
-    datePublished: post.published_at,
-    dateModified: post.published_at,
+    datePublished: post.published_at || post.created_at,
+    dateModified: post.updated_at || post.published_at || post.created_at,
     author: {
       "@type": "Person",
       name: isPublicWriter ? writerData.display_name : post.author,
@@ -146,10 +150,10 @@ export default async function BlogPostPage({
     publisher: {
       "@type": "Organization",
       name: "Elitech Hub",
-      url: "https://elitechub.com",
-      logo: { "@type": "ImageObject", url: "https://elitechub.com/images/logo.png" },
+      url: "https://www.elitechub.com",
+      logo: { "@type": "ImageObject", url: "https://www.elitechub.com/images/logo.png" },
     },
-    mainEntityOfPage: { "@type": "WebPage", "@id": `https://elitechub.com/blog/${slug}` },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `https://www.elitechub.com/blog/${slug}` },
     keywords: post.tags?.join(", "),
   };
 
@@ -183,7 +187,14 @@ export default async function BlogPostPage({
           <div className={styles.articleMeta}>
             <span className={styles.categoryTag} style={{ background: "#c3151c" }}>{post.category}</span>
             <span className={styles.readTime}><i className="far fa-clock" /> {estimateReadTime(post.word_count)}</span>
-            <span className={styles.postDate}>{formatDate(post.published_at)}</span>
+            <span className={styles.postDate}>
+              Published {formatDate(post.published_at || post.created_at)}
+              {post.updated_at && post.updated_at !== post.published_at && (
+                <span style={{ fontStyle: 'italic', marginLeft: '8px' }}>
+                  (Updated {formatDate(post.updated_at)})
+                </span>
+              )}
+            </span>
             {post.views > 0 && (
               <span className={styles.readTime}><i className="fas fa-eye" /> {post.views} views</span>
             )}
@@ -196,31 +207,58 @@ export default async function BlogPostPage({
             <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
               Written by
             </div>
-            {isPublicWriter ? (
-              <Link href={`/authors/${writerData.slug}`} className="flex items-start gap-4 hover:opacity-90 transition" style={{ textDecoration: 'none' }}>
-                <div className={styles.authorAvatar} style={{ overflow: 'hidden', width: '64px', height: '64px', flexShrink: 0, borderRadius: '50%' }}>
-                  {writerData.avatar_url ? (
-                    <img src={writerData.avatar_url} alt={writerData.display_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  ) : (
-                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-bg-raised)', fontSize: '1.2rem', fontWeight: 'bold' }}>
-                      {getAuthorInitials(writerData.display_name || post.author)}
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <div className={styles.authorName} style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--color-text-primary)' }}>
-                    {writerData.display_name || post.author}
+            {writerData ? (
+              isPublicWriter ? (
+                <Link href={`/authors/${writerData.slug}`} className="flex items-start gap-4 hover:opacity-90 transition" style={{ textDecoration: 'none' }}>
+                  <div className={styles.authorAvatar} style={{ overflow: 'hidden', width: '64px', height: '64px', flexShrink: 0, borderRadius: '50%' }}>
+                    {writerData.avatar_url ? (
+                      <img src={writerData.avatar_url} alt={writerData.display_name || writerData.name || post.author} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-bg-raised)', fontSize: '1.2rem', fontWeight: 'bold' }}>
+                        {getAuthorInitials(writerData.display_name || writerData.name || post.author)}
+                      </div>
+                    )}
                   </div>
-                  <div className={styles.authorRole} style={{ color: 'var(--color-accent)', fontSize: '0.9rem', marginBottom: '0.5rem', fontWeight: 500 }}>
-                    {writerData.professional_title || 'Writer'} at Elitech Hub
-                  </div>
-                  {writerData.bio && (
-                    <div style={{ color: 'var(--color-text-secondary)', fontSize: '0.9rem', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                      {writerData.bio}
+                  <div>
+                    <div className={styles.authorName} style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--color-text-primary)' }}>
+                      {writerData.display_name || writerData.name || post.author}
                     </div>
-                  )}
+                    <div className={styles.authorRole} style={{ color: 'var(--color-accent)', fontSize: '0.9rem', marginBottom: '0.5rem', fontWeight: 500 }}>
+                      {writerData.professional_title || 'Writer'} at Elitech Hub
+                    </div>
+                    {(writerData.bio || writerData.full_bio) && (
+                      <div style={{ color: 'var(--color-text-secondary)', fontSize: '0.9rem', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                        {writerData.bio || writerData.full_bio}
+                      </div>
+                    )}
+                  </div>
+                </Link>
+              ) : (
+                <div className="flex items-start gap-4" style={{ textDecoration: 'none' }}>
+                  <div className={styles.authorAvatar} style={{ overflow: 'hidden', width: '64px', height: '64px', flexShrink: 0, borderRadius: '50%' }}>
+                    {writerData.avatar_url ? (
+                      <img src={writerData.avatar_url} alt={writerData.display_name || writerData.name || post.author} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-bg-raised)', fontSize: '1.2rem', fontWeight: 'bold' }}>
+                        {getAuthorInitials(writerData.display_name || writerData.name || post.author)}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <div className={styles.authorName} style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--color-text-primary)' }}>
+                      {writerData.display_name || writerData.name || post.author}
+                    </div>
+                    <div className={styles.authorRole} style={{ color: 'var(--color-accent)', fontSize: '0.9rem', marginBottom: '0.5rem', fontWeight: 500 }}>
+                      {writerData.professional_title || 'Writer'} at Elitech Hub
+                    </div>
+                    {(writerData.bio || writerData.full_bio) && (
+                      <div style={{ color: 'var(--color-text-secondary)', fontSize: '0.9rem', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                        {writerData.bio || writerData.full_bio}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </Link>
+              )
             ) : (
               <div className="flex items-center gap-4">
                 <div className={styles.authorAvatar} style={{ overflow: 'hidden', width: '56px', height: '56px', flexShrink: 0, borderRadius: '50%' }}>
@@ -235,6 +273,16 @@ export default async function BlogPostPage({
                   <div className={styles.authorRole} style={{ color: 'var(--color-text-secondary)', fontSize: '0.9rem' }}>
                     {post.author?.toLowerCase().includes('elijah') ? 'Founder & Lead Instructor at Elitech Hub' : 'Writer at Elitech Hub'}
                   </div>
+                </div>
+              </div>
+            )}
+            {post.writer_id && post.status === "published" && (
+              <div style={{ marginTop: "1rem", paddingTop: "1rem", borderTop: "1px solid rgba(255,255,255,0.1)", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+                <div style={{ fontSize: "0.85rem", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>
+                  Edited By
+                </div>
+                <div style={{ color: "white", fontWeight: 500, fontSize: "0.95rem" }}>
+                  Elijah Adeyeye, Founder, Elitech Hub
                 </div>
               </div>
             )}
@@ -272,16 +320,16 @@ export default async function BlogPostPage({
           <div className={styles.shareSection}>
             <h4>Share this article</h4>
             <div className={styles.shareButtons}>
-              <a href={`https://wa.me/?text=${encodeURIComponent(post.title + " " + `https://elitechub.com/blog/${slug}`)}`} target="_blank" rel="noopener noreferrer" className={styles.shareBtn}>
+              <a href={`https://wa.me/?text=${encodeURIComponent(post.title + " " + `https://www.elitechub.com/blog/${slug}`)}`} target="_blank" rel="noopener noreferrer" className={styles.shareBtn}>
                 <i className="fab fa-whatsapp" /> WhatsApp
               </a>
-              <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://elitechub.com/blog/${slug}`)}`} target="_blank" rel="noopener noreferrer" className={styles.shareBtn}>
+              <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://www.elitechub.com/blog/${slug}`)}`} target="_blank" rel="noopener noreferrer" className={styles.shareBtn}>
                 <i className="fab fa-twitter" /> X (Twitter)
               </a>
-              <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://elitechub.com/blog/${slug}`)}`} target="_blank" rel="noopener noreferrer" className={styles.shareBtn}>
+              <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://www.elitechub.com/blog/${slug}`)}`} target="_blank" rel="noopener noreferrer" className={styles.shareBtn}>
                 <i className="fab fa-linkedin" /> LinkedIn
               </a>
-              <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://elitechub.com/blog/${slug}`)}`} target="_blank" rel="noopener noreferrer" className={styles.shareBtn}>
+              <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://www.elitechub.com/blog/${slug}`)}`} target="_blank" rel="noopener noreferrer" className={styles.shareBtn}>
                 <i className="fab fa-facebook" /> Facebook
               </a>
               <a href="https://www.threads.net/@elitechhub" target="_blank" rel="noopener noreferrer" className={styles.shareBtn}>
@@ -405,3 +453,5 @@ export default async function BlogPostPage({
     </PageLayout>
   );
 }
+
+

@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { User, Link as LinkIcon, Briefcase, MapPin, Upload } from 'lucide-react';
+import styles from './settings.module.css';
 
 export default function WriterSettings() {
   const router = useRouter();
@@ -97,7 +98,7 @@ export default function WriterSettings() {
     }
   };
 
-  if (loading) return <div className="p-8 text-white">Loading profile...</div>;
+  if (loading) return <div className={styles.loadingText}>Loading profile...</div>;
 
   const calculateCompletion = () => {
     const fields = ['display_name', 'professional_title', 'bio', 'full_bio', 'avatar_url', 'expertise'];
@@ -108,126 +109,148 @@ export default function WriterSettings() {
   const completion = calculateCompletion();
 
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4 text-white">
-      <h1 className="text-3xl font-bold mb-2">Writer Settings</h1>
-      <p className="text-gray-400 mb-8">Manage your editorial identity and public author profile.</p>
+    <div className={styles.settingsWrapper}>
+      <div className={styles.header}>
+        <h1>Writer Settings</h1>
+        <p>Manage your editorial identity and public author profile.</p>
+      </div>
 
       {message && (
-        <div className={`p-4 rounded mb-6 ${message.includes('success') ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
+        <div className={`${styles.message} ${message.includes('success') ? styles.messageSuccess : styles.messageError}`}>
           {message}
         </div>
       )}
 
       {completion < 100 && (
-        <div className="bg-yellow-500/10 border border-yellow-500/20 p-4 rounded-lg mb-8">
-          <h3 className="text-yellow-500 font-semibold mb-1">Complete your writer profile ({completion}%)</h3>
-          <p className="text-sm text-yellow-500/80 mb-3">Add your professional title, bio, expertise, photo and professional links so readers can identify you as the author of your work.</p>
-          <div className="w-full bg-gray-800 rounded-full h-2.5">
-            <div className="bg-yellow-500 h-2.5 rounded-full" style={{ width: `${completion}%` }}></div>
+        <div className={styles.completionCard}>
+          <h3>Complete your writer profile ({completion}%)</h3>
+          <p>Add your professional title, bio, expertise, photo and professional links so readers can identify you as the author of your work.</p>
+          <div className={styles.progressBarBg}>
+            <div className={styles.progressBarFill} style={{ width: `${completion}%` }}></div>
           </div>
         </div>
       )}
 
-      <form onSubmit={handleSave} className="space-y-8">
-        <div className="bg-[#111317] border border-gray-800 rounded-xl p-6 flex items-center gap-6">
-          <div className="w-24 h-24 rounded-full bg-gray-800 overflow-hidden border border-gray-700 shrink-0">
-            {profile?.avatar_url ? (
-              <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-500">
-                <User size={32} />
-              </div>
-            )}
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Profile Photo</h3>
-            <label className="cursor-pointer bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm font-medium transition flex items-center gap-2 inline-flex">
-              <Upload size={16} />
-              Upload Photo
-              <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleAvatarUpload} />
-            </label>
-            <p className="text-xs text-gray-500 mt-2">JPG, PNG or WebP, max 2MB.</p>
+      <form onSubmit={handleSave}>
+        
+        {/* Profile Photo Section */}
+        <div className={styles.section}>
+          <div className={styles.avatarSection}>
+            <div className={styles.avatarCircle}>
+              {profile?.avatar_url ? (
+                <img src={profile.avatar_url} alt="Avatar" className={styles.avatarImage} />
+              ) : (
+                <User size={40} />
+              )}
+            </div>
+            <div className={styles.avatarUpload}>
+              <h3>Profile Photo</h3>
+              <label className={styles.uploadLabel}>
+                <Upload size={16} />
+                Upload Photo
+                <input type="file" accept="image/jpeg,image/png,image/webp" className={styles.hiddenInput} onChange={handleAvatarUpload} />
+              </label>
+              <p>JPG, PNG or WebP, max 2MB.</p>
+            </div>
           </div>
         </div>
 
-        <div className="bg-[#111317] border border-gray-800 rounded-xl p-6 space-y-6">
-          <h3 className="text-xl font-semibold border-b border-gray-800 pb-3">Basic Information</h3>
+        {/* Basic Information Section */}
+        <div className={styles.section}>
+          <h3 className={styles.sectionTitle}>Basic Information</h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Full Name</label>
-              <input type="text" name="name" value={profile?.name || ''} readOnly className="w-full bg-gray-800/50 border border-gray-700 rounded px-3 py-2 text-gray-500 cursor-not-allowed" />
+          <div className={styles.formGrid}>
+            <div className={styles.formGroup}>
+              <label>Full Name</label>
+              <input type="text" name="name" value={profile?.name || ''} readOnly className={`${styles.input} ${styles.inputReadonly}`} />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Display Name</label>
-              <input type="text" name="display_name" value={profile?.display_name || ''} onChange={handleChange} className="w-full bg-[#0A0A0A] border border-gray-700 rounded px-3 py-2 text-white focus:border-[#C3151C] focus:outline-none" />
+            
+            <div className={styles.formGroup}>
+              <label>Display Name</label>
+              <input type="text" name="display_name" value={profile?.display_name || ''} onChange={handleChange} className={styles.input} />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Professional Title</label>
-              <div className="relative">
-                <Briefcase size={16} className="absolute left-3 top-3 text-gray-500" />
-                <input type="text" name="professional_title" value={profile?.professional_title || ''} onChange={handleChange} placeholder="e.g. Senior Security Researcher" className="w-full bg-[#0A0A0A] border border-gray-700 rounded pl-10 pr-3 py-2 text-white focus:border-[#C3151C] focus:outline-none" />
+            
+            <div className={styles.formGroup}>
+              <label>Professional Title</label>
+              <div className={styles.inputWrapper}>
+                <Briefcase size={16} className={styles.inputIcon} />
+                <input type="text" name="professional_title" value={profile?.professional_title || ''} onChange={handleChange} placeholder="e.g. Senior Security Researcher" className={`${styles.input} ${styles.inputWithIcon}`} />
               </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Location</label>
-              <div className="relative">
-                <MapPin size={16} className="absolute left-3 top-3 text-gray-500" />
-                <input type="text" name="location" value={profile?.location || ''} onChange={handleChange} placeholder="e.g. Lagos, Nigeria" className="w-full bg-[#0A0A0A] border border-gray-700 rounded pl-10 pr-3 py-2 text-white focus:border-[#C3151C] focus:outline-none" />
+            
+            <div className={styles.formGroup}>
+              <label>Location</label>
+              <div className={styles.inputWrapper}>
+                <MapPin size={16} className={styles.inputIcon} />
+                <input type="text" name="location" value={profile?.location || ''} onChange={handleChange} placeholder="e.g. Lagos, Nigeria" className={`${styles.input} ${styles.inputWithIcon}`} />
               </div>
             </div>
           </div>
           
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Short Bio</label>
-            <textarea name="bio" value={profile?.bio || ''} onChange={handleChange} rows={2} maxLength={160} placeholder="A short 1-2 sentence description..." className="w-full bg-[#0A0A0A] border border-gray-700 rounded px-3 py-2 text-white focus:border-[#C3151C] focus:outline-none"></textarea>
+          <div className={styles.formGroup}>
+            <label>Short Bio</label>
+            <textarea name="bio" value={profile?.bio || ''} onChange={handleChange} rows={2} maxLength={160} placeholder="A short 1-2 sentence description..." className={styles.textarea}></textarea>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Full Bio</label>
-            <textarea name="full_bio" value={profile?.full_bio || ''} onChange={handleChange} rows={5} placeholder="Your complete editorial bio..." className="w-full bg-[#0A0A0A] border border-gray-700 rounded px-3 py-2 text-white focus:border-[#C3151C] focus:outline-none"></textarea>
+          
+          <div className={styles.formGroup}>
+            <label>Full Bio</label>
+            <textarea name="full_bio" value={profile?.full_bio || ''} onChange={handleChange} rows={5} placeholder="Your complete editorial bio..." className={styles.textarea}></textarea>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Expertise (Comma separated)</label>
-            <input type="text" name="expertise" value={profile?.expertise?.join(', ') || ''} onChange={(e) => setProfile({...profile, expertise: e.target.value.split(',').map(s=>s.trim())})} placeholder="Penetration Testing, Cloud Security, AI" className="w-full bg-[#0A0A0A] border border-gray-700 rounded px-3 py-2 text-white focus:border-[#C3151C] focus:outline-none" />
-          </div>
-        </div>
-
-        <div className="bg-[#111317] border border-gray-800 rounded-xl p-6 space-y-6">
-          <h3 className="text-xl font-semibold border-b border-gray-800 pb-3">Professional Links</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">LinkedIn URL</label>
-              <input type="url" name="linkedin_url" value={profile?.linkedin_url || ''} onChange={handleChange} className="w-full bg-[#0A0A0A] border border-gray-700 rounded px-3 py-2 text-white focus:border-[#C3151C] focus:outline-none" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Portfolio URL</label>
-              <input type="url" name="portfolio_url" value={profile?.portfolio_url || ''} onChange={handleChange} className="w-full bg-[#0A0A0A] border border-gray-700 rounded px-3 py-2 text-white focus:border-[#C3151C] focus:outline-none" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Personal Website</label>
-              <input type="url" name="website_url" value={profile?.website_url || ''} onChange={handleChange} className="w-full bg-[#0A0A0A] border border-gray-700 rounded px-3 py-2 text-white focus:border-[#C3151C] focus:outline-none" />
-            </div>
+          
+          <div className={styles.formGroup}>
+            <label>Expertise (Comma separated)</label>
+            <input type="text" name="expertise" value={profile?.expertise?.join(', ') || ''} onChange={(e) => setProfile({...profile, expertise: e.target.value.split(',').map((s: string) => s.trim())})} placeholder="Penetration Testing, Cloud Security, AI" className={styles.input} />
           </div>
         </div>
 
-        <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
-          <h3 className="text-lg font-semibold mb-4">Account Details</h3>
-          <div className="text-sm text-gray-400 space-y-2">
-            <p><span className="font-medium text-gray-300">Email:</span> {profile?.email}</p>
-            <p><span className="font-medium text-gray-300">Status:</span> <span className="capitalize text-green-500">{profile?.status}</span></p>
-            <p><span className="font-medium text-gray-300">Author Slug:</span> {profile?.slug || 'Will be generated when you save your display name'}</p>
+        {/* Professional Links Section */}
+        <div className={styles.section}>
+          <h3 className={styles.sectionTitle}>Professional Links</h3>
+          <div className={styles.formGrid}>
+            <div className={styles.formGroup}>
+              <label>LinkedIn URL</label>
+              <div className={styles.inputWrapper}>
+                <LinkIcon size={16} className={styles.inputIcon} />
+                <input type="url" name="linkedin_url" value={profile?.linkedin_url || ''} onChange={handleChange} className={`${styles.input} ${styles.inputWithIcon}`} />
+              </div>
+            </div>
+            <div className={styles.formGroup}>
+              <label>Portfolio URL</label>
+              <div className={styles.inputWrapper}>
+                <LinkIcon size={16} className={styles.inputIcon} />
+                <input type="url" name="portfolio_url" value={profile?.portfolio_url || ''} onChange={handleChange} className={`${styles.input} ${styles.inputWithIcon}`} />
+              </div>
+            </div>
+            <div className={styles.formGroup}>
+              <label>Personal Website</label>
+              <div className={styles.inputWrapper}>
+                <LinkIcon size={16} className={styles.inputIcon} />
+                <input type="url" name="website_url" value={profile?.website_url || ''} onChange={handleChange} className={`${styles.input} ${styles.inputWithIcon}`} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Account Details Section */}
+        <div className={styles.section}>
+          <h3 className={styles.sectionTitle}>Account Details</h3>
+          <div className={styles.accountDetails}>
+            <p><span>Email:</span> {profile?.email}</p>
+            <p><span>Status:</span> <span className={styles.statusText}>{profile?.status}</span></p>
+            <p><span>Author Slug:</span> {profile?.slug || 'Will be generated when you save your display name'}</p>
+            
             {profile?.slug && (
-              <div className="mt-3 pt-3 border-t border-gray-800">
-                <p className="font-medium text-gray-300 mb-2">Your Public Profile:</p>
-                <div className="flex items-center gap-3 flex-wrap">
-                  <code className="text-green-400 text-xs bg-black/40 px-2 py-1 rounded">
+              <div className={styles.publicProfileBox}>
+                <p>Your Public Profile:</p>
+                <div className={styles.publicProfileLinkWrapper}>
+                  <code className={styles.slugCode}>
                     elitechub.com/authors/{profile.slug}
                   </code>
                   <a
                     href={`/authors/${profile.slug}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#C3151C] hover:text-red-400 text-sm font-medium transition"
+                    className={styles.viewProfileLink}
                   >
                     View Public Profile ↗
                   </a>
@@ -237,18 +260,20 @@ export default function WriterSettings() {
           </div>
         </div>
 
-        <div className="flex justify-between items-center pt-4 flex-wrap gap-3">
-          {profile?.slug && (
+        <div className={styles.actions}>
+          {profile?.slug ? (
             <a
               href={`/authors/${profile.slug}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-gray-400 hover:text-white transition border border-gray-700 hover:border-gray-500 px-4 py-2 rounded-lg"
+              className={styles.outlineBtn}
             >
               View Public Profile ↗
             </a>
+          ) : (
+            <div></div> /* Spacer for flex-between */
           )}
-          <button type="submit" disabled={saving} className="bg-[#C3151C] hover:bg-red-700 text-white px-8 py-3 rounded-lg font-medium transition disabled:opacity-50">
+          <button type="submit" disabled={saving} className={styles.primaryBtn}>
             {saving ? 'Saving...' : 'Save Profile'}
           </button>
         </div>

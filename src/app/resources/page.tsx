@@ -11,13 +11,13 @@ export const metadata: Metadata = {
   description: 'Explore research resources, guides, reports, educational materials, and other useful documents from Elitech Hub.',
   keywords: 'cybersecurity resources, Elitech Hub library, free cybersecurity guides, threat reports, tech educational materials Nigeria',
   alternates: {
-    canonical: 'https://elitechub.com/resources',
+    canonical: 'https://www.elitechub.com/resources',
   },
   openGraph: {
     title: 'Resources | Elitech Hub',
     description: 'Explore research resources, guides, reports, educational materials, and other useful documents from Elitech Hub.',
     type: 'website',
-    url: 'https://elitechub.com/resources',
+    url: 'https://www.elitechub.com/resources',
   }
 };
 

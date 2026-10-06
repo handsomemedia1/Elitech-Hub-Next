@@ -25,7 +25,7 @@ const jetbrains = JetBrains_Mono({
   display: "swap",
 });
 
-const SITE_URL = 'https://elitechub.com';
+const SITE_URL = 'https://www.elitechub.com';
 const SITE_NAME = 'Elitech Hub';
 const DEFAULT_OG_IMAGE = `${SITE_URL}/images/og-default.jpg`;
 
@@ -133,17 +133,17 @@ export default function RootLayout({
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'Organization',
-              '@id': 'https://elitechub.com/#organization',
+              '@id': 'https://www.elitechub.com/#organization',
               name: 'Elitech Hub',
               legalName: 'Elitech Hub',
-              url: 'https://elitechub.com',
+              url: 'https://www.elitechub.com',
               logo: {
                 '@type': 'ImageObject',
-                url: 'https://elitechub.com/images/logo.png',
+                url: 'https://www.elitechub.com/images/logo.png',
                 width: 200,
                 height: 60,
               },
-              image: 'https://elitechub.com/images/og-default.jpg',
+              image: 'https://www.elitechub.com/images/og-default.jpg',
               description:
                 "Elitech Hub is a Nigeria-based AI, Cybersecurity, Research and Digital Innovation company helping businesses, professionals and organizations build secure, intelligent and future-ready digital solutions worldwide.",
               foundingDate: '2023',
@@ -187,12 +187,12 @@ export default function RootLayout({
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'EducationalOrganization',
-              '@id': 'https://elitechub.com/#localbusiness',
+              '@id': 'https://www.elitechub.com/#localbusiness',
               name: 'Elitech Hub',
-              url: 'https://elitechub.com',
+              url: 'https://www.elitechub.com',
               telephone: '',
               priceRange: '₦₦',
-              image: 'https://elitechub.com/images/og-default.jpg',
+              image: 'https://www.elitechub.com/images/og-default.jpg',
               description:
                 "Elitech Hub provides AI, Cybersecurity, Research, and Digital Innovation training and solutions in Nigeria and worldwide.",
               address: {
@@ -232,7 +232,7 @@ export default function RootLayout({
                     itemOffered: {
                       '@type': 'Course',
                       name: '6-Week AI Powered Cybersecurity Bootcamp',
-                      url: 'https://elitechub.com/programs',
+                      url: 'https://www.elitechub.com/programs',
                     },
                   },
                   {
@@ -240,7 +240,7 @@ export default function RootLayout({
                     itemOffered: {
                       '@type': 'Course',
                       name: '16-Week Professional Cybersecurity Program',
-                      url: 'https://elitechub.com/programs',
+                      url: 'https://www.elitechub.com/programs',
                     },
                   },
                 ],
@@ -258,20 +258,20 @@ export default function RootLayout({
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'WebSite',
-              '@id': 'https://elitechub.com/#website',
-              url: 'https://elitechub.com',
+              '@id': 'https://www.elitechub.com/#website',
+              url: 'https://www.elitechub.com',
               name: 'Elitech Hub',
               description:
                 "Nigeria's Leading AI, Cybersecurity, Research & Digital Innovation Hub for Businesses and Professionals.",
               publisher: {
-                '@id': 'https://elitechub.com/#organization',
+                '@id': 'https://www.elitechub.com/#organization',
               },
               potentialAction: {
                 '@type': 'SearchAction',
                 target: {
                   '@type': 'EntryPoint',
                   urlTemplate:
-                    'https://elitechub.com/blog?q={search_term_string}',
+                    'https://www.elitechub.com/blog?q={search_term_string}',
                 },
                 'query-input': 'required name=search_term_string',
               },

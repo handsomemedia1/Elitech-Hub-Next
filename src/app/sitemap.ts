@@ -4,8 +4,19 @@ import { getSupabaseServerClient } from '@/lib/supabase';
 // All routes with their priority and change frequency
 // Higher priority = Google crawls more often
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://elitechub.com';
+  const baseUrl = 'https://www.elitechub.com';
   const now = new Date().toISOString();
+
+  function formatSitemapDate(dateStr) {
+    if (!dateStr) return now;
+    try {
+      const d = dateStr.endsWith('Z') || dateStr.includes('+') ? dateStr : dateStr + 'Z';
+      const parsed = new Date(d);
+      return isNaN(parsed.getTime()) ? now : parsed.toISOString();
+    } catch (e) {
+      return now;
+    }
+  }
   
   let blogPosts = null;
   let researchPapers = null;
@@ -235,7 +246,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (blogPosts) {
     const blogUrls: MetadataRoute.Sitemap = blogPosts.map((post) => ({
       url: `${baseUrl}/blog/${post.slug}`,
-      lastModified: post.updated_at || post.published_at || now,
+      lastModified: formatSitemapDate(post.updated_at || post.published_at),
       changeFrequency: 'weekly',
       priority: 0.8,
     }));
@@ -253,7 +264,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (laptops) {
     const laptopUrls: MetadataRoute.Sitemap = (laptops as any[]).map((laptop) => ({
       url: `${baseUrl}/laptops/${laptop.slug}`,
-      lastModified: laptop.updated_at || now,
+      lastModified: formatSitemapDate(laptop.updated_at),
       changeFrequency: 'daily',
       priority: 0.85,
     }));
@@ -263,7 +274,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (researchPapers) {
     const researchUrls: MetadataRoute.Sitemap = researchPapers.map((paper) => ({
       url: `${baseUrl}/research/${paper.slug}`,
-      lastModified: paper.updated_at || paper.created_at || now,
+      lastModified: formatSitemapDate(paper.updated_at || paper.created_at),
       changeFrequency: 'monthly',
       priority: 0.7,
     }));
@@ -280,7 +291,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (caseStudies) {
     const caseStudyUrls: MetadataRoute.Sitemap = caseStudies.map((cs) => ({
       url: `${baseUrl}/portfolio/${cs.slug}`,
-      lastModified: cs.created_at || now,
+      lastModified: formatSitemapDate(cs.created_at),
       changeFrequency: 'monthly',
       priority: 0.7,
     }));
@@ -290,7 +301,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (labEntries) {
     const labUrls: MetadataRoute.Sitemap = labEntries.map((lab) => ({
       url: `${baseUrl}/lab/${lab.slug}`,
-      lastModified: lab.updated_at || lab.published_at || now,
+      lastModified: formatSitemapDate(lab.updated_at || lab.published_at),
       changeFrequency: 'weekly',
       priority: 0.8,
     }));
@@ -305,7 +316,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     if (advisors) {
       routes.push(...advisors.map(a => ({
         url: `${baseUrl}/advisors/${a.slug}`,
-        lastModified: a.updated_at || now,
+        lastModified: formatSitemapDate(a.updated_at),
         changeFrequency: 'monthly' as const,
         priority: 0.7
       })));
@@ -322,7 +333,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     if (writers) {
       routes.push(...writers.map(w => ({
         url: `${baseUrl}/authors/${w.slug}`,
-        lastModified: w.updated_at || now,
+        lastModified: formatSitemapDate(w.updated_at),
         changeFrequency: 'monthly' as const,
         priority: 0.75
       })));
@@ -333,7 +344,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     if (resources) {
       routes.push(...resources.map(r => ({
         url: `${baseUrl}/resources/${r.slug}`,
-        lastModified: r.updated_at || now,
+        lastModified: formatSitemapDate(r.updated_at),
         changeFrequency: 'monthly' as const,
         priority: 0.7
       })));

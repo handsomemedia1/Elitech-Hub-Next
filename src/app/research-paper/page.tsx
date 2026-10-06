@@ -8,11 +8,11 @@ export const metadata: Metadata = {
   title: 'Research Publications & Academic Papers | Elitech Hub',
   description: 'Read the latest academic research papers, threat analyses, and cybersecurity journals published by Elitech Hub and our global research fellows.',
   keywords: 'cybersecurity research papers, academic journals, threat analysis publications, Elitech Hub research, peer-reviewed security papers',
-  alternates: { canonical: 'https://elitechub.com/research-paper' },
+  alternates: { canonical: 'https://www.elitechub.com/research-paper' },
   openGraph: {
     title: 'Research Publications & Academic Papers | Elitech Hub',
     description: 'Read the latest academic research papers, threat analyses, and cybersecurity journals published by Elitech Hub and our global research fellows.',
-    url: 'https://elitechub.com/research-paper',
+    url: 'https://www.elitechub.com/research-paper',
     type: 'website',
   }
 };

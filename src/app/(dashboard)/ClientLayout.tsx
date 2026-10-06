@@ -35,7 +35,9 @@ const WRITER_LINKS = [
   { href: '/writer', label: 'Overview', icon: LayoutDashboard },
   { href: '/writer/posts', label: 'My Articles', icon: FileText },
   { href: '/writer/editor', label: 'Write New', icon: PenTool },
-  { href: '/writer/badges', label: 'My Badges', icon: Star },
+  { href: '/writer/clusters', label: 'Content Clusters', icon: BookOpen },
+  { href: '/writer/productivity', label: 'Productivity', icon: Star },
+  { href: '/writer/badges', label: 'My Badges', icon: Award },
   { href: '/writer/settings', label: 'Author Profile', icon: UserCircle },
 ];
 

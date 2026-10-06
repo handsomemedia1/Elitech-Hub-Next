@@ -11,12 +11,12 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Security & Trust | Elitech Hub',
     description: 'Our commitment to safety, transparency, and accessibility at Elitech Hub.',
-    url: 'https://elitechub.com/security',
+    url: 'https://www.elitechub.com/security',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
     type: 'website',
   },
-  alternates: { canonical: 'https://elitechub.com/security' },
+  alternates: { canonical: 'https://www.elitechub.com/security' },
 };
 
 export default function SecurityPage() {

@@ -43,8 +43,11 @@ function getCategoryIcon(category: string) {
   return Newspaper;
 }
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+function formatDate(dateStr: string | null | undefined): string {
+  if (!dateStr) return "Unknown Date";
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime()) || date.getFullYear() === 1970) return "Unknown Date";
+  return date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 }
 
 function estimateReadTime(wordCount: number | null): string {
@@ -189,7 +192,7 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
                       {featuredPost.category}
                     </span>
                     <span className={styles.metaItem}><Clock size={14} /> {estimateReadTime(featuredPost.word_count)}</span>
-                    <span className={styles.metaItem}>{formatDate(featuredPost.published_at)}</span>
+                    <span className={styles.metaItem}>{formatDate(featuredPost.published_at || featuredPost.created_at)}</span>
                   </div>
                   <h2 className={styles.featuredTitle}>{featuredPost.title}</h2>
                   <p className={styles.featuredExcerpt}>{featuredPost.excerpt}</p>

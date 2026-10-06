@@ -20,7 +20,7 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
   return {
     title: data.seo_title || `${data.name} | Elitech Hub Nigeria`,
     description: data.seo_description || `View specifications and pricing for ${data.name} at Elitech Hub Nigeria.`,
-    alternates: { canonical: `https://elitechub.com/laptops/${slug}` },
+    alternates: { canonical: `https://www.elitechub.com/laptops/${slug}` },
     openGraph: {
       title: data.seo_title || data.name,
       description: data.seo_description,
@@ -66,7 +66,7 @@ export default async function LaptopDetailPage(props: { params: Promise<{ slug: 
     },
     "offers": {
       "@type": "Offer",
-      "url": `https://elitechub.com/laptops/${laptop.slug}`,
+      "url": `https://www.elitechub.com/laptops/${laptop.slug}`,
       "priceCurrency": laptop.currency || "NGN",
       "price": laptop.price,
       "availability": laptop.availability === 'available' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
@@ -81,12 +81,12 @@ export default async function LaptopDetailPage(props: { params: Promise<{ slug: 
       "@type": "ListItem",
       "position": 1,
       "name": "Home",
-      "item": "https://elitechub.com/"
+      "item": "https://www.elitechub.com/"
     },{
       "@type": "ListItem",
       "position": 2,
       "name": "Laptops",
-      "item": "https://elitechub.com/laptops"
+      "item": "https://www.elitechub.com/laptops"
     },{
       "@type": "ListItem",
       "position": 3,

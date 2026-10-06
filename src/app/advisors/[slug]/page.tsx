@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title,
     description,
-    alternates: { canonical: `https://elitechub.com/advisors/${slug}` },
+    alternates: { canonical: `https://www.elitechub.com/advisors/${slug}` },
     openGraph: {
       title,
       description,
@@ -73,13 +73,13 @@ export default async function AdvisorProfilePage({ params }: { params: Promise<{
       affiliation: {
         '@type': 'Organization',
         name: 'Elitech Hub',
-        url: 'https://elitechub.com',
+        url: 'https://www.elitechub.com',
       },
       image: advisor.profile_image_url || undefined,
       description: advisor.biography || undefined,
       sameAs: sameAs.length > 0 ? sameAs : undefined,
       knowsAbout: advisor.expertise || undefined,
-      url: `https://elitechub.com/advisors/${slug}`,
+      url: `https://www.elitechub.com/advisors/${slug}`,
     }
   };
 

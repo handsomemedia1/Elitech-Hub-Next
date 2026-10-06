@@ -81,7 +81,7 @@ export async function POST(request: Request) {
   }
 
   // ── Send email ─────────────────────────────────────────────────
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://elitechub.com';
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.elitechub.com';
   const resetLink = `${appUrl}/reset-password?token=${rawToken}&uid=${user.id}`;
 
   await sendPasswordResetEmail({

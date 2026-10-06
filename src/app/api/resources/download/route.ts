@@ -26,14 +26,16 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 
+  // 2. Enforce Authentication
+  const user = await getServerUser();
+  if (!user) {
+    return NextResponse.json({ error: 'Authentication required to download resources' }, { status: 401 });
+  }
+
   const isPublished = resource.status === 'published';
 
-  // 2. Check authorization if NOT published
+  // 2b. Check authorization if NOT published
   if (!isPublished) {
-    const user = await getServerUser();
-    if (!user) {
-      return NextResponse.json({ error: 'Authentication required to view draft' }, { status: 401 });
-    }
     // Only admin can view unpublished resources
     if (user.role !== 'admin') {
       return NextResponse.json({ error: 'Access denied' }, { status: 403 });

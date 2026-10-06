@@ -26,13 +26,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Cybersecurity Research & Publications | Elitech Hub Nigeria',
     description: 'Original cybersecurity research from Elitech Hub — AI security, threat intelligence, and African cyber threats.',
-    url: 'https://elitechub.com/research',
+    url: 'https://www.elitechub.com/research',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
-    images: [{ url: 'https://elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
     type: 'website',
   },
-  alternates: { canonical: 'https://elitechub.com/research' },
+  alternates: { canonical: 'https://www.elitechub.com/research' },
 };
 
 
@@ -75,8 +75,8 @@ export default async function ResearchPage() {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://elitechub.com' },
-        { '@type': 'ListItem', position: 2, name: 'Research', item: 'https://elitechub.com/research' },
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.elitechub.com' },
+        { '@type': 'ListItem', position: 2, name: 'Research', item: 'https://www.elitechub.com/research' },
       ],
     },
     // Published paper (Dynamic)
@@ -88,9 +88,9 @@ export default async function ResearchPage() {
       description: featuredPaper.abstract ? featuredPaper.abstract.substring(0, 200) + '...' : `Read "${featuredPaper.title}"`,
       datePublished: featuredPaper.published_at ? new Date(featuredPaper.published_at).toISOString().split('T')[0] : (featuredPaper.created_at ? new Date(featuredPaper.created_at).toISOString().split('T')[0] : undefined),
       publisher: { '@type': 'Organization', name: 'Elitech Hub Research Repository' },
-      author: { '@type': 'Organization', name: 'Elitech Hub Research Team', url: 'https://elitechub.com/research' },
+      author: { '@type': 'Organization', name: 'Elitech Hub Research Team', url: 'https://www.elitechub.com/research' },
       about: featuredPaper.keywords || [featuredPaper.category || 'Cybersecurity'],
-      url: `https://elitechub.com/research/${featuredPaper.slug}`,
+      url: `https://www.elitechub.com/research/${featuredPaper.slug}`,
     }] : []),
     // CollectionPage for the repository
     {
@@ -98,15 +98,15 @@ export default async function ResearchPage() {
       '@type': 'CollectionPage',
       name: 'Elitech Hub Research Repository',
       description: 'A curated open-access repository for cybersecurity and technology research submitted by researchers and reviewed for quality before publication.',
-      url: 'https://elitechub.com/research',
-      publisher: { '@type': 'Organization', name: 'Elitech Hub', url: 'https://elitechub.com' },
+      url: 'https://www.elitechub.com/research',
+      publisher: { '@type': 'Organization', name: 'Elitech Hub', url: 'https://www.elitechub.com' },
     },
     // Organization as research entity
     {
       '@context': 'https://schema.org',
       '@type': 'ResearchOrganization',
       name: 'Elitech Hub',
-      url: 'https://elitechub.com/research',
+      url: 'https://www.elitechub.com/research',
       description: 'Elitech Hub conducts community-driven cybersecurity research across threat intelligence, malware analysis, AI security, and African cyber threat landscapes.',
       foundingDate: '2023',
       knowsAbout: ['Cybersecurity', 'Threat Intelligence', 'Malware Analysis', 'AI Security', 'Blockchain Security'],

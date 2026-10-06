@@ -15,14 +15,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: "About Elitech Hub | Nigeria's Cybersecurity Training Leader",
     description: "Driving Innovation Through AI, Cybersecurity, Research Excellence and Business Transformation.",
-    url: 'https://elitechub.com/about',
+    url: 'https://www.elitechub.com/about',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
-    images: [{ url: 'https://elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
     type: 'website',
   },
   twitter: { card: 'summary_large_image', title: 'About Elitech Hub' },
-  alternates: { canonical: 'https://elitechub.com/about' },
+  alternates: { canonical: 'https://www.elitechub.com/about' },
 };
 
 export default function AboutPage() {
@@ -31,17 +31,17 @@ export default function AboutPage() {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://elitechub.com' },
-        { '@type': 'ListItem', position: 2, name: 'About', item: 'https://elitechub.com/about' },
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.elitechub.com' },
+        { '@type': 'ListItem', position: 2, name: 'About', item: 'https://www.elitechub.com/about' },
       ],
     },
     {
       '@context': 'https://schema.org',
       '@type': 'Organization',
-      '@id': 'https://elitechub.com/#organization',
+      '@id': 'https://www.elitechub.com/#organization',
       name: 'Elitech Hub',
-      url: 'https://elitechub.com',
-      logo: 'https://elitechub.com/images/logo.png',
+      url: 'https://www.elitechub.com',
+      logo: 'https://www.elitechub.com/images/logo.png',
       description: "Nigeria's leading cybersecurity training organisation, building Africa's next generation of digital defenders.",
       foundingDate: '2023',
       address: { '@type': 'PostalAddress', addressLocality: 'Ibadan', addressRegion: 'Oyo State', addressCountry: 'NG' },
@@ -53,8 +53,8 @@ export default function AboutPage() {
       '@type': 'Person',
       name: 'Elijah Adeyeye',
       jobTitle: 'Founder & CEO',
-      worksFor: { '@type': 'Organization', name: 'Elitech Hub', url: 'https://elitechub.com' },
-      url: 'https://elitechub.com/about',
+      worksFor: { '@type': 'Organization', name: 'Elitech Hub', url: 'https://www.elitechub.com' },
+      url: 'https://www.elitechub.com/about',
     },
   ];
 

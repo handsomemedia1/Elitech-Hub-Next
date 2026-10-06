@@ -119,7 +119,12 @@ export async function deleteWriterAction(id: string) {
   const supabase = createServiceClient();
   if (!supabase) return { success: false, error: 'No DB connection' };
 
-  const { error } = await supabase.from('writers').delete().eq('id', id);
+  // SOFT DELETE: Deactivate and mark as deleted, preserving historical articles
+  const { error } = await supabase.from('writers').update({ 
+    status: 'suspended',
+    active: false,
+    banned: true 
+  }).eq('id', id);
 
   if (error) {
     console.error('Delete writer error:', error);

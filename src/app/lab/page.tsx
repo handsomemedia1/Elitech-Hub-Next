@@ -28,14 +28,14 @@ export const metadata = {
   openGraph: {
     title: 'Cybersecurity R&D Lab | Threat Intelligence & Tactical Operations',
     description: 'Explore the Elitech Hub Cybersecurity Lab. We conduct active research and development in detection engineering, threat analysis, defensive infrastructure, and secure development.',
-    url: 'https://elitechub.com/lab',
+    url: 'https://www.elitechub.com/lab',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
-    images: [{ url: 'https://elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
     type: 'website',
   },
   twitter: { card: 'summary_large_image', title: 'Cybersecurity R&D Lab | Elitech Hub Nigeria', site: '@ElitechHub' },
-  alternates: { canonical: 'https://elitechub.com/lab' },
+  alternates: { canonical: 'https://www.elitechub.com/lab' },
 };
 
 

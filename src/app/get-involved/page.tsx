@@ -22,14 +22,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Get Involved | Volunteer & Partner with Elitech Hub',
     description: 'Volunteer, mentor, or sponsor a cohort. Join us in securing Africa\'s digital future.',
-    url: 'https://elitechub.com/get-involved',
+    url: 'https://www.elitechub.com/get-involved',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
-    images: [{ url: 'https://elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
     type: 'website',
   },
   twitter: { card: 'summary_large_image', title: 'Get Involved | Elitech Hub Nigeria', site: '@ElitechHub' },
-  alternates: { canonical: 'https://elitechub.com/get-involved' },
+  alternates: { canonical: 'https://www.elitechub.com/get-involved' },
 };
 
 
@@ -37,7 +37,7 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "Elitech Hub",
-  url: "https://elitechub.com",
+  url: "https://www.elitechub.com",
   description: "Nigeria's premier AI-powered cybersecurity training platform.",
   contactPoint: {
     "@type": "ContactPoint",

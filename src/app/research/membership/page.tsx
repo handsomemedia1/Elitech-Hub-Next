@@ -9,13 +9,13 @@ export const metadata: Metadata = {
     'Join the Elitech Hub Research Membership. An exclusive ecosystem for pioneering researchers in Behavioral Cybersecurity. Limited to 30 researchers globally. Applications open for January 2027.',
   keywords: 'behavioral cybersecurity, research membership, cybersecurity researchers, Elitech Hub research, cybersecurity ecosystem, January 2027 cohort',
   alternates: {
-    canonical: 'https://elitechub.com/research/membership',
+    canonical: 'https://www.elitechub.com/research/membership',
   },
   openGraph: {
     title: 'Research Membership | Elitech Hub',
     description:
       'An exclusive ecosystem for pioneering researchers in Behavioral Cybersecurity. Limited to 30 researchers globally. Applications open for January 2027.',
-    url: 'https://elitechub.com/research/membership',
+    url: 'https://www.elitechub.com/research/membership',
     siteName: 'Elitech Hub',
     type: 'website',
   },

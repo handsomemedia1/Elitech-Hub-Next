@@ -8,11 +8,11 @@ export const metadata: Metadata = {
   title: 'Volunteer & Mentor | Elitech Hub',
   description: 'Join Elitech Hub as a volunteer mentor and help shape the next generation of African cybersecurity professionals.',
   keywords: 'volunteer mentor, cybersecurity mentor Nigeria, tech mentoring Africa, give back to tech community, cybersecurity instructor, Elitech Hub volunteer',
-  alternates: { canonical: 'https://elitechub.com/volunteer' },
+  alternates: { canonical: 'https://www.elitechub.com/volunteer' },
   openGraph: {
     title: 'Volunteer & Mentor | Elitech Hub',
     description: 'Join Elitech Hub as a volunteer mentor and help shape the next generation of African cybersecurity professionals.',
-    url: 'https://elitechub.com/volunteer',
+    url: 'https://www.elitechub.com/volunteer',
     type: 'website',
   }
 };

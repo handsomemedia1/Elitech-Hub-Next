@@ -41,7 +41,7 @@ export async function generateMetadata(
       type: 'article',
     },
     alternates: {
-      canonical: `https://elitechub.com/resources/${slug}`
+      canonical: `https://www.elitechub.com/resources/${slug}`
     }
   };
 }
@@ -240,7 +240,7 @@ export default async function ResourcePage({ params }: Props) {
               "name": "Elitech Hub"
             },
             "datePublished": publishDate.toISOString(),
-            "url": `https://elitechub.com/resources/${resource.slug}`
+            "url": `https://www.elitechub.com/resources/${resource.slug}`
           })
         }}
       />

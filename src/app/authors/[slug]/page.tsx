@@ -25,11 +25,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title,
     description,
-    alternates: { canonical: `https://elitechub.com/authors/${slug}` },
+    alternates: { canonical: `https://www.elitechub.com/authors/${slug}` },
     openGraph: {
       title,
       description,
-      url: `https://elitechub.com/authors/${slug}`,
+      url: `https://www.elitechub.com/authors/${slug}`,
       siteName: "Elitech Hub",
       images: writer.avatar_url ? [{ url: writer.avatar_url, width: 800, height: 600, alt: writer.display_name }] : [],
       type: "profile",
@@ -61,12 +61,12 @@ export default async function AuthorProfilePage({ params }: { params: Promise<{ 
     .order("published_at", { ascending: false });
 
   const publishedCount = posts?.length || 0;
-  const canonicalUrl = `https://elitechub.com/authors/${slug}`;
+  const canonicalUrl = `https://www.elitechub.com/authors/${slug}`;
 
   const elitechHubOrg = {
     "@type": "Organization",
     name: "Elitech Hub",
-    url: "https://elitechub.com",
+    url: "https://www.elitechub.com",
   };
 
   const personSchema: Record<string, unknown> = {
@@ -91,7 +91,7 @@ export default async function AuthorProfilePage({ params }: { params: Promise<{ 
     (personSchema.mainEntity as Record<string, unknown>)["author"] = posts.map((post, i) => ({
       "@type": "ListItem",
       position: i + 1,
-      url: `https://elitechub.com/blog/${post.slug}`,
+      url: `https://www.elitechub.com/blog/${post.slug}`,
       name: post.title,
     }));
   }

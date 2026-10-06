@@ -18,14 +18,14 @@ export const metadata = {
   openGraph: {
     title: 'Testimonials | Elitech Hub',
     description: 'Real feedback from our students and clients.',
-    url: 'https://elitechub.com/testimonials',
+    url: 'https://www.elitechub.com/testimonials',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
-    images: [{ url: 'https://elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
     type: 'website',
   },
   alternates: {
-    canonical: 'https://elitechub.com/testimonials'
+    canonical: 'https://www.elitechub.com/testimonials'
   }
 };
 

@@ -26,12 +26,12 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     title: `${lab.title} | Elitech Hub Lab`,
     description: lab.short_description || 'Cybersecurity Lab Research by Elitech Hub',
     alternates: {
-      canonical: `https://elitechub.com/lab/${lab.slug}`,
+      canonical: `https://www.elitechub.com/lab/${lab.slug}`,
     },
     openGraph: {
       title: `${lab.title} | Elitech Hub Lab`,
       description: lab.short_description,
-      url: `https://elitechub.com/lab/${lab.slug}`,
+      url: `https://www.elitechub.com/lab/${lab.slug}`,
       siteName: 'Elitech Hub',
       images: lab.cover_image ? [{ url: lab.cover_image }] : [],
       type: 'article',

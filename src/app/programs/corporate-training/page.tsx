@@ -12,11 +12,11 @@ export const metadata = {
   openGraph: {
     title: 'Corporate Cybersecurity Training Nigeria | Security Awareness for Teams | Elitech Hub',
     description: 'Elitech Hub delivers bespoke corporate cybersecurity training for organisations in Lagos, Ibadan, Abuja, and remotely across Nigeria.',
-    url: 'https://elitechub.com/programs/corporate-training',
+    url: 'https://www.elitechub.com/programs/corporate-training',
     siteName: 'Elitech Hub',
     images: [
       {
-        url: 'https://elitechub.com/og-corporate.jpg',
+        url: 'https://www.elitechub.com/og-corporate.jpg',
         width: 1200,
         height: 630,
         alt: 'Corporate Cybersecurity Training by Elitech Hub',
@@ -29,10 +29,10 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Corporate Cybersecurity Training Nigeria | Security Awareness for Teams | Elitech Hub',
     description: 'Elitech Hub delivers bespoke corporate cybersecurity training for organisations in Lagos, Ibadan, Abuja, and remotely across Nigeria.',
-    images: ['https://elitechub.com/og-corporate.jpg'],
+    images: ['https://www.elitechub.com/og-corporate.jpg'],
   },
   alternates: {
-    canonical: 'https://elitechub.com/programs/corporate-training',
+    canonical: 'https://www.elitechub.com/programs/corporate-training',
   },
 };
 
@@ -47,19 +47,19 @@ export default function CorporateTrainingPage() {
             "@type": "ListItem",
             "position": 1,
             "name": "Home",
-            "item": "https://elitechub.com"
+            "item": "https://www.elitechub.com"
           },
           {
             "@type": "ListItem",
             "position": 2,
             "name": "Programs",
-            "item": "https://elitechub.com/programs"
+            "item": "https://www.elitechub.com/programs"
           },
           {
             "@type": "ListItem",
             "position": 3,
             "name": "Corporate Training",
-            "item": "https://elitechub.com/programs/corporate-training"
+            "item": "https://www.elitechub.com/programs/corporate-training"
           }
         ]
       },
@@ -69,7 +69,7 @@ export default function CorporateTrainingPage() {
         "provider": {
           "@type": "Organization",
           "name": "Elitech Hub",
-          "url": "https://elitechub.com"
+          "url": "https://www.elitechub.com"
         },
         "description": "Elitech Hub delivers bespoke corporate cybersecurity training for organisations in Lagos, Ibadan, Abuja, and remotely across Nigeria.",
         "areaServed": [

@@ -23,12 +23,12 @@ export const metadata = {
     'Elitech Hub custom scripts',
   ],
   alternates: {
-    canonical: 'https://elitechub.com/services/custom-scripts',
+    canonical: 'https://www.elitechub.com/services/custom-scripts',
   },
   openGraph: {
     title: 'Custom Script Development for Organisations Nigeria | Elitech Hub',
     description: 'Bespoke Python, PowerShell, and Bash scripts for Nigerian organisations. Automation, DevOps, and custom tooling.',
-    url: 'https://elitechub.com/services/custom-scripts',
+    url: 'https://www.elitechub.com/services/custom-scripts',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
     type: 'website',
@@ -46,19 +46,19 @@ export default function CustomScriptsPage() {
             "@type": "ListItem",
             "position": 1,
             "name": "Home",
-            "item": "https://elitechub.com/"
+            "item": "https://www.elitechub.com/"
           },
           {
             "@type": "ListItem",
             "position": 2,
             "name": "Services",
-            "item": "https://elitechub.com/services"
+            "item": "https://www.elitechub.com/services"
           },
           {
             "@type": "ListItem",
             "position": 3,
             "name": "Custom Scripts",
-            "item": "https://elitechub.com/services/custom-scripts"
+            "item": "https://www.elitechub.com/services/custom-scripts"
           }
         ]
       },
@@ -69,7 +69,7 @@ export default function CustomScriptsPage() {
         "provider": {
           "@type": "Organization",
           "name": "Elitech Hub",
-          "url": "https://elitechub.com"
+          "url": "https://www.elitechub.com"
         },
         "areaServed": {
           "@type": "Country",

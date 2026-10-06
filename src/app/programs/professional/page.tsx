@@ -13,11 +13,11 @@ export const metadata = {
   openGraph: {
     title: '16-Week Professional Cybersecurity Program Nigeria | Internship Experience | Elitech Hub',
     description: 'Nigeria\'s most comprehensive cybersecurity career transformation program. 16 weeks of intensive training, unpaid internship experience, CompTIA Security+, CEH preparation, 1-on-1 mentorship, and career support.',
-    url: 'https://elitechub.com/programs/professional',
+    url: 'https://www.elitechub.com/programs/professional',
     siteName: 'Elitech Hub',
     images: [
       {
-        url: 'https://elitechub.com/images/professional-og.jpg',
+        url: 'https://www.elitechub.com/images/professional-og.jpg',
         width: 1200,
         height: 630,
         alt: '16-Week Professional Cybersecurity Program at Elitech Hub',
@@ -30,10 +30,10 @@ export const metadata = {
     card: 'summary_large_image',
     title: '16-Week Professional Cybersecurity Program Nigeria | Internship Experience | Elitech Hub',
     description: 'Nigeria\'s most comprehensive cybersecurity career transformation program. 16 weeks of intensive training, unpaid internship experience, CompTIA Security+, CEH preparation, 1-on-1 mentorship, and career support.',
-    images: ['https://elitechub.com/images/professional-og.jpg'],
+    images: ['https://www.elitechub.com/images/professional-og.jpg'],
   },
   alternates: {
-    canonical: 'https://elitechub.com/programs/professional',
+    canonical: 'https://www.elitechub.com/programs/professional',
   },
 };
 
@@ -47,19 +47,19 @@ export default function ProfessionalProgramPage() {
           '@type': 'ListItem',
           position: 1,
           name: 'Home',
-          item: 'https://elitechub.com/',
+          item: 'https://www.elitechub.com/',
         },
         {
           '@type': 'ListItem',
           position: 2,
           name: 'Programs',
-          item: 'https://elitechub.com/programs',
+          item: 'https://www.elitechub.com/programs',
         },
         {
           '@type': 'ListItem',
           position: 3,
           name: '16-Week Professional Program',
-          item: 'https://elitechub.com/programs/professional',
+          item: 'https://www.elitechub.com/programs/professional',
         },
       ],
     },
@@ -71,7 +71,7 @@ export default function ProfessionalProgramPage() {
       provider: {
         '@type': 'Organization',
         name: 'Elitech Hub',
-        sameAs: 'https://elitechub.com',
+        sameAs: 'https://www.elitechub.com',
       },
       hasCourseInstance: {
         '@type': 'CourseInstance',

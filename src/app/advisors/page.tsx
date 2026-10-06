@@ -10,11 +10,11 @@ export const metadata: Metadata = {
   title: 'Our Advisors | Elitech Hub',
   description: 'Meet the experienced professionals and industry leaders guiding Elitech Hub.',
   keywords: 'Elitech Hub advisors, cybersecurity advisory board, tech industry leaders Nigeria, cybersecurity mentors',
-  alternates: { canonical: 'https://elitechub.com/advisors' },
+  alternates: { canonical: 'https://www.elitechub.com/advisors' },
   openGraph: {
     title: 'Our Advisors | Elitech Hub',
     description: 'Meet the experienced professionals and industry leaders guiding Elitech Hub.',
-    url: 'https://elitechub.com/advisors',
+    url: 'https://www.elitechub.com/advisors',
     type: 'website',
   }
 };

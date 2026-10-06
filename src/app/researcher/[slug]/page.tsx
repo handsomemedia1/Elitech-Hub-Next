@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: `${researcher.full_name} - Cybersecurity Researcher | Elitech Hub`,
     description: researcher.biography || `Research profile and publications by ${researcher.full_name}.`,
     alternates: {
-      canonical: `https://elitechub.com/researcher/${slug}`
+      canonical: `https://www.elitechub.com/researcher/${slug}`
     }
   };
 }
@@ -36,8 +36,8 @@ export default async function ResearcherProfilePage({ params }: { params: Promis
       '@type': 'Organization',
       name: researcher.institution || 'Elitech Hub'
     },
-    url: `https://elitechub.com/researcher/${slug}`,
-    image: researcher.profile_image_url || 'https://elitechub.com/images/default-avatar.png',
+    url: `https://www.elitechub.com/researcher/${slug}`,
+    image: researcher.profile_image_url || 'https://www.elitechub.com/images/default-avatar.png',
     description: researcher.biography,
     sameAs: [
       researcher.linkedin_url,

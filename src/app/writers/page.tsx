@@ -8,11 +8,11 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "Writers | Elitech Hub",
   description: "Meet the writers and authors contributing to Elitech Hub — cybersecurity experts, researchers, and technology professionals sharing their knowledge.",
-  alternates: { canonical: "https://elitechub.com/writers" },
+  alternates: { canonical: "https://www.elitechub.com/writers" },
   openGraph: {
     title: "Writers | Elitech Hub",
     description: "Meet the writers and authors contributing to Elitech Hub.",
-    url: "https://elitechub.com/writers",
+    url: "https://www.elitechub.com/writers",
     siteName: "Elitech Hub",
     type: "website",
   },
@@ -34,7 +34,7 @@ export default async function WritersIndexPage() {
   const elitechHubOrg = {
     "@type": "Organization",
     name: "Elitech Hub",
-    url: "https://elitechub.com",
+    url: "https://www.elitechub.com",
   };
 
   const jsonLd = {
@@ -42,14 +42,14 @@ export default async function WritersIndexPage() {
     "@type": "CollectionPage",
     name: "Elitech Hub Writers",
     description: "Public directory of writers and authors at Elitech Hub.",
-    url: "https://elitechub.com/writers",
+    url: "https://www.elitechub.com/writers",
     publisher: elitechHubOrg,
     hasPart: (writers || []).map(w => ({
       "@type": "Person",
       name: w.display_name,
       jobTitle: w.professional_title || "Writer",
       worksFor: elitechHubOrg,
-      url: `https://elitechub.com/authors/${w.slug}`,
+      url: `https://www.elitechub.com/authors/${w.slug}`,
       ...(w.avatar_url && { image: w.avatar_url }),
     })),
   };

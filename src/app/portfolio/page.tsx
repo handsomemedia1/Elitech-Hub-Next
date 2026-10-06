@@ -23,14 +23,14 @@ export const metadata = {
   openGraph: {
     title: 'Portfolio | Elitech Hub Nigeria — Web Dev, AI & Cybersecurity',
     description: 'Premium websites, AI agents, and security projects built by Elitech Hub for Nigerian and global clients.',
-    url: 'https://elitechub.com/portfolio',
+    url: 'https://www.elitechub.com/portfolio',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
-    images: [{ url: 'https://elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
     type: 'website',
   },
   twitter: { card: 'summary_large_image', title: 'Elitech Hub Portfolio — Web Dev & AI Nigeria', site: '@ElitechHub' },
-  alternates: { canonical: 'https://elitechub.com/portfolio' },
+  alternates: { canonical: 'https://www.elitechub.com/portfolio' },
 };
 
 

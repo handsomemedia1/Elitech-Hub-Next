@@ -30,14 +30,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Cybersecurity Blog | Elitech Hub Nigeria',
     description: 'Expert cybersecurity articles, career guides, and tutorials from Nigeria\'s top security training platform.',
-    url: 'https://elitechub.com/blog',
+    url: 'https://www.elitechub.com/blog',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
-    images: [{ url: 'https://elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
     type: 'website',
   },
   twitter: { card: 'summary_large_image', title: 'Cybersecurity Blog | Elitech Hub Nigeria', site: '@ElitechHub' },
-  alternates: { canonical: 'https://elitechub.com/blog' },
+  alternates: { canonical: 'https://www.elitechub.com/blog' },
 };
 
 
@@ -46,7 +46,7 @@ export default async function BlogPage() {
   
   const { data: posts, error } = await supabase
     .from("blog_posts")
-    .select("id, title, slug, excerpt, category, author, thumbnail, published_at, views, tags, word_count")
+    .select("id, title, slug, excerpt, category, author, thumbnail, published_at, created_at, views, tags, word_count")
     .eq("published", true)
     .order("published_at", { ascending: false })
     .limit(24);
@@ -57,12 +57,12 @@ export default async function BlogPage() {
     "@context": "https://schema.org",
     "@type": "Blog",
     name: "Elitech Hub Blog",
-    url: "https://elitechub.com/blog",
+    url: "https://www.elitechub.com/blog",
     description: "Cybersecurity articles, career tips, and tutorials from Elitech Hub.",
     publisher: {
       "@type": "Organization",
       name: "Elitech Hub",
-      logo: { "@type": "ImageObject", url: "https://elitechub.com/images/logo.png" },
+      logo: { "@type": "ImageObject", url: "https://www.elitechub.com/images/logo.png" },
     },
   };
 

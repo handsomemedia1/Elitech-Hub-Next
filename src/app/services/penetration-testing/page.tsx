@@ -26,12 +26,12 @@ export const metadata = {
     'NDPR security audit Nigeria',
   ],
   alternates: {
-    canonical: 'https://elitechub.com/services/penetration-testing',
+    canonical: 'https://www.elitechub.com/services/penetration-testing',
   },
   openGraph: {
     title: 'Penetration Testing Nigeria | Ethical Hacking & Security Audits',
     description: 'Professional penetration testing in Nigeria including web app, network, mobile, and cloud infrastructure security assessments.',
-    url: 'https://elitechub.com/services/penetration-testing',
+    url: 'https://www.elitechub.com/services/penetration-testing',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
     type: 'website',
@@ -49,19 +49,19 @@ export default function PenetrationTestingPage() {
             "@type": "ListItem",
             "position": 1,
             "name": "Home",
-            "item": "https://elitechub.com/"
+            "item": "https://www.elitechub.com/"
           },
           {
             "@type": "ListItem",
             "position": 2,
             "name": "Services",
-            "item": "https://elitechub.com/services"
+            "item": "https://www.elitechub.com/services"
           },
           {
             "@type": "ListItem",
             "position": 3,
             "name": "Penetration Testing",
-            "item": "https://elitechub.com/services/penetration-testing"
+            "item": "https://www.elitechub.com/services/penetration-testing"
           }
         ]
       },
@@ -72,7 +72,7 @@ export default function PenetrationTestingPage() {
         "provider": {
           "@type": "Organization",
           "name": "Elitech Hub",
-          "url": "https://elitechub.com"
+          "url": "https://www.elitechub.com"
         },
         "areaServed": ["Lagos", "Ibadan", "Abuja", "Nigeria"],
         "description": "Professional penetration testing in Nigeria including web app pentesting, network security audits, mobile security assessment, and cloud infrastructure testing."
