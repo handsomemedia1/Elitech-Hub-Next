@@ -14,16 +14,20 @@ export interface PricingTierProps {
 }
 
 export function PricingTiers({ tiers }: { tiers: PricingTierProps[] }) {
-  const { formatPrice: contextFormatPrice, loading } = usePricing();
+  const { formatPrice: contextFormatPrice, loading, fxState } = usePricing();
 
   const getDisplayPrice = (tier: PricingTierProps) => {
+    if (fxState === 'unavailable') {
+      return <span style={{ color: '#ef4444', fontWeight: 500, fontSize: '0.9em' }}>Price temporarily unavailable</span>;
+    }
+
     // If we have an ID and pricing has loaded, try to use dynamic pricing
     if (!loading && tier.id) {
       const dynamicPrice = contextFormatPrice(tier.id);
       if (dynamicPrice !== '...') return dynamicPrice;
     }
     // Fallback to static NGN price
-    return `₦${new Intl.NumberFormat('en-US').format(tier.priceNgn)}`;
+    return '\u20A6' + new Intl.NumberFormat('en-US').format(tier.priceNgn);
   };
 
   return (
