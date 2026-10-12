@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
-import { PenTool, Search, TrendingUp, Check, X, Trash2, Plus } from 'lucide-react';
+import { PenTool, Search, TrendingUp, Check, X, Trash2, Plus, Ban, CheckCircle, Clock } from 'lucide-react';
 import styles from '../users/users.module.css';
 import AdminModal from '@/components/AdminModal';
 
@@ -15,14 +14,12 @@ const labelStyle: React.CSSProperties = {
   display: 'block', marginBottom: '0.35rem',
   fontSize: '0.8rem', fontWeight: 600, color: '#94a3b8',
 };
-const overlayStyle: React.CSSProperties = {
-  position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)',
-  zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem',
-};
 const modalStyle: React.CSSProperties = {
   background: '#1e293b', borderRadius: '12px', width: '100%',
   maxWidth: '480px', padding: '2rem', border: '1px solid #334155',
 };
+
+import { fetchWritersAction, addWriterAction, deleteWriterAction, updateWriterStatusAction } from './actions';
 
 export default function AdminWriters() {
   const [writers, setWriters] = useState<any[]>([]);
@@ -30,7 +27,7 @@ export default function AdminWriters() {
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({ name: '', email: '', bio: '', active: true });
+  const [form, setForm] = useState({ name: '', email: '', bio: '', status: 'approved' });
   const [formError, setFormError] = useState('');
 
   useEffect(() => {
@@ -39,32 +36,18 @@ export default function AdminWriters() {
 
   async function fetchWriters() {
     setLoading(true);
-    const { data } = await supabase
-      .from('writers')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    const { data: posts } = await supabase.from('blog_posts').select('author');
-
-    let finalWriters = data || [];
-    if (posts) {
-      const uniqueAuthors = Array.from(new Set(posts.map((p: any) => p.author).filter((a: any) => a)));
-      uniqueAuthors.forEach((author: any) => {
-        if (!finalWriters.some((w: any) => w.name === author)) {
-          finalWriters.push({
-            id: author, name: author, email: 'Legacy Author',
-            posts_count: posts.filter((p: any) => p.author === author).length,
-            active: true,
-          });
-        }
-      });
+    const { data, error } = await fetchWritersAction();
+    if (error) {
+      console.error("Error fetching writers", error);
+      alert(error);
+    } else {
+      setWriters(data || []);
     }
-    setWriters(finalWriters);
     setLoading(false);
   }
 
   const openAddModal = () => {
-    setForm({ name: '', email: '', bio: '', active: true });
+    setForm({ name: '', email: '', bio: '', status: 'approved' });
     setFormError('');
     setShowModal(true);
   };
@@ -77,15 +60,21 @@ export default function AdminWriters() {
     }
     setSaving(true);
     setFormError('');
-    const { error } = await supabase.from('writers').insert([{
+    
+    const writerData = {
       name: form.name.trim(),
+      display_name: form.name.trim(),
       email: form.email.trim(),
       bio: form.bio.trim() || null,
-      active: form.active,
-    }]);
+      status: form.status,
+      password_hash: 'temp' // A dummy hash, they can reset it
+    };
+
+    const { success, error } = await addWriterAction(writerData);
     setSaving(false);
-    if (error) {
-      setFormError(error.message);
+    
+    if (!success) {
+      setFormError(error || 'Failed to add writer');
     } else {
       setShowModal(false);
       fetchWriters();
@@ -94,18 +83,27 @@ export default function AdminWriters() {
 
   const handleDeleteWriter = async (id: string, name: string) => {
     if (!window.confirm(`Delete writer: ${name}?`)) return;
-    setWriters(writers.filter(w => w.id !== id && w.name !== name));
-    if (id && id !== name) {
-      await supabase.from('writers').delete().eq('id', id);
+    
+    // Optimistic update
+    setWriters(writers.filter(w => w.id !== id));
+    
+    const { success, error } = await deleteWriterAction(id);
+    if (!success) {
+      alert(`Error deleting writer: ${error}`);
+      fetchWriters(); // Revert on failure
     }
   };
 
-  const handleToggleBan = async (id: string, name: string, currentlyBanned: boolean) => {
-    const action = currentlyBanned ? 'unban' : 'ban';
-    if (!window.confirm(`${action.charAt(0).toUpperCase() + action.slice(1)} writer: ${name}?`)) return;
-    setWriters(writers.map(w => w.id === id ? { ...w, banned: !currentlyBanned } : w));
-    if (id && id !== name) {
-      await supabase.from('writers').update({ banned: !currentlyBanned }).eq('id', id);
+  const handleUpdateStatus = async (id: string, name: string, newStatus: string) => {
+    if (!window.confirm(`Change status to ${newStatus.toUpperCase()} for writer: ${name}?`)) return;
+    
+    // Optimistic update
+    setWriters(writers.map(w => w.id === id ? { ...w, status: newStatus } : w));
+    
+    const { success, error } = await updateWriterStatusAction(id, newStatus);
+    if (!success) {
+      alert(`Error updating status: ${error}`);
+      fetchWriters(); // Revert on failure
     }
   };
 
@@ -139,16 +137,15 @@ export default function AdminWriters() {
               <th>Author</th>
               <th>Email</th>
               <th>Total Posts</th>
-              <th>Total Views</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={6} style={{ textAlign: 'center', padding: '2rem' }}>Loading writers...</td></tr>
+              <tr><td colSpan={5} style={{ textAlign: 'center', padding: '2rem' }}>Loading writers...</td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={6} style={{ textAlign: 'center', padding: '2rem' }}>No writers found.</td></tr>
+              <tr><td colSpan={5} style={{ textAlign: 'center', padding: '2rem' }}>No writers found.</td></tr>
             ) : filtered.map(writer => (
               <tr key={writer.id}>
                 <td className={styles.tdName}>
@@ -157,20 +154,31 @@ export default function AdminWriters() {
                 </td>
                 <td>{writer.email}</td>
                 <td><span className={styles.badge}>{writer.posts_count || 0} Posts</span></td>
-                <td style={{ color: '#059669', fontWeight: 500 }}>
-                  <TrendingUp size={14} style={{ marginRight: '4px', verticalAlign: 'text-bottom' }} />
-                  {writer.total_views || 0}
-                </td>
                 <td>
-                  <span className={`${styles.statusBadge} ${writer.banned ? styles.statusInactive : (writer.active ? styles.statusActive : styles.statusInactive)}`}>
-                    {writer.banned ? 'Banned' : (writer.active ? 'Active' : 'Pending')}
+                  <span className={`${styles.statusBadge} ${writer.status === 'approved' ? styles.statusActive : writer.status === 'pending' ? styles.statusPending : styles.statusInactive}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    {writer.status === 'approved' && <CheckCircle size={12} />}
+                    {writer.status === 'pending' && <Clock size={12} />}
+                    {(writer.status === 'rejected' || writer.status === 'suspended') && <Ban size={12} />}
+                    {writer.status ? writer.status.toUpperCase() : 'UNKNOWN'}
                   </span>
                 </td>
                 <td>
                   <div className={styles.actionBtns}>
-                    <button className={styles.iconBtn} title={writer.banned ? 'Unban Writer' : 'Ban Writer'} onClick={() => handleToggleBan(writer.id, writer.name, writer.banned)}>
-                      {writer.banned ? <Check size={16} style={{ color: '#10b981' }} /> : <X size={16} style={{ color: '#ef4444' }} />}
-                    </button>
+                    {writer.status !== 'approved' && (
+                      <button className={styles.iconBtn} title="Approve" onClick={() => handleUpdateStatus(writer.id, writer.name, 'approved')}>
+                        <Check size={16} style={{ color: '#10b981' }} />
+                      </button>
+                    )}
+                    {writer.status === 'pending' && (
+                       <button className={styles.iconBtn} title="Reject" onClick={() => handleUpdateStatus(writer.id, writer.name, 'rejected')}>
+                        <X size={16} style={{ color: '#f59e0b' }} />
+                      </button>
+                    )}
+                    {writer.status === 'approved' && (
+                       <button className={styles.iconBtn} title="Suspend" onClick={() => handleUpdateStatus(writer.id, writer.name, 'suspended')}>
+                        <Ban size={16} style={{ color: '#ef4444' }} />
+                      </button>
+                    )}
                     <button className={styles.iconBtn} title="Delete" onClick={() => handleDeleteWriter(writer.id, writer.name)}>
                       <Trash2 size={16} />
                     </button>
@@ -182,7 +190,6 @@ export default function AdminWriters() {
         </table>
       </div>
 
-      {/* Add Writer Modal */}
       {showModal && (
         <AdminModal onClose={() => setShowModal(false)}>
           <div style={{ ...modalStyle, margin: '0 auto' }}>
@@ -209,9 +216,13 @@ export default function AdminWriters() {
                 <label style={labelStyle}>Short Bio</label>
                 <textarea style={{ ...inputStyle, resize: 'vertical' }} rows={3} value={form.bio} onChange={e => setForm(f => ({ ...f, bio: e.target.value }))} placeholder="A brief bio for the author profile..." />
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <input type="checkbox" id="active-toggle" checked={form.active} onChange={e => setForm(f => ({ ...f, active: e.target.checked }))} style={{ width: '1rem', height: '1rem', accentColor: '#3b82f6' }} />
-                <label htmlFor="active-toggle" style={{ color: '#94a3b8', fontSize: '0.875rem' }}>Mark as Active Writer</label>
+              <div>
+                <label style={labelStyle}>Status</label>
+                <select style={inputStyle} value={form.status} onChange={e => setForm(f => ({ ...f, status: e.target.value }))}>
+                  <option value="pending">Pending</option>
+                  <option value="approved">Approved</option>
+                  <option value="suspended">Suspended</option>
+                </select>
               </div>
               {formError && (
                 <p style={{ color: '#ef4444', fontSize: '0.85rem', background: 'rgba(239,68,68,0.1)', padding: '0.5rem 0.75rem', borderRadius: '6px', border: '1px solid rgba(239,68,68,0.3)' }}>

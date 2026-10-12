@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
 import { Plus, Edit, Trash2, X, FileText, BookOpen, ExternalLink, Upload } from 'lucide-react';
-import { saveResource, deleteResource } from './actions';
+import { saveResource, deleteResource, fetchResourcesAction } from './actions';
 import styles from '../admin.module.css';
 import AdminModal from '@/components/AdminModal';
 
@@ -54,7 +53,7 @@ export default function AdminResourcesPage() {
 
   const fetchResources = async () => {
     setLoading(true);
-    const { data } = await supabase.from('resources').select('*').order('created_at', { ascending: false });
+    const { data } = await fetchResourcesAction();
     if (data) setResources(data);
     setLoading(false);
   };

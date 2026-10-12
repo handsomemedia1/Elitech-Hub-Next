@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
 import { FileText, Search, Edit2, Trash2, Check, X, Eye } from 'lucide-react';
 import styles from '../users/users.module.css';
 import Link from 'next/link';
+
+import { fetchPostsAction, updatePostStatusAction, deletePostAction } from './actions';
 
 export default function AdminPosts() {
   const [posts, setPosts] = useState<any[]>([]);
@@ -17,12 +18,12 @@ export default function AdminPosts() {
 
   async function fetchPosts() {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('blog_posts')
-      .select('*')
-      .order('created_at', { ascending: false });
-      
-    if (data) setPosts(data);
+    const { data, error } = await fetchPostsAction();
+    if (!error) {
+      setPosts(data);
+    } else {
+      console.error(error);
+    }
     setLoading(false);
   }
 
@@ -30,17 +31,23 @@ export default function AdminPosts() {
     // Optimistic update
     setPosts(posts.map(p => p.id === id ? { ...p, status: newStatus, published: newStatus === 'published' } : p));
     
-    await supabase.from('blog_posts').update({ 
-      status: newStatus,
-      published: newStatus === 'published' 
-    }).eq('id', id);
+    const { success, error } = await updatePostStatusAction(id, newStatus);
+    if (!success) {
+      alert(`Error updating post status: ${error}`);
+      fetchPosts();
+    }
   };
 
   const handleDeletePost = async (id: string, title: string) => {
     if (!window.confirm(`Are you sure you want to delete post: "${title}"?`)) return;
     
     setPosts(posts.filter(p => p.id !== id));
-    await supabase.from('blog_posts').delete().eq('id', id);
+    
+    const { success, error } = await deletePostAction(id);
+    if (!success) {
+      alert(`Error deleting post: ${error}`);
+      fetchPosts();
+    }
   };
 
   const filteredPosts = posts.filter(p => filter === 'all' || p.status === filter);

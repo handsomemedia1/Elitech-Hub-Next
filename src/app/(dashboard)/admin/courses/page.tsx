@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
 import { PlusCircle, Search, Edit2, Trash2, BookOpen, Layers } from 'lucide-react';
 import styles from './courses.module.css';
+
+import { fetchCoursesAction, deleteCourseAction } from './actions';
 
 export default function AdminCourses() {
   const [courses, setCourses] = useState<any[]>([]);
@@ -22,14 +23,11 @@ export default function AdminCourses() {
 
   async function fetchCourses() {
     setLoading(true);
-    // Use the schema from database-setup.sql
-    const { data, error } = await supabase
-      .from('courses')
-      .select('*, modules(count)')
-      .order('created_at', { ascending: false });
-
-    if (data) {
+    const { data, error } = await fetchCoursesAction();
+    if (!error) {
       setCourses(data);
+    } else {
+      console.error(error);
     }
     setLoading(false);
   }
@@ -37,8 +35,13 @@ export default function AdminCourses() {
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this course and all its modules?')) return;
     
-    await supabase.from('courses').delete().eq('id', id);
+    // Optimistic delete
     setCourses(courses.filter(c => c.id !== id));
+    const { success, error } = await deleteCourseAction(id);
+    if (!success) {
+      alert(`Error deleting course: ${error}`);
+      fetchCourses();
+    }
   };
 
   const filteredCourses = courses.filter(course => 

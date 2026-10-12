@@ -11,6 +11,7 @@ import ScrollNavbar from "@/components/ScrollNavbar";
 import LeadPopup from "@/components/LeadPopup";
 import PublicWidgets from "@/components/PublicWidgets";
 import CloudflareAnalytics from "@/components/CloudflareAnalytics";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -82,7 +83,7 @@ export const metadata: Metadata = {
     google: 'piBoWaLCSxsP7CpAkK9fYvSfTCDTLABvvq5bmjYWa1U',
     other: { 
       'msvalidate.01': '5C9DBFD3E865819C65965645EF87729F',
-      'yandex-verification': '6d910a5f997cec90'
+      'yandex-verification': 'ef4b95c61d650b05'
     },
   },
   // --- ROBOTS DIRECTIVE: maximum indexing permissions ---
@@ -311,6 +312,7 @@ export default function RootLayout({
           <PublicWidgets />
         </PricingProvider>
         <CloudflareAnalytics />
+        <Analytics />
       </body>
     </html>
   );

@@ -3,10 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
 import { ArrowLeft, Save, Trash2, Plus, Layers } from 'lucide-react';
 import styles from './course-editor.module.css';
 import RichTextEditor from '@/components/RichTextEditor';
+import { fetchCourseAction, fetchCourseModulesAction, createCourseAction, updateCourseAction } from '../actions';
 
 export default function CourseEditor() {
   const router = useRouter();
@@ -32,12 +32,8 @@ export default function CourseEditor() {
   }, [id]);
 
   async function fetchCourse() {
-    const { data: course, error } = await supabase
-      .from('courses')
-      .select('*')
-      .eq('id', id)
-      .single();
-
+    const { data: course, error } = await fetchCourseAction(id);
+    
     if (course) {
       setTitle(course.title || '');
       setSlug(course.slug || '');
@@ -45,14 +41,10 @@ export default function CourseEditor() {
       setPrice(course.price || 0);
       setLevel(course.level || 'Beginner');
       
-      // Fetch modules for this course
-      const { data: mods } = await supabase
-        .from('modules')
-        .select('*')
-        .eq('course_id', id)
-        .order('order_index', { ascending: true });
-        
+      const { data: mods } = await fetchCourseModulesAction(id);
       if (mods) setModules(mods);
+    } else {
+      console.error(error);
     }
     setFetching(false);
   }
@@ -74,27 +66,21 @@ export default function CourseEditor() {
     const courseData = { title, slug, description, price, level };
 
     if (isNew) {
-      const { data, error } = await supabase
-        .from('courses')
-        .insert([courseData])
-        .select()
-        .single();
+      const { data, error } = await createCourseAction(courseData);
         
       if (error) {
-        alert("Error creating course: " + error.message);
-      } else {
+        alert("Error creating course: " + error);
+      } else if (data) {
         router.push(`/admin/courses/${data.id}`);
       }
     } else {
-      const { error } = await supabase
-        .from('courses')
-        .update(courseData)
-        .eq('id', id);
+      const { success, error } = await updateCourseAction(id, courseData);
         
-      if (error) {
-        alert("Error updating course: " + error.message);
+      if (!success) {
+        alert("Error updating course: " + error);
       } else {
         alert("Course updated successfully!");
+        router.refresh();
       }
     }
     setLoading(false);

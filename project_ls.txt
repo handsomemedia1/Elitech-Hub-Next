@@ -1,0 +1,16 @@
+Vercel CLI 59.23.1 (Node.js 22.15.0)
+Fetching projects in elijah-elitech-adeyeyes-projects
+> Projects found under elijah-elitech-adeyeyes-projects  [4s]
+
+  Project Name                    Latest Production URL                                                  Updated   Node Version   
+  elitech-hub                     https://www.elitechub.com                                              53m       24.x           
+  elitech-hub-next                https://elitech-hub-next-elijah-elitech-adeyeyes-projects.vercel.app   3h        24.x           
+  ceewritingservice               https://ceewriting.com                                                 3d        24.x           
+  mamadd-website                  https://mamadd.com                                                     6d        24.x           
+  client                          https://elijahadeyeye.vercel.app                                       10d       24.x           
+  hiim                            https://hiim.vercel.app                                                20d       24.x           
+  backend                         --                                                                     115d      24.x           
+  behavioral-phishing-detection   https://behavioral-phishing-detection.vercel.app                       121d      22.x           
+  epix-initiative                 https://epix-initiative.vercel.app                                     125d      24.x           
+  twinecord                       https://twinecord.vercel.app                                           136d      24.x           
+

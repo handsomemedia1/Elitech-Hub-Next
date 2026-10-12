@@ -1,10 +1,3 @@
-/**
- * POST /api/auth/login
- * Mirrors old backend auth.js /login route
- */
-export const runtime = 'nodejs';
-
-
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { createServiceClient } from '@/lib/supabase-server';
@@ -12,15 +5,13 @@ import { validateEmail } from '@/lib/validators';
 import { signToken } from '@/lib/auth';
 import { authLimit, getClientIp } from '@/lib/rate-limit';
 
+export const runtime = 'nodejs';
+
 export async function POST(request: Request) {
-  // ── Rate limit: 5 attempts / 15 min ───────────────────────────
   const ip = getClientIp(request);
   const limit = authLimit(ip);
   if (!limit.allowed) {
-    return NextResponse.json(
-      { error: 'Too many login attempts. Please try again in 15 minutes.' },
-      { status: 429 }
-    );
+    return NextResponse.json({ error: 'Too many login attempts. Please try again in 15 minutes.' }, { status: 429 });
   }
 
   let body: Record<string, unknown>;
@@ -30,7 +21,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
   }
 
-  // ── Basic validation ───────────────────────────────────────────
   const emailResult = validateEmail(body.email);
   if (!emailResult.valid) return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
 
@@ -41,49 +31,79 @@ export async function POST(request: Request) {
   const supabase = createServiceClient();
   if (!supabase) return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
 
-  // ── Fetch user ─────────────────────────────────────────────────
-  const { data: user, error } = await supabase
+  let authUser: any = null;
+  let authRole = 'student';
+
+  // 1. Try to fetch from 'users' table
+  const { data: user } = await supabase
     .from('users')
     .select('id, email, name, password_hash, has_access, role, country, token_version')
     .eq('email', emailResult.value)
     .single();
 
-  // Use generic message to prevent email enumeration
-  if (error || !user) {
+  if (user) {
+    authUser = user;
+    authRole = user.role;
+  } else {
+    // 2. Try to fetch from 'writers' table
+    const { data: writer } = await supabase
+      .from('writers')
+      .select('id, email, name, password_hash, status, active')
+      .eq('email', emailResult.value)
+      .single();
+
+    if (writer) {
+      authUser = writer;
+      authRole = 'writer';
+      
+      // Explicitly check writer approval status
+      if (writer.status === 'pending') {
+        return NextResponse.json({ error: 'Your writer application is still awaiting approval.' }, { status: 403 });
+      }
+      if (writer.status === 'rejected') {
+        return NextResponse.json({ error: 'Your writer application has been rejected.' }, { status: 403 });
+      }
+      if (writer.status === 'suspended' || writer.active === false) {
+        return NextResponse.json({ error: 'Your account is suspended or inactive.' }, { status: 403 });
+      }
+    }
+  }
+
+  if (!authUser) {
     return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
   }
 
-  // ── Verify password ────────────────────────────────────────────
-  const valid = await bcrypt.compare(body.password, user.password_hash);
+  // Verify password
+  const valid = await bcrypt.compare(body.password, authUser.password_hash);
   if (!valid) {
     return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
   }
 
   const token = signToken({
-    userId: user.id,
-    email: user.email,
-    tokenVersion: user.token_version ?? 0,
+    userId: authUser.id,
+    email: authUser.email,
+    tokenVersion: authUser.token_version ?? 0,
+    role: authRole
   });
 
   const response = NextResponse.json({
     message: 'Login successful',
     user: {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      country: user.country,
-      has_access: user.has_access,
-      role: user.role,
+      id: authUser.id,
+      email: authUser.email,
+      name: authUser.name,
+      country: authUser.country,
+      has_access: authUser.has_access,
+      role: authRole,
     },
     token,
   });
 
-  // Set secure HttpOnly cookie for server-side authentication
   response.cookies.set('elitech_token', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
-    maxAge: 7 * 24 * 60 * 60, // 7 days
+    maxAge: 7 * 24 * 60 * 60,
     path: '/',
   });
 

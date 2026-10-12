@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
 import { Download, Upload, Printer, CheckCircle, Search, Save } from 'lucide-react';
 import styles from './certificates.module.css';
 import { QRCodeSVG } from 'qrcode.react';
@@ -9,6 +8,8 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import JSZip from 'jszip';
 import Papa from 'papaparse';
+
+import { fetchCertificateCountAction, saveCertificateAction } from './actions';
 
 export default function AdminCertificates() {
   const currentYear = new Date().getFullYear();
@@ -35,12 +36,12 @@ export default function AdminCertificates() {
 
   useEffect(() => {
     async function initCertCount() {
-      const { count } = await supabase
-        .from('certificates')
-        .select('*', { count: 'exact', head: true });
-        
-      // If there are 15 old certs, start at 16
-      setCertCount((count || 0) + 1);
+      const { count, error } = await fetchCertificateCountAction();
+      if (!error) {
+        setCertCount((count || 0) + 1);
+      } else {
+        setCertCount(1);
+      }
     }
     initCertCount();
   }, []);
@@ -84,6 +85,11 @@ export default function AdminCertificates() {
     if (!certRef.current) return null;
     const certEl = certRef.current;
     
+    // Wait for the main document's fonts
+    if (document.fonts) {
+      await document.fonts.ready;
+    }
+    
     // Temporarily remove transform to capture full resolution
     const originalTransform = certEl.style.transform;
     certEl.style.transform = 'scale(1)';
@@ -91,7 +97,17 @@ export default function AdminCertificates() {
     const canvas = await html2canvas(certEl, {
       scale: 2,
       useCORS: true,
-      backgroundColor: '#0d0f12'
+      backgroundColor: '#0d0f12',
+      onclone: (clonedDoc) => {
+        // Wait for fonts inside the cloned iframe to prevent text squishing
+        return new Promise((resolve) => {
+          if (clonedDoc.fonts) {
+            clonedDoc.fonts.ready.then(resolve);
+          } else {
+            setTimeout(resolve, 500); // Fallback
+          }
+        });
+      }
     });
     
     certEl.style.transform = originalTransform;
@@ -100,15 +116,8 @@ export default function AdminCertificates() {
 
   const saveCertificateToDB = async (data: any, id: string) => {
     try {
-      const { error } = await supabase.from('certificates').insert([
-        {
-          certificate_id: id,
-          user_name: data.name,
-          course_title: data.role,
-          issued_at: new Date(data.date).toISOString()
-        }
-      ]);
-      if (error && error.code !== '23505') { // ignore unique constraint if it already exists
+      const { success, error } = await saveCertificateAction(data, id);
+      if (!success) {
         console.error('Failed to save to verification DB:', error);
       }
     } catch (err) {

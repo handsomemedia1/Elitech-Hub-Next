@@ -38,7 +38,7 @@ export default function LabForm() {
     e.preventDefault();
     setLoading(true);
 
-    const payload = {
+    const payload: any = {
       ...formData,
       mitre_mappings: formData.mitre_mappings ? JSON.parse(formData.mitre_mappings) : null,
       published_at: formData.status === 'published' && !id ? new Date().toISOString() : undefined

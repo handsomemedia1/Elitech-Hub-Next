@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
 import styles from '../admin.module.css';
 
 type PriceRow = {
@@ -11,6 +10,8 @@ type PriceRow = {
   symbol: string;
   amount: number;
 };
+
+import { fetchPricingAction, createPricingAction, updatePricingAction, deletePricingAction } from './actions';
 
 export default function PricingAdminPage() {
   const [prices, setPrices] = useState<PriceRow[]>([]);
@@ -35,15 +36,11 @@ export default function PricingAdminPage() {
 
   const fetchPrices = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('course_prices')
-      .select('*')
-      .order('course_id')
-      .order('currency_code');
+    const { data, error } = await fetchPricingAction();
     
     if (error) {
       console.error(error);
-      setError('Failed to load prices. Did you run the SQL migration?');
+      setError('Failed to load prices.');
     } else {
       setPrices(data || []);
     }
@@ -58,13 +55,11 @@ export default function PricingAdminPage() {
   const handleSave = async (id: string) => {
     if (editAmount === '') return;
     setSaving(true);
-    const { error } = await supabase
-      .from('course_prices')
-      .update({ amount: Number(editAmount) })
-      .eq('id', id);
+    
+    const { success, error } = await updatePricingAction(id, Number(editAmount));
 
-    if (error) {
-      setError('Failed to update price');
+    if (!success) {
+      setError(error || 'Failed to update price');
     } else {
       setEditRowId(null);
       await fetchPrices();
@@ -75,11 +70,8 @@ export default function PricingAdminPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this price?')) return;
     setSaving(true);
-    const { error } = await supabase
-      .from('course_prices')
-      .delete()
-      .eq('id', id);
-    if (error) setError('Failed to delete');
+    const { success, error } = await deletePricingAction(id);
+    if (!success) setError(error || 'Failed to delete');
     else await fetchPrices();
     setSaving(false);
   };
@@ -88,19 +80,15 @@ export default function PricingAdminPage() {
     e.preventDefault();
     if (newAmount === '') return;
     setSaving(true);
-    const { error } = await supabase
-      .from('course_prices')
-      .insert([
-        {
-          course_id: newCourseId,
-          currency_code: newCurrency.toUpperCase(),
-          symbol: newSymbol,
-          amount: Number(newAmount)
-        }
-      ]);
+    const { success, error } = await createPricingAction({
+      course_id: newCourseId,
+      currency_code: newCurrency.toUpperCase(),
+      symbol: newSymbol,
+      amount: Number(newAmount)
+    });
 
-    if (error) {
-      setError(error.message);
+    if (!success) {
+      setError(error || 'Failed to add price');
     } else {
       setIsAdding(false);
       setNewAmount('');
@@ -108,6 +96,7 @@ export default function PricingAdminPage() {
     }
     setSaving(false);
   };
+
 
   return (
     <div className={styles.adminPage}>

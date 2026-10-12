@@ -2,9 +2,9 @@
 
 import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
 import { Upload, Plus, Trash2, CheckCircle2, ArrowLeft, FileText } from 'lucide-react';
 import Link from 'next/link';
+import { submitResearchAction } from '../actions';
 import { RESEARCH_CATEGORIES } from '@/lib/constants';
 import styles from './upload.module.css';
 
@@ -151,7 +151,7 @@ export default function AdvancedUploadPortal() {
       const newPaper = {
         title: formData.title,
         slug,
-        type: fileExt || 'pdf',
+        type: file?.name?.split('.')?.pop() || 'pdf',
         category: formData.category,
         file_url,
         publication_status: 'published',
@@ -163,21 +163,10 @@ export default function AdvancedUploadPortal() {
         seo_description: formData.seo_description || null,
       };
 
-      const { data, error } = await supabase.from('research').insert([newPaper]).select();
+      const { data, error: submitError } = await submitResearchAction(newPaper, formData.doi || null);
       
-      if (error) {
-        // If the advanced columns are not in the database yet, we fallback to the basic schema
-        // This is a safety mechanism until the DB migration is fully executed
-        if (error.code === 'PGRST204' || error.message.includes('column')) {
-            throw new Error("Database schema update pending. Please run the SQL migration to enable advanced metadata.");
-        }
-        throw error;
-      }
-
-      if (data && data.length > 0 && formData.doi) {
-        await supabase.from('research_identifiers').insert([
-          { research_id: data[0].id, identifier_type: 'DOI', identifier_value: formData.doi }
-        ]);
+      if (submitError) {
+        throw new Error(submitError);
       }
 
       setSuccess(true);

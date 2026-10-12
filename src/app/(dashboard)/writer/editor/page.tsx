@@ -149,7 +149,7 @@ export default function WriterEditor() {
   // When post data arrives asynchronously, push it into the already-mounted editor
   useEffect(() => {
     if (editor && postLoaded !== false) {
-      editor.commands.setContent(postLoaded as string, false);
+      editor.commands.setContent(postLoaded as string, { emitUpdate: false });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editor, postLoaded]);

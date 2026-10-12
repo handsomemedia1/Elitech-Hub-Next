@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { Settings, Save, Globe, Mail, Shield, Calendar } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
 import styles from './settings.module.css';
+
+import { fetchSiteSettingAction, upsertSiteSettingAction } from './actions';
 
 export default function AdminSettings() {
   const [loading, setLoading] = useState(true);
@@ -20,11 +21,7 @@ export default function AdminSettings() {
 
   const fetchSettings = async () => {
     setLoading(true);
-    const { data } = await supabase
-      .from('site_settings')
-      .select('*')
-      .eq('setting_key', 'elitechub_cohort')
-      .single();
+    const { data } = await fetchSiteSettingAction('elitechub_cohort');
 
     if (data && data.setting_value) {
       setCohortMonth(data.setting_value.month || 'June 8');
@@ -38,23 +35,14 @@ export default function AdminSettings() {
     setSuccess('');
     const newValue = { month: cohortMonth, seats: cohortSeats, year: '2026' };
     
-    const { data: existing } = await supabase.from('site_settings').select('id').eq('setting_key', 'elitechub_cohort').single();
-    
-    let error;
-    if (existing) {
-      const res = await supabase.from('site_settings').update({ setting_value: newValue }).eq('setting_key', 'elitechub_cohort');
-      error = res.error;
-    } else {
-      const res = await supabase.from('site_settings').insert([{ setting_key: 'elitechub_cohort', setting_value: newValue }]);
-      error = res.error;
-    }
+    const { success: saved, error } = await upsertSiteSettingAction('elitechub_cohort', newValue);
 
     setSaving(false);
-    if (!error) {
+    if (saved) {
       setSuccess('Settings saved successfully!');
       setTimeout(() => setSuccess(''), 3000);
     } else {
-      alert('Error saving settings: ' + error.message);
+      alert(`Error saving settings: ${error}`);
     }
   };
 

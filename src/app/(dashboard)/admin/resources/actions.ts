@@ -104,3 +104,18 @@ export async function deleteResource(id: string) {
   revalidatePath('/admin/resources');
   return { success: true };
 }
+
+export async function fetchResourcesAction() {
+  const user = await getServerUser();
+  if (!user || user.role !== 'admin') return { data: [], error: 'Unauthorized' };
+
+  const supabase = createServiceClient();
+  if (!supabase) return { data: [], error: 'No DB connection' };
+
+  const { data, error } = await supabase
+    .from('resources')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  return { data: data || [], error: error?.message || null };
+}

@@ -2,19 +2,21 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
 import { 
   Users, BookOpen, DollarSign, Award, TrendingUp, 
   ArrowUpRight, Clock, FileText 
 } from 'lucide-react';
 import styles from './admin.module.css';
 
+import { fetchAdminStatsAction } from './actions';
+
 export default function AdminOverview() {
   const [stats, setStats] = useState({
     totalUsers: 0,
     paidUsers: 0,
     courses: 0,
-    applications: 0
+    applications: 0,
+    writers: 0,
   });
   const [recentApplications, setRecentApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,24 +32,11 @@ export default function AdminOverview() {
 
   useEffect(() => {
     async function fetchAdminData() {
-      // Fetch users
-      const { count: usersCount } = await supabase.from('users').select('*', { count: 'exact', head: true });
-      const { count: paidCount } = await supabase.from('users').select('*', { count: 'exact', head: true }).eq('has_access', true);
-      const { count: coursesCount } = await supabase.from('courses').select('*', { count: 'exact', head: true });
-      
-      const { data: apps, count: appsCount } = await supabase
-        .from('applications')
-        .select('*', { count: 'exact' })
-        .order('created_at', { ascending: false })
-        .limit(5);
+      const { stats: s, applications: apps, error } = await fetchAdminStatsAction();
 
-      setStats({
-        totalUsers: usersCount || 0,
-        paidUsers: paidCount || 0,
-        courses: coursesCount || 0,
-        applications: appsCount || 0
-      });
-      
+      if (s) {
+        setStats(s);
+      }
       if (apps) setRecentApplications(apps);
       setLoading(false);
     }

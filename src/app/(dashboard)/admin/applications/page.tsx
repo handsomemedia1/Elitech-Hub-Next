@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
 import { Search, Filter, MoreVertical, Check, X, FileText } from 'lucide-react';
 import styles from './applications.module.css';
+
+import { fetchApplicationsAction, updateApplicationStatusAction } from './actions';
 
 export default function AdminApplications() {
   const [applications, setApplications] = useState<any[]>([]);
@@ -16,57 +17,33 @@ export default function AdminApplications() {
 
   async function fetchApplications() {
     setLoading(true);
-    
-    // Fetch Applications
-    const { data: appsData, error: appsError } = await supabase
-      .from('applications')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    // Fetch Leads
-    const { data: leadsData, error: leadsError } = await supabase
-      .from('leads')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    const formattedLeads = (leadsData || []).map(lead => ({
-      id: `lead_${lead.id}`,
-      original_id: lead.id,
-      full_name: 'Newsletter Lead',
-      email: lead.email,
-      phone_number: lead.whatsapp || '',
-      program_name: `Lead Source: ${lead.source_page || 'popup'}`,
-      status: 'pending',
-      created_at: lead.created_at,
-      is_lead: true
-    }));
-
-    const merged = [...(appsData || []), ...formattedLeads].sort((a, b) => 
-      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    );
-
-    setApplications(merged);
+    const { data, error } = await fetchApplicationsAction();
+    if (error) {
+      console.error(error);
+    } else {
+      setApplications(data || []);
+    }
     setLoading(false);
   }
 
   const handleUpdateStatus = async (app: any, newStatus: string) => {
     if (app.is_lead) {
-      // For leads, we might not have a status column yet, but we can fake it in UI
+      // For leads, we fake it in UI
       setApplications(applications.map(a => 
         a.id === app.id ? { ...a, status: newStatus } : a
       ));
       return;
     }
 
-    const { error } = await supabase
-      .from('applications')
-      .update({ status: newStatus })
-      .eq('id', app.id);
+    // Optimistic update
+    setApplications(applications.map(a => 
+      a.id === app.id ? { ...a, status: newStatus } : a
+    ));
 
-    if (!error) {
-      setApplications(applications.map(a => 
-        a.id === app.id ? { ...a, status: newStatus } : a
-      ));
+    const { success, error } = await updateApplicationStatusAction(app.id, newStatus);
+    if (!success) {
+      alert(`Error updating status: ${error}`);
+      fetchApplications(); // Revert
     }
   };
 

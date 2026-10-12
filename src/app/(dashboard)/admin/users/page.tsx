@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
 import { Users, Search, Edit2, Trash2, X } from 'lucide-react';
 import styles from './users.module.css';
 import AdminModal from '@/components/AdminModal';
+
+import { fetchUsersAction, updateUserRoleAction, deleteUserAction } from './actions';
 
 export default function AdminUsers() {
   const [users, setUsers] = useState<any[]>([]);
@@ -20,8 +21,12 @@ export default function AdminUsers() {
 
   async function fetchUsers() {
     setLoading(true);
-    const { data } = await supabase.from('users').select('*').order('created_at', { ascending: false });
-    if (data) setUsers(data);
+    const { data, error } = await fetchUsersAction();
+    if (!error) {
+      setUsers(data);
+    } else {
+      console.error(error);
+    }
     setLoading(false);
   }
 
@@ -30,9 +35,6 @@ export default function AdminUsers() {
     setSaving(true);
 
     try {
-      // In a real app we would call an API route to hash password and insert
-      // For now we'll do a basic insert (Note: password won't be hashed if done client-side like this,
-      // it should ideally hit /api/auth/signup)
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -46,8 +48,7 @@ export default function AdminUsers() {
 
       const data = await res.json();
       if (res.ok) {
-        // If we want to set role or access we'd have to update it after creation
-        await supabase.from('users').update({ role: newUser.role, has_access: newUser.has_access }).eq('id', data.user.id);
+        await updateUserRoleAction(data.user.id, newUser.role, newUser.has_access);
         
         setShowAddModal(false);
         setNewUser({ name: '', email: '', password: '', role: 'student', has_access: true });
@@ -63,8 +64,15 @@ export default function AdminUsers() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure?')) return;
-    await supabase.from('users').delete().eq('id', id);
+    
+    // Optimistic
     setUsers(users.filter(u => u.id !== id));
+    
+    const { success, error } = await deleteUserAction(id);
+    if (!success) {
+      alert(`Error deleting user: ${error}`);
+      fetchUsers();
+    }
   };
 
   const filteredUsers = users.filter(u => 

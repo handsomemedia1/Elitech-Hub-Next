@@ -86,7 +86,7 @@ export default async function BlogPostPage({
 
   const { data: post, error } = await supabase
     .from("blog_posts")
-    .select("id, title, slug, excerpt, content, category, author, thumbnail, published_at, views, tags, word_count")
+    .select("id, title, slug, excerpt, content, category, author, thumbnail, published_at, views, tags, word_count, writer_id, writers(id, display_name, slug, avatar_url, professional_title, is_public)")
     .eq("slug", slug)
     .eq("published", true)
     .single();
@@ -161,13 +161,33 @@ export default async function BlogPostPage({
             <p className={styles.articleExcerpt}>{post.excerpt}</p>
           )}
           <div className={styles.articleAuthor}>
-            <div className={styles.authorAvatar}>{getAuthorInitials(post.author)}</div>
-            <div>
-              <div className={styles.authorName}>{post.author}</div>
-              <div className={styles.authorRole}>
-                {post.author?.toLowerCase().includes('elijah') ? 'Founder & Lead Instructor' : 'Elitech Hub Writer'}
-              </div>
-            </div>
+            {post.writers?.is_public && post.writers?.slug ? (
+              <Link href={`/authors/${post.writers.slug}`} className="flex items-center gap-4 hover:opacity-80 transition" style={{ textDecoration: 'none' }}>
+                <div className={styles.authorAvatar} style={{ overflow: 'hidden' }}>
+                  {post.writers.avatar_url ? (
+                    <img src={post.writers.avatar_url} alt={post.writers.display_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    getAuthorInitials(post.writers.display_name || post.author)
+                  )}
+                </div>
+                <div>
+                  <div className={styles.authorName}>{post.writers.display_name || post.author}</div>
+                  <div className={styles.authorRole}>
+                    {post.writers.professional_title || 'Elitech Hub Writer'}
+                  </div>
+                </div>
+              </Link>
+            ) : (
+              <>
+                <div className={styles.authorAvatar}>{getAuthorInitials(post.author)}</div>
+                <div>
+                  <div className={styles.authorName}>{post.author}</div>
+                  <div className={styles.authorRole}>
+                    {post.author?.toLowerCase().includes('elijah') ? 'Founder & Lead Instructor' : 'Elitech Hub Writer'}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </section>
