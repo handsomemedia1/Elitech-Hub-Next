@@ -319,9 +319,9 @@ export async function fulfillTransaction(
       })
       .eq('reference', transaction.reference)
       .eq('status', 'successful')
-      .not('metadata->>fulfilled', 'eq', 'true')
-      .not('metadata->>fulfillment_dispatched', 'eq', 'true')
-      .not('metadata->>fulfillment_claimed', 'eq', 'true')
+      .or('metadata.is.null,metadata.not.cs.{"fulfilled":true}')
+      .or('metadata.is.null,metadata.not.cs.{"fulfillment_dispatched":true}')
+      .or('metadata.is.null,metadata.not.cs.{"fulfillment_claimed":true}')
       .select('*');
 
     if (claimError) throw new Error(`Could not claim fulfillment: ${claimError.message}`);
