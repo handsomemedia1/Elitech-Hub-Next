@@ -132,15 +132,15 @@ describe('2. Authoritative Price Resolution', () => {
     );
   });
 
-  test('Resolves Nigerian Bootcamp to authoritative ₦100,000 NGN base', async () => {
-    const price = await resolveAuthoritativePrice('bootcamp', 'programme', 'NG');
-    assert.equal(price.productId, 'bootcamp');
-    assert.equal(price.baseAmount, 100000);
-    assert.equal(price.baseCurrency, 'NGN');
-    assert.equal(price.pricingModel, 'ngn_base');
-    assert.equal(price.finalAmount, 100000);
-    assert.equal(price.finalCurrency, 'NGN');
-    assert.equal(price.fxRate, null);
+  test('Rejects retired Bootcamp for new checkout', async () => {
+    await assert.rejects(
+      async () => resolveAuthoritativePrice('bootcamp', 'programme', 'NG'),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRODUCT_RETIRED');
+        return true;
+      }
+    );
   });
 
   test('Resolves Nigerian Professional Programme to ₦350,000 NGN', async () => {
@@ -169,8 +169,8 @@ describe('2. Authoritative Price Resolution', () => {
     assert.equal(c120.finalAmount, 100000);
   });
 
-  test('Resolves African market (Ghana GH) with genuine FX conversion', async () => {
-    const price = await resolveAuthoritativePrice('bootcamp', 'programme', 'GH');
+  test('Resolves available programme pricing for Ghana (GH) with genuine FX conversion', async () => {
+    const price = await resolveAuthoritativePrice('ai_training', 'programme', 'GH');
     assert.equal(price.pricingModel, 'africa_fx');
     assert.equal(price.finalCurrency, 'GHS');
     assert.ok(price.fxRate > 0);
@@ -178,8 +178,8 @@ describe('2. Authoritative Price Resolution', () => {
     assert.equal(price.finalAmount, Math.round(100000 * price.fxRate));
   });
 
-  test('Resolves International market (US) to commercial USD band ($160 for bootcamp)', async () => {
-    const price = await resolveAuthoritativePrice('bootcamp', 'programme', 'US');
+  test('Resolves International market (US) to approved commercial USD band ($160 for AI Training)', async () => {
+    const price = await resolveAuthoritativePrice('ai_training', 'programme', 'US');
     assert.equal(price.pricingModel, 'international_commercial');
     assert.equal(price.finalCurrency, 'USD');
     assert.equal(price.finalAmount, 160);
@@ -330,7 +330,7 @@ describe('6. Edge Cases, Security & Fault Tolerance', () => {
   test('Client attempts to supply amount or currency are ignored by price resolver', async () => {
     // When a malicious client passes manipulated financial values
     const clientPayload = {
-      productId: 'bootcamp',
+      productId: 'ai_training',
       amount: 10, // Attempting to pay 10 NGN instead of 100,000 NGN
       currency: 'USD', // Attempting to force USD instead of NGN
       fxRate: 0.0001,

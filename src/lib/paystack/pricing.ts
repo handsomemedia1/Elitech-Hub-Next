@@ -29,6 +29,7 @@ interface ProductDefinition {
   type: ProductType;
   label: string;
   ngnBaseAmount: number;
+  purchasable?: boolean;
 }
 
 export const CANONICAL_PRODUCTS: Record<string, ProductDefinition> = Object.freeze({
@@ -42,6 +43,7 @@ export const CANONICAL_PRODUCTS: Record<string, ProductDefinition> = Object.free
     type: 'programme',
     label: '6-Week Cybersecurity Bootcamp',
     ngnBaseAmount: 100000,
+    purchasable: false,
   },
   'professional': {
     id: 'professional',
@@ -326,6 +328,13 @@ export async function resolveAuthoritativePrice(
     );
   }
 
+  if (productDef.purchasable === false) {
+    throw new PricingError(
+      `Product "${productDef.label}" is retired and cannot be purchased.`,
+      'PRODUCT_RETIRED'
+    );
+  }
+
   const productType = (rawProductType || productDef.type) as ProductType;
   const productLabel = productDef.label;
 
@@ -333,23 +342,45 @@ export async function resolveAuthoritativePrice(
   let baseAmount = productDef.ngnBaseAmount;
   const baseCurrency = 'NGN';
 
-  try {
-    const supabase = await getServiceClient();
-    if (supabase) {
-      const { data, error } = await supabase
-        .from('course_prices')
-        .select('amount')
-        .eq('course_id', productId)
-        .eq('currency', 'NGN')
-        .eq('active', true)
-        .maybeSingle();
+  const supabase = await getServiceClient();
+  if (!supabase && process.env.NODE_ENV === 'production') {
+    throw new PricingError(
+      'The pricing database is unavailable. Checkout is temporarily disabled.',
+      'PRICE_DATABASE_UNAVAILABLE'
+    );
+  }
 
-      if (!error && data?.amount) {
-        baseAmount = Number(data.amount);
-      }
+  if (supabase) {
+    const { data, error } = await supabase
+      .from('course_prices')
+      .select('amount, active')
+      .eq('course_id', productId)
+      .eq('currency', 'NGN')
+      .maybeSingle();
+
+    if (error) {
+      console.error('[Pricing] Nigerian price lookup failed:', error.message);
+      throw new PricingError(
+        'The authoritative price could not be verified. Please try again later.',
+        'PRICE_LOOKUP_FAILED'
+      );
     }
-  } catch (err) {
-    console.warn('[Pricing] Supabase price lookup failed, using canonical fallback:', err);
+
+    if (data?.active === false) {
+      throw new PricingError(
+        `Product "${productDef.label}" is inactive and cannot be purchased.`,
+        'PRODUCT_RETIRED'
+      );
+    }
+
+    if (data?.amount != null) {
+      baseAmount = Number(data.amount);
+    } else {
+      throw new PricingError(
+        `No active NGN price is configured for "${productDef.label}".`,
+        'PRICE_UNAVAILABLE'
+      );
+    }
   }
 
   // 2. Determine geographic market
@@ -429,32 +460,56 @@ async function resolveInternationalPrice(
 ): Promise<ResolvedPrice> {
   let finalAmount: number | null = null;
 
-  try {
-    const supabase = await getServiceClient();
-    if (supabase) {
-      const { data, error } = await supabase
-        .from('course_prices')
-        .select('amount')
-        .eq('course_id', productId)
-        .eq('currency', currency)
-        .eq('active', true)
-        .maybeSingle();
+  const supabase = await getServiceClient();
+  if (!supabase && process.env.NODE_ENV === 'production') {
+    throw new PricingError(
+      'The pricing database is unavailable. Checkout is temporarily disabled.',
+      'PRICE_DATABASE_UNAVAILABLE'
+    );
+  }
 
-      if (!error && data?.amount) {
-        finalAmount = Number(data.amount);
-      }
+  if (supabase) {
+    const { data, error } = await supabase
+      .from('course_prices')
+      .select('amount, active')
+      .eq('course_id', productId)
+      .eq('currency', currency)
+      .maybeSingle();
+
+    if (error) {
+      console.error(`[Pricing] International price lookup for ${currency} failed:`, error.message);
+      throw new PricingError(
+        'The authoritative price could not be verified. Please try again later.',
+        'PRICE_LOOKUP_FAILED'
+      );
     }
-  } catch (err) {
-    console.warn(`[Pricing] International price query for ${currency} failed:`, err);
+
+    if (data?.active === false) {
+      throw new PricingError(
+        `Product "${productLabel}" is inactive and cannot be purchased.`,
+        'PRODUCT_RETIRED'
+      );
+    }
+
+    if (data?.amount != null) {
+      finalAmount = Number(data.amount);
+    } else {
+      throw new PricingError(
+        `No active ${currency} price is configured for "${productLabel}".`,
+        'PRICE_UNAVAILABLE'
+      );
+    }
   }
 
   if (finalAmount === null) {
-    if (currency === 'USD' && INTERNATIONAL_USD_FALLBACKS[productId]) {
-      finalAmount = INTERNATIONAL_USD_FALLBACKS[productId];
+    const fallbackAmount = currency === 'USD' ? INTERNATIONAL_USD_FALLBACKS[productId] : undefined;
+    if (fallbackAmount !== undefined) {
+      finalAmount = fallbackAmount;
     } else {
-      // Default to USD international band if target currency row is not yet seeded
-      finalAmount = INTERNATIONAL_USD_FALLBACKS[productId] || 160;
-      currency = 'USD';
+      throw new PricingError(
+        `No approved ${currency} price is configured for "${productLabel}".`,
+        'PRICE_UNAVAILABLE'
+      );
     }
   }
 
