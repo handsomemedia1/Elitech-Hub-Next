@@ -673,54 +673,120 @@ describe('12. Gateway State Handling & Tamper Resilience', () => {
   });
 });
 
-describe('13. Strict Test-Mode Lockout & Credential Security', () => {
-  const originalEnvKey = process.env.PAYSTACK_SECRET_KEY;
+describe('13. Explicit Paystack Mode & Credential Security', () => {
+  function withPaystackEnv({ key, mode }, callback) {
+    const previousKey = process.env.PAYSTACK_SECRET_KEY;
+    const previousMode = process.env.PAYSTACK_MODE;
 
-  test('Permits valid Test Mode secret key (sk_test_*)', () => {
-    process.env.PAYSTACK_SECRET_KEY = ['sk', 'test', 'mock_mode_active_key'].join('_');
-    assert.equal(getPaystackSecretKey(), ['sk', 'test', 'mock_mode_active_key'].join('_'));
-    assert.equal(isPaystackTestMode(), true);
+    if (key === undefined) delete process.env.PAYSTACK_SECRET_KEY;
+    else process.env.PAYSTACK_SECRET_KEY = key;
+
+    if (mode === undefined) delete process.env.PAYSTACK_MODE;
+    else process.env.PAYSTACK_MODE = mode;
+
+    try {
+      callback();
+    } finally {
+      if (previousKey === undefined) delete process.env.PAYSTACK_SECRET_KEY;
+      else process.env.PAYSTACK_SECRET_KEY = previousKey;
+
+      if (previousMode === undefined) delete process.env.PAYSTACK_MODE;
+      else process.env.PAYSTACK_MODE = previousMode;
+    }
+  }
+
+  test('Permits a valid Test Mode key when PAYSTACK_MODE=test', () => {
+    withPaystackEnv(
+      { key: ['sk', 'test', 'mock_mode_active_key'].join('_'), mode: 'test' },
+      () => {
+        assert.equal(getPaystackSecretKey(), ['sk', 'test', 'mock_mode_active_key'].join('_'));
+        assert.equal(isPaystackTestMode(), true);
+      }
+    );
   });
 
-  test('Rejects live Paystack secret key (sk_live_*) with lockout error', () => {
-    // Dynamically assembled mock key so static secret scanners do not trigger false positives
-    process.env.PAYSTACK_SECRET_KEY = ['sk', 'live', 'mock_lockout_key'].join('_');
-    assert.throws(
-      () => getPaystackSecretKey(),
-      /\[Paystack Security Lockout\] Only Test Mode credentials/
+  test('Safely defaults to Test Mode when PAYSTACK_MODE is missing', () => {
+    withPaystackEnv(
+      { key: ['sk', 'test', 'mock_default_mode_key'].join('_'), mode: undefined },
+      () => {
+        assert.equal(getPaystackSecretKey(), ['sk', 'test', 'mock_default_mode_key'].join('_'));
+        assert.equal(isPaystackTestMode(), true);
+      }
     );
-    assert.equal(isPaystackTestMode(), false);
+  });
+
+  test('Permits a valid Live Mode key only when PAYSTACK_MODE=live', () => {
+    withPaystackEnv(
+      { key: ['sk', 'live', 'mock_live_mode_key'].join('_'), mode: 'live' },
+      () => {
+        assert.equal(getPaystackSecretKey(), ['sk', 'live', 'mock_live_mode_key'].join('_'));
+        assert.equal(isPaystackTestMode(), false);
+      }
+    );
+  });
+
+  test('Rejects a Live Mode key when PAYSTACK_MODE is missing or defaults to test', () => {
+    withPaystackEnv(
+      { key: ['sk', 'live', 'mock_lockout_key'].join('_'), mode: undefined },
+      () => {
+        assert.throws(() => getPaystackSecretKey(), /PAYSTACK_MODE="test" requires a valid sk_test_/);
+        assert.equal(isPaystackTestMode(), false);
+      }
+    );
+  });
+
+  test('Rejects a Test Mode key when PAYSTACK_MODE=live', () => {
+    withPaystackEnv(
+      { key: ['sk', 'test', 'mock_mismatch_key'].join('_'), mode: 'live' },
+      () => {
+        assert.throws(() => getPaystackSecretKey(), /PAYSTACK_MODE="live" requires a valid sk_live_/);
+        assert.equal(isPaystackTestMode(), false);
+      }
+    );
+  });
+
+  test('Rejects an unsupported PAYSTACK_MODE value', () => {
+    withPaystackEnv(
+      { key: ['sk', 'test', 'mock_invalid_mode_key'].join('_'), mode: 'production' },
+      () => {
+        assert.throws(() => getPaystackSecretKey(), /PAYSTACK_MODE must be either "test" or "live"/);
+        assert.equal(isPaystackTestMode(), false);
+      }
+    );
   });
 
   test('Rejects missing or empty PAYSTACK_SECRET_KEY', () => {
-    delete process.env.PAYSTACK_SECRET_KEY;
-    assert.throws(() => getPaystackSecretKey(), /not configured/);
-    assert.equal(isPaystackTestMode(), false);
+    withPaystackEnv({ key: undefined, mode: 'test' }, () => {
+      assert.throws(() => getPaystackSecretKey(), /not configured/);
+      assert.equal(isPaystackTestMode(), false);
+    });
 
-    process.env.PAYSTACK_SECRET_KEY = '   ';
-    assert.throws(() => getPaystackSecretKey(), /not configured/);
-    assert.equal(isPaystackTestMode(), false);
+    withPaystackEnv({ key: '   ', mode: 'test' }, () => {
+      assert.throws(() => getPaystackSecretKey(), /not configured/);
+      assert.equal(isPaystackTestMode(), false);
+    });
   });
 
-  test('Rejects unknown prefix or malformed credentials', () => {
-    process.env.PAYSTACK_SECRET_KEY = 'invalid_prefix_12345';
-    assert.throws(
-      () => getPaystackSecretKey(),
-      /\[Paystack Security Lockout\]/
+  test('Rejects unknown prefixes and empty credential suffixes', () => {
+    withPaystackEnv({ key: 'invalid_prefix_12345', mode: 'test' }, () => {
+      assert.throws(() => getPaystackSecretKey(), /PAYSTACK_MODE="test" requires a valid sk_test_/);
+      assert.equal(isPaystackTestMode(), false);
+    });
+
+    withPaystackEnv({ key: 'sk_test_', mode: 'test' }, () => {
+      assert.throws(() => getPaystackSecretKey(), /PAYSTACK_MODE="test" requires a valid sk_test_/);
+      assert.equal(isPaystackTestMode(), false);
+    });
+  });
+
+  test('Trims surrounding whitespace from credentials and mode', () => {
+    withPaystackEnv(
+      { key: '  sk_test_trimmed12345  ', mode: ' TEST ' },
+      () => {
+        assert.equal(getPaystackSecretKey(), 'sk_test_trimmed12345');
+        assert.equal(isPaystackTestMode(), true);
+      }
     );
-    assert.equal(isPaystackTestMode(), false);
-  });
-
-  test('Trims surrounding whitespace on test key', () => {
-    process.env.PAYSTACK_SECRET_KEY = '  sk_test_trimmed12345  ';
-    assert.equal(getPaystackSecretKey(), 'sk_test_trimmed12345');
-    assert.equal(isPaystackTestMode(), true);
-    // Restore
-    if (originalEnvKey) {
-      process.env.PAYSTACK_SECRET_KEY = originalEnvKey;
-    } else {
-      delete process.env.PAYSTACK_SECRET_KEY;
-    }
   });
 });
 
