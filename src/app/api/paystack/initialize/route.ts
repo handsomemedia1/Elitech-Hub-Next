@@ -54,20 +54,33 @@ function isProgramMatch(
     return false;
   }
   if (prod === 'professional') {
-    return combined.includes('professional') || combined.includes('16-week');
-  }
-  if (prod === 'ai_training') {
-    return (
-      combined.includes('ai_training') ||
-      (combined.includes('ai') && combined.includes('cybersecurity') && !combined.includes('16-week') && !combined.includes('security'))
-    );
+    return combined.includes('professional') || combined.includes('16-week') || combined.includes('prof16');
   }
   if (prod === 'ai_security') {
     return (
       combined.includes('ai_security') ||
-      combined.includes('ai security') ||
-      (combined.includes('reverse') && combined.includes('vulnerability')) ||
-      (combined.includes('ai') && combined.includes('security') && !combined.includes('16-week'))
+      combined.includes('ai-security') ||
+      combined.includes('reverse') ||
+      combined.includes('vulnerability') ||
+      combined.includes('ai security and reverse') ||
+      combined.includes('ai security & reverse')
+    );
+  }
+  if (prod === 'ai_training') {
+    // Exclude AI Security and Reverse Vulnerability applications
+    const isAiSecurity =
+      combined.includes('reverse') ||
+      combined.includes('vulnerability') ||
+      combined.includes('ai_security') ||
+      combined.includes('ai-security');
+    if (isAiSecurity) return false;
+
+    return (
+      combined.includes('ai_training') ||
+      combined.includes('ai-training') ||
+      combined.includes('ai6') ||
+      combined.includes('ai-powered') ||
+      (combined.includes('ai') && combined.includes('cybersecurity') && !combined.includes('16-week'))
     );
   }
   return false;

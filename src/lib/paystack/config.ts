@@ -129,6 +129,7 @@ export const APPROVED_CALLBACK_PATHS = Object.freeze([
   '/thank-you',
   '/apply',
   '/consultation',
+  '/coaching',
   '/programs',
 ] as const);
 

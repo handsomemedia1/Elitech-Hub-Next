@@ -62,7 +62,7 @@ export async function POST(request: Request) {
   const programDetails = PROGRAMS_FALLBACK[programRaw] ?? { name: programRaw, courseId: '', defaultPrice: 0 };
 
   // Optional fields
-  const country    = sanitizeText(body.country).slice(0, 50) || null;
+  const country    = sanitizeText(body.country).slice(0, 10) || null;
   const city       = sanitizeText(body.city).slice(0, 100) || null;
   const source     = sanitizeText(body.source).slice(0, 100) || null;
   const skillLevel = sanitizeText(body.skillLevel).slice(0, 100) || null;

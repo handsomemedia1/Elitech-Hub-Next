@@ -348,7 +348,7 @@ export default function ServicesPage() {
                 <h4>For Individuals:</h4>
                 <ul>
                   <li><CheckCircle2 size={16} color="#ef4444" /> AI-Powered Cybersecurity (6 Weeks)</li>
-                  <li><CheckCircle2 size={16} color="#ef4444" /> AI Security &amp; Reverse Vulnerability (8 Weeks)</li>
+                  <li><CheckCircle2 size={16} color="#ef4444" /> AI Security and Reverse Vulnerability</li>
                   <li><CheckCircle2 size={16} color="#ef4444" /> 16-Week Professional Programme</li>
                   <li><CheckCircle2 size={16} color="#ef4444" /> Practical Internship Experience</li>
                   <li><CheckCircle2 size={16} color="#ef4444" /> 1-on-1 Mentorship &amp; Career Support</li>

@@ -65,7 +65,7 @@ export default function ScrollNavbar() {
       dropdown: [
         { href: "/programs", label: "View All Programs" },
         { href: "/ai-training", label: "AI Cybersecurity (6 Weeks)" },
-        { href: "/programs#ai-security", label: "AI Security & Reverse (8 Weeks)" },
+        { href: "/programs#ai-security", label: "AI Security and Reverse Vulnerability" },
         { href: "/programs/professional", label: "16-Week Professional" },
         { href: "/programs/corporate-training", label: "Corporate Training" },
       ]

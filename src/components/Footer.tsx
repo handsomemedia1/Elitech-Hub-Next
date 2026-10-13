@@ -45,7 +45,7 @@ export default function Footer() {
           <h4 className={styles.footerColTitle}>Programs</h4>
           <ul className={styles.footerLinks}>
             <li><Link href="/ai-training"><i className="fas fa-robot" /><span>AI Cybersecurity (6 Weeks)</span></Link></li>
-            <li><Link href="/programs#ai-security"><i className="fas fa-shield-alt" /><span>AI Security &amp; Reverse (8 Weeks)</span></Link></li>
+            <li><Link href="/programs#ai-security"><i className="fas fa-shield-alt" /><span>AI Security and Reverse Vulnerability</span></Link></li>
             <li><Link href="/programs/professional"><i className="fas fa-user-shield" /><span>16‑Week Professional</span></Link></li>
             <li><Link href="/programs/corporate-training"><i className="fas fa-building" /><span>Corporate Training</span></Link></li>
             <li><Link href="/apply"><i className="fas fa-rocket" /><span>Apply Now</span></Link></li>

@@ -131,7 +131,7 @@ export default function ProgramsPage() {
       '@context': 'https://schema.org',
       '@type': 'Course',
       '@id': 'https://www.elitechub.com/programs#aisecurity',
-      name: 'AI Security and Reverse Vulnerability (8 Weeks)',
+      name: 'AI Security and Reverse Vulnerability',
       description:
         'Advanced 8-week specialization covering AI system security, reverse vulnerability research, prompt-injection defense, and binary security analysis.',
       url: 'https://www.elitechub.com/programs',
@@ -327,7 +327,7 @@ export default function ProgramsPage() {
               <Link href="#ai-security" className={styles.hubCard}>
                 <div className={styles.hubCardIcon} style={{ background: 'linear-gradient(135deg, #8b5cf6, #6d28d9)' }}><Shield size={28} /></div>
                 <div className={styles.hubCardBadge} style={{ background: '#7c3aed' }}>AI VULNERABILITY</div>
-                <h3>AI Security &amp; Reverse Vulnerability</h3>
+                <h3>AI Security and Reverse Vulnerability</h3>
                 <p>8 Weeks · Intensive · <PriceDisplay courseId="ai_security" fallback="₦200,000" /></p>
                 <ul className={styles.hubCardFeatures}>
                   <li><CheckCircle2 size={14} color="#8b5cf6" /> Reverse vulnerability research</li>
@@ -403,7 +403,7 @@ export default function ProgramsPage() {
               <div id="ai-security" className={styles.pricingCard} style={{ scrollMarginTop: '100px' }}>
                 <div className={styles.pricingIcon} style={{ color: '#8b5cf6' }}><Shield size={32} /></div>
                 <div className={styles.pricingHeader}>
-                  <h3>AI Security &amp; Reverse Vulnerability</h3>
+                  <h3>AI Security and Reverse Vulnerability</h3>
                   <p className={styles.pricingSubtitle}>Advanced Vulnerability Research</p>
                 </div>
                 <div className={styles.pricingPrice}>
@@ -1024,7 +1024,7 @@ export default function ProgramsPage() {
                     <select required defaultValue="">
                       <option value="" disabled>Choose a program...</option>
                       <option value="ai6">Learn AI Powered Cybersecurity in 6 Weeks</option>
-                      <option value="ai_security">AI Security and Reverse Vulnerability (8 Weeks)</option>
+                      <option value="ai_security">AI Security and Reverse Vulnerability</option>
                       <option value="prof16">16-Week Professional Programme</option>
                       <option value="corp">Corporate Training</option>
                     </select>

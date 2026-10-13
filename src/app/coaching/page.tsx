@@ -3,26 +3,28 @@ import Link from 'next/link';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 import PriceDisplay from '@/components/PriceDisplay';
 import styles from '../consultation/consultation.module.css';
+import ConsultationBookingSection from '../consultation/ConsultationBookingSection';
 import { 
   Target, ChevronDown, Brain, ShieldCheck, ShieldAlert
 } from 'lucide-react';
 
 export const metadata = {
-  title: 'Personalised Cybersecurity Coaching | Elitech Hub',
-  description: 'Bespoke 1-on-1 cybersecurity coaching. Mentorship tailored entirely to your specific goals, gaps, and career aspirations. Start with a mandatory assessment consultation.',
+  title: 'Personalised Cybersecurity Coaching & Mentorship | Elitech Hub',
+  description: 'Bespoke 1-on-1 cybersecurity coaching and direct mentorship tailored entirely to your specific goals, gaps, and career aspirations. Book your assessment consultation directly.',
   keywords: [
     'cybersecurity coaching Nigeria',
     'cybersecurity mentor',
     '1-on-1 cybersecurity training',
     'custom cybersecurity mentorship',
+    'book cybersecurity consultation',
   ],
   alternates: {
     canonical: 'https://www.elitechub.com/coaching',
   },
   openGraph: {
     url: 'https://www.elitechub.com/coaching',
-    title: 'Personalised Cybersecurity Coaching | Elitech Hub',
-    description: 'Bespoke 1-on-1 cybersecurity coaching. Mentorship tailored entirely to your specific goals, gaps, and career aspirations.',
+    title: 'Personalised Cybersecurity Coaching & Mentorship | Elitech Hub',
+    description: 'Bespoke 1-on-1 cybersecurity coaching and direct mentorship tailored entirely to your specific goals, gaps, and career aspirations.',
     type: 'website',
   }
 };
@@ -35,12 +37,12 @@ export default function CoachingPage() {
         "@type": "BreadcrumbList",
         "itemListElement": [
           { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.elitechub.com/" },
-          { "@type": "ListItem", "position": 2, "name": "Coaching", "item": "https://www.elitechub.com/coaching" }
+          { "@type": "ListItem", "position": 2, "name": "Coaching & Mentorship", "item": "https://www.elitechub.com/coaching" }
         ]
       },
       {
         "@type": "Service",
-        "name": "Personalised Cybersecurity Coaching",
+        "name": "Personalised Cybersecurity Coaching and Mentorship",
         "serviceType": "Coaching & Mentoring",
         "provider": {
           "@type": "Organization",
@@ -63,12 +65,12 @@ export default function CoachingPage() {
       <section className={styles.heroSection}>
         <AnimateOnScroll direction="fade">
           <h1 className={styles.heroTitle}>
-            Personalised <span className="text-gradient-primary">Cybersecurity Coaching</span>
+            Personalised <span className="text-gradient-primary">Cybersecurity Coaching &amp; Mentorship</span>
           </h1>
           <p className={styles.heroSubtitle}>
             Not a generic bootcamp. Not a pre-recorded course. This is bespoke 1-on-1 mentorship tailored entirely to your specific goals, gaps, and career aspirations.
           </p>
-          <a href="#process" className="premium-button">Start the Process</a>
+          <a href="#book-consultation" className="premium-button">Book a Consultation</a>
         </AnimateOnScroll>
       </section>
 
@@ -105,19 +107,19 @@ export default function CoachingPage() {
               <div className={styles.processItem}>
                 <h4 className={styles.processTitle}>1. Mandatory Assessment Consultation</h4>
                 <p className={styles.processText}>
-                  Before we accept anyone for coaching, you must book a 30-minute assessment consultation. <br/>
-                  <strong className="text-white mt-2 block">Assessment Cost: <PriceDisplay courseId="consultation-30" fallback="₦30,000" /></strong>
+                  Before we accept anyone for coaching, you must book an assessment consultation. <br/>
+                  <strong className="text-white mt-2 block">Standard Assessment (30 Min): <PriceDisplay courseId="consultation-30" fallback="₦30,000" /></strong>
                 </p>
                 <div className="mt-4">
-                  <Link href="/consultation" className="premium-button-outline">Book Assessment Consultation</Link>
+                  <a href="#book-consultation" className="premium-button-outline">Book Assessment Consultation Below</a>
                 </div>
               </div>
               <div className={styles.processItem}>
-                <h4 className={styles.processTitle}>2. Goal & Gap Analysis</h4>
+                <h4 className={styles.processTitle}>2. Goal &amp; Gap Analysis</h4>
                 <p className={styles.processText}>During the assessment, we analyze your current technical baseline, your ultimate career goal, and the exact delta between the two.</p>
               </div>
               <div className={styles.processItem}>
-                <h4 className={styles.processTitle}>3. Proposal & Pricing</h4>
+                <h4 className={styles.processTitle}>3. Proposal &amp; Pricing</h4>
                 <p className={styles.processText}>If we determine that we can genuinely help you, we will design a custom coaching scope and provide a specific price based on the required time and expertise.</p>
               </div>
               <div className={styles.processItem}>
@@ -129,6 +131,36 @@ export default function CoachingPage() {
         </AnimateOnScroll>
       </section>
 
+      {/* ── Direct In-Page Consultation Booking Section ── */}
+      <section id="book-consultation" className={styles.section} style={{ paddingTop: '1rem' }}>
+        <AnimateOnScroll direction="up">
+          <div className="text-center mb-8">
+            <span style={{
+              display: 'inline-block',
+              padding: '0.35rem 0.9rem',
+              borderRadius: '4px',
+              background: 'var(--color-accent-dim)',
+              border: '1px solid var(--color-accent-glow)',
+              color: 'var(--color-accent-bright)',
+              textTransform: 'uppercase',
+              fontSize: '0.75rem',
+              letterSpacing: '0.1em',
+              fontWeight: 700,
+              marginBottom: '1rem'
+            }}>
+              Direct Mentorship Intake
+            </span>
+            <h2 className={styles.sectionTitle} style={{ marginTop: '0.5rem' }}>
+              Book a Consultation
+            </h2>
+            <p className="text-center text-gray-400 max-w-2xl mx-auto">
+              Select your consultation duration below to begin. Fill in your details and reserve your session directly with our senior mentors.
+            </p>
+          </div>
+          <ConsultationBookingSection />
+        </AnimateOnScroll>
+      </section>
+
       {/* Warning */}
       <section className={styles.section}>
         <AnimateOnScroll direction="up">
@@ -136,7 +168,7 @@ export default function CoachingPage() {
             <h3 className={styles.warningTitle}><ShieldAlert size={28} /> Important Notice</h3>
             <div className={styles.warningText}>
               <p className="mb-4">We reject more coaching applicants than we accept.</p>
-              <p>If your goals are better served by our standard <strong>16-Week Professional Programme</strong> or our <strong>6-Week Bootcamp</strong>, we will redirect you there during the assessment. Coaching is reserved for specialized, non-standard requirements.</p>
+              <p>If your goals are better served by our standard <strong>16-Week Professional Programme</strong> or our <strong>AI-Powered Cybersecurity Programme</strong>, we will redirect you there during the assessment. Coaching is reserved for specialized, non-standard requirements.</p>
             </div>
           </div>
         </AnimateOnScroll>
@@ -166,9 +198,9 @@ export default function CoachingPage() {
         <AnimateOnScroll direction="up">
           <h2 className={styles.ctaTitle}>Ready to accelerate your career?</h2>
           <p className={styles.ctaText}>
-            Step 1 is the 30-minute assessment consultation.
+            Step 1 is the assessment consultation. Choose your session duration and book directly.
           </p>
-          <Link href="/consultation" className="premium-button">Book Assessment (<PriceDisplay courseId="consultation-30" fallback="₦30,000" />)</Link>
+          <a href="#book-consultation" className="premium-button">Book a Consultation Now</a>
         </AnimateOnScroll>
       </section>
     </PageLayout>

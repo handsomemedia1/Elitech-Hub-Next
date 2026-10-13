@@ -211,13 +211,13 @@ export default function Home() {
             </div>
           </AnimateOnScroll>
 
-          {/* AI Security & Reverse Vulnerability */}
+          {/* AI Security and Reverse Vulnerability */}
           <AnimateOnScroll direction="up" delay={200} className={styles.bentoSecurity}>
             <div className="glass-panel" style={{ padding: '2.5rem', height: '100%', display: 'flex', flexDirection: 'column' }}>
               <div className={styles.bentoIconBox}>
                 <ShieldAlert size={30} />
               </div>
-              <h3 className={styles.bentoTitle} style={{ fontSize: '1.5rem' }}>AI Security & Reverse</h3>
+              <h3 className={styles.bentoTitle} style={{ fontSize: '1.35rem' }}>AI Security and Reverse Vulnerability</h3>
               <p className={styles.bentoPrice}><PriceDisplay courseId="ai_security" fallback="₦200,000" /></p>
               <ul className={styles.bentoFeatures}>
                 <li><CheckCircle2 size={16} className="text-accent" /> 8-week advanced engineering</li>

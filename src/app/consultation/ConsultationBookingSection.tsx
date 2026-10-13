@@ -206,6 +206,12 @@ export default function ConsultationBookingSection() {
                 </p>
               )}
 
+              {!isFormValid && (
+                <p style={{ color: '#94a3b8', fontSize: '0.8rem', textAlign: 'center', marginBottom: '0.75rem' }}>
+                  * Please enter your full name and a valid email address to enable payment.
+                </p>
+              )}
+
               <div className={styles.bookingActions}>
                 <PaystackCheckoutButton
                   productId={selectedOption.id}
@@ -221,7 +227,7 @@ export default function ConsultationBookingSection() {
                   }}
                   callbackUrl="/thank-you"
                   disabled={!isFormValid}
-                  label={`Pay for ${selectedOption.duration} (Paystack Test Mode)`}
+                  label={`Proceed to Payment (${selectedOption.duration})`}
                   onError={(err) => setFormError(err)}
                 />
 

@@ -45,6 +45,7 @@ import {
   isPaystackTestMode,
   isPaystackLiveMode,
   validatePaystackConfig,
+  APPROVED_CALLBACK_PATHS,
 } from '../src/lib/paystack/config.ts';
 
 import {
@@ -54,6 +55,7 @@ import {
 
 import { verifyLimit } from '../src/lib/rate-limit.ts';
 import { POST as initializeRoutePost } from '../src/app/api/paystack/initialize/route.ts';
+import { GET as verifyRouteGet } from '../src/app/api/paystack/verify/route.ts';
 import { fulfillTransaction } from '../src/lib/paystack/transactions.ts';
 
 describe('1. Currency & Subunit Conversion (including XOF)', () => {
@@ -2029,5 +2031,106 @@ describe('21. Production Fail-Closed Pricing Integrity (DB Failures, Incomplete 
   });
 });
 
+describe('22. Payment Flow, Mentorship Booking & Name Standardization Integration', () => {
+  test('Canonical product label for ai_security is standardized to "AI Security and Reverse Vulnerability"', () => {
+    const product = CANONICAL_PRODUCTS['ai_security'];
+    assert.ok(product);
+    assert.equal(product.label, 'AI Security and Reverse Vulnerability');
+    assert.equal(product.status, 'active');
+    assert.equal(product.ngnBaseAmount, 200000);
+  });
 
+  test('Callback allowlist includes /coaching for direct mentorship checkout returns', () => {
+    assert.ok(APPROVED_CALLBACK_PATHS.includes('/coaching'));
+    assert.ok(APPROVED_CALLBACK_PATHS.includes('/consultation'));
+    assert.ok(APPROVED_CALLBACK_PATHS.includes('/thank-you'));
+    assert.ok(APPROVED_CALLBACK_PATHS.includes('/apply'));
+    assert.ok(APPROVED_CALLBACK_PATHS.includes('/programs'));
 
+    const appUrl = getAppUrl();
+    assert.equal(buildApprovedCallbackUrl('/coaching'), `${appUrl}/coaching`);
+    assert.equal(buildApprovedCallbackUrl('/consultation'), `${appUrl}/consultation`);
+    // Protocol-relative and external URLs are strictly rejected to safe fallback
+    assert.equal(buildApprovedCallbackUrl('//evil.com/steal'), `${appUrl}/thank-you`);
+    assert.equal(buildApprovedCallbackUrl('https://malicious.org'), `${appUrl}/thank-you`);
+  });
+
+  test('Direct Route: Consultation booking initializes without requiring application_id', async () => {
+    const req = new Request('http://localhost:3000/api/paystack/initialize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        productId: 'consultation-30',
+        productType: 'consultation',
+        email: 'mentee@example.com',
+        name: 'Mentee Jane',
+        countryCode: 'NG',
+        metadata: {
+          duration: '30 Minutes',
+          goals: 'Career transition from IT support to SOC analyst',
+          product_type: 'consultation',
+        },
+        callbackUrl: '/thank-you',
+      }),
+    });
+
+    const res = await initializeRoutePost(req);
+    // In local test runner without live network/DB, initialization attempts to create record or connect
+    // It must NEVER fail with 'An application ID is required' (status 400)
+    const json = await res.json();
+    if (res.status === 400) {
+      assert.notEqual(
+        json.error,
+        'An application ID is required to enroll in training programmes. Please complete your application first before proceeding to payment.'
+      );
+    }
+  });
+
+  test('Direct Route: Course checkout without application_id fails closed with 400', async () => {
+    const req = new Request('http://localhost:3000/api/paystack/initialize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        productId: 'ai_security',
+        productType: 'programme',
+        email: 'applicant@example.com',
+        name: 'Security Candidate',
+        countryCode: 'NG',
+        // Omit application_id
+      }),
+    });
+
+    const res = await initializeRoutePost(req);
+    const json = await res.json();
+
+    assert.equal(res.status, 400);
+    assert.equal(json.success, false);
+    assert.match(json.error, /application ID is required to enroll/i);
+  });
+
+  test('Verification Route: Request without reference returns HTTP 400', async () => {
+    const req = new Request('http://localhost:3000/api/paystack/verify', {
+      method: 'GET',
+    });
+
+    const res = await verifyRouteGet(req);
+    const json = await res.json();
+
+    assert.equal(res.status, 400);
+    assert.equal(json.success, false);
+    assert.match(json.error, /reference is required/i);
+  });
+
+  test('Verification Route: Request with malformed reference returns HTTP 400', async () => {
+    const req = new Request('http://localhost:3000/api/paystack/verify?reference=short', {
+      method: 'GET',
+    });
+
+    const res = await verifyRouteGet(req);
+    const json = await res.json();
+
+    assert.equal(res.status, 400);
+    assert.equal(json.success, false);
+    assert.match(json.error, /Invalid transaction reference format/i);
+  });
+});

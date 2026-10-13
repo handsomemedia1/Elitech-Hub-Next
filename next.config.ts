@@ -4,6 +4,11 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: '/mentorship',
+        destination: '/coaching',
+        permanent: true,
+      },
+      {
         source: '/blog/step-by-step-cybersecurity-guide-for-overwhelmed-beginners-moftm94x',
         destination: '/blog/what-cybersecurity-means-and-why-it-is-important-mniuol60',
         permanent: true,

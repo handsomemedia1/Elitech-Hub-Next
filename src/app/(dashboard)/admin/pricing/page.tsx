@@ -128,7 +128,7 @@ export default function PricingAdminPage() {
               >
                 <optgroup label="Programs">
                   <option value="ai_training">AI Training (6-Week)</option>
-                  <option value="ai_security">AI Security and Reverse Vulnerability (8-Week)</option>
+                  <option value="ai_security">AI Security and Reverse Vulnerability</option>
                   <option value="professional">16-Week Professional Cybersecurity</option>
                   <option value="bootcamp">6-Week Bootcamp (Retired)</option>
                 </optgroup>

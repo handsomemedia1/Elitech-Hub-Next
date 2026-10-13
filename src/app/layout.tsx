@@ -239,7 +239,7 @@ export default function RootLayout({
                     '@type': 'Offer',
                     itemOffered: {
                       '@type': 'Course',
-                      name: 'AI Security and Reverse Vulnerability (8 Weeks)',
+                      name: 'AI Security and Reverse Vulnerability',
                       url: 'https://www.elitechub.com/programs',
                     },
                   },
