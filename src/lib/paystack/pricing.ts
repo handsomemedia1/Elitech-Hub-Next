@@ -375,6 +375,11 @@ export async function resolveAuthoritativePrice(
 
     if (data?.amount != null) {
       baseAmount = Number(data.amount);
+    } else {
+      throw new PricingError(
+        `No active NGN price is configured for "${productDef.label}".`,
+        'PRICE_UNAVAILABLE'
+      );
     }
   }
 
@@ -488,6 +493,11 @@ async function resolveInternationalPrice(
 
     if (data?.amount != null) {
       finalAmount = Number(data.amount);
+    } else {
+      throw new PricingError(
+        `No active ${currency} price is configured for "${productLabel}".`,
+        'PRICE_UNAVAILABLE'
+      );
     }
   }
 
