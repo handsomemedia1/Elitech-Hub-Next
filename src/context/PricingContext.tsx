@@ -195,8 +195,8 @@ export function PricingProvider({ children }: { children: React.ReactNode }) {
         // --- AFRICAN FX CONVERSION PATH ---
         const { data: ngnData } = await supabase
           .from('course_prices')
-          .select('course_id, currency, amount')
-          .eq('currency', 'NGN')
+          .select('course_id, currency_code, amount')
+          .eq('currency_code', 'NGN')
           .eq('active', true);
 
         let rate = 1;
@@ -258,8 +258,8 @@ export function PricingProvider({ children }: { children: React.ReactNode }) {
         // --- STANDARD INTERNATIONAL/NGN PATH ---
         const { data: initialPriceData, error } = await supabase
           .from('course_prices')
-          .select('course_id, currency, amount')
-          .eq('currency', targetCurrency)
+          .select('course_id, currency_code, amount')
+          .eq('currency_code', targetCurrency)
           .eq('active', true);
 
         let priceData = initialPriceData;
@@ -268,8 +268,8 @@ export function PricingProvider({ children }: { children: React.ReactNode }) {
           console.warn('[Pricing] No data for ' + targetCurrency + '. Falling back to USD.');
           const usdFetch = await supabase
             .from('course_prices')
-            .select('course_id, currency, amount')
-            .eq('currency', 'USD')
+            .select('course_id, currency_code, amount')
+            .eq('currency_code', 'USD')
             .eq('active', true);
           if (usdFetch.data && usdFetch.data.length > 0) {
             priceData = usdFetch.data;
@@ -278,8 +278,8 @@ export function PricingProvider({ children }: { children: React.ReactNode }) {
             console.warn('[Pricing] No USD data. Falling back to NGN.');
             const ngnFetch = await supabase
               .from('course_prices')
-              .select('course_id, currency, amount')
-              .eq('currency', 'NGN')
+              .select('course_id, currency_code, amount')
+              .eq('currency_code', 'NGN')
               .eq('active', true);
             priceData = ngnFetch.data || [];
             targetCurrency = 'NGN';
@@ -290,10 +290,10 @@ export function PricingProvider({ children }: { children: React.ReactNode }) {
 
         if (priceData && priceData.length > 0) {
           const priceMap: Record<string, PriceInfo> = {};
-          priceData.forEach((p: { course_id: string; currency: string; amount: number }) => {
+          priceData.forEach((p: { course_id: string; currency_code?: string; amount: number | string }) => {
             priceMap[p.course_id] = {
               course_id: p.course_id,
-              currency_code: p.currency,
+              currency_code: p.currency_code || targetCurrency,
               symbol: currentSymbol,
               amount: Number(p.amount),
             };

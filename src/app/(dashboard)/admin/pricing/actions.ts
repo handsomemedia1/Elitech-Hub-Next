@@ -15,7 +15,7 @@ export async function fetchPricingAction() {
     .from('course_prices')
     .select('*')
     .order('course_id')
-    .order('currency');
+    .order('currency_code');
 
   if (error) {
     console.error('Pricing fetch error:', error);

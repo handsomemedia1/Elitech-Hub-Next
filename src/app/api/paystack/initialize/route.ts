@@ -50,10 +50,8 @@ function isProgramMatch(
   const prod = productId.toLowerCase();
 
   if (prod === 'bootcamp') {
-    return (
-      (combined.includes('bootcamp') || combined.includes('6-week')) &&
-      !combined.includes('16-week')
-    );
+    // 6-Week Cybersecurity Bootcamp is retired from active offerings
+    return false;
   }
   if (prod === 'professional') {
     return combined.includes('professional') || combined.includes('16-week');
@@ -61,7 +59,7 @@ function isProgramMatch(
   if (prod === 'ai_training') {
     return (
       combined.includes('ai_training') ||
-      (combined.includes('ai') && combined.includes('cybersecurity') && !combined.includes('16-week') && !combined.includes('bootcamp') && !combined.includes('security'))
+      (combined.includes('ai') && combined.includes('cybersecurity') && !combined.includes('16-week') && !combined.includes('security'))
     );
   }
   if (prod === 'ai_security') {
@@ -69,7 +67,7 @@ function isProgramMatch(
       combined.includes('ai_security') ||
       combined.includes('ai security') ||
       (combined.includes('reverse') && combined.includes('vulnerability')) ||
-      (combined.includes('ai') && combined.includes('security') && !combined.includes('16-week') && !combined.includes('bootcamp'))
+      (combined.includes('ai') && combined.includes('security') && !combined.includes('16-week'))
     );
   }
   return false;
@@ -138,14 +136,20 @@ export async function POST(request: Request) {
     price = await resolveAuthoritativePrice(rawProductId, rawProductType, effectiveCountry);
   } catch (err: unknown) {
     if (err instanceof PricingError) {
-      if (err.code === 'FX_UNAVAILABLE') {
+      if (err.code === 'FX_UNAVAILABLE' || err.code === 'PRICING_NOT_CONFIGURED') {
         return NextResponse.json(
           {
             success: false,
-            code: 'FX_UNAVAILABLE',
+            code: err.code,
             error: err.message,
           },
           { status: 422 } // Unprocessable Entity
+        );
+      }
+      if (err.code === 'PRODUCT_DISCONTINUED' || err.code === 'PRODUCT_UNAVAILABLE') {
+        return NextResponse.json(
+          { success: false, code: err.code, error: err.message },
+          { status: 400 }
         );
       }
       return NextResponse.json(
@@ -155,6 +159,14 @@ export async function POST(request: Request) {
     }
     return NextResponse.json(
       { success: false, error: 'Failed to resolve authoritative price.' },
+      { status: 500 }
+    );
+  }
+
+  // Explicit safety check: Resolved price must be a finite, positive number
+  if (!Number.isFinite(price.finalAmount) || price.finalAmount <= 0) {
+    return NextResponse.json(
+      { success: false, error: 'Resolved price is invalid.' },
       { status: 500 }
     );
   }
@@ -189,8 +201,8 @@ export async function POST(request: Request) {
   const rawAppId = rawClientMetadata.application_id ?? body.applicationId;
   let validatedApplicationId: string | null = null;
 
-  // Course products strictly require an existing, validated application record
-  const isCourseProduct = price.productType === 'programme' || ['bootcamp', 'professional', 'ai_training', 'ai_security'].includes(price.productId);
+  // Active course products strictly require an existing, validated application record
+  const isCourseProduct = price.productType === 'programme' || ['professional', 'ai_training', 'ai_security'].includes(price.productId);
 
   if (isCourseProduct && (rawAppId === undefined || rawAppId === null || String(rawAppId).trim() === '')) {
     return NextResponse.json(

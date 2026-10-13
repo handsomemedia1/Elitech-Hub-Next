@@ -23,8 +23,11 @@ import {
   CANONICAL_PRODUCTS,
   PricingError,
   resolveAuthoritativePrice,
+  resolveInternationalPrice,
+  INTERNATIONAL_USD_FALLBACKS,
   getLiveOrFallbackFxRate,
   OFFLINE_FALLBACK_FX_RATES,
+  AFRICAN_CURRENCY_MAP,
 } from '../src/lib/paystack/pricing.ts';
 
 import {
@@ -132,9 +135,9 @@ describe('2. Authoritative Price Resolution', () => {
     );
   });
 
-  test('Resolves Nigerian Bootcamp to authoritative ₦100,000 NGN base', async () => {
-    const price = await resolveAuthoritativePrice('bootcamp', 'programme', 'NG');
-    assert.equal(price.productId, 'bootcamp');
+  test('Resolves Nigerian AI-Powered Cybersecurity to authoritative ₦100,000 NGN base', async () => {
+    const price = await resolveAuthoritativePrice('ai_training', 'programme', 'NG');
+    assert.equal(price.productId, 'ai_training');
     assert.equal(price.baseAmount, 100000);
     assert.equal(price.baseCurrency, 'NGN');
     assert.equal(price.pricingModel, 'ngn_base');
@@ -170,7 +173,7 @@ describe('2. Authoritative Price Resolution', () => {
   });
 
   test('Resolves African market (Ghana GH) with genuine FX conversion', async () => {
-    const price = await resolveAuthoritativePrice('bootcamp', 'programme', 'GH');
+    const price = await resolveAuthoritativePrice('ai_training', 'programme', 'GH');
     assert.equal(price.pricingModel, 'africa_fx');
     assert.equal(price.finalCurrency, 'GHS');
     assert.ok(price.fxRate > 0);
@@ -178,18 +181,71 @@ describe('2. Authoritative Price Resolution', () => {
     assert.equal(price.finalAmount, Math.round(100000 * price.fxRate));
   });
 
-  test('Resolves International market (US) to commercial USD band ($160 for bootcamp)', async () => {
-    const price = await resolveAuthoritativePrice('bootcamp', 'programme', 'US');
+  test('Resolves International market (US) to commercial USD band ($160 for ai_training)', async () => {
+    const price = await resolveAuthoritativePrice('ai_training', 'programme', 'US');
     assert.equal(price.pricingModel, 'international_commercial');
     assert.equal(price.finalCurrency, 'USD');
     assert.equal(price.finalAmount, 160);
   });
 
-  test('Resolves International market (US) for professional ($190 for professional)', async () => {
+  test('Resolves International market (US) for professional ($500 for professional)', async () => {
     const price = await resolveAuthoritativePrice('professional', 'programme', 'US');
     assert.equal(price.pricingModel, 'international_commercial');
     assert.equal(price.finalCurrency, 'USD');
-    assert.equal(price.finalAmount, 190);
+    assert.equal(price.finalAmount, 500);
+  });
+
+  test('Resolves International market (US) for ai_security ($250 for ai_security)', async () => {
+    const price = await resolveAuthoritativePrice('ai_security', 'programme', 'US');
+    assert.equal(price.pricingModel, 'international_commercial');
+    assert.equal(price.finalCurrency, 'USD');
+    assert.equal(price.finalAmount, 250);
+  });
+
+  test('Rejects retired bootcamp with PRODUCT_DISCONTINUED error', async () => {
+    await assert.rejects(
+      async () => resolveAuthoritativePrice('bootcamp', 'programme', 'NG'),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRODUCT_DISCONTINUED');
+        return true;
+      }
+    );
+  });
+
+  test('Rejects non-purchasable internship with PRODUCT_UNAVAILABLE error', async () => {
+    await assert.rejects(
+      async () => resolveAuthoritativePrice('internship', 'programme', 'NG'),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRODUCT_UNAVAILABLE');
+        return true;
+      }
+    );
+  });
+
+  test('Rejects unconfigured international pricing for products without USD band with PRICING_NOT_CONFIGURED', async () => {
+    await assert.rejects(
+      async () => resolveAuthoritativePrice('web-basic', 'service', 'US'),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRICING_NOT_CONFIGURED');
+        assert.match(err.message, /International pricing \(USD\) is not yet configured/);
+        return true;
+      }
+    );
+  });
+
+  test('Rejects unsupported currency without direct Paystack checkout mapping with PRICING_NOT_CONFIGURED', async () => {
+    await assert.rejects(
+      async () => resolveInternationalPrice('ai_training', 'programme', 'AI-Powered Cybersecurity Programme', 100000, 'EUR'),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRICING_NOT_CONFIGURED');
+        assert.match(err.message, /International pricing \(EUR\) is not yet configured/);
+        return true;
+      }
+    );
   });
 });
 
@@ -330,7 +386,7 @@ describe('6. Edge Cases, Security & Fault Tolerance', () => {
   test('Client attempts to supply amount or currency are ignored by price resolver', async () => {
     // When a malicious client passes manipulated financial values
     const clientPayload = {
-      productId: 'bootcamp',
+      productId: 'ai_training',
       amount: 10, // Attempting to pay 10 NGN instead of 100,000 NGN
       currency: 'USD', // Attempting to force USD instead of NGN
       fxRate: 0.0001,
@@ -490,14 +546,14 @@ describe('10. Customer-Facing Checkout Contract & Application Association', () =
   test('Valid course checkout resolves authoritative price and retains application_id in metadata', async () => {
     const testApplicationId = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
     const clientPayload = {
-      productId: 'bootcamp',
-      productType: 'course',
+      productId: 'ai_training',
+      productType: 'programme',
       email: 'applicant@example.com',
       name: 'Test Applicant',
       countryCode: 'NG',
       metadata: {
         application_id: testApplicationId,
-        program: '6-Week Bootcamp',
+        program: 'AI-Powered Cybersecurity Programme',
       },
     };
 
@@ -508,7 +564,7 @@ describe('10. Customer-Facing Checkout Contract & Application Association', () =
       clientPayload.countryCode
     );
 
-    assert.equal(price.productId, 'bootcamp');
+    assert.equal(price.productId, 'ai_training');
     assert.equal(price.finalAmount, 100000);
     assert.equal(price.finalCurrency, 'NGN');
     assert.equal(price.pricingModel, 'ngn_base');
@@ -529,7 +585,7 @@ describe('10. Customer-Facing Checkout Contract & Application Association', () =
 
     // Verify application_id is strictly preserved
     assert.equal(transactionSnapshot.metadata.application_id, testApplicationId);
-    assert.equal(transactionSnapshot.metadata.program, '6-Week Bootcamp');
+    assert.equal(transactionSnapshot.metadata.program, 'AI-Powered Cybersecurity Programme');
   });
 
   test('Valid consultation checkout across all durations resolves expected base amounts', async () => {
@@ -664,7 +720,7 @@ describe('12. Gateway State Handling & Tamper Resilience', () => {
     const clientTamperedCurrency = 'USD';
 
     // Server-side price resolution ignores client payload and uses authoritative catalog
-    const serverResolvedPrice = await resolveAuthoritativePrice('bootcamp', 'course', 'NG');
+    const serverResolvedPrice = await resolveAuthoritativePrice('ai_training', 'programme', 'NG');
 
     assert.notEqual(serverResolvedPrice.finalAmount, clientTamperedAmount);
     assert.notEqual(serverResolvedPrice.finalCurrency, clientTamperedCurrency);
@@ -733,10 +789,7 @@ describe('14. Application-Payment Integrity & Metadata Protection', () => {
     const prod = productId.toLowerCase();
 
     if (prod === 'bootcamp') {
-      return (
-        (combined.includes('bootcamp') || combined.includes('6-week')) &&
-        !combined.includes('16-week')
-      );
+      return false; // Retired programme
     }
     if (prod === 'professional') {
       return combined.includes('professional') || combined.includes('16-week');
@@ -744,7 +797,14 @@ describe('14. Application-Payment Integrity & Metadata Protection', () => {
     if (prod === 'ai_training') {
       return (
         combined.includes('ai_training') ||
-        (combined.includes('ai') && combined.includes('cybersecurity') && !combined.includes('16-week') && !combined.includes('bootcamp'))
+        (combined.includes('ai') && combined.includes('cybersecurity') && !combined.includes('16-week'))
+      );
+    }
+    if (prod === 'ai_security') {
+      return (
+        combined.includes('ai_security') ||
+        combined.includes('ai security') ||
+        (combined.includes('reverse') && combined.includes('vulnerability'))
       );
     }
     return false;
@@ -756,7 +816,7 @@ describe('14. Application-Payment Integrity & Metadata Protection', () => {
     productId,
     mockDbApplication,
   }) {
-    const isCourseProduct = ['bootcamp', 'professional', 'ai_training'].includes(productId);
+    const isCourseProduct = ['professional', 'ai_training', 'ai_security'].includes(productId);
     if (isCourseProduct && (!applicationId || String(applicationId).trim() === '')) {
       return {
         ok: false,
@@ -795,14 +855,14 @@ describe('14. Application-Payment Integrity & Metadata Protection', () => {
     const mockApp = {
       id: validUuid,
       email: 'student@example.com',
-      program: '6-Week Bootcamp',
-      program_name: '6-Week AI Cybersecurity Bootcamp',
+      program: 'AI-Powered Cybersecurity Programme',
+      program_name: 'AI-Powered Cybersecurity Programme',
     };
 
     const result = validateApplicationPayment({
       applicationId: validUuid,
       customerEmail: 'Student@Example.com', // case-insensitive match
-      productId: 'bootcamp',
+      productId: 'ai_training',
       mockDbApplication: mockApp,
     });
 
@@ -814,7 +874,7 @@ describe('14. Application-Payment Integrity & Metadata Protection', () => {
     const result = validateApplicationPayment({
       applicationId: 'invalid-id-not-uuid',
       customerEmail: 'student@example.com',
-      productId: 'bootcamp',
+      productId: 'ai_training',
       mockDbApplication: null,
     });
 
@@ -828,7 +888,7 @@ describe('14. Application-Payment Integrity & Metadata Protection', () => {
     const result = validateApplicationPayment({
       applicationId: missingUuid,
       customerEmail: 'student@example.com',
-      productId: 'bootcamp',
+      productId: 'ai_training',
       mockDbApplication: null, // simulates no DB row found
     });
 
@@ -842,13 +902,13 @@ describe('14. Application-Payment Integrity & Metadata Protection', () => {
     const mockApp = {
       id: validUuid,
       email: 'legit.student@example.com',
-      program: '6-Week Bootcamp',
+      program: 'AI-Powered Cybersecurity Programme',
     };
 
     const result = validateApplicationPayment({
       applicationId: validUuid,
       customerEmail: 'attacker@evil.com',
-      productId: 'bootcamp',
+      productId: 'ai_training',
       mockDbApplication: mockApp,
     });
 
@@ -857,7 +917,7 @@ describe('14. Application-Payment Integrity & Metadata Protection', () => {
     assert.match(result.error, /Applicant email does not match/);
   });
 
-  test('Programme mismatch (bootcamp applicant paying for professional) is rejected with 400', () => {
+  test('Programme mismatch (ai_training applicant paying for professional) is rejected with 400', () => {
     const validUuid = '12345678-1234-4234-8234-123456789abc';
     const mockApp = {
       id: validUuid,
@@ -868,7 +928,7 @@ describe('14. Application-Payment Integrity & Metadata Protection', () => {
     const result = validateApplicationPayment({
       applicationId: validUuid,
       customerEmail: 'student@example.com',
-      productId: 'bootcamp', // attempting to pay lower bootcamp price for professional application
+      productId: 'ai_training', // attempting to pay lower ai_training price for professional application
       mockDbApplication: mockApp,
     });
 
@@ -881,7 +941,7 @@ describe('14. Application-Payment Integrity & Metadata Protection', () => {
     const result = validateApplicationPayment({
       applicationId: null,
       customerEmail: 'student@example.com',
-      productId: 'bootcamp',
+      productId: 'ai_training',
       mockDbApplication: null,
     });
 
@@ -1360,7 +1420,7 @@ describe('18. Direct Route Handler Execution (Next.js Request & Response Integra
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        productId: 'bootcamp',
+        productId: 'ai_training',
         productType: 'programme',
         email: 'applicant@example.com',
         name: 'Jane Doe',
@@ -1380,7 +1440,7 @@ describe('18. Direct Route Handler Execution (Next.js Request & Response Integra
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        productId: 'bootcamp',
+        productId: 'ai_training',
         productType: 'programme',
         email: 'applicant@example.com',
         name: 'Jane Doe',
@@ -1396,6 +1456,99 @@ describe('18. Direct Route Handler Execution (Next.js Request & Response Integra
     assert.equal(res.status, 400);
     assert.equal(json.success, false);
     assert.match(json.error, /Expected a valid UUID/);
+  });
+
+  test('Direct Route: Request for retired bootcamp returns HTTP 400 with PRODUCT_DISCONTINUED', async () => {
+    const req = new Request('http://localhost:3000/api/paystack/initialize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        productId: 'bootcamp',
+        productType: 'programme',
+        email: 'applicant@example.com',
+        name: 'Jane Doe',
+      }),
+    });
+
+    const res = await initializeRoutePost(req);
+    const json = await res.json();
+
+    assert.equal(res.status, 400);
+    assert.equal(json.success, false);
+    assert.equal(json.code, 'PRODUCT_DISCONTINUED');
+    assert.match(json.error, /retired/i);
+  });
+
+  test('Direct Route: Request for non-purchasable internship returns HTTP 400 with PRODUCT_UNAVAILABLE', async () => {
+    const req = new Request('http://localhost:3000/api/paystack/initialize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        productId: 'internship',
+        productType: 'programme',
+        email: 'applicant@example.com',
+        name: 'Jane Doe',
+      }),
+    });
+
+    const res = await initializeRoutePost(req);
+    const json = await res.json();
+
+    assert.equal(res.status, 400);
+    assert.equal(json.success, false);
+    assert.equal(json.code, 'PRODUCT_UNAVAILABLE');
+    assert.match(json.error, /not available for individual purchase/i);
+  });
+
+  test('Direct Route: Request for unconfigured international product (web-basic from US) returns HTTP 422', async () => {
+    const req = new Request('http://localhost:3000/api/paystack/initialize', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-vercel-ip-country': 'US',
+      },
+      body: JSON.stringify({
+        productId: 'web-basic',
+        productType: 'service',
+        email: 'us.client@example.com',
+        name: 'Jane Doe',
+        countryCode: 'US',
+      }),
+    });
+
+    const res = await initializeRoutePost(req);
+    const json = await res.json();
+
+    assert.equal(res.status, 422);
+    assert.equal(json.success, false);
+    assert.equal(json.code, 'PRICING_NOT_CONFIGURED');
+    assert.match(json.error, /International pricing \(USD\) is not yet configured/i);
+  });
+
+  test('Direct Route: Request for international course (ai_security from US) resolves price and proceeds to validate application_id', async () => {
+    const req = new Request('http://localhost:3000/api/paystack/initialize', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-vercel-ip-country': 'US',
+      },
+      body: JSON.stringify({
+        productId: 'ai_security',
+        productType: 'programme',
+        email: 'us.applicant@example.com',
+        name: 'Jane Doe',
+        countryCode: 'US',
+      }),
+    });
+
+    const res = await initializeRoutePost(req);
+    const json = await res.json();
+
+    // With USD 250 configured, pricing resolution succeeds without 422 PRICING_NOT_CONFIGURED,
+    // and advances to Step 5 where course products strictly require application_id (HTTP 400).
+    assert.equal(res.status, 400);
+    assert.equal(json.success, false);
+    assert.match(json.error, /An application ID is required/i);
   });
 
   test('Direct Route: Request with invalid customer email returns HTTP 400', async () => {
@@ -1435,6 +1588,59 @@ describe('18. Direct Route Handler Execution (Next.js Request & Response Integra
     assert.equal(res.status, 400);
     assert.equal(json.success, false);
     assert.match(json.error, /unknown or unavailable/i);
+  });
+});
+
+describe('19. Production Database Schema Contract Verification', () => {
+  test('Production course_prices column schema contract is respected', () => {
+    // Production schema definition: (id, course_id, currency_code, symbol, amount, created_at)
+    // Non-existent columns: currency, active (must not be assumed in raw SELECT / WHERE queries)
+    const productionRow = {
+      id: 'e2a87b5c-431f-4d92-bf39-160fa11dae01',
+      course_id: 'ai_training',
+      currency_code: 'NGN',
+      symbol: '₦',
+      amount: 100000,
+      created_at: '2026-10-10T12:00:00Z',
+    };
+
+    assert.ok(productionRow.course_id);
+    assert.ok(productionRow.currency_code);
+    assert.ok(productionRow.symbol);
+    assert.ok(productionRow.amount > 0);
+    assert.equal(productionRow.currency, undefined, 'Column "currency" must not be present in prod schema');
+    assert.equal(productionRow.active, undefined, 'Column "active" is optional / unassumed in prod schema');
+  });
+
+  test('CANONICAL_PRODUCTS defines active programmes, retired legacy, and non-purchasable internship', () => {
+    assert.equal(CANONICAL_PRODUCTS['ai_training'].status, 'active');
+    assert.equal(CANONICAL_PRODUCTS['ai_training'].ngnBaseAmount, 100000);
+
+    assert.equal(CANONICAL_PRODUCTS['ai_security'].status, 'active');
+    assert.equal(CANONICAL_PRODUCTS['ai_security'].ngnBaseAmount, 200000);
+
+    assert.equal(CANONICAL_PRODUCTS['professional'].status, 'active');
+    assert.equal(CANONICAL_PRODUCTS['professional'].ngnBaseAmount, 350000);
+
+    assert.equal(CANONICAL_PRODUCTS['bootcamp'].status, 'retired');
+    assert.equal(CANONICAL_PRODUCTS['internship'].status, 'non_purchasable');
+  });
+
+  test('African currency map is strictly restricted to Paystack direct checkout supported currencies', () => {
+    // Paystack checkout currencies: NGN, GHS, ZAR, USD, KES, XOF
+    for (const [country, currency] of Object.entries(AFRICAN_CURRENCY_MAP)) {
+      assert.ok(
+        ['GHS', 'KES', 'ZAR', 'XOF'].includes(currency),
+        `Country ${country} is mapped to unsupported direct currency ${currency}`
+      );
+      assert.equal(isPaystackSupportedCurrency(currency), true);
+    }
+  });
+
+  test('INTERNATIONAL_USD_FALLBACKS defines business-approved USD prices for all active courses', () => {
+    assert.equal(INTERNATIONAL_USD_FALLBACKS['ai_training'], 160);
+    assert.equal(INTERNATIONAL_USD_FALLBACKS['ai_security'], 250);
+    assert.equal(INTERNATIONAL_USD_FALLBACKS['professional'], 500);
   });
 });
 
