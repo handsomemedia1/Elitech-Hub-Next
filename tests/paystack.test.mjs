@@ -169,7 +169,7 @@ describe('2. Authoritative Price Resolution', () => {
     assert.equal(c120.finalAmount, 100000);
   });
 
-  test('Resolves African market (Ghana GH) with genuine FX conversion', async () => {
+  test('Resolves available programme pricing for Ghana (GH) with genuine FX conversion', async () => {
     const price = await resolveAuthoritativePrice('ai_training', 'programme', 'GH');
     assert.equal(price.pricingModel, 'africa_fx');
     assert.equal(price.finalCurrency, 'GHS');
@@ -178,7 +178,7 @@ describe('2. Authoritative Price Resolution', () => {
     assert.equal(price.finalAmount, Math.round(100000 * price.fxRate));
   });
 
-  test('Resolves International market (US) to commercial USD band ($160 for bootcamp)', async () => {
+  test('Resolves International market (US) to approved commercial USD band ($160 for AI Training)', async () => {
     const price = await resolveAuthoritativePrice('ai_training', 'programme', 'US');
     assert.equal(price.pricingModel, 'international_commercial');
     assert.equal(price.finalCurrency, 'USD');
