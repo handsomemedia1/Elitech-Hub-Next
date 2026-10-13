@@ -40,7 +40,11 @@ import {
   buildApprovedCallbackUrl,
   getAppUrl,
   getPaystackSecretKey,
+  getPaystackMode,
+  getPaystackPublicKey,
   isPaystackTestMode,
+  isPaystackLiveMode,
+  validatePaystackConfig,
 } from '../src/lib/paystack/config.ts';
 
 import {
@@ -50,6 +54,7 @@ import {
 
 import { verifyLimit } from '../src/lib/rate-limit.ts';
 import { POST as initializeRoutePost } from '../src/app/api/paystack/initialize/route.ts';
+import { fulfillTransaction } from '../src/lib/paystack/transactions.ts';
 
 describe('1. Currency & Subunit Conversion (including XOF)', () => {
   test('Supported checkout currencies matches Paystack specification', () => {
@@ -843,6 +848,72 @@ describe('13. Explicit Paystack Mode & Credential Security', () => {
         assert.equal(isPaystackTestMode(), true);
       }
     );
+  });
+
+  test('Validates and permits matching public keys for test and live modes', () => {
+    const prevPub = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY;
+    try {
+      withPaystackEnv(
+        { key: ['sk', 'test', 'mock_test_key'].join('_'), mode: 'test' },
+        () => {
+          process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY = ['pk', 'test', 'mock_pub_key'].join('_');
+          assert.equal(getPaystackPublicKey(), ['pk', 'test', 'mock_pub_key'].join('_'));
+          assert.equal(isPaystackTestMode(), true);
+          assert.equal(isPaystackLiveMode(), false);
+
+          const config = validatePaystackConfig();
+          assert.equal(config.mode, 'test');
+          assert.equal(config.secretKey, ['sk', 'test', 'mock_test_key'].join('_'));
+          assert.equal(config.publicKey, ['pk', 'test', 'mock_pub_key'].join('_'));
+        }
+      );
+
+      withPaystackEnv(
+        { key: ['sk', 'live', 'mock_live_key'].join('_'), mode: 'live' },
+        () => {
+          process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY = ['pk', 'live', 'mock_live_pub'].join('_');
+          assert.equal(getPaystackPublicKey(), ['pk', 'live', 'mock_live_pub'].join('_'));
+          assert.equal(isPaystackTestMode(), false);
+          assert.equal(isPaystackLiveMode(), true);
+
+          const config = validatePaystackConfig();
+          assert.equal(config.mode, 'live');
+          assert.equal(config.secretKey, ['sk', 'live', 'mock_live_key'].join('_'));
+          assert.equal(config.publicKey, ['pk', 'live', 'mock_live_pub'].join('_'));
+        }
+      );
+    } finally {
+      if (prevPub === undefined) delete process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY;
+      else process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY = prevPub;
+    }
+  });
+
+  test('Rejects public key and mode prefix mismatch', () => {
+    const prevPub = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY;
+    try {
+      // mode=test with pk_live_*
+      withPaystackEnv(
+        { key: ['sk', 'test', 'mock_test_key'].join('_'), mode: 'test' },
+        () => {
+          process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY = ['pk', 'live', 'mismatched'].join('_');
+          assert.throws(() => getPaystackPublicKey(), /PAYSTACK_MODE="test" requires a valid pk_test_/);
+          assert.throws(() => validatePaystackConfig(), /PAYSTACK_MODE="test" requires a valid pk_test_/);
+        }
+      );
+
+      // mode=live with pk_test_*
+      withPaystackEnv(
+        { key: ['sk', 'live', 'mock_live_key'].join('_'), mode: 'live' },
+        () => {
+          process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY = ['pk', 'test', 'mismatched'].join('_');
+          assert.throws(() => getPaystackPublicKey(), /PAYSTACK_MODE="live" requires a valid pk_live_/);
+          assert.throws(() => validatePaystackConfig(), /PAYSTACK_MODE="live" requires a valid pk_live_/);
+        }
+      );
+    } finally {
+      if (prevPub === undefined) delete process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY;
+      else process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY = prevPub;
+    }
   });
 });
 
@@ -1707,6 +1778,76 @@ describe('19. Production Database Schema Contract Verification', () => {
     assert.equal(INTERNATIONAL_USD_FALLBACKS['ai_training'], 160);
     assert.equal(INTERNATIONAL_USD_FALLBACKS['ai_security'], 250);
     assert.equal(INTERNATIONAL_USD_FALLBACKS['professional'], 500);
+  });
+});
+
+describe('20. Idempotent Atomic Fulfillment & Delivery Resilience', () => {
+  test('fulfillTransaction ignores transactions with non-successful status', async () => {
+    const pendingTx = {
+      id: 'tx_test_1',
+      reference: 'eth_pending_1',
+      status: 'pending',
+      amount: 50000,
+      currency: 'NGN',
+      product_id: 'consultation-60',
+      product_type: 'consultation',
+      customer_email: 'client@example.com',
+      metadata: {},
+    };
+
+    const result = await fulfillTransaction(pendingTx);
+    assert.equal(result.fulfilled, false);
+    assert.equal(result.alreadyFulfilled, false);
+
+    const failedTx = { ...pendingTx, status: 'failed', reference: 'eth_failed_1' };
+    const failResult = await fulfillTransaction(failedTx);
+    assert.equal(failResult.fulfilled, false);
+    assert.equal(failResult.alreadyFulfilled, false);
+  });
+
+  test('fulfillTransaction on non-consultation product leaves fulfillment to external/manual workflows', async () => {
+    const programmeTx = {
+      id: 'tx_prog_1',
+      reference: 'eth_prog_1',
+      status: 'successful',
+      amount: 100000,
+      currency: 'NGN',
+      product_id: 'ai_training',
+      product_type: 'programme',
+      customer_email: 'student@example.com',
+      metadata: { application_id: '12345678-1234-4234-8234-123456789abc' },
+    };
+
+    const result = await fulfillTransaction(programmeTx);
+    assert.equal(result.fulfilled, false);
+    assert.equal(result.alreadyFulfilled, false);
+  });
+
+  test('fulfillTransaction respects already fulfilled or dispatched metadata flags', async () => {
+    const alreadyFulfilledTx = {
+      id: 'tx_done_1',
+      reference: 'eth_done_1',
+      status: 'successful',
+      amount: 30000,
+      currency: 'NGN',
+      product_id: 'consultation-30',
+      product_type: 'consultation',
+      customer_email: 'client@example.com',
+      metadata: { fulfilled: true },
+    };
+
+    const res1 = await fulfillTransaction(alreadyFulfilledTx);
+    assert.equal(res1.fulfilled, false);
+    assert.equal(res1.alreadyFulfilled, true);
+
+    const alreadyDispatchedTx = {
+      ...alreadyFulfilledTx,
+      metadata: { fulfillment_dispatched: true },
+    };
+
+    const res2 = await fulfillTransaction(alreadyDispatchedTx);
+    assert.equal(res2.fulfilled, false);
+    assert.equal(res2.alreadyFulfilled, true);
   });
 });
 
