@@ -1,28 +1,39 @@
 /**
- * Paystack Server-Only Configuration
- * Strictly protects credentials and enforces Paystack Test Mode.
+ * Paystack Server-Only Configuration.
+ *
+ * PAYSTACK_MODE is an explicit server-side switch: "test" or "live".
+ * Missing/blank mode safely defaults to "test". A key must match the selected
+ * mode, so setting a live key alone can never silently enable live payments.
  */
-
 export function getPaystackSecretKey(): string {
   const rawKey = process.env.PAYSTACK_SECRET_KEY;
   if (!rawKey || !rawKey.trim()) {
     throw new Error('PAYSTACK_SECRET_KEY environment variable is not configured.');
   }
+
   const key = rawKey.trim();
-  if (!key.startsWith('sk_test_')) {
-    throw new Error('[Paystack Security Lockout] Only Test Mode credentials (sk_test_*) are permitted in this phase.');
+  const configuredMode = process.env.PAYSTACK_MODE?.trim().toLowerCase() || 'test';
+  if (configuredMode !== 'test' && configuredMode !== 'live') {
+    throw new Error('[Paystack Security Lockout] PAYSTACK_MODE must be either "test" or "live".');
   }
+
+  const requiredPrefix = configuredMode === 'live' ? 'sk_live_' : 'sk_test_';
+  if (!key.startsWith(requiredPrefix) || key.length <= requiredPrefix.length) {
+    throw new Error(
+      `[Paystack Security Lockout] PAYSTACK_MODE="${configuredMode}" requires a valid ${requiredPrefix} secret key.`
+    );
+  }
+
   return key;
 }
 
 /**
- * Returns whether the configured Paystack key is in Test Mode.
- * Paystack Test keys start with "sk_test_".
+ * Returns whether the configured Paystack credentials are valid Test Mode
+ * credentials. Missing/invalid configuration returns false.
  */
 export function isPaystackTestMode(): boolean {
   try {
-    const key = getPaystackSecretKey();
-    return key.startsWith('sk_test_');
+    return getPaystackSecretKey().startsWith('sk_test_');
   } catch {
     return false;
   }
