@@ -323,6 +323,21 @@ export default function ProgramsPage() {
               </Link>
             </AnimateOnScroll>
 
+            <AnimateOnScroll direction="up" delay={150}>
+              <Link href="#ai-security" className={styles.hubCard}>
+                <div className={styles.hubCardIcon} style={{ background: 'linear-gradient(135deg, #8b5cf6, #6d28d9)' }}><Shield size={28} /></div>
+                <div className={styles.hubCardBadge} style={{ background: '#7c3aed' }}>AI VULNERABILITY</div>
+                <h3>AI Security &amp; Reverse Vulnerability</h3>
+                <p>8 Weeks · Intensive · <PriceDisplay courseId="ai_security" fallback="₦200,000" /></p>
+                <ul className={styles.hubCardFeatures}>
+                  <li><CheckCircle2 size={14} color="#8b5cf6" /> Reverse vulnerability research</li>
+                  <li><CheckCircle2 size={14} color="#8b5cf6" /> LLM &amp; agentic attack defense</li>
+                  <li><CheckCircle2 size={14} color="#8b5cf6" /> Binary analysis &amp; security auditing</li>
+                </ul>
+                <span className={styles.hubCardCta}>View Details &amp; Enroll <ChevronRight size={16} /></span>
+              </Link>
+            </AnimateOnScroll>
+
             <AnimateOnScroll direction="up" delay={200}>
               <Link href="/programs/professional" className={`${styles.hubCard} ${styles.hubCardFeatured}`}>
                 <div className={styles.hubCardMostPopular}>MOST POPULAR</div>
@@ -385,7 +400,7 @@ export default function ProgramsPage() {
 
             {/* AI Security and Reverse Vulnerability */}
             <AnimateOnScroll direction="up" delay={150}>
-              <div className={styles.pricingCard}>
+              <div id="ai-security" className={styles.pricingCard} style={{ scrollMarginTop: '100px' }}>
                 <div className={styles.pricingIcon} style={{ color: '#8b5cf6' }}><Shield size={32} /></div>
                 <div className={styles.pricingHeader}>
                   <h3>AI Security &amp; Reverse Vulnerability</h3>
