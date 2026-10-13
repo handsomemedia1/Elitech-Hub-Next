@@ -2,7 +2,10 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSearchParams } from 'next/navigation';
 import styles from './apply.module.css';
+import PriceDisplay from '@/components/PriceDisplay';
+import PaystackCheckoutButton from '@/components/PaystackCheckoutButton';
 
 interface FormData {
   fullName: string;
@@ -31,11 +34,30 @@ const initialFormData: FormData = {
 };
 
 export default function ApplyForm() {
+  const searchParams = useSearchParams();
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [formData, setFormData] = useState<FormData>(() => {
+    const queryCourse = searchParams.get('course') || searchParams.get('program');
+    let initialProgram = '';
+    if (queryCourse) {
+      const lower = queryCourse.toLowerCase();
+      if (lower.includes('ai-security') || lower.includes('ai_security') || lower.includes('reverse')) {
+        initialProgram = 'AI Security and Reverse Vulnerability';
+      } else if (lower.includes('ai') || lower === 'ai6' || lower.includes('bootcamp')) {
+        initialProgram = 'AI-Powered Cybersecurity';
+      } else if (lower.includes('prof') || lower === 'prof16') {
+        initialProgram = '16-Week Professional';
+      }
+    }
+    return { ...initialFormData, program: initialProgram };
+  });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState('');
+  const [applicationResult, setApplicationResult] = useState<{
+    applicationId: string | null;
+    programName: string | null;
+  }>({ applicationId: null, programName: null });
 
   const totalSteps = 3;
 
@@ -72,6 +94,10 @@ export default function ApplyForm() {
         return;
       }
 
+      setApplicationResult({
+        applicationId: data.applicationId || null,
+        programName: data.program || formData.program,
+      });
       setIsSubmitted(true);
     } catch {
       setServerError('An unexpected error occurred. Please try again later.');
@@ -90,6 +116,11 @@ export default function ApplyForm() {
   };
 
   if (isSubmitted) {
+    const isAiTraining = formData.program.includes('AI-Powered Cybersecurity') || formData.program === 'ai_training';
+    const isAiSecurity = formData.program.includes('AI Security') || formData.program.includes('Reverse Vulnerability') || formData.program === 'ai_security';
+    const isProfessional = formData.program.includes('Professional') || formData.program === 'professional';
+    const checkoutProductId = isAiTraining ? 'ai_training' : isAiSecurity ? 'ai_security' : isProfessional ? 'professional' : null;
+
     return (
       <motion.div
         className={styles.formWrapper}
@@ -100,15 +131,95 @@ export default function ApplyForm() {
         <div className={styles.successScreen}>
           <div className={styles.successIcon}>✓</div>
           <h3 className={styles.successTitle}>Application Submitted!</h3>
+
+          {applicationResult.applicationId && (
+            <div className={styles.appRefBox}>
+              <span className={styles.appRefLabel}>Application Reference:</span>
+              <code className={styles.appRefCode}>{applicationResult.applicationId}</code>
+            </div>
+          )}
+
+          <div>
+            <span className={styles.reviewNoticePill}>
+              Status: <strong>Pending Admissions Review (24–48 hrs)</strong>
+            </span>
+          </div>
+
           <p className={styles.successText}>
-            Thank you for applying to Elitech Hub. Our admissions team will review your application and reach out within 24–48 hours. Check your inbox for a confirmation email.
+            Thank you for applying to Elitech Hub, <strong>{formData.fullName}</strong>. Our admissions committee will review your application details. Check your email (<strong>{formData.email}</strong>) for your confirmation.
           </p>
-          <a href="https://wa.me/2347081968062" target="_blank" rel="noopener noreferrer" className={styles.whatsappBtn}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-            </svg>
-            Follow up on WhatsApp
-          </a>
+
+          {checkoutProductId && (
+            <div className={styles.checkoutPromoCard}>
+              <div className={styles.checkoutPromoHeader}>
+                <div>
+                  <h4 className={styles.checkoutPromoTitle}>Reserve Your Cohort Seat</h4>
+                  <p className={styles.checkoutPromoSubtitle}>
+                    Tuition payment via Paystack Test Mode (Optional Early Reservation)
+                  </p>
+                </div>
+                <div className={styles.checkoutPromoPrice}>
+                  <PriceDisplay
+                    courseId={checkoutProductId}
+                    fallback={
+                      checkoutProductId === 'ai_security'
+                        ? '₦200,000'
+                        : checkoutProductId === 'professional'
+                        ? '₦350,000'
+                        : '₦100,000'
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className={styles.checkoutNoticeText}>
+                <p>
+                  <strong>Notice:</strong> Admissions review and tuition payments remain strictly separate.
+                  Completing your payment now reserves your place in the upcoming cohort once your application review is approved.
+                </p>
+              </div>
+
+              <div style={{ marginTop: '1.25rem' }}>
+                <PaystackCheckoutButton
+                  productId={checkoutProductId}
+                  productType="course"
+                  email={formData.email}
+                  name={formData.fullName}
+                  countryCode={formData.country}
+                  metadata={{
+                    application_id: applicationResult.applicationId,
+                    program: formData.program,
+                  }}
+                  callbackUrl="/thank-you"
+                  label={`Pay ${
+                    isAiTraining
+                      ? 'AI Cybersecurity'
+                      : isAiSecurity
+                      ? 'AI Security & Reverse Vulnerability'
+                      : 'Professional'
+                  } Tuition (Test Mode)`}
+                />
+              </div>
+
+              <p className={styles.disclaimerText}>
+                * All payments are non-refundable. Payment of tuition does not waive admissions prerequisite checks.
+              </p>
+            </div>
+          )}
+
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '2rem', flexWrap: 'wrap' }}>
+            <a
+              href="https://wa.me/2347081968062"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.whatsappBtn}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+              Follow up on WhatsApp
+            </a>
+          </div>
         </div>
       </motion.div>
     );
@@ -198,8 +309,9 @@ export default function ApplyForm() {
                   <label htmlFor="program">Which program are you interested in?</label>
                   <select id="program" name="program" value={formData.program} onChange={handleInputChange} required>
                     <option value="">Select a Program</option>
-                    <option value="6-Week Bootcamp">6-Week AI Cybersecurity Bootcamp</option>
-                    <option value="16-Week Professional">16-Week Professional Program</option>
+                    <option value="AI-Powered Cybersecurity">AI-Powered Cybersecurity Programme (6 Weeks)</option>
+                    <option value="AI Security and Reverse Vulnerability">AI Security &amp; Reverse Vulnerability (8 Weeks)</option>
+                    <option value="16-Week Professional">16-Week Professional Cybersecurity Programme</option>
                     <option value="Not Sure Yet">Not Sure Yet</option>
                   </select>
                 </div>

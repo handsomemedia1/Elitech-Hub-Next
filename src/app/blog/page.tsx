@@ -97,8 +97,8 @@ export default async function BlogPage() {
           <h2 style={{ textAlign: 'center', color: 'white', fontSize: 'clamp(1.5rem, 3vw, 2.25rem)', fontWeight: 900, marginBottom: '0.75rem' }}>Turn Knowledge Into a Career</h2>
           <p style={{ textAlign: 'center', color: 'var(--color-text-secondary)', maxWidth: '560px', margin: '0 auto 2.5rem', lineHeight: 1.7 }}>Every article on this blog connects to a real skill you can learn in our programs. Choose the path that fits you.</p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '1.25rem', maxWidth: '960px', margin: '0 auto' }}>
-            <HubCard href="/programs/cybersecurity-bootcamp" label="6-Week Bootcamp" sub="Fast-track · ₦75,000 · Weekends" color="#ef4444" cta="Enroll now →" />
-            <HubCard href="/programs/professional" label="16-Week Professional" sub="Internship guaranteed · ₦200,000" color="#a855f7" cta="View program →" />
+            <HubCard href="/programs/cybersecurity-bootcamp" label="6-Week Bootcamp" sub="Fast-track · ₦100,000 · Weekends" color="#ef4444" cta="Enroll now →" />
+            <HubCard href="/programs/professional" label="16-Week Professional" sub="Internship guaranteed · ₦300,000" color="#a855f7" cta="View program →" />
             <HubCard href="/programs/corporate-training" label="Corporate Training" sub="For teams · Custom curriculum" color="#06b6d4" cta="Get a quote →" />
           </div>
         </AnimateOnScroll>

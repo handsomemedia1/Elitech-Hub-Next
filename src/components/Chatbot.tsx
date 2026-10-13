@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { usePricing } from '@/context/PricingContext';
 import styles from "./Chatbot.module.css";
 
 interface Message {
@@ -14,7 +13,6 @@ interface Message {
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { formatPrice } = usePricing();
 
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -55,8 +53,6 @@ export default function Chatbot() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: [...messages, userMessage].map(m => ({ role: m.role, content: m.content })),
-          bootcampPrice: formatPrice('bootcamp'),
-          professionalPrice: formatPrice('professional'),
         }),
       });
 
@@ -241,7 +237,7 @@ export default function Chatbot() {
                 </button>
               </div>
               <div className={styles.footerBranding}>
-                ⚡ Powered by Elitech AI (Groq)
+                ⚡ Powered by Elitech AI
               </div>
             </form>
           </motion.div>

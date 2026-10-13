@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import PageLayout from '@/components/PageLayout';
 import ApplyForm from './ApplyForm';
 import styles from './apply.module.css';
@@ -78,10 +78,10 @@ export default function ApplyPage() {
             <p style={{ textAlign: 'center', color: 'var(--color-accent-bright)', fontWeight: 800, letterSpacing: '0.12em', fontSize: '0.78rem', marginBottom: '0.75rem' }}>CHOOSE YOUR PROGRAM</p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '1rem', marginBottom: '2.5rem' }}>
               {[
-                { href: '/programs/cybersecurity-bootcamp', label: '6-Week Bootcamp', price: <PriceDisplay courseId="bootcamp" fallback="₦75,000" />, color: '#ef4444' },
-                { href: '/programs/professional', label: '16-Week Professional', price: <><PriceDisplay courseId="professional" fallback="₦200,000" /> · Internship</>, color: '#a855f7' },
+                { href: '/programs/cybersecurity-bootcamp', label: '6-Week Bootcamp', price: <PriceDisplay courseId="bootcamp" fallback="₦100,000" />, color: '#ef4444' },
+                { href: '/programs/professional', label: '16-Week Professional', price: <><PriceDisplay courseId="professional" fallback="₦300,000" /> · Internship</>, color: '#a855f7' },
                 { href: '/programs/corporate-training', label: 'Corporate Training', price: 'Custom quote', color: '#06b6d4' },
-              ].map((p, i) => (
+              ].map((p) => (
                 <a key={p.href} href={p.href} style={{ display: 'block', background: 'var(--color-bg-panel)', border: `1px solid ${p.color}33`, borderRadius: '12px', padding: '1.25rem', textDecoration: 'none', textAlign: 'center', transition: 'border-color 0.2s' }}>
                   <div style={{ color: 'white', fontWeight: 800, fontSize: '0.95rem', marginBottom: '0.35rem' }}>{p.label}</div>
                   <div style={{ color: p.color, fontWeight: 700, fontSize: '0.82rem' }}>{p.price}</div>
@@ -127,7 +127,9 @@ export default function ApplyPage() {
 
         {/* Application Form Component */}
         <AnimateOnScroll direction="up" delay={200}>
-          <ApplyForm />
+          <Suspense fallback={<div style={{ textAlign: 'center', color: '#94a3b8', padding: '3rem 0' }}>Loading application form...</div>}>
+            <ApplyForm />
+          </Suspense>
         </AnimateOnScroll>
 
         {/* Why Apply Now */}
@@ -173,7 +175,7 @@ export default function ApplyPage() {
             <div className={styles.testimonialCard}>
               <Quote className={styles.quoteIcon} size={80} />
               <p className={styles.quote}>
-                Applying to Elitech Hub was the best career decision I've ever made. Within 4 months of graduating, I landed a role as a SOC Analyst. The hands-on training is unmatched.
+                Applying to Elitech Hub was the best career decision I&apos;ve ever made. Within 4 months of graduating, I landed a role as a SOC Analyst. The hands-on training is unmatched.
               </p>
               <div>
                 <div className={styles.author}>Sarah Johnson</div>

@@ -53,9 +53,12 @@ type PricingContextType = {
 // ============================================================
 const fallbackPrices: Record<string, PriceInfo> = {
   // === TRAINING PROGRAMMES ===
+  // 'bootcamp' is retired from active offerings; entry preserved for legacy receipt display only.
   'bootcamp':            { course_id: 'bootcamp',         currency_code: 'NGN', symbol: '₦', amount: 100000 },
-  'professional':        { course_id: 'professional',     currency_code: 'NGN', symbol: '₦', amount: 300000 },
-  'ai_training':         { course_id: 'ai_training',      currency_code: 'NGN', symbol: '₦', amount: 100000 },
+  'professional':        { course_id: 'professional',     currency_code: 'NGN', symbol: '₦', amount: 350000 }, // Updated ₦300k → ₦350k
+  'ai_training':         { course_id: 'ai_training',      currency_code: 'NGN', symbol: '₦', amount: 100000 }, // 6 weeks
+  'ai_security':         { course_id: 'ai_security',      currency_code: 'NGN', symbol: '₦', amount: 200000 }, // 8 weeks, new
+
   // === CONSULTATIONS ===
   'consultation-15':     { course_id: 'consultation-15',  currency_code: 'NGN', symbol: '₦', amount: 15000  },
   'consultation-30':     { course_id: 'consultation-30',  currency_code: 'NGN', symbol: '₦', amount: 30000  },

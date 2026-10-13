@@ -8,6 +8,7 @@ export type ProductId =
   | 'bootcamp'
   | 'professional'
   | 'ai_training'
+  | 'ai_security'
   | 'consultation-15'
   | 'consultation-30'
   | 'consultation-60'

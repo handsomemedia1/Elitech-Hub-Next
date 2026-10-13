@@ -84,7 +84,7 @@ export default function ProfessionalProgramPage() {
       },
       offers: {
         '@type': 'Offer',
-        price: '200000',
+        price: '350000',
         priceCurrency: 'NGN',
         eligibleRegion: {
           '@type': 'Country',
@@ -246,7 +246,7 @@ export default function ProfessionalProgramPage() {
               <div className={styles.pricingHeader}>
                 <h2>Program Investment</h2>
                 <div className={styles.priceAmount}>
-                <PriceDisplay courseId="professional" fallback="₦200,000" />
+                <PriceDisplay courseId="professional" fallback="₦350,000" />
               </div>
               <p className={styles.priceNote}>Flexible payment plans available (Max 2 installments)</p>
               </div>

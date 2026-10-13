@@ -5,9 +5,14 @@
 
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY || '');
 const FROM = process.env.RESEND_FROM_EMAIL || 'Elitech Hub <onboarding@resend.dev>';
 const ADMIN = process.env.ADMIN_EMAIL || 'Elijah@elitechub.com';
+
+export function isEmailConfigured(): boolean {
+  const key = process.env.RESEND_API_KEY;
+  return Boolean(key && key.trim() !== '');
+}
 
 // ─── APPLICATION EMAILS ────────────────────────────────────────────────────
 
@@ -20,8 +25,12 @@ export async function sendApplicationConfirmation({
   name: string;
   program: string;
 }) {
+  if (!isEmailConfigured()) {
+    console.info('[Email] RESEND_API_KEY is not configured; skipping applicant confirmation dispatch.');
+    return { success: false, skipped: true };
+  }
   try {
-    await resend.emails.send({
+    const result = await resend.emails.send({
       from: FROM,
       to: [to],
       subject: '✅ Application Received — Elitech Hub',
@@ -41,8 +50,10 @@ export async function sendApplicationConfirmation({
           </p>
         </div>`,
     });
+    return { success: true, id: result.data?.id };
   } catch (err) {
     console.error('[Email] Application confirmation failed:', err);
+    return { success: false, error: err };
   }
 }
 
@@ -57,6 +68,10 @@ export async function sendApplicationNotification(data: {
   motivation: string;
   source: string;
 }) {
+  if (!isEmailConfigured()) {
+    console.info('[Email] RESEND_API_KEY is not configured; skipping admin notification dispatch.');
+    return { success: false, skipped: true };
+  }
   try {
     await resend.emails.send({
       from: FROM,
@@ -84,8 +99,10 @@ export async function sendApplicationNotification(data: {
           </div>
         </div>`,
     });
+    return { success: true };
   } catch (err) {
     console.error('[Email] Application notification failed:', err);
+    return { success: false, error: err };
   }
 }
 
@@ -298,7 +315,6 @@ export async function sendWriterReminder({
 }) {
   try {
     const isCompleted = completed >= target;
-    const isBehind = completed < target;
     
     let message = '';
     if (isCompleted) {
@@ -327,5 +343,118 @@ export async function sendWriterReminder({
   } catch (error) {
     console.error('Failed to send writer reminder:', error);
     return { success: false, error };
+  }
+}
+
+// ─── CONSULTATION FULFILMENT EMAILS ─────────────────────────────────────────
+
+export async function sendConsultationBookingConfirmation({
+  to,
+  name,
+  duration,
+  reference,
+  amount,
+  currency,
+}: {
+  to: string;
+  name: string;
+  duration: string;
+  reference: string;
+  amount: number;
+  currency: string;
+}) {
+  if (!isEmailConfigured()) {
+    console.info('[Email] RESEND_API_KEY is not configured; skipping consultation confirmation dispatch.');
+    return { success: false, skipped: true };
+  }
+  try {
+    const result = await resend.emails.send({
+      from: FROM,
+      to: [to],
+      subject: `🗓️ Consultation Confirmed (${duration}) — Elitech Hub`,
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#1e293b;">
+          <h2 style="color:#c3151c;">Consultation Booking Confirmed! 🎉</h2>
+          <p>Hi ${name},</p>
+          <p>Thank you for booking a <strong>${duration}</strong> 1-on-1 cybersecurity strategy consultation with Elitech Hub.</p>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;padding:20px;border-radius:10px;margin:20px 0;">
+            <p style="margin:4px 0;"><strong>Session Duration:</strong> ${duration}</p>
+            <p style="margin:4px 0;"><strong>Payment Reference:</strong> <code style="background:#e2e8f0;padding:2px 6px;border-radius:4px;">${reference}</code></p>
+            <p style="margin:4px 0;"><strong>Amount Paid:</strong> ${currency} ${Number(amount).toLocaleString()}</p>
+          </div>
+          <h3 style="color:#0f172a;">What happens next?</h3>
+          <ol style="padding-left:20px;line-height:1.6;">
+            <li><strong>Intake Questionnaire:</strong> Our mentorship team will review your background and send you a short pre-session questionnaire within 24 hours.</li>
+            <li><strong>Pick Your Time Slot:</strong> You will receive a private Google Meet / calendar scheduling link to choose a convenient day and time.</li>
+            <li><strong>Live Strategy Call:</strong> Join the live video session for honest, practical, actionable cybersecurity guidance tailored to your career goals.</li>
+          </ol>
+          <p>If you have urgent questions, reply to this email or reach us on WhatsApp at <a href="https://wa.me/2347081968062" style="color:#c3151c;">+234 708 196 8062</a>.</p>
+          <hr style="border:none;border-top:1px solid #e5e7eb;margin:20px 0;">
+          <p style="color:#9ca3af;font-size:12px;text-align:center;">
+            Elitech Hub — Nigeria's Premier AI Cybersecurity Platform<br>
+            <a href="https://www.elitechub.com" style="color:#c3151c;">elitechub.com</a>
+          </p>
+        </div>`,
+    });
+    return { success: true, id: result.data?.id };
+  } catch (err) {
+    console.error('[Email] Consultation confirmation failed:', err);
+    return { success: false, error: err };
+  }
+}
+
+export async function sendConsultationAdminNotification({
+  customerName,
+  customerEmail,
+  duration,
+  reference,
+  amount,
+  currency,
+  goals,
+  phone,
+}: {
+  customerName: string;
+  customerEmail: string;
+  duration: string;
+  reference: string;
+  amount: number;
+  currency: string;
+  goals?: string;
+  phone?: string;
+}) {
+  if (!isEmailConfigured()) {
+    console.info('[Email] RESEND_API_KEY is not configured; skipping admin consultation notification dispatch.');
+    return { success: false, skipped: true };
+  }
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to: [ADMIN],
+      subject: `💼 Paid Consultation: ${customerName} (${duration}) — ${reference}`,
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:700px;margin:0 auto;padding:20px;">
+          <h2 style="color:#c3151c;">New Paid Consultation Session 🗓️</h2>
+          <div style="background:#0a0a0a;color:white;padding:20px;border-radius:10px;margin:20px 0;">
+            <h3 style="color:#c3151c;margin-top:0;">${customerName}</h3>
+            <p style="margin:5px 0;"><strong>Email:</strong> <a href="mailto:${customerEmail}" style="color:#60a5fa;">${customerEmail}</a></p>
+            ${phone ? `<p style="margin:5px 0;"><strong>Phone:</strong> ${phone}</p>` : ''}
+            <p style="margin:5px 0;"><strong>Duration:</strong> ${duration}</p>
+            <p style="margin:5px 0;"><strong>Amount:</strong> ${currency} ${Number(amount).toLocaleString()}</p>
+            <p style="margin:5px 0;"><strong>Reference:</strong> ${reference}</p>
+          </div>
+          <h3>💬 Goals & Focus Areas</h3>
+          <p style="background:#f3f4f6;padding:15px;border-radius:8px;">${goals || 'General career guidance'}</p>
+          <div style="text-align:center;margin-top:20px;">
+            <a href="mailto:${customerEmail}?subject=Re: Your Elitech Hub Consultation (${duration})"
+               style="background:#c3151c;color:white;padding:12px 24px;text-decoration:none;border-radius:6px;font-weight:bold;">
+              Send Scheduling Link to Client
+            </a>
+          </div>
+        </div>`,
+    });
+    return { success: true };
+  } catch (err) {
+    console.error('[Email] Consultation admin notification failed:', err);
+    return { success: false, error: err };
   }
 }

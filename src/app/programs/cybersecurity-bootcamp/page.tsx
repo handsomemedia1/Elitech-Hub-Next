@@ -12,7 +12,7 @@ import {
 export const metadata = {
   title: '6-Week Cybersecurity Bootcamp Nigeria | Fast-Track Career | Elitech Hub',
   description:
-    'Launch your cybersecurity career in 6 weeks. Elitech Hub\'s intensive bootcamp in Nigeria covers ethical hacking, network security, and hands-on labs. Weekend classes, ₦75,000, no experience needed.',
+    'Launch your cybersecurity career in 6 weeks. Elitech Hub\'s intensive bootcamp in Nigeria covers ethical hacking, network security, and hands-on labs. Weekend classes, ₦100,000, no experience needed.',
   keywords: [
     '6 week cybersecurity bootcamp Nigeria',
     'cybersecurity bootcamp Lagos',
@@ -28,7 +28,7 @@ export const metadata = {
     'online cybersecurity bootcamp Nigeria',
   ],
   openGraph: {
-    title: '6-Week Cybersecurity Bootcamp | ₦75,000 | Elitech Hub Nigeria',
+    title: '6-Week Cybersecurity Bootcamp | ₦100,000 | Elitech Hub Nigeria',
     description:
       'Go from zero to job-ready in 6 weeks. Weekend classes, real hacking labs, and a certificate of completion. No prior IT experience needed.',
     url: 'https://www.elitechub.com/programs/cybersecurity-bootcamp',
@@ -46,7 +46,7 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: '6-Week Cybersecurity Bootcamp in Nigeria — ₦75,000',
+    title: '6-Week Cybersecurity Bootcamp in Nigeria — ₦100,000',
     description: 'Weekend classes. Real labs. Certificate. No experience needed. Join Elitech Hub.',
     images: ['https://www.elitechub.com/images/bootcamp-og.jpg'],
   },
@@ -87,14 +87,14 @@ export default function BootcampPage() {
       },
       offers: {
         '@type': 'Offer',
-        price: '75000',
+        price: '100000',
         priceCurrency: 'NGN',
         eligibleRegion: {
           '@type': 'Country',
           name: 'NG',
         },
-        availability: 'https://schema.org/InStock',
-        url: 'https://www.elitechub.com/apply?program=bootcamp6',
+        availability: 'https://schema.org/Discontinued',
+        url: 'https://www.elitechub.com/ai-training',
       },
       aggregateRating: {
         '@type': 'AggregateRating',
@@ -238,10 +238,10 @@ export default function BootcampPage() {
 
           <div className={styles.heroPriceRow}>
             <div className={styles.pricingBox}>
-              <span className={styles.priceAmount}><PriceDisplay courseId="bootcamp" fallback="₦75,000" /></span>
-              <span className={styles.priceDesc}>One-time payment. No hidden fees.</span>
-              <Link href="/apply?course=bootcamp" className="premium-button">
-                Enroll Now <ArrowRight size={18} />
+              <span className={styles.priceAmount}><PriceDisplay courseId="ai_training" fallback="₦100,000" /></span>
+              <span className={styles.priceDesc}>Upgraded to AI-Powered Cybersecurity Programme (6 Weeks)</span>
+              <Link href="/ai-training" className="premium-button">
+                Explore Active AI Programme <ArrowRight size={18} />
               </Link>
             </div>
           </div>
@@ -343,7 +343,7 @@ export default function BootcampPage() {
                   <span key="2">You have no prior IT experience</span>,
                   <span key="3">You can commit to weekends for 6 weeks</span>,
                   <span key="4">You are ready to learn, apply, and relearn</span>,
-                  <span key="5">You need something affordable (<PriceDisplay courseId="bootcamp" fallback="₦75,000" />)</span>,
+                  <span key="5">You need something affordable (<PriceDisplay courseId="bootcamp" fallback="₦100,000" />)</span>,
                 ].map((t, i) => <li key={i}>{t}</li>)}
               </ul>
             </div>
@@ -415,11 +415,11 @@ export default function BootcampPage() {
           <ShieldCheck size={48} className={styles.ctaIcon} />
           <h2 className={styles.ctaTitle}>Ready to Start Your Cybersecurity Career?</h2>
           <p className={styles.ctaSub}>
-            6 weeks. <PriceDisplay courseId="bootcamp" fallback="₦75,000" />. Weekend classes. Real skills. A certificate you can verify.
+            Our curriculum has been upgraded with AI tooling. Explore our 6-week AI-Powered Cybersecurity Programme or 16-week Professional Programme.
           </p>
           <div className={styles.ctaButtons}>
-            <Link href="/apply?course=bootcamp" className="premium-button">
-              Apply Now — <PriceDisplay courseId="bootcamp" fallback="₦75,000" /> <ArrowRight size={18} />
+            <Link href="/ai-training" className="premium-button">
+              Explore AI-Powered Programme — <PriceDisplay courseId="ai_training" fallback="₦100,000" /> <ArrowRight size={18} />
             </Link>
             <Link href="/programs/professional" className={styles.ctaSecondary}>
               See 16-Week Program Instead →

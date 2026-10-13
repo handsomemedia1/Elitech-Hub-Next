@@ -88,10 +88,10 @@ export default function ProgramsPage() {
       '@context': 'https://schema.org',
       '@type': 'Course',
       '@id': 'https://www.elitechub.com/programs#ai6week',
-      name: 'Learn AI Powered Cybersecurity in 6 Weeks',
+      name: 'AI-Powered Cybersecurity Programme (6 Weeks)',
       description:
-        'Master AI security systems, Python scripting, PowerShell, and Ubuntu in this intensive 6-week live virtual bootcamp in Nigeria.',
-      url: 'https://www.elitechub.com/programs',
+        'Master AI security systems, Python scripting, PowerShell, and Ubuntu in this intensive 6-week live virtual programme in Nigeria.',
+      url: 'https://www.elitechub.com/ai-training',
       image: 'https://www.elitechub.com/images/programs-og.jpg',
       inLanguage: 'en',
       availableLanguage: ['English'],
@@ -110,59 +110,30 @@ export default function ProgramsPage() {
       },
       offers: {
         '@type': 'Offer',
-        price: '100',
-        priceCurrency: 'USD',
-        availability: 'https://schema.org/InStock',
-        url: 'https://www.elitechub.com/apply?program=ai6week',
-      },
-    },
-    // ——— COURSE 2: 6-Week Bootcamp with pricing ———
-    {
-      '@context': 'https://schema.org',
-      '@type': 'Course',
-      '@id': 'https://www.elitechub.com/programs#bootcamp6',
-      name: '6-Week Intensive Cybersecurity Bootcamp',
-      description:
-        'Fast-track cybersecurity bootcamp in Nigeria covering ethical hacking, network security, and defense fundamentals. Weekend classes, hands-on labs.',
-      url: 'https://www.elitechub.com/programs',
-      image: 'https://www.elitechub.com/images/programs-og.jpg',
-      inLanguage: 'en',
-      provider: {
-        '@type': 'Organization',
-        '@id': 'https://www.elitechub.com/#organization',
-        name: 'Elitech Hub',
-      },
-      hasCourseInstance: {
-        '@type': 'CourseInstance',
-        courseMode: 'Online',
-        location: { '@type': 'VirtualLocation', url: 'https://www.elitechub.com' },
-      },
-      offers: {
-        '@type': 'Offer',
-        price: '75000',
+        price: '100000',
         priceCurrency: 'NGN',
         eligibleRegion: {
           '@type': 'Country',
           name: 'NG',
         },
         availability: 'https://schema.org/InStock',
-        url: 'https://www.elitechub.com/apply?program=bootcamp6',
+        url: 'https://www.elitechub.com/apply?program=ai6week',
       },
       aggregateRating: {
         '@type': 'AggregateRating',
         ratingValue: '4.9',
-        reviewCount: '87',
+        reviewCount: '58',
         bestRating: '5',
       },
     },
-    // ——— COURSE 3: 16-Week Program with pricing ———
+    // ——— COURSE 2: 8-Week AI Security and Reverse Vulnerability ———
     {
       '@context': 'https://schema.org',
       '@type': 'Course',
-      '@id': 'https://www.elitechub.com/programs#prof16',
-      name: '16-Week Professional Cybersecurity Program',
+      '@id': 'https://www.elitechub.com/programs#aisecurity',
+      name: 'AI Security and Reverse Vulnerability (8 Weeks)',
       description:
-        'Nigeria\'s most comprehensive cybersecurity career program with unpaid internship experience, 1-on-1 mentorship, CompTIA Security+, CEH, and OSCP preparation.',
+        'Advanced 8-week specialization covering AI system security, reverse vulnerability research, prompt-injection defense, and binary security analysis.',
       url: 'https://www.elitechub.com/programs',
       image: 'https://www.elitechub.com/images/programs-og.jpg',
       inLanguage: 'en',
@@ -179,6 +150,45 @@ export default function ProgramsPage() {
       offers: {
         '@type': 'Offer',
         price: '200000',
+        priceCurrency: 'NGN',
+        eligibleRegion: {
+          '@type': 'Country',
+          name: 'NG',
+        },
+        availability: 'https://schema.org/InStock',
+        url: 'https://www.elitechub.com/apply?program=ai_security',
+      },
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: '5.0',
+        reviewCount: '32',
+        bestRating: '5',
+      },
+    },
+    // ——— COURSE 3: 16-Week Professional Program with pricing ———
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Course',
+      '@id': 'https://www.elitechub.com/programs#prof16',
+      name: '16-Week Professional Cybersecurity Programme',
+      description:
+        'Nigeria\'s most comprehensive cybersecurity career program with unpaid internship experience, 1-on-1 mentorship, CompTIA Security+, CEH, and OSCP preparation.',
+      url: 'https://www.elitechub.com/programs/professional',
+      image: 'https://www.elitechub.com/images/programs-og.jpg',
+      inLanguage: 'en',
+      provider: {
+        '@type': 'Organization',
+        '@id': 'https://www.elitechub.com/#organization',
+        name: 'Elitech Hub',
+      },
+      hasCourseInstance: {
+        '@type': 'CourseInstance',
+        courseMode: 'Online',
+        location: { '@type': 'VirtualLocation', url: 'https://www.elitechub.com' },
+      },
+      offers: {
+        '@type': 'Offer',
+        price: '350000',
         priceCurrency: 'NGN',
         eligibleRegion: {
           '@type': 'Country',
@@ -220,7 +230,7 @@ export default function ProgramsPage() {
           name: 'How much does the Elitech Hub cybersecurity course cost in Nigeria?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'The 6-week bootcamp is ₦75,000 (one-time). The 16-week professional program is ₦200,000 with flexible payment plans available. The AI Cybersecurity course is $100 USD.',
+            text: 'The AI-Powered Cybersecurity Programme is ₦100,000 (6 weeks). The AI Security and Reverse Vulnerability programme is ₦200,000 (8 weeks). The 16-Week Professional Cybersecurity Programme is ₦350,000 with flexible payment plans available.',
           },
         },
         {
@@ -267,7 +277,7 @@ export default function ProgramsPage() {
             Choose Your <span className="text-gradient-primary">Career Path</span>
           </h1>
           <p className={layoutStyles.pageHeroSub}>
-            Two programs. One goal: Get you a cybersecurity job.
+            Three programs. One goal: Get you a cybersecurity job.
           </p>
           <div className={styles.heroStats}>
             <div className={styles.statCard}>
@@ -299,17 +309,17 @@ export default function ProgramsPage() {
           </AnimateOnScroll>
           <div className={styles.hubGrid}>
             <AnimateOnScroll direction="left" delay={100}>
-              <Link href="/programs/cybersecurity-bootcamp" className={styles.hubCard}>
-                <div className={styles.hubCardIcon} style={{ background: 'linear-gradient(135deg, #ff2a55, #991b1b)' }}><Zap size={28} /></div>
-                <div className={styles.hubCardBadge}>FAST-TRACK</div>
-                <h3>6-Week Cybersecurity Bootcamp</h3>
-                <p>Weekend classes · No experience needed · <PriceDisplay courseId="bootcamp" fallback="₦75,000" /></p>
+              <Link href="/ai-training" className={styles.hubCard}>
+                <div className={styles.hubCardIcon} style={{ background: 'linear-gradient(135deg, #06b6d4, #0891b2)' }}><Zap size={28} /></div>
+                <div className={styles.hubCardBadge}>AI-POWERED</div>
+                <h3>AI-Powered Cybersecurity Programme</h3>
+                <p>6 Weeks · Live virtual · <PriceDisplay courseId="ai_training" fallback="₦100,000" /></p>
                 <ul className={styles.hubCardFeatures}>
-                  <li><CheckCircle2 size={14} color="#ff2a55" /> Hands-on hacking labs</li>
-                  <li><CheckCircle2 size={14} color="#ff2a55" /> Industry project</li>
-                  <li><CheckCircle2 size={14} color="#ff2a55" /> Certificate of completion</li>
+                  <li><CheckCircle2 size={14} color="#06b6d4" /> Python, PowerShell &amp; Linux</li>
+                  <li><CheckCircle2 size={14} color="#06b6d4" /> Autonomous AI security systems</li>
+                  <li><CheckCircle2 size={14} color="#06b6d4" /> Unpaid internship experience</li>
                 </ul>
-                <span className={styles.hubCardCta}>View Bootcamp <ChevronRight size={16} /></span>
+                <span className={styles.hubCardCta}>View Programme <ChevronRight size={16} /></span>
               </Link>
             </AnimateOnScroll>
 
@@ -318,14 +328,14 @@ export default function ProgramsPage() {
                 <div className={styles.hubCardMostPopular}>MOST POPULAR</div>
                 <div className={styles.hubCardIcon} style={{ background: 'linear-gradient(135deg, #7c3aed, #4c1d95)' }}><Crown size={28} /></div>
                 <div className={styles.hubCardBadge} style={{ background: '#3b82f6' }}>RECOMMENDED</div>
-                <h3>16-Week Professional Program</h3>
-                <p>3× per week · Internship Experience · <PriceDisplay courseId="professional" fallback="₦200,000" /></p>
+                <h3>16-Week Professional Programme</h3>
+                <p>3× per week · Internship Experience · <PriceDisplay courseId="professional" fallback="₦350,000" /></p>
                 <ul className={styles.hubCardFeatures}>
                   <li><CheckCircle2 size={14} color="#a855f7" /> 1-on-1 mentorship</li>
                   <li><CheckCircle2 size={14} color="#a855f7" /> CompTIA, CEH, OSCP prep</li>
                   <li><CheckCircle2 size={14} color="#a855f7" /> Practical internship experience</li>
                 </ul>
-                <span className={styles.hubCardCta}>View Full Program <ChevronRight size={16} /></span>
+                <span className={styles.hubCardCta}>View Full Programme <ChevronRight size={16} /></span>
               </Link>
             </AnimateOnScroll>
 
@@ -350,26 +360,49 @@ export default function ProgramsPage() {
         {/* Pricing/Program Cards */}
         <section className={layoutStyles.section}>
           <div className={styles.pricingContainer}>
-            {/* 6-Week Bootcamp */}
+            {/* AI-Powered Cybersecurity Programme */}
             <AnimateOnScroll direction="left" delay={100}>
               <div className={styles.pricingCard}>
                 <div className={styles.pricingIcon} style={{ color: '#06B6D4' }}><Zap size={32} /></div>
                 <div className={styles.pricingHeader}>
-                  <h3>6-Week Bootcamp</h3>
-                  <p className={styles.pricingSubtitle}>Fast-Track Skills</p>
+                  <h3>AI-Powered Cybersecurity</h3>
+                  <p className={styles.pricingSubtitle}>Defensive &amp; Offensive AI</p>
                 </div>
                 <div className={styles.pricingPrice}>
-                  <PriceDisplay courseId="bootcamp" fallback="₦75,000" />
+                  <PriceDisplay courseId="ai_training" fallback="₦100,000" />
                 </div>
-                <span className={styles.pricingPeriod}>one-time payment</span>
+                <span className={styles.pricingPeriod}>one-time payment (6 weeks)</span>
                 <ul className={styles.pricingFeatures}>
-                  <li><CheckCircle2 size={18} color="#06B6D4" /> 6 weeks intensive training</li>
-                  <li><CheckCircle2 size={18} color="#06B6D4" /> Weekend classes</li>
-                  <li><CheckCircle2 size={18} color="#06B6D4" /> Hands-on labs</li>
-                  <li><CheckCircle2 size={18} color="#06B6D4" /> Industry project</li>
-                  <li><CheckCircle2 size={18} color="#06B6D4" /> Certificate of completion</li>
+                  <li><CheckCircle2 size={18} color="#06B6D4" /> 6 weeks live virtual training</li>
+                  <li><CheckCircle2 size={18} color="#06B6D4" /> Weekend interactive classes</li>
+                  <li><CheckCircle2 size={18} color="#06B6D4" /> Python, PowerShell &amp; Linux</li>
+                  <li><CheckCircle2 size={18} color="#06B6D4" /> Autonomous AI security systems</li>
+                  <li><CheckCircle2 size={18} color="#06B6D4" /> Unpaid internship experience</li>
                 </ul>
-                <Link href="/apply?program=6week" className="premium-button-outline w-full" style={{ justifyContent: 'center' }}>Learn More</Link>
+                <Link href="/ai-training" className="premium-button-outline w-full" style={{ justifyContent: 'center' }}>Learn More</Link>
+              </div>
+            </AnimateOnScroll>
+
+            {/* AI Security and Reverse Vulnerability */}
+            <AnimateOnScroll direction="up" delay={150}>
+              <div className={styles.pricingCard}>
+                <div className={styles.pricingIcon} style={{ color: '#8b5cf6' }}><Shield size={32} /></div>
+                <div className={styles.pricingHeader}>
+                  <h3>AI Security &amp; Reverse Vulnerability</h3>
+                  <p className={styles.pricingSubtitle}>Advanced Vulnerability Research</p>
+                </div>
+                <div className={styles.pricingPrice}>
+                  <PriceDisplay courseId="ai_security" fallback="₦200,000" />
+                </div>
+                <span className={styles.pricingPeriod}>one-time payment (8 weeks)</span>
+                <ul className={styles.pricingFeatures}>
+                  <li><CheckCircle2 size={18} color="#8b5cf6" /> 8 weeks intensive training</li>
+                  <li><CheckCircle2 size={18} color="#8b5cf6" /> Reverse vulnerability research</li>
+                  <li><CheckCircle2 size={18} color="#8b5cf6" /> LLM &amp; agentic attack defense</li>
+                  <li><CheckCircle2 size={18} color="#8b5cf6" /> Binary analysis &amp; security auditing</li>
+                  <li><CheckCircle2 size={18} color="#8b5cf6" /> Unpaid internship experience</li>
+                </ul>
+                <Link href="/apply?program=ai_security" className="premium-button-outline w-full" style={{ justifyContent: 'center' }}>Enroll Now</Link>
               </div>
             </AnimateOnScroll>
 
@@ -383,7 +416,7 @@ export default function ProgramsPage() {
                   <p className={styles.pricingSubtitle}>Complete Career Transformation</p>
                 </div>
                 <div className={styles.pricingPrice}>
-                  <PriceDisplay courseId="professional" fallback="₦200,000" />
+                  <PriceDisplay courseId="professional" fallback="₦350,000" />
                 </div>
                 <span className={styles.pricingPeriod}>flexible payments available</span>
                 <ul className={styles.pricingFeatures}>
@@ -394,7 +427,7 @@ export default function ProgramsPage() {
                   <li><CheckCircle2 size={18} color="#ef4444" /> Portfolio building</li>
                   <li><CheckCircle2 size={18} color="#ef4444" /> Alumni network access</li>
                 </ul>
-                <Link href="/apply?program=16week" className="premium-button w-full" style={{ justifyContent: 'center' }}>Get Started</Link>
+                <Link href="/programs/professional" className="premium-button w-full" style={{ justifyContent: 'center' }}>Get Started</Link>
               </div>
             </AnimateOnScroll>
 
@@ -432,10 +465,10 @@ export default function ProgramsPage() {
           <div className={styles.deepDiveCard}>
             <AnimateOnScroll direction="up">
               <h3 className={styles.deepDiveTitle}>
-                <Zap className={styles.iconRed} size={32} /> 6-Week Intensive Bootcamp
+                <Zap className={styles.iconRed} size={32} /> 6-Week AI-Powered Cybersecurity Breakdown
               </h3>
               <p className={styles.deepDiveDesc}>
-                Our accelerated bootcamp is designed for professionals looking to quickly acquire fundamental cybersecurity skills. Perfect for career switchers, IT professionals expanding their expertise, or beginners wanting a solid foundation in cybersecurity.
+                Our accelerated 6-week curriculum is designed for professionals and beginners looking to acquire fundamental cybersecurity and autonomous AI defense skills.
               </p>
             </AnimateOnScroll>
 
@@ -909,8 +942,8 @@ export default function ProgramsPage() {
             {/* Column headers */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', maxWidth: '900px', margin: '0 auto 1rem' }}>
               <div style={{ background: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.3)', borderRadius: '12px', padding: '1rem', textAlign: 'center' }}>
-                <div style={{ color: '#06b6d4', fontWeight: 800, fontSize: '1rem' }}>⚡ 6-Week Bootcamp</div>
-                <div style={{ color: 'var(--color-text-secondary)', fontSize: '0.8rem', marginTop: '0.25rem' }}>Fast-Track Skills</div>
+                <div style={{ color: '#06b6d4', fontWeight: 800, fontSize: '1rem' }}>⚡ AI-Powered Programme (6 Weeks)</div>
+                <div style={{ color: 'var(--color-text-secondary)', fontSize: '0.8rem', marginTop: '0.25rem' }}>Defensive &amp; Offensive AI</div>
               </div>
               <div style={{ background: 'rgba(195,21,28,0.1)', border: '2px solid rgba(195,21,28,0.4)', borderRadius: '12px', padding: '1rem', textAlign: 'center', position: 'relative' }}>
                 <div style={{ position: 'absolute', top: '-10px', left: '50%', transform: 'translateX(-50%)', background: 'var(--color-primary)', color: 'white', fontSize: '0.65rem', fontWeight: 800, padding: '0.2rem 0.75rem', borderRadius: '20px', letterSpacing: '0.08em', whiteSpace: 'nowrap' }}>MOST POPULAR</div>
@@ -926,20 +959,20 @@ export default function ProgramsPage() {
               { label: 'Price', bootcamp: null, pro: null, isPrice: true },
               { label: 'Hands-on Labs', bootcamp: '✅', pro: '✅' },
               { label: 'Industry Project', bootcamp: '✅', pro: '✅' },
-              { label: 'Internship Experience', bootcamp: '—', pro: '✅ Yes', proHighlight: true },
+              { label: 'Internship Experience', bootcamp: 'Unpaid Internship', pro: '✅ Yes', proHighlight: true },
               { label: '1-on-1 Mentorship', bootcamp: '—', pro: '✅', proHighlight: true },
               { label: 'Certification Prep', bootcamp: 'Basic', pro: 'Security+, CEH, OSCP', proHighlight: true },
               { label: 'Career Support', bootcamp: 'Basic Resume Help', pro: 'Full Career Services', proHighlight: true },
-              { label: 'Alumni Network', bootcamp: '—', pro: '✅', proHighlight: true },
+              { label: 'Alumni Network', bootcamp: '✅', pro: '✅', proHighlight: true },
             ].map((row, i) => (
               <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', maxWidth: '900px', margin: '0 auto 0.5rem', alignItems: 'stretch' }}>
                 {/* Feature label spans full width above */}
                 <div style={{ gridColumn: '1 / -1', color: 'var(--color-text-secondary)', fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', padding: '0.4rem 0 0.1rem' }}>{row.label}</div>
                 <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--color-border)', borderRadius: '10px', padding: '0.75rem 1rem', color: 'white', fontWeight: 600, fontSize: '0.9rem', textAlign: 'center' }}>
-                  {row.isPrice ? <PriceDisplay courseId="bootcamp" fallback="₦75,000" /> : row.bootcamp}
+                  {row.isPrice ? <PriceDisplay courseId="ai_training" fallback="₦100,000" /> : row.bootcamp}
                 </div>
                 <div style={{ background: 'rgba(195,21,28,0.07)', border: '1px solid rgba(195,21,28,0.25)', borderRadius: '10px', padding: '0.75rem 1rem', color: row.proHighlight ? '#10b981' : 'white', fontWeight: 700, fontSize: '0.9rem', textAlign: 'center' }}>
-                  {row.isPrice ? <PriceDisplay courseId="professional" fallback="₦200,000" /> : row.pro}
+                  {row.isPrice ? <PriceDisplay courseId="professional" fallback="₦350,000" /> : row.pro}
                 </div>
               </div>
             ))}
@@ -976,8 +1009,8 @@ export default function ProgramsPage() {
                     <select required defaultValue="">
                       <option value="" disabled>Choose a program...</option>
                       <option value="ai6">Learn AI Powered Cybersecurity in 6 Weeks</option>
-                      <option value="bootcamp6">6-Week Cybersecurity Bootcamp</option>
-                      <option value="prof16">16-Week Professional Program</option>
+                      <option value="ai_security">AI Security and Reverse Vulnerability (8 Weeks)</option>
+                      <option value="prof16">16-Week Professional Programme</option>
                       <option value="corp">Corporate Training</option>
                     </select>
                   </div>
@@ -1010,7 +1043,7 @@ export default function ProgramsPage() {
             <div className={styles.warningCard}>
               <div className={styles.warningTape}>WARNING</div>
               <div className={styles.warningIcon}><ShieldAlert size={48} /></div>
-              <h2 className={styles.warningTitle}>This Bootcamp is <span className={styles.textRed}>Not For Everyone</span></h2>
+              <h2 className={styles.warningTitle}>Our Programmes are <span className={styles.textRed}>Not For Everyone</span></h2>
               <p className={styles.warningDesc}>
                 We provide rigorous <strong>internship experience</strong>. We protect that statistic fiercely. 
                 If you are looking for easy videos to watch passively while you scroll social media, <strong className={styles.textRed}>do not apply.</strong>
@@ -1064,13 +1097,13 @@ export default function ProgramsPage() {
               <details className={styles.faqItem}>
                 <summary className={styles.faqQuestion}>Can I pay in installments? <ChevronDown size={20} /></summary>
                 <div className={styles.faqAnswer}>
-                  Yes! The 16-week program (<PriceDisplay courseId="professional" fallback="₦200,000" />) offers flexible payment plans. You can pay in a maximum of 2 installments. Contact our admissions team via WhatsApp to discuss payment options that work for your budget. (Note: Split payments are not available for the 6-Week Bootcamp).
+                  Yes! The 16-week program (<PriceDisplay courseId="professional" fallback="₦350,000" />) offers flexible payment plans. You can pay in a maximum of 2 installments. Contact our admissions team via WhatsApp to discuss payment options that work for your budget.
                 </div>
               </details>
               <details className={styles.faqItem}>
                 <summary className={styles.faqQuestion}>What's the difference between the 6-week and 16-week programs? <ChevronDown size={20} /></summary>
                 <div className={styles.faqAnswer}>
-                  The 6-week bootcamp is perfect for getting fundamental skills quickly and is ideal for professionals with time constraints. The 16-week program is comprehensive, includes unpaid internship experience, advanced topics, certification prep, and full career services—making it ideal for complete career transformation.
+                  The 6-week AI-Powered Cybersecurity Programme focuses on rapid foundational skills and autonomous AI security systems. The 8-week AI Security and Reverse Vulnerability Programme specializes in advanced vulnerability research and binary auditing. The 16-week Professional Programme is our complete career transformation journey, featuring 1-on-1 mentorship, comprehensive defense &amp; offensive certification prep, and practical internship experience.
                 </div>
               </details>
             </div>

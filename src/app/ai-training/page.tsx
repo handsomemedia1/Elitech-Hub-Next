@@ -4,6 +4,7 @@ import layoutStyles from '@/components/PageLayout.module.css';
 import styles from './ai-training.module.css';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 import Link from 'next/link';
+import PriceDisplay from '@/components/PriceDisplay';
 import { 
   Zap, Calendar, Clock, Laptop, Flame, ArrowRight,
   Briefcase, Bot, Award, GraduationCap, Code2, Shield,
@@ -13,7 +14,7 @@ import {
 export const metadata: Metadata = {
   title: 'AI Powered Cybersecurity Training Nigeria | 6-Week Online Bootcamp | Elitech Hub',
   description:
-    'Learn AI-powered cybersecurity in 6 weeks with Elitech Hub. Covers PowerShell, Python, Ubuntu, and AI Security Systems. 100% virtual, $100 USD, starts June 2026. Join from anywhere in Nigeria.',
+    'Learn AI-powered cybersecurity in 6 weeks with Elitech Hub. Covers PowerShell, Python, Ubuntu, and AI Security Systems. 100% virtual, ₦100,000, starts June 2026. Join from anywhere in Nigeria.',
   keywords: [
     'AI cybersecurity training Nigeria',
     'AI powered cybersecurity course',
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
     'automated threat detection course Nigeria',
   ],
   openGraph: {
-    title: 'AI Powered Cybersecurity Training | 6 Weeks | $100 USD | Elitech Hub Nigeria',
+    title: 'AI Powered Cybersecurity Training | 6 Weeks | ₦100,000 | Elitech Hub Nigeria',
     description: 'The only AI-integrated cybersecurity bootcamp in Nigeria. PowerShell, Python, Ubuntu, AI Security Systems. Virtual. Starts June 2026.',
     url: 'https://www.elitechub.com/ai-training',
     siteName: 'Elitech Hub',
@@ -34,7 +35,7 @@ export const metadata: Metadata = {
     images: [{ url: 'https://www.elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
     type: 'website',
   },
-  twitter: { card: 'summary_large_image', title: 'AI Cybersecurity Bootcamp Nigeria — $100 | Elitech Hub', site: '@ElitechHub' },
+  twitter: { card: 'summary_large_image', title: 'AI Cybersecurity Bootcamp Nigeria — ₦100,000 | Elitech Hub', site: '@ElitechHub' },
   alternates: { canonical: 'https://www.elitechub.com/ai-training' },
 };
 
@@ -192,8 +193,8 @@ export default function AITrainingPage() {
           <div className={styles.container}>
             <div className={styles.pricingBox}>
               <h3 style={{ color: 'white', fontSize: '2rem', marginBottom: '0.5rem' }}>Full Program Access</h3>
-              <div className={styles.priceTag}>$100</div>
-              <p style={{ color: '#94a3b8', fontSize: '1.1rem', marginBottom: '2rem' }}>One-time payment (Approx. ₦120,000 NGN)</p>
+              <div className={styles.priceTag}><PriceDisplay courseId="ai_training" fallback="₦100,000" /></div>
+              <p style={{ color: '#94a3b8', fontSize: '1.1rem', marginBottom: '2rem' }}>One-time payment</p>
               
               <ul className={styles.checklist}>
                 <li><CheckCircle2 size={22} /> Live Weekend Classes</li>
@@ -203,7 +204,7 @@ export default function AITrainingPage() {
                 <li><CheckCircle2 size={22} /> Resume Building & Interview Prep</li>
               </ul>
               
-              <Link href="/apply" className={`${styles.ctaBtn} ${styles.pulse}`} style={{ width: '100%', justifyContent: 'center' }}>
+              <Link href="/apply?program=ai6" className={`${styles.ctaBtn} ${styles.pulse}`} style={{ width: '100%', justifyContent: 'center' }}>
                 Secure Your Spot Now <ArrowRight size={20} />
               </Link>
             </div>

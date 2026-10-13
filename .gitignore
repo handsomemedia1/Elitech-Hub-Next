@@ -43,3 +43,10 @@ next-env.d.ts
 .vercel
 .env*.local
 .env*
+
+# scratch & temporary development artifacts
+/patch2.js
+/refactor-pricing.js
+/test-apply.js
+/test-db.js
+/PHASE_1_IMPLEMENTATION_REPORT.md

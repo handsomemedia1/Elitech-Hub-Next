@@ -231,7 +231,15 @@ export default function RootLayout({
                     '@type': 'Offer',
                     itemOffered: {
                       '@type': 'Course',
-                      name: '6-Week AI Powered Cybersecurity Bootcamp',
+                      name: 'AI-Powered Cybersecurity Programme (6 Weeks)',
+                      url: 'https://www.elitechub.com/ai-training',
+                    },
+                  },
+                  {
+                    '@type': 'Offer',
+                    itemOffered: {
+                      '@type': 'Course',
+                      name: 'AI Security and Reverse Vulnerability (8 Weeks)',
                       url: 'https://www.elitechub.com/programs',
                     },
                   },
@@ -239,8 +247,8 @@ export default function RootLayout({
                     '@type': 'Offer',
                     itemOffered: {
                       '@type': 'Course',
-                      name: '16-Week Professional Cybersecurity Program',
-                      url: 'https://www.elitechub.com/programs',
+                      name: '16-Week Professional Cybersecurity Programme',
+                      url: 'https://www.elitechub.com/programs/professional',
                     },
                   },
                 ],

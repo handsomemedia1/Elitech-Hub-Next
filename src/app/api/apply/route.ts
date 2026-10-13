@@ -11,12 +11,19 @@ import { validateEmail, validateField, sanitizeText } from '@/lib/validators';
 import { sendApplicationConfirmation, sendApplicationNotification } from '@/lib/email';
 import { formLimit, getClientIp } from '@/lib/rate-limit';
 
-const PROGRAMS: Record<string, { name: string; price: number }> = {
-  'bootcamp':     { name: '6-Week AI Cybersecurity Bootcamp', price: 70000 },
-  'professional': { name: '16-Week Professional Program', price: 200000 },
-  '6-Week Bootcamp':      { name: '6-Week AI Cybersecurity Bootcamp', price: 70000 },
-  '16-Week Professional': { name: '16-Week Professional Program', price: 200000 },
-  'Not Sure Yet': { name: 'General Inquiry', price: 0 },
+const PROGRAMS_FALLBACK: Record<string, { name: string; courseId: string; defaultPrice: number }> = {
+  // Active programmes
+  'ai_training':          { name: 'AI-Powered Cybersecurity Programme', courseId: 'ai_training', defaultPrice: 100000 },
+  'ai_security':          { name: 'AI Security and Reverse Vulnerability', courseId: 'ai_security', defaultPrice: 200000 },
+  'professional':         { name: '16-Week Professional Cybersecurity Programme', courseId: 'professional', defaultPrice: 350000 },
+  // Human-readable form option values
+  'AI-Powered Cybersecurity': { name: 'AI-Powered Cybersecurity Programme', courseId: 'ai_training', defaultPrice: 100000 },
+  'AI Security and Reverse Vulnerability': { name: 'AI Security and Reverse Vulnerability', courseId: 'ai_security', defaultPrice: 200000 },
+  '16-Week Professional': { name: '16-Week Professional Cybersecurity Programme', courseId: 'professional', defaultPrice: 350000 },
+  // Legacy: retained for historical application records only (bootcamp was retired Oct 2026)
+  'bootcamp':             { name: '6-Week Cybersecurity Bootcamp', courseId: 'bootcamp', defaultPrice: 100000 },
+  '6-Week Bootcamp':      { name: '6-Week AI Cybersecurity Bootcamp', courseId: 'bootcamp', defaultPrice: 100000 },
+  'Not Sure Yet': { name: 'General Inquiry', courseId: '', defaultPrice: 0 },
 };
 
 export async function POST(request: Request) {
@@ -52,7 +59,7 @@ export async function POST(request: Request) {
   if (!programRaw) return NextResponse.json({ error: 'Program selection is required' }, { status: 400 });
 
   // ── Resolve program details ────────────────────────────────────
-  const programDetails = PROGRAMS[programRaw] ?? { name: programRaw, price: 0 };
+  const programDetails = PROGRAMS_FALLBACK[programRaw] ?? { name: programRaw, courseId: '', defaultPrice: 0 };
 
   // Optional fields
   const country    = sanitizeText(body.country).slice(0, 50) || null;
@@ -62,8 +69,8 @@ export async function POST(request: Request) {
   const motivation = sanitizeText(body.motivation).slice(0, 3000) || null;
 
   // ── Persist to Supabase ────────────────────────────────────────
-  const supabase = createServiceClient();
   let applicationId: string | null = null;
+  const supabase = createServiceClient();
 
   if (supabase) {
     const { data, error } = await supabase
@@ -92,8 +99,8 @@ export async function POST(request: Request) {
     }
   }
 
-  // ── Send emails ────────────────────────────────────────────────
-  await Promise.allSettled([
+  // ── Send emails (Safe settlement: failure never aborts application submission) ──
+  const emailResults = await Promise.allSettled([
     sendApplicationConfirmation({
       to: emailResult.value,
       name: nameResult.value,
@@ -111,6 +118,12 @@ export async function POST(request: Request) {
       source: source ?? 'N/A',
     }),
   ]);
+
+  for (const result of emailResults) {
+    if (result.status === 'rejected') {
+      console.warn('[Apply] Email delivery rejected:', result.reason);
+    }
+  }
 
   return NextResponse.json({
     success: true,

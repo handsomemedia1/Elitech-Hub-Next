@@ -64,10 +64,10 @@ export default function ScrollNavbar() {
       label: "Programs",
       dropdown: [
         { href: "/programs", label: "View All Programs" },
-        { href: "/programs/cybersecurity-bootcamp", label: "6-Week Bootcamp" },
+        { href: "/ai-training", label: "AI Cybersecurity (6 Weeks)" },
+        { href: "/programs", label: "AI Security & Reverse (8 Weeks)" },
         { href: "/programs/professional", label: "16-Week Professional" },
         { href: "/programs/corporate-training", label: "Corporate Training" },
-        { href: "/ai-training", label: "AI Cybersecurity" },
       ]
     },
     {

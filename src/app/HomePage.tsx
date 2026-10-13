@@ -195,33 +195,33 @@ export default function Home() {
                 ⭐ RECOMMENDED
               </div>
               <h3 className={styles.bentoTitle}>16-Week Professional</h3>
-              <p className={styles.bentoPrice}><PriceDisplay courseId="professional" fallback="₦200,000" /></p>
+              <p className={styles.bentoPrice}><PriceDisplay courseId="professional" fallback="₦350,000" /></p>
               <ul className={styles.bentoFeatures}>
                 <li><CheckCircle2 size={16} className="text-accent" /> Comprehensive 16-week training</li>
                 <li><CheckCircle2 size={16} className="text-accent" /> 4-Week Unpaid Internship Experience</li>
                 <li><CheckCircle2 size={16} className="text-accent" /> Industry certifications prep</li>
                 <li><CheckCircle2 size={16} className="text-accent" /> 1-on-1 mentorship & alumni network</li>
               </ul>
-              <Link href="/programs" className="premium-button" style={{ justifyContent: 'center' }}>
+              <Link href="/programs/professional" className="premium-button" style={{ justifyContent: 'center' }}>
                 Get Started <ChevronRight size={16} />
               </Link>
             </div>
           </AnimateOnScroll>
 
-          {/* 6-Week Bootcamp */}
+          {/* AI-Powered Cybersecurity Programme */}
           <AnimateOnScroll direction="right" delay={300} className={styles.bentoBootcamp}>
             <div className="glass-panel" style={{ padding: '2.5rem', height: '100%', display: 'flex', flexDirection: 'column' }}>
               <div className={styles.bentoIconBox}>
                 <Terminal size={30} />
               </div>
-              <h3 className={styles.bentoTitle} style={{ fontSize: '1.6rem' }}>6-Week Bootcamp</h3>
-              <p className={styles.bentoPrice}><PriceDisplay courseId="bootcamp" fallback="₦75,000" /></p>
+              <h3 className={styles.bentoTitle} style={{ fontSize: '1.6rem' }}>AI-Powered Cybersecurity</h3>
+              <p className={styles.bentoPrice}><PriceDisplay courseId="ai_training" fallback="₦100,000" /></p>
               <ul className={styles.bentoFeatures}>
-                <li><CheckCircle2 size={16} className="text-accent" /> Fast-track AI cybersecurity skills</li>
-                <li><CheckCircle2 size={16} className="text-accent" /> Hands-on hacking labs</li>
-                <li><CheckCircle2 size={16} className="text-accent" /> Certificate of completion</li>
+                <li><CheckCircle2 size={16} className="text-accent" /> 6-week live virtual bootcamp</li>
+                <li><CheckCircle2 size={16} className="text-accent" /> Python, PowerShell &amp; Linux</li>
+                <li><CheckCircle2 size={16} className="text-accent" /> Autonomous AI security systems</li>
               </ul>
-              <Link href="/programs" className="premium-button-outline" style={{ justifyContent: 'center' }}>
+              <Link href="/ai-training" className="premium-button-outline" style={{ justifyContent: 'center' }}>
                 Learn More
               </Link>
             </div>

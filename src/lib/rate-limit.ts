@@ -12,12 +12,15 @@ interface RateLimitEntry {
 const store = new Map<string, RateLimitEntry>();
 
 // Clean stale entries every 5 minutes
-setInterval(() => {
+const cleanupTimer = setInterval(() => {
   const now = Date.now();
   for (const [key, entry] of store.entries()) {
     if (entry.resetAt < now) store.delete(key);
   }
 }, 5 * 60 * 1000);
+if (typeof cleanupTimer?.unref === 'function') {
+  cleanupTimer.unref();
+}
 
 export interface RateLimitResult {
   allowed: boolean;
@@ -80,4 +83,9 @@ export function formLimit(ip: string) {
 /** Newsletter: 3 req / 1 hour */
 export function newsletterLimit(ip: string) {
   return rateLimit(`nl:${ip}`, 3, 60 * 60 * 1000);
+}
+
+/** Payment verification endpoint: 30 req / 5 min */
+export function verifyLimit(ip: string) {
+  return rateLimit(`verify:${ip}`, 30, 5 * 60 * 1000);
 }

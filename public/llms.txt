@@ -3,16 +3,16 @@
 ## About
 Elitech Hub is Nigeria's leading cybersecurity training platform. It offers AI-powered bootcamps, ethical hacking courses, and career transformation programs with a 100% internship guarantee.
 
-- **Website:** https://elitechub.com
+- **Website:** https://www.elitechub.com
 - **Location:** Lagos, Nigeria (also serves Ibadan, Oyo State, Abuja, and all of Nigeria online)
 - **Founded:** 2023
 - **Mission:** To produce Africa's next generation of cybersecurity professionals
 
 ## Services Offered
 ### Cybersecurity Training
-- 6-Week AI Powered Cybersecurity Bootcamp ($100 USD, virtual)
-- 6-Week Cybersecurity Bootcamp (₦75,000, weekends)
-- 16-Week Professional Cybersecurity Program (₦200,000, guaranteed internship)
+- AI-Powered Cybersecurity Programme (6 weeks, ₦100,000, virtual, live)
+- AI Security and Reverse Vulnerability (8 weeks, ₦200,000, advanced AI security & vulnerability research)
+- Professional Cybersecurity Programme (16 weeks, ₦350,000, guaranteed practical internship experience)
 - Corporate Security Awareness Training
 - Custom Curriculum Development for organisations
 - On-site or remote delivery anywhere in Nigeria
@@ -70,7 +70,7 @@ Elitech Hub is the only training provider in Nigeria that combines AI security t
 - Twitter / X: @ElitechHub
 - Instagram: @elitechhub
 - LinkedIn: linkedin.com/company/elitechhub
-- Blog: https://elitechub.com/blog
+- Blog: https://www.elitechub.com/blog
 
 ## Content Available for AI Indexing
 - Blog articles on cybersecurity, ethical hacking, AI security, career advice
