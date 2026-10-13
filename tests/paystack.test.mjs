@@ -1851,5 +1851,183 @@ describe('20. Idempotent Atomic Fulfillment & Delivery Resilience', () => {
   });
 });
 
+describe('21. Production Fail-Closed Pricing Integrity (DB Failures, Incomplete Rows, Unsupported Currencies)', () => {
+  function createMockSupabase({ data = null, error = null }) {
+    return {
+      from: () => ({
+        select: () => ({
+          eq: () => ({
+            eq: () => ({
+              maybeSingle: async () => ({ data, error }),
+            }),
+          }),
+        }),
+      }),
+    };
+  }
+
+  test('Production rules: Fails closed with PRICE_DATABASE_UNAVAILABLE when database is unavailable', async () => {
+    await assert.rejects(
+      async () => resolveAuthoritativePrice('ai_training', 'programme', 'NG', {
+        supabaseClient: null,
+        enforceProductionRules: true,
+      }),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRICE_DATABASE_UNAVAILABLE');
+        return true;
+      }
+    );
+  });
+
+  test('Production rules: Fails closed with PRICE_LOOKUP_FAILED on database query error', async () => {
+    const mockSupabase = createMockSupabase({
+      data: null,
+      error: new Error('connection refused: database port unreachable'),
+    });
+
+    await assert.rejects(
+      async () => resolveAuthoritativePrice('ai_training', 'programme', 'NG', {
+        supabaseClient: mockSupabase,
+        enforceProductionRules: true,
+      }),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRICE_LOOKUP_FAILED');
+        return true;
+      }
+    );
+  });
+
+  test('Production rules: Fails closed with PRICE_UNAVAILABLE on missing row (data: null)', async () => {
+    const mockSupabase = createMockSupabase({
+      data: null,
+      error: null,
+    });
+
+    await assert.rejects(
+      async () => resolveAuthoritativePrice('ai_training', 'programme', 'NG', {
+        supabaseClient: mockSupabase,
+        enforceProductionRules: true,
+      }),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRICE_UNAVAILABLE');
+        return true;
+      }
+    );
+  });
+
+  test('Production rules: Fails closed with PRODUCT_DISCONTINUED when database row active is false', async () => {
+    const mockSupabase = createMockSupabase({
+      data: { amount: 100000, active: false, currency_code: 'NGN' },
+      error: null,
+    });
+
+    await assert.rejects(
+      async () => resolveAuthoritativePrice('ai_training', 'programme', 'NG', {
+        supabaseClient: mockSupabase,
+        enforceProductionRules: true,
+      }),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRODUCT_DISCONTINUED');
+        return true;
+      }
+    );
+  });
+
+  test('Production rules: Honors authoritative database price when row is active and valid', async () => {
+    const mockSupabase = createMockSupabase({
+      data: { amount: 100000, active: true, currency_code: 'NGN' },
+      error: null,
+    });
+
+    const price = await resolveAuthoritativePrice('ai_training', 'programme', 'NG', {
+      supabaseClient: mockSupabase,
+      enforceProductionRules: true,
+    });
+    assert.equal(price.finalAmount, 100000);
+    assert.equal(price.finalCurrency, 'NGN');
+  });
+
+  test('Production rules: International fails closed with PRICE_DATABASE_UNAVAILABLE when database is unavailable', async () => {
+    await assert.rejects(
+      async () => resolveInternationalPrice('ai_security', 'programme', 'AI Security', 200000, 'USD', {
+        supabaseClient: null,
+        enforceProductionRules: true,
+      }),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRICE_DATABASE_UNAVAILABLE');
+        return true;
+      }
+    );
+  });
+
+  test('Production rules: International fails closed with PRICE_LOOKUP_FAILED on query error', async () => {
+    const mockSupabase = createMockSupabase({
+      data: null,
+      error: new Error('PostgREST connection failure'),
+    });
+
+    await assert.rejects(
+      async () => resolveInternationalPrice('ai_security', 'programme', 'AI Security', 200000, 'USD', {
+        supabaseClient: mockSupabase,
+        enforceProductionRules: true,
+      }),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRICE_LOOKUP_FAILED');
+        return true;
+      }
+    );
+  });
+
+  test('Production rules: International fails closed with PRICE_UNAVAILABLE on missing row (data: null)', async () => {
+    const mockSupabase = createMockSupabase({
+      data: null,
+      error: null,
+    });
+
+    await assert.rejects(
+      async () => resolveInternationalPrice('ai_security', 'programme', 'AI Security', 200000, 'USD', {
+        supabaseClient: mockSupabase,
+        enforceProductionRules: true,
+      }),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRICE_UNAVAILABLE');
+        return true;
+      }
+    );
+  });
+
+  test('Production rules: International succeeds and honors DB row when active and valid', async () => {
+    const mockSupabase = createMockSupabase({
+      data: { amount: 250, active: true, currency_code: 'USD' },
+      error: null,
+    });
+
+    const price = await resolveInternationalPrice('ai_security', 'programme', 'AI Security', 200000, 'USD', {
+      supabaseClient: mockSupabase,
+      enforceProductionRules: true,
+    });
+    assert.equal(price.finalAmount, 250);
+    assert.equal(price.finalCurrency, 'USD');
+  });
+
+  test('Fails closed with PRICING_NOT_CONFIGURED for unconfigured international products or unsupported currencies', async () => {
+    await assert.rejects(
+      async () => resolveInternationalPrice('web-basic', 'service', 'Web Development Basic', 250000, 'EUR'),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRICING_NOT_CONFIGURED');
+        return true;
+      }
+    );
+  });
+});
+
 
 

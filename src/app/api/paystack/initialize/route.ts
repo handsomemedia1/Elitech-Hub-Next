@@ -136,7 +136,7 @@ export async function POST(request: Request) {
     price = await resolveAuthoritativePrice(rawProductId, rawProductType, effectiveCountry);
   } catch (err: unknown) {
     if (err instanceof PricingError) {
-      if (err.code === 'FX_UNAVAILABLE' || err.code === 'PRICING_NOT_CONFIGURED') {
+      if (err.code === 'FX_UNAVAILABLE' || err.code === 'PRICING_NOT_CONFIGURED' || err.code === 'PRICE_UNAVAILABLE') {
         return NextResponse.json(
           {
             success: false,
@@ -150,6 +150,12 @@ export async function POST(request: Request) {
         return NextResponse.json(
           { success: false, code: err.code, error: err.message },
           { status: 400 }
+        );
+      }
+      if (err.code === 'PRICE_DATABASE_UNAVAILABLE' || err.code === 'PRICE_LOOKUP_FAILED') {
+        return NextResponse.json(
+          { success: false, code: err.code, error: err.message },
+          { status: 503 } // Service Unavailable
         );
       }
       return NextResponse.json(

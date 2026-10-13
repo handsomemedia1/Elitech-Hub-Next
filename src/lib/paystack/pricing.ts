@@ -19,6 +19,20 @@ async function getServiceClient() {
 }
 
 import type { ProductType, ResolvedPrice } from './types';
+import { isPaystackLiveMode } from './config';
+
+export interface PricingResolutionOptions {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  supabaseClient?: any;
+  enforceProductionRules?: boolean;
+}
+
+export function isProductionPricingEnforced(options?: PricingResolutionOptions): boolean {
+  if (options?.enforceProductionRules !== undefined) {
+    return options.enforceProductionRules;
+  }
+  return process.env.NODE_ENV === 'production' || isPaystackLiveMode();
+}
 
 // ============================================================
 // CANONICAL NIGERIAN BASE PRICES (Fallback if DB is unreachable)
@@ -339,7 +353,8 @@ export class PricingError extends Error {
 export async function resolveAuthoritativePrice(
   rawProductId: string,
   rawProductType?: string,
-  countryCode?: string
+  countryCode?: string,
+  options?: PricingResolutionOptions
 ): Promise<ResolvedPrice> {
   const productId = normalizeProductId(rawProductId);
   const productDef = CANONICAL_PRODUCTS[productId];
@@ -368,14 +383,23 @@ export async function resolveAuthoritativePrice(
 
   const productType = (rawProductType || productDef.type) as ProductType;
   const productLabel = productDef.label;
+  const mustEnforceProduction = isProductionPricingEnforced(options);
 
   // 2. Fetch base NGN price (authoritative from DB or fallback)
   let baseAmount = productDef.ngnBaseAmount;
   const baseCurrency = 'NGN';
 
-  try {
-    const supabase = await getServiceClient();
-    if (supabase) {
+  const supabase = options?.supabaseClient ?? (await getServiceClient());
+
+  if (!supabase && mustEnforceProduction) {
+    throw new PricingError(
+      'The pricing database is unavailable. Checkout is temporarily disabled.',
+      'PRICE_DATABASE_UNAVAILABLE'
+    );
+  }
+
+  if (supabase) {
+    try {
       const { data, error } = await supabase
         .from('course_prices')
         .select('amount, currency_code, course_id, active')
@@ -383,27 +407,51 @@ export async function resolveAuthoritativePrice(
         .eq('currency_code', 'NGN')
         .maybeSingle();
 
-      if (!error && data?.active === false) {
+      if (error) {
+        console.error('[Pricing] Database query error for NGN price:', error.message);
+        if (mustEnforceProduction) {
+          throw new PricingError(
+            'The authoritative price could not be verified due to a database error. Please try again later.',
+            'PRICE_LOOKUP_FAILED'
+          );
+        }
+      }
+
+      if (data?.active === false) {
         throw new PricingError(
           `Product "${productDef.label}" (${productId}) has been retired from active offerings and cannot be purchased.`,
           'PRODUCT_DISCONTINUED'
         );
       }
 
-      if (!error && data?.amount !== undefined && data?.amount !== null) {
+      if (data?.amount !== undefined && data?.amount !== null) {
         const parsed = Number(data.amount);
         if (Number.isFinite(parsed) && parsed > 0) {
           baseAmount = parsed;
-        } else {
-          console.warn(`[Pricing] Invalid DB amount ${data.amount} for ${productId}`);
+        } else if (mustEnforceProduction) {
+          throw new PricingError(
+            `Authoritative price data for "${productLabel}" (${productId}) is invalid in the database.`,
+            'INVALID_PRICE_DATA'
+          );
         }
+      } else if (mustEnforceProduction) {
+        throw new PricingError(
+          `No active NGN price is configured in the database for "${productDef.label}" (${productId}).`,
+          'PRICE_UNAVAILABLE'
+        );
       }
+    } catch (err) {
+      if (err instanceof PricingError) {
+        throw err;
+      }
+      if (mustEnforceProduction) {
+        throw new PricingError(
+          'The authoritative price could not be verified due to a database error. Please try again later.',
+          'PRICE_LOOKUP_FAILED'
+        );
+      }
+      console.warn('[Pricing] Supabase price lookup failed, using canonical fallback:', err);
     }
-  } catch (err) {
-    if (err instanceof PricingError) {
-      throw err;
-    }
-    console.warn('[Pricing] Supabase price lookup failed, using canonical fallback:', err);
   }
 
   if (!Number.isFinite(baseAmount) || baseAmount <= 0) {
@@ -437,7 +485,7 @@ export async function resolveAuthoritativePrice(
 
     if (!targetCurrency) {
       // African country without a direct Paystack checkout currency mapping routes to USD commercial pricing
-      return resolveInternationalPrice(productId, productType, productLabel, baseAmount, 'USD');
+      return resolveInternationalPrice(productId, productType, productLabel, baseAmount, 'USD', options);
     }
 
     // Resolve FX rate
@@ -474,7 +522,7 @@ export async function resolveAuthoritativePrice(
 
   // C. INTERNATIONAL COMMERCIAL PRICING BANDS
   // All non-African international checkouts use approved USD commercial pricing
-  return resolveInternationalPrice(productId, productType, productLabel, baseAmount, 'USD');
+  return resolveInternationalPrice(productId, productType, productLabel, baseAmount, 'USD', options);
 }
 
 /**
@@ -487,14 +535,24 @@ export async function resolveInternationalPrice(
   productType: ProductType,
   productLabel: string,
   baseAmount: number,
-  currency: string = 'USD'
+  currency: string = 'USD',
+  options?: PricingResolutionOptions
 ): Promise<ResolvedPrice> {
   let finalAmount: number | null = null;
   const targetCurrency = currency.toUpperCase().trim();
+  const mustEnforceProduction = isProductionPricingEnforced(options);
 
-  try {
-    const supabase = await getServiceClient();
-    if (supabase) {
+  const supabase = options?.supabaseClient ?? (await getServiceClient());
+
+  if (!supabase && mustEnforceProduction) {
+    throw new PricingError(
+      'The pricing database is unavailable. Checkout is temporarily disabled.',
+      'PRICE_DATABASE_UNAVAILABLE'
+    );
+  }
+
+  if (supabase) {
+    try {
       const { data, error } = await supabase
         .from('course_prices')
         .select('amount, currency_code, course_id, active')
@@ -502,28 +560,54 @@ export async function resolveInternationalPrice(
         .eq('currency_code', targetCurrency)
         .maybeSingle();
 
-      if (!error && data?.active === false) {
+      if (error) {
+        console.error(`[Pricing] International price query for ${targetCurrency} failed:`, error.message);
+        if (mustEnforceProduction) {
+          throw new PricingError(
+            'The authoritative price could not be verified due to a database error. Please try again later.',
+            'PRICE_LOOKUP_FAILED'
+          );
+        }
+      }
+
+      if (data?.active === false) {
         throw new PricingError(
           `Product "${productLabel}" (${productId}) has been retired from active offerings and cannot be purchased.`,
           'PRODUCT_DISCONTINUED'
         );
       }
 
-      if (!error && data?.amount !== undefined && data?.amount !== null) {
+      if (data?.amount !== undefined && data?.amount !== null) {
         const parsed = Number(data.amount);
         if (Number.isFinite(parsed) && parsed > 0) {
           finalAmount = parsed;
+        } else if (mustEnforceProduction) {
+          throw new PricingError(
+            `Authoritative international price data for "${productLabel}" (${productId}) is invalid in the database.`,
+            'INVALID_PRICE_DATA'
+          );
         }
+      } else if (mustEnforceProduction) {
+        throw new PricingError(
+          `No active ${targetCurrency} price is configured in the database for "${productLabel}" (${productId}).`,
+          'PRICE_UNAVAILABLE'
+        );
       }
+    } catch (err) {
+      if (err instanceof PricingError) {
+        throw err;
+      }
+      if (mustEnforceProduction) {
+        throw new PricingError(
+          'The authoritative price could not be verified due to a database error. Please try again later.',
+          'PRICE_LOOKUP_FAILED'
+        );
+      }
+      console.warn(`[Pricing] International price query for ${targetCurrency} failed:`, err);
     }
-  } catch (err) {
-    if (err instanceof PricingError) {
-      throw err;
-    }
-    console.warn(`[Pricing] International price query for ${targetCurrency} failed:`, err);
   }
 
-  if (finalAmount === null) {
+  if (finalAmount === null && !mustEnforceProduction) {
     if (targetCurrency === 'USD' && INTERNATIONAL_USD_FALLBACKS[productId] !== undefined) {
       finalAmount = INTERNATIONAL_USD_FALLBACKS[productId];
     }
