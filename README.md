@@ -34,3 +34,15 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Paystack payment mode
+
+Paystack mode is controlled by the server-side `PAYSTACK_MODE` environment variable:
+
+- `PAYSTACK_MODE=test` uses a `PAYSTACK_SECRET_KEY` beginning with `sk_test_`.
+- If `PAYSTACK_MODE` is unset or blank, the application safely defaults to `test`.
+- Live processing requires `PAYSTACK_MODE=live` and a `PAYSTACK_SECRET_KEY` beginning with `sk_live_`. The mode and key must match.
+- Keep `PAYSTACK_SECRET_KEY` server-side only. Never name it `NEXT_PUBLIC_*`, commit it, or paste it into chat/issues.
+- Configure production secrets only in the hosting provider's environment settings. Keep preview/development deployments on test credentials.
+
+Allowing a live key in configuration is not, by itself, a production-readiness approval. Before enabling live payments, verify the Paystack account's supported currencies, production webhook URL/signature configuration, approved catalogue prices, transaction fulfilment/idempotency, and the full automated test/build results.
