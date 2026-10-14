@@ -261,4 +261,63 @@ describe('Elitech Hub Technical & On-Page SEO Suite', () => {
     }
   });
 
+  test('11. GSC Legacy Netlify URL 308 Redirects and Missing Query Protection', () => {
+    const configPath = path.join(ROOT_DIR, 'next.config.ts');
+    const configContent = fs.readFileSync(configPath, 'utf8');
+
+    // Confirm new key legacy static redirects are present
+    assert.ok(configContent.includes("source: '/about.html'"), 'Must redirect /about.html');
+    assert.ok(configContent.includes("destination: '/about'"), 'Must target /about');
+    assert.ok(configContent.includes("source: '/policies.html'"), 'Must redirect /policies.html');
+    assert.ok(configContent.includes("destination: '/policies'"), 'Must target /policies');
+    assert.ok(configContent.includes("source: '/blog.html'"), 'Must redirect /blog.html');
+    assert.ok(configContent.includes("destination: '/blog'"), 'Must target /blog');
+    assert.ok(configContent.includes("key: 'tag'"), 'Must protect /blog.html against blanket tag redirection');
+
+    // Confirm specialized slug predecessors
+    assert.ok(
+      configContent.includes("source: '/blog-posts/tutorial-home-lab-setup'"),
+      'Must redirect legacy home lab tutorial'
+    );
+    assert.ok(
+      configContent.includes("destination: '/blog/how-to-set-up-your-first-cybersecurity-lab-at-home-even-with-zero-it-experience'"),
+      'Must target canonical home lab article'
+    );
+    assert.ok(
+      configContent.includes("source: '/blog-posts/cybersecurity-bootcamp-guaranteed-internship.html'"),
+      'Must redirect legacy bootcamp landing slug'
+    );
+    assert.ok(
+      configContent.includes("destination: '/programs/cybersecurity-bootcamp'"),
+      'Must target canonical cybersecurity bootcamp route'
+    );
+
+    // Audit JSON coverage: all 58 legacy 308 redirects must be defined in next.config.ts
+    const auditPath = path.join(ROOT_DIR, 'scripts/gsc_audit_detailed.json');
+    if (fs.existsSync(auditPath)) {
+      const audit = JSON.parse(fs.readFileSync(auditPath, 'utf8'));
+      const redirects = audit.filter(a => a.action === '308_REDIRECT');
+      for (const r of redirects) {
+        const parsed = new URL(r.url);
+        const slug = parsed.searchParams.get('slug');
+        if (slug) {
+          assert.ok(configContent.includes(slug), `next.config.ts must handle legacy query slug: ${slug}`);
+        } else {
+          assert.ok(configContent.includes(parsed.pathname), `next.config.ts must handle legacy pathname: ${parsed.pathname}`);
+        }
+      }
+    }
+  });
+
+  test('12. Soft 404 Prevention on Dynamic Topic Category Routes', () => {
+    const topicPath = path.join(ROOT_DIR, 'src/app/topics/[slug]/page.tsx');
+    const topicContent = fs.readFileSync(topicPath, 'utf8');
+
+    // Confirm notFound() is called when hasContent is false
+    assert.match(topicContent, /if\s*\(!hasContent\)\s*{\s*notFound\(\);\s*}/, 'Must call notFound() when no content exists');
+
+    // Confirm metadata returns noindex robots for empty topics
+    assert.match(topicContent, /robots:\s*{\s*index:\s*false,\s*follow:\s*false\s*}/, 'Must set noindex robots on empty topics');
+  });
+
 });

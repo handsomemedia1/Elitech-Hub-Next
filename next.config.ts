@@ -341,6 +341,32 @@ const nextConfig: NextConfig = {
         destination: '/lab',
         permanent: true,
       },
+      {
+        source: '/about.html',
+        destination: '/about',
+        permanent: true,
+      },
+      {
+        source: '/policies.html',
+        destination: '/policies',
+        permanent: true,
+      },
+      {
+        source: '/blog.html',
+        missing: [{ type: 'query', key: 'tag' }],
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog-posts/tutorial-home-lab-setup',
+        destination: '/blog/how-to-set-up-your-first-cybersecurity-lab-at-home-even-with-zero-it-experience',
+        permanent: true,
+      },
+      {
+        source: '/blog-posts/cybersecurity-bootcamp-guaranteed-internship.html',
+        destination: '/programs/cybersecurity-bootcamp',
+        permanent: true,
+      },
     ];
   },
   images: {

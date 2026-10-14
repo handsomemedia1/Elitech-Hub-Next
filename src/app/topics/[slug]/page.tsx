@@ -5,6 +5,23 @@ import type { Metadata } from 'next';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
+  const supabase = getSupabaseServerClient();
+  const [blogsRes, researchRes, labsRes, resourcesRes] = await Promise.all([
+    supabase.from('blog_posts').select('id').eq('published', true).eq('category', slug).limit(1),
+    supabase.from('research').select('id').eq('published', true).eq('category', slug).limit(1),
+    supabase.from('labs').select('id').eq('status', 'published').eq('category', slug).limit(1),
+    supabase.from('resources').select('id').eq('status', 'published').eq('topic', slug).limit(1)
+  ]);
+
+  const hasContent = (blogsRes.data?.length || 0) > 0 || (researchRes.data?.length || 0) > 0 || (labsRes.data?.length || 0) > 0 || (resourcesRes.data?.length || 0) > 0;
+
+  if (!hasContent) {
+    return {
+      title: 'Topic Not Found',
+      robots: { index: false, follow: false },
+    };
+  }
+
   const topicName = slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
   return {
     title: `${topicName} Cybersecurity Resources & Articles`,
@@ -50,6 +67,10 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
   
   const hasContent = blogs.length > 0 || research.length > 0 || labs.length > 0 || resources.length > 0;
 
+  if (!hasContent) {
+    notFound();
+  }
+
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '4rem 2rem', minHeight: '80vh' }}>
       <header style={{ marginBottom: '3rem' }}>
@@ -61,12 +82,6 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
           Explore all resources, research, labs, and blogs related to {topicName.toLowerCase()}.
         </p>
       </header>
-
-      {!hasContent && (
-        <div style={{ padding: '3rem', textAlign: 'center', background: 'var(--color-bg-panel)', borderRadius: '12px' }}>
-          <p style={{ color: 'var(--color-text-secondary)' }}>No content found for this topic yet.</p>
-        </div>
-      )}
 
       <div style={{ display: 'grid', gap: '3rem' }}>
         {blogs.length > 0 && (
