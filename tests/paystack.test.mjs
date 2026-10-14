@@ -34,6 +34,7 @@ import {
   generateTransactionReference,
   verifyWebhookSignature,
   sanitizeGatewayErrorMessage,
+  PaystackGatewayError,
 } from '../src/lib/paystack/client.ts';
 
 import {
@@ -51,6 +52,7 @@ import {
 import {
   resolveEffectivePricingCountry,
   INTERNATIONAL_COMMERCIAL_COUNTRIES,
+  getTrustedServerCountry,
 } from '../src/lib/paystack/pricing.ts';
 
 import { verifyLimit } from '../src/lib/rate-limit.ts';
@@ -2132,5 +2134,75 @@ describe('22. Payment Flow, Mentorship Booking & Name Standardization Integratio
     assert.equal(res.status, 400);
     assert.equal(json.success, false);
     assert.match(json.error, /Invalid transaction reference format/i);
+  });
+});
+
+describe('23. Hotfix Diagnostics: Geo-Edge Detection, Gateway Errors & Inline Consultation', () => {
+  test('getTrustedServerCountry prioritizes cf-ipcountry over x-vercel-ip-country when behind Cloudflare', () => {
+    const req = new Request('http://localhost:3000/api/paystack/initialize', {
+      headers: {
+        'cf-ipcountry': 'NG',
+        'x-vercel-ip-country': 'GB',
+      },
+    });
+
+    const country = getTrustedServerCountry(req);
+    assert.equal(country, 'NG');
+  });
+
+  test('getTrustedServerCountry falls back to x-vercel-ip-country when cf-ipcountry is absent', () => {
+    const req = new Request('http://localhost:3000/api/paystack/initialize', {
+      headers: {
+        'x-vercel-ip-country': 'US',
+      },
+    });
+
+    const country = getTrustedServerCountry(req);
+    assert.equal(country, 'US');
+  });
+
+  test('getTrustedServerCountry ignores invalid/unknown country code values like XX', () => {
+    const req = new Request('http://localhost:3000/api/paystack/initialize', {
+      headers: {
+        'cf-ipcountry': 'XX',
+        'x-vercel-ip-country': 'XX',
+      },
+    });
+
+    const country = getTrustedServerCountry(req);
+    assert.equal(country, null);
+  });
+
+  test('PaystackGatewayError encapsulates status, category, and error codes correctly', () => {
+    const err = new PaystackGatewayError(
+      'Currency not supported by merchant',
+      403,
+      'GATEWAY_ERROR',
+      'unsupported_currency'
+    );
+
+    assert.equal(err.name, 'PaystackGatewayError');
+    assert.equal(err.status, 403);
+    assert.equal(err.category, 'GATEWAY_ERROR');
+    assert.equal(err.code, 'unsupported_currency');
+    assert.match(err.message, /Currency not supported by merchant/);
+  });
+
+  test('Consultation products define 5 active tiers with authoritative canonical NGN base pricing', () => {
+    const consultationIds = [
+      'consultation-15',
+      'consultation-30',
+      'consultation-60',
+      'consultation-90',
+      'consultation-120',
+    ];
+
+    for (const id of consultationIds) {
+      const prod = CANONICAL_PRODUCTS[id];
+      assert.ok(prod, `Product ${id} must exist in CANONICAL_PRODUCTS`);
+      assert.equal(prod.type, 'consultation');
+      assert.equal(prod.status, 'active');
+      assert.ok(prod.ngnBaseAmount > 0);
+    }
   });
 });

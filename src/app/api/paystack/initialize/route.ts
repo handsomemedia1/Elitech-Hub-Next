@@ -32,6 +32,7 @@ import {
   PricingError,
   DatabaseMigrationRequiredError,
   sanitizeGatewayErrorMessage,
+  PaystackGatewayError,
 } from '@/lib/paystack';
 
 // Strict UUID format: matches Supabase uuid column type
@@ -424,8 +425,9 @@ export async function POST(request: Request) {
     });
   } catch (err: unknown) {
     const sanitizedError = sanitizeGatewayErrorMessage(err);
+    const correlationId = reference;
     console.error(
-      `[Paystack Init Gateway Error] Reference: ${reference}, Category: ${sanitizedError.category}, Error: ${sanitizedError.message}`
+      `[Paystack Init Gateway Error] Reference: ${correlationId}, Category: ${sanitizedError.category}, Error: ${sanitizedError.message}`
     );
 
     // Update internal transaction to 'failed' state to maintain audit trail
@@ -442,12 +444,53 @@ export async function POST(request: Request) {
       console.error('[Paystack Init] Failed to record failure state:', updateErr);
     }
 
+    if (err instanceof PaystackGatewayError) {
+      if (err.code === 'unsupported_currency' || sanitizedError.message.toLowerCase().includes('currency not supported')) {
+        return NextResponse.json(
+          {
+            success: false,
+            code: 'GATEWAY_CURRENCY_UNSUPPORTED',
+            error: `Currency "${price.finalCurrency}" is not currently enabled for direct checkout on this merchant account. Please select Nigeria (NGN) to complete payment with your card, or contact support.`,
+            correlationId,
+          },
+          { status: 422 }
+        );
+      }
+
+      if (err.category === 'AUTH_ERROR') {
+        return NextResponse.json(
+          {
+            success: false,
+            code: 'GATEWAY_CONFIGURATION_ERROR',
+            error: 'Payment gateway configuration is currently invalid. Please contact support.',
+            correlationId,
+          },
+          { status: 503 }
+        );
+      }
+
+      if (err.category === 'TIMEOUT' || err.category === 'NETWORK') {
+        return NextResponse.json(
+          {
+            success: false,
+            code: 'GATEWAY_UNAVAILABLE',
+            error: 'Payment gateway is temporarily unreachable. Please try again shortly.',
+            correlationId,
+          },
+          { status: 503 }
+        );
+      }
+    }
+
+    // Never return a blanket 502 which causes reverse-proxy HTML replacement
     return NextResponse.json(
       {
         success: false,
-        error: 'Payment gateway initialization failed. Please try again.',
+        code: 'GATEWAY_INITIALIZATION_FAILED',
+        error: sanitizedError.message || 'Payment initialization failed. Please try again.',
+        correlationId,
       },
-      { status: 502 }
+      { status: 400 }
     );
   }
 }

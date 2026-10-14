@@ -89,7 +89,16 @@ export default function PaystackCheckoutButton({
       try {
         data = await res.json();
       } catch {
-        throw new Error(`Payment gateway returned an invalid response (HTTP ${res.status}). Please try again.`);
+        let msg = 'Unable to connect to the payment gateway. Please check your connection and try again.';
+        if (res.status === 502 || res.status === 504) {
+          msg = 'The payment service is temporarily unavailable. Please try again shortly or contact support.';
+        } else if (res.status === 503) {
+          msg = 'The payment service is undergoing brief maintenance. Please try again in a few moments.';
+        }
+        setErrorMessage(msg);
+        setIsLoading(false);
+        if (onError) onError(msg);
+        return;
       }
 
       if (!res.ok || !data?.success) {
@@ -99,10 +108,14 @@ export default function PaystackCheckoutButton({
           displayError = 'Too many attempts. Please wait a moment before trying again.';
         } else if (data?.code === 'DATABASE_MIGRATION_REQUIRED') {
           displayError = 'Payment system maintenance in progress. Please contact support or try again shortly.';
+        } else if (data?.code === 'GATEWAY_CURRENCY_UNSUPPORTED' || data?.code === 'UNSUPPORTED_CHECKOUT_CURRENCY') {
+          displayError = (data.error as string) || 'This currency is not supported for direct checkout. Please select Nigeria (NGN) to pay in NGN with your card.';
+        } else if (data?.code === 'GATEWAY_UNAVAILABLE') {
+          displayError = (data.error as string) || 'Payment gateway is temporarily unreachable. Please try again shortly.';
+        } else if (data?.code === 'GATEWAY_CONFIGURATION_ERROR') {
+          displayError = (data.error as string) || 'Payment service configuration is currently being updated. Please contact support.';
         } else if (data?.code === 'FX_UNAVAILABLE') {
           displayError = (data.error as string) || 'Currency exchange rate is currently unavailable. Please select Nigeria or USD.';
-        } else if (data?.code === 'UNSUPPORTED_CHECKOUT_CURRENCY') {
-          displayError = (data.error as string) || 'This currency is not supported for direct checkout. Please checkout in NGN or USD.';
         }
 
         setErrorMessage(displayError);

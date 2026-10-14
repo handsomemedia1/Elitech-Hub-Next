@@ -194,14 +194,16 @@ export const INTERNATIONAL_COMMERCIAL_COUNTRIES = new Set([
  * Returns null if running in an environment without edge geolocation headers.
  */
 export function getTrustedServerCountry(request: Request): string | null {
-  const vercelCountry = request.headers.get('x-vercel-ip-country')?.trim().toUpperCase();
-  if (vercelCountry && vercelCountry.length === 2 && vercelCountry !== 'XX') {
-    return vercelCountry;
-  }
-
+  // 1. Cloudflare CF-IPCountry header represents the real visitor IP's country at the outermost CDN edge
   const cfCountry = request.headers.get('cf-ipcountry')?.trim().toUpperCase();
   if (cfCountry && cfCountry.length === 2 && cfCountry !== 'XX') {
     return cfCountry;
+  }
+
+  // 2. Vercel x-vercel-ip-country header (direct fallback when request bypasses Cloudflare)
+  const vercelCountry = request.headers.get('x-vercel-ip-country')?.trim().toUpperCase();
+  if (vercelCountry && vercelCountry.length === 2 && vercelCountry !== 'XX') {
+    return vercelCountry;
   }
 
   return null;
