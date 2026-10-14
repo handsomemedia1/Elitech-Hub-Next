@@ -15,7 +15,7 @@ import {
 import CountUp from '@/components/CountUp';
 
 export const metadata = {
-  title: 'Best Cybersecurity Bootcamp in Nigeria | 100% Job Guarantee | Elitech Hub',
+  title: 'Cybersecurity Programs & Training in Nigeria | Practical Experience',
   description:
     'Industry-Focused Training in Cybersecurity, Artificial Intelligence, Data Science and Emerging Technologies.',
   keywords: [
@@ -52,15 +52,15 @@ export const metadata = {
     'cybersecurity certification Nigeria cost',
   ],
   openGraph: {
-    title: 'Best Cybersecurity Bootcamp in Nigeria | Internship Experience',
+    title: 'Cybersecurity Programs & Training in Nigeria | Internship Experience',
     description:
-      'Join Nigeria\'s most brutal and effective cybersecurity bootcamp. Live attack simulations, real tools, AI-powered security curriculum. No experience required.',
+      'Join Nigeria\'s premier cybersecurity training platform. Live attack simulations, real tools, AI-powered security curriculum. No experience required.',
     url: 'https://www.elitechub.com/programs',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
     images: [
       {
-        url: 'https://www.elitechub.com/images/programs-og.jpg',
+        url: 'https://www.elitechub.com/images/og-default.jpg',
         width: 1200,
         height: 630,
         alt: 'Elitech Hub Cybersecurity Programs in Nigeria',
@@ -70,10 +70,10 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Best Cybersecurity Bootcamp in Nigeria — Gain Experience',
+    title: 'Cybersecurity Programs in Nigeria — Gain Practical Experience',
     description:
       'The premier cybersecurity bootcamp in Nigeria with practical internship experience. Enroll today.',
-    images: ['https://www.elitechub.com/images/programs-og.jpg'],
+    images: ['https://www.elitechub.com/images/og-default.jpg'],
   },
   alternates: {
     canonical: 'https://www.elitechub.com/programs',
@@ -92,7 +92,7 @@ export default function ProgramsPage() {
       description:
         'Master AI security systems, Python scripting, PowerShell, and Ubuntu in this intensive 6-week live virtual programme in Nigeria.',
       url: 'https://www.elitechub.com/ai-training',
-      image: 'https://www.elitechub.com/images/programs-og.jpg',
+      image: 'https://www.elitechub.com/images/og-default.jpg',
       inLanguage: 'en',
       availableLanguage: ['English'],
       provider: {
@@ -135,7 +135,7 @@ export default function ProgramsPage() {
       description:
         'Advanced 8-week specialization covering AI system security, reverse vulnerability research, prompt-injection defense, and binary security analysis.',
       url: 'https://www.elitechub.com/programs',
-      image: 'https://www.elitechub.com/images/programs-og.jpg',
+      image: 'https://www.elitechub.com/images/og-default.jpg',
       inLanguage: 'en',
       provider: {
         '@type': 'Organization',
@@ -174,7 +174,7 @@ export default function ProgramsPage() {
       description:
         'Nigeria\'s most comprehensive cybersecurity career program with unpaid internship experience, 1-on-1 mentorship, CompTIA Security+, CEH, and OSCP preparation.',
       url: 'https://www.elitechub.com/programs/professional',
-      image: 'https://www.elitechub.com/images/programs-og.jpg',
+      image: 'https://www.elitechub.com/images/og-default.jpg',
       inLanguage: 'en',
       provider: {
         '@type': 'Organization',

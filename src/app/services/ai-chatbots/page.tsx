@@ -7,7 +7,7 @@ import { Brain, Bot, Code, Database, Globe, MessageSquare, TrendingUp, Users, Ar
 import { PricingTiers } from '@/components/PricingTiers';
 
 export const metadata = {
-  title: 'AI Chatbot & Agentic AI Development Nigeria | Custom LLM Apps | Elitech Hub',
+  title: 'AI Chatbot & Agentic AI Development Nigeria | Custom LLM Apps',
   description: 'Elitech Hub builds custom AI chatbots and agentic AI applications for Nigerian businesses. Powered by GPT-4, Claude, and Gemini. Customer support bots, sales agents, document analyzers, and more.',
   keywords: [
     'AI chatbot development',
@@ -28,6 +28,8 @@ export const metadata = {
     url: 'https://www.elitechub.com/services/ai-chatbots',
     title: 'AI Chatbot & Agentic AI Development Nigeria | Custom LLM Apps | Elitech Hub',
     description: 'Elitech Hub builds custom AI chatbots and agentic AI applications for Nigerian businesses. Powered by GPT-4, Claude, and Gemini.',
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg' }],
+    type: 'website',
   }
 };
 

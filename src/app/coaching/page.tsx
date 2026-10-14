@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 
 export const metadata = {
-  title: 'Personalised Cybersecurity Coaching & Mentorship | Elitech Hub',
+  title: 'Personalised Cybersecurity Coaching & Mentorship',
   description: 'Bespoke 1-on-1 cybersecurity coaching and direct mentorship tailored entirely to your specific goals, gaps, and career aspirations. Book your assessment consultation directly.',
   keywords: [
     'cybersecurity coaching Nigeria',
@@ -25,6 +25,7 @@ export const metadata = {
     url: 'https://www.elitechub.com/coaching',
     title: 'Personalised Cybersecurity Coaching & Mentorship | Elitech Hub',
     description: 'Bespoke 1-on-1 cybersecurity coaching and direct mentorship tailored entirely to your specific goals, gaps, and career aspirations.',
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg' }],
     type: 'website',
   }
 };

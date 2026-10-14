@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'AI Powered Cybersecurity Training Nigeria | 6-Week Online Bootcamp | Elitech Hub',
+  title: 'AI Powered Cybersecurity Training Nigeria | 6-Week Online Bootcamp',
   description:
     'Learn AI-powered cybersecurity in 6 weeks with Elitech Hub. Covers PowerShell, Python, Ubuntu, and AI Security Systems. 100% virtual, ₦100,000, starts June 2026. Join from anywhere in Nigeria.',
   keywords: [

@@ -17,9 +17,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     .eq("status", "approved")
     .single();
 
-  if (!writer) return { title: "Author Not Found | Elitech Hub" };
+  if (!writer) return { title: "Author Not Found" };
 
-  const title = `${writer.display_name} — ${writer.professional_title || "Writer"} at Elitech Hub`;
+  const title = `${writer.display_name} — ${writer.professional_title || "Writer"}`;
   const description = writer.bio || `Read articles and insights by ${writer.display_name}, a writer at Elitech Hub.`;
 
   return {

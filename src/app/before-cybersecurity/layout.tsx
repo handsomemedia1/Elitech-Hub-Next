@@ -14,10 +14,10 @@ export const metadata: Metadata = {
     url: 'https://www.elitechub.com/before-cybersecurity',
     images: [
       {
-        url: 'https://www.elitechub.com/images/before-cybersecurity-og.jpg',
+        url: 'https://www.elitechub.com/images/og-default.jpg',
         width: 1200,
         height: 630,
-        alt: 'Before Cybersecurity by Elitech-Hub',
+        alt: 'Before Cybersecurity by Elitech Hub',
       },
     ],
     type: 'website',
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Before Cybersecurity — Understand What You\'re Starting',
     description: 'A practical cybersecurity orientation system for people who want to understand the field before investing months learning it.',
-    images: ['https://www.elitechub.com/images/before-cybersecurity-og.jpg'],
+    images: ['https://www.elitechub.com/images/og-default.jpg'],
   },
 };
 

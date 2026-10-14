@@ -9,7 +9,7 @@ import { Laptop } from "@/types/laptop";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: 'Best Laptops for Cybersecurity & Programming | Elitech Hub Nigeria',
+  title: 'Best Laptops for Cybersecurity & Programming in Nigeria',
   description: 'Find the right laptop for cybersecurity, programming, and technology. Brand new and UK-used laptops optimized for performance and actual use cases.',
   openGraph: {
     title: 'Best Laptops for Cybersecurity | Elitech Hub Nigeria',

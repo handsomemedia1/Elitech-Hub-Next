@@ -6,8 +6,17 @@ import { ArrowLeft, CheckCircle2, Shield, Zap, Globe, Server } from 'lucide-reac
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 
 export const metadata: Metadata = {
-  title: 'CyberOutreach Agent | Elitech Hub Portfolio',
+  title: 'CyberOutreach Platform Case Study',
   description: 'A case study on how we built the CyberOutreach platform using Next.js and advanced AI integration.',
+  alternates: {
+    canonical: 'https://www.elitechub.com/portfolio/cyberoutreach-agent',
+  },
+  openGraph: {
+    title: 'CyberOutreach Platform Case Study | Elitech Hub',
+    description: 'A case study on how we built the CyberOutreach platform using Next.js and advanced AI integration.',
+    url: 'https://www.elitechub.com/portfolio/cyberoutreach-agent',
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg' }],
+  },
 };
 
 export default function CyberOutreachCaseStudy() {

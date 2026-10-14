@@ -18,7 +18,7 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
   if (!data) return { title: 'Laptop Not Found' };
   
   return {
-    title: data.seo_title || `${data.name} | Elitech Hub Nigeria`,
+    title: data.seo_title || data.name,
     description: data.seo_description || `View specifications and pricing for ${data.name} at Elitech Hub Nigeria.`,
     alternates: { canonical: `https://www.elitechub.com/laptops/${slug}` },
     openGraph: {

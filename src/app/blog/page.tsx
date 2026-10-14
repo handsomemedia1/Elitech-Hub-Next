@@ -11,7 +11,7 @@ import { HubCard } from "@/components/HubCard";
 export const revalidate = 60; // Revalidate every 60 seconds
 
 export const metadata: Metadata = {
-  title: 'Cybersecurity Blog Nigeria | Career Guides, Tutorials & Threat Intel | Elitech Hub',
+  title: 'Cybersecurity Blog Nigeria | Career Guides, Tutorials & Threat Intel',
   description:
     'Expert Insights on AI, Cybersecurity, Technology, Digital Business and Innovation.',
   keywords: [

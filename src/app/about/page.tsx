@@ -9,7 +9,7 @@ import { Shield, Brain, Network, Award, Lock, ChevronRight, Mail, Phone, Externa
 import { LinkedinLogo, PhosphorGlobe, PhosphorGraduationCap } from '@/components/PhosphorIcons';
 
 export const metadata: Metadata = {
-  title: "About Elitech Hub | Nigeria's Cybersecurity Training Leader | Lagos & Ibadan",
+  title: "About Us — Nigeria's Premier Cybersecurity Training Leader",
   description: "Driving Innovation Through AI, Cybersecurity, Research Excellence and Business Transformation.",
   keywords: ['about Elitech Hub', 'SMEDAN certified cybersecurity', 'CAC registered cybersecurity training', 'Elitech Hub founder', 'Elijah Adeyeye', 'cybersecurity training Nigeria', 'cybersecurity school Lagos'],
   openGraph: {

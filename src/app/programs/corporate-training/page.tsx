@@ -6,7 +6,7 @@ import styles from './corporate-training.module.css';
 import { Building2, CheckCircle2, ChevronDown, ArrowRight, ArrowLeft, Shield, Users, Target, Award, Globe, Clock, Briefcase, FileSearch, Network, BookOpen } from 'lucide-react';
 
 export const metadata = {
-  title: 'Corporate Cybersecurity Training Nigeria | Security Awareness for Teams | Elitech Hub',
+  title: 'Corporate Cybersecurity Training Nigeria | Security Awareness for Teams',
   description: 'Elitech Hub delivers bespoke corporate cybersecurity training for organisations in Lagos, Ibadan, Abuja, and remotely across Nigeria. Security awareness training, custom curriculum, NDPR compliance training, and on-site delivery.',
   keywords: ['corporate cybersecurity training Nigeria', 'security awareness training Nigeria', 'corporate IT training Lagos', 'NDPR awareness training Nigeria', 'cybersecurity training for employees Nigeria', 'custom cybersecurity curriculum Nigeria', 'on-site cybersecurity training Nigeria', 'team security training Nigeria'],
   openGraph: {
@@ -16,7 +16,7 @@ export const metadata = {
     siteName: 'Elitech Hub',
     images: [
       {
-        url: 'https://www.elitechub.com/og-corporate.jpg',
+        url: 'https://www.elitechub.com/images/og-default.jpg',
         width: 1200,
         height: 630,
         alt: 'Corporate Cybersecurity Training by Elitech Hub',
@@ -29,7 +29,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Corporate Cybersecurity Training Nigeria | Security Awareness for Teams | Elitech Hub',
     description: 'Elitech Hub delivers bespoke corporate cybersecurity training for organisations in Lagos, Ibadan, Abuja, and remotely across Nigeria.',
-    images: ['https://www.elitechub.com/og-corporate.jpg'],
+    images: ['https://www.elitechub.com/images/og-default.jpg'],
   },
   alternates: {
     canonical: 'https://www.elitechub.com/programs/corporate-training',

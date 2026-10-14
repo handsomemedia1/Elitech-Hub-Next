@@ -5,7 +5,7 @@ import AnimateOnScroll from '@/components/AnimateOnScroll';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Volunteer & Mentor | Elitech Hub',
+  title: 'Volunteer & Mentor',
   description: 'Join Elitech Hub as a volunteer mentor and help shape the next generation of African cybersecurity professionals.',
   keywords: 'volunteer mentor, cybersecurity mentor Nigeria, tech mentoring Africa, give back to tech community, cybersecurity instructor, Elitech Hub volunteer',
   alternates: { canonical: 'https://www.elitechub.com/volunteer' },
@@ -13,6 +13,7 @@ export const metadata: Metadata = {
     title: 'Volunteer & Mentor | Elitech Hub',
     description: 'Join Elitech Hub as a volunteer mentor and help shape the next generation of African cybersecurity professionals.',
     url: 'https://www.elitechub.com/volunteer',
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg' }],
     type: 'website',
   }
 };

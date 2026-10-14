@@ -1,6 +1,25 @@
 import { getSupabaseServerClient } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import type { Metadata } from 'next';
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const topicName = slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  return {
+    title: `${topicName} Cybersecurity Resources & Articles`,
+    description: `Explore all tutorials, research papers, labs, and articles related to ${topicName.toLowerCase()} on Elitech Hub.`,
+    alternates: {
+      canonical: `https://www.elitechub.com/topics/${slug}`,
+    },
+    openGraph: {
+      title: `${topicName} Resources | Elitech Hub`,
+      description: `Explore all tutorials, research papers, labs, and articles related to ${topicName.toLowerCase()} on Elitech Hub.`,
+      url: `https://www.elitechub.com/topics/${slug}`,
+      images: [{ url: 'https://www.elitechub.com/images/og-default.jpg' }],
+    },
+  };
+}
 
 export default async function TopicPage({ params }: { params: Promise<{ slug: string }> }) {
   const supabase = getSupabaseServerClient();

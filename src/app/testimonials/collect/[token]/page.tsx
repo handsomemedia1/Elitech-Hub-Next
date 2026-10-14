@@ -6,7 +6,7 @@ import { MessageCircle, Shield, CheckCircle } from 'lucide-react';
 import TestimonialClientForm from './TestimonialClientForm';
 
 export const metadata = {
-  title: 'Share Your Experience | Elitech Hub',
+  title: 'Share Your Experience',
   robots: {
     index: false,
     follow: false

@@ -149,14 +149,16 @@ export default function RootLayout({
               foundingDate: '2023',
               address: {
                 '@type': 'PostalAddress',
-                addressLocality: 'Lagos',
-                addressRegion: 'Lagos State',
+                addressLocality: 'Ibadan',
+                addressRegion: 'Oyo State',
                 addressCountry: 'NG',
               },
               contactPoint: [
                 {
                   '@type': 'ContactPoint',
-                  contactType: 'admissions',
+                  contactType: 'customer support',
+                  telephone: '+234 708 196 8062',
+                  email: 'info@elitechub.com',
                   availableLanguage: ['English'],
                 },
               ],
@@ -180,7 +182,7 @@ export default function RootLayout({
 
         {/* === SCHEMA 2: LocalBusiness (ranks in local/maps searches) ===
             This is what gets you into Google Maps results and
-            "cybersecurity training near me" / "in Lagos" queries. */}
+            "cybersecurity training near me" / "in Ibadan" / "in Lagos" queries. */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -190,24 +192,25 @@ export default function RootLayout({
               '@id': 'https://www.elitechub.com/#localbusiness',
               name: 'Elitech Hub',
               url: 'https://www.elitechub.com',
-              telephone: '',
+              telephone: '+234 708 196 8062',
+              email: 'info@elitechub.com',
               priceRange: '₦₦',
               image: 'https://www.elitechub.com/images/og-default.jpg',
               description:
                 "Elitech Hub provides AI, Cybersecurity, Research, and Digital Innovation training and solutions in Nigeria and worldwide.",
               address: {
                 '@type': 'PostalAddress',
-                addressLocality: 'Lagos',
-                addressRegion: 'Lagos State',
-                postalCode: '100001',
+                addressLocality: 'Ibadan',
+                addressRegion: 'Oyo State',
+                postalCode: '200001',
                 addressCountry: 'NG',
               },
               geo: {
                 '@type': 'GeoCoordinates',
-                latitude: 6.5244,
-                longitude: 3.3792,
+                latitude: 7.3775,
+                longitude: 3.9470,
               },
-              hasMap: 'https://maps.google.com/?q=Lagos,Nigeria',
+              hasMap: 'https://maps.google.com/?q=Ibadan,Nigeria',
               openingHoursSpecification: [
                 {
                   '@type': 'OpeningHoursSpecification',

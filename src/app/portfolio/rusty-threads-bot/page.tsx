@@ -6,8 +6,17 @@ import { ArrowLeft, CheckCircle2, Bot, Zap, MessageSquare, Terminal } from 'luci
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 
 export const metadata: Metadata = {
-  title: 'Rusty Threads Bot | Elitech Hub Portfolio',
+  title: 'Rusty Threads Bot Case Study',
   description: 'A case study on Rusty Threads Bot, a high-performance Discord community management bot built in Rust.',
+  alternates: {
+    canonical: 'https://www.elitechub.com/portfolio/rusty-threads-bot',
+  },
+  openGraph: {
+    title: 'Rusty Threads Bot Case Study | Elitech Hub',
+    description: 'A case study on Rusty Threads Bot, a high-performance Discord community management bot built in Rust.',
+    url: 'https://www.elitechub.com/portfolio/rusty-threads-bot',
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg' }],
+  },
 };
 
 export default function RustyThreadsCaseStudy() {

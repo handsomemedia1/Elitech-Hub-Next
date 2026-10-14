@@ -27,10 +27,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const advisor = await getAdvisor(slug);
 
   if (!advisor) {
-    return { title: 'Advisor Not Found | Elitech Hub' };
+    return { title: 'Advisor Not Found' };
   }
 
-  const title = `${advisor.full_name} - ${advisor.professional_title || 'Advisor'} | Elitech Hub`;
+  const title = `${advisor.full_name} - ${advisor.professional_title || 'Advisor'}`;
   const description = advisor.biography ? advisor.biography.substring(0, 160) + '...' : `Profile of ${advisor.full_name}, ${advisor.professional_title} advising at Elitech Hub.`;
 
   return {

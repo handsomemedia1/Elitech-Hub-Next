@@ -8,7 +8,7 @@ import ResearchList from '@/components/ResearchList';
 import { getSupabaseServerClient } from '@/lib/supabase';
 
 export const metadata: Metadata = {
-  title: 'Cybersecurity Research & Publications | Elitech Hub Nigeria',
+  title: 'Cybersecurity Research & Publications in Nigeria',
   description:
     'Advancing Research in Artificial Intelligence, Cybersecurity, Human Behaviour and Emerging Technologies.',
   keywords: [

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Free Domain Security & Mail Check | Elitech Hub',
+  title: 'Free Domain Security & Mail Check',
   description: 'Analyze your domain name security posture, verify email authentication (SPF, DKIM, DMARC), and check web security headers instantly with our free passive security scanner.',
   keywords: 'domain name check, email security check, SPF DMARC checker, passive security scan, web security headers, Elitech Hub security',
   alternates: {
@@ -11,6 +11,7 @@ export const metadata: Metadata = {
     title: 'Free Domain Security & Mail Check | Elitech Hub',
     description: 'Analyze your domain name security posture, verify email authentication (SPF, DKIM, DMARC), and check web security headers instantly with our free passive security scanner.',
     url: 'https://www.elitechub.com/security-check',
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg' }],
     type: 'website',
   }
 };

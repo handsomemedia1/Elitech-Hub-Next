@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { ExternalLink, Lock } from 'lucide-react';
 
 export const metadata = {
-  title: 'Portfolio | Web Development, AI Chatbots & Cybersecurity Projects | Elitech Hub Nigeria',
+  title: 'Portfolio | Web Development, AI Chatbots & Cybersecurity Projects',
   description:
     'View Elitech Hub\'s portfolio of premium custom websites, agentic AI applications, and cybersecurity projects built for Nigerian and international businesses. Based in Ibadan, Lagos, Nigeria.',
   keywords: [

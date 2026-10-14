@@ -5,7 +5,7 @@ import styles from './consultation.module.css';
 import { Target, Crosshair, Map, ShieldAlert, ChevronDown } from 'lucide-react';
 
 export const metadata = {
-  title: 'Cybersecurity Career & Transition Consultation | Elitech Hub',
+  title: 'Cybersecurity Career & Transition Consultation',
   description: 'Book a personalized cybersecurity career transition consultation. Get behavioral assessment, skill mapping, and a realistic career roadmap.',
   keywords: [
     'cybersecurity career consultation',
@@ -21,6 +21,7 @@ export const metadata = {
     url: 'https://www.elitechub.com/consultation',
     title: 'Cybersecurity Career & Transition Consultation | Elitech Hub',
     description: 'Book a personalized cybersecurity career transition consultation. Get behavioral assessment, skill mapping, and a realistic career roadmap.',
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg' }],
     type: 'website',
   }
 };

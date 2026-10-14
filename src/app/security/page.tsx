@@ -5,7 +5,7 @@ import styles from './security.module.css';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 
 export const metadata: Metadata = {
-  title: 'Security & Trust | Verified Certifications - Elitech Hub',
+  title: 'Security & Trust | Verified Certifications',
   description: 'Security and Trust at Elitech Hub - Responsible Disclosure Policy, Security Practices, Accessibility Statement, and our commitment to cybersecurity excellence in Nigeria.',
   keywords: ['security policy Elitech Hub', 'responsible disclosure Nigeria', 'cybersecurity trust', 'Elitech Hub security practices', 'vulnerability reporting', 'WCAG accessibility Nigeria', 'data protection Elitech Hub'],
   openGraph: {
@@ -14,6 +14,7 @@ export const metadata: Metadata = {
     url: 'https://www.elitechub.com/security',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg' }],
     type: 'website',
   },
   alternates: { canonical: 'https://www.elitechub.com/security' },

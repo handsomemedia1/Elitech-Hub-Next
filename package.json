@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:paystack": "node --experimental-strip-types --loader ./tests/ts-loader.mjs --test tests/paystack.test.mjs"
+    "test:paystack": "node --experimental-strip-types --loader ./tests/ts-loader.mjs --test tests/paystack.test.mjs",
+    "test:seo": "node --test tests/seo.test.mjs",
+    "test": "npm run test:paystack && npm run test:seo"
   },
   "dependencies": {
     "@ai-sdk/google": "^4.0.24",

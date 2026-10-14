@@ -6,7 +6,7 @@ import AnimateOnScroll from '@/components/AnimateOnScroll';
 import { MapPin, MessageCircle, Mail, Send, Clock } from 'lucide-react';
 
 export const metadata = {
-  title: 'Contact Elitech Hub | Cybersecurity Training Enquiries | Lagos & Ibadan Nigeria',
+  title: 'Contact Us | Cybersecurity Training Enquiries in Nigeria',
   description: 'Let\'s Build Secure, Intelligent and Scalable Digital Solutions Together.',
   keywords: ['contact Elitech Hub', 'cybersecurity training enquiry Nigeria', 'enroll cybersecurity Nigeria', 'Elitech Hub WhatsApp', 'cybersecurity school contact Lagos', 'cybersecurity Ibadan contact', 'pentesting Nigeria contact'],
   openGraph: {
@@ -15,6 +15,7 @@ export const metadata = {
     url: 'https://www.elitechub.com/contact',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg', width: 1200, height: 630 }],
     type: 'website',
   },
   alternates: { canonical: 'https://www.elitechub.com/contact' },

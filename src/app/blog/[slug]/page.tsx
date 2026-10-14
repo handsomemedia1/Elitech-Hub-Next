@@ -27,7 +27,7 @@ export const revalidate = 60; // Revalidate every 60 seconds
   
     if (!post) {
       return {
-        title: "Post Not Found | Elitech Hub Blog",
+        title: "Post Not Found",
       };
     }
   
@@ -42,7 +42,7 @@ export const revalidate = 60; // Revalidate every 60 seconds
     }
   
     return {
-      title: `${post.title} | Elitech Hub Blog`,
+      title: post.title,
       description: post.excerpt || "Cybersecurity insights from Elitech Hub.",
       keywords: post.tags || ["cybersecurity", "tech", "elitech hub", "training", "Zero Trust"],
       openGraph: {

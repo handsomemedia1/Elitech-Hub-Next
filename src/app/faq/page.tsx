@@ -5,10 +5,17 @@ import { ChevronDown, ArrowRight } from 'lucide-react';
 import styles from './faq.module.css';
 
 export const metadata = {
-  title: 'Frequently Asked Questions | Elitech Hub',
+  title: 'Frequently Asked Questions',
   description: 'Find answers to common questions about our cybersecurity training programs, web development services, and general inquiries at Elitech Hub.',
   alternates: {
     canonical: 'https://www.elitechub.com/faq',
+  },
+  openGraph: {
+    title: 'Frequently Asked Questions | Elitech Hub',
+    description: 'Find answers to common questions about our cybersecurity training programs, web development services, and general inquiries at Elitech Hub.',
+    url: 'https://www.elitechub.com/faq',
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg' }],
+    type: 'website',
   },
 };
 

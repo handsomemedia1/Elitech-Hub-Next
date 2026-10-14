@@ -7,7 +7,7 @@ import { Shield, CheckCircle2, ChevronDown, ArrowRight, ArrowLeft, Terminal, Net
 import { PricingTiers } from '@/components/PricingTiers';
 
 export const metadata = {
-  title: 'Penetration Testing Nigeria | Ethical Hacking & Security Audits | Elitech Hub',
+  title: 'Penetration Testing Nigeria | Ethical Hacking & Security Audits',
   description: 'Elitech Hub provides professional penetration testing in Nigeria including web app pentesting, network security audits, mobile security assessment, and cloud infrastructure testing for Lagos, Ibadan, Abuja businesses.',
   keywords: [
     'penetration testing Nigeria',
@@ -34,6 +34,7 @@ export const metadata = {
     url: 'https://www.elitechub.com/services/penetration-testing',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg' }],
     type: 'website',
   },
 };
