@@ -57,7 +57,7 @@ export default function VolunteerPage() {
                 ))}
               </ul>
               <a
-                href="mailto:mentors@elitechub.com?subject=Mentor Application"
+                href="mailto:info@elitechub.com?subject=Mentor Application"
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',

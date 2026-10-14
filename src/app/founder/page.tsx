@@ -66,7 +66,7 @@ export default function FounderPage() {
                   Founder & Lead Instructor
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                  <a href="mailto:Elijahadeyeye@proton.me" className="premium-button" style={{ padding: '0.6rem 1.5rem' }}>
+                  <a href="mailto:elijah@elitechub.com" className="premium-button" style={{ padding: '0.6rem 1.5rem' }}>
                     <Mail size={16} /> Contact
                   </a>
                   <a href="https://elijahadeyeye.vercel.app/" target="_blank" rel="noopener noreferrer" className="premium-button-outline">

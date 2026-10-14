@@ -8,6 +8,9 @@
 import { test, describe, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
+import { CONTACT_EMAILS, CONTACT_INFO } from '../src/lib/constants/contact.ts';
 
 // Import Paystack server utilities
 import {
@@ -2204,5 +2207,112 @@ describe('23. Hotfix Diagnostics: Geo-Edge Detection, Gateway Errors & Inline Co
       assert.equal(prod.status, 'active');
       assert.ok(prod.ngnBaseAmount > 0);
     }
+  });
+});
+
+describe('24. Business Email Standardization & Prohibited Alias Enforcer', () => {
+  test('Centralized contact configuration exports exact approved business emails', () => {
+    assert.equal(CONTACT_EMAILS.PRIMARY, 'info@elitechub.com');
+    assert.equal(CONTACT_EMAILS.DIRECT, 'elijah@elitechub.com');
+    assert.equal(CONTACT_INFO.PRIMARY_EMAIL, 'info@elitechub.com');
+    assert.equal(CONTACT_INFO.DIRECT_EMAIL, 'elijah@elitechub.com');
+    assert.equal(CONTACT_INFO.PHONE_RAW, '+2347081968062');
+  });
+
+  test('No prohibited legacy email aliases exist in src/app, src/components, or src/lib', () => {
+    const prohibitedAliases = [
+      'sponsorship@elitechub.com',
+      'sponsor@elitechub.com',
+      'support@elitechub.com',
+      'privacy@elitechub.com',
+      'security@elitechub.com',
+      'accessibility@elitechub.com',
+      'mentors@elitechub.com',
+      'research@elitechub.com',
+      'Elijahadeyeye@proton.me',
+    ];
+
+    const dirsToScan = ['src/app', 'src/components', 'src/lib'];
+    const projectRoot = path.resolve(import.meta.dirname, '..');
+
+    function getAllFiles(dirPath, arrayOfFiles = []) {
+      const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+      for (const entry of entries) {
+        const fullPath = path.join(dirPath, entry.name);
+        if (entry.isDirectory()) {
+          getAllFiles(fullPath, arrayOfFiles);
+        } else if (entry.isFile() && /\.(tsx?|jsx?|mjs|json|css)$/.test(entry.name)) {
+          arrayOfFiles.push(fullPath);
+        }
+      }
+      return arrayOfFiles;
+    }
+
+    const allFiles = dirsToScan.flatMap(d => getAllFiles(path.join(projectRoot, d)));
+    const violations = [];
+
+    for (const file of allFiles) {
+      const content = fs.readFileSync(file, 'utf8');
+      for (const alias of prohibitedAliases) {
+        if (content.toLowerCase().includes(alias.toLowerCase())) {
+          violations.push({ file: path.relative(projectRoot, file), alias });
+        }
+      }
+    }
+
+    assert.deepEqual(violations, [], `Prohibited email aliases found: ${JSON.stringify(violations)}`);
+  });
+
+  test('All @elitechub.com addresses across public routes and components conform to the approved whitelist', () => {
+    const approvedElitechEmails = new Set([
+      'info@elitechub.com',
+      'elijah@elitechub.com',
+      'admin@elitechub.com',
+      'researcher@elitechub.com',
+      'writer@elitechub.com',
+    ]);
+
+    const dirsToScan = ['src/app', 'src/components'];
+    const projectRoot = path.resolve(import.meta.dirname, '..');
+
+    function getAllFiles(dirPath, arrayOfFiles = []) {
+      const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+      for (const entry of entries) {
+        const fullPath = path.join(dirPath, entry.name);
+        if (entry.isDirectory()) {
+          getAllFiles(fullPath, arrayOfFiles);
+        } else if (entry.isFile() && /\.(tsx?|jsx?)$/.test(entry.name)) {
+          arrayOfFiles.push(fullPath);
+        }
+      }
+      return arrayOfFiles;
+    }
+
+    const allFiles = dirsToScan.flatMap(d => getAllFiles(path.join(projectRoot, d)));
+    const unapprovedFound = [];
+
+    const emailRegex = /[a-zA-Z0-9._%+-]+@elitechub\.com/gi;
+
+    for (const file of allFiles) {
+      const content = fs.readFileSync(file, 'utf8');
+      const matches = content.match(emailRegex) || [];
+      for (const match of matches) {
+        const normalized = match.toLowerCase();
+        if (!approvedElitechEmails.has(normalized)) {
+          unapprovedFound.push({ file: path.relative(projectRoot, file), email: match });
+        }
+      }
+    }
+
+    assert.deepEqual(unapprovedFound, [], `Unapproved elitechub.com emails found: ${JSON.stringify(unapprovedFound)}`);
+  });
+
+  test('External academic advisor emails are preserved in about page for academic credibility', () => {
+    const projectRoot = path.resolve(import.meta.dirname, '..');
+    const aboutContent = fs.readFileSync(path.join(projectRoot, 'src/app/about/page.tsx'), 'utf8');
+
+    assert.ok(aboutContent.includes('ojkehinde@nsu.edu'), 'Must retain Dr. Olasunkanmi J. Kehinde external email');
+    assert.ok(aboutContent.includes('ayoalonge@gmail.com'), 'Must retain Dr. Ayodele John Alonge external email');
+    assert.ok(aboutContent.includes('adeyeye_yemi@yahoo.com'), 'Must retain Dr. Yemi Adeyeye external email');
   });
 });

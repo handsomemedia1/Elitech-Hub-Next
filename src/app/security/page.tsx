@@ -53,7 +53,7 @@ export default function SecurityPage() {
                 If you believe you have found a security vulnerability in our platform, please report it to us immediately.
               </p>
               <div className={styles.codeBox}>
-                Email: security@elitechub.com
+                Email: info@elitechub.com
               </div>
               <p className={styles.cardText}>
                 Please include proof of concept and steps to reproduce. We aim to acknowledge reports within 48 hours.
@@ -115,7 +115,7 @@ export default function SecurityPage() {
               
               <div style={{ marginTop: '2rem', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
                 <p className={styles.cardText} style={{ margin: 0, fontSize: '0.9rem' }}>
-                  If you experience any difficulty accessing any part of this website, please email us at <a href="mailto:accessibility@elitechub.com" style={{ color: '#c3151c' }}>accessibility@elitechub.com</a>.
+                  If you experience any difficulty accessing any part of this website, please email us at <a href="mailto:info@elitechub.com" style={{ color: '#c3151c' }}>info@elitechub.com</a>.
                 </p>
               </div>
             </div>

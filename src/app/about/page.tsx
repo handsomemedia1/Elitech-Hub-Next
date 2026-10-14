@@ -245,7 +245,7 @@ export default function AboutPage() {
               </div>
 
               <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                <a href="mailto:Elijahadeyeye@proton.me" className="premium-button">
+                <a href="mailto:elijah@elitechub.com" className="premium-button">
                   <Mail size={16} /> Email
                 </a>
                 <a href="https://wa.me/2347081968062" className="premium-button-outline">

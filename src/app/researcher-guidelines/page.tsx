@@ -180,7 +180,7 @@ export default function ResearcherGuidelinesPage() {
               <p className={styles.ctaText}>
                 Join our community of researchers and share your findings with the world.
               </p>
-              <Link href="mailto:research@elitechub.com" className="btn btn-primary" style={{ background: '#7C3AED' }}>
+              <Link href="mailto:info@elitechub.com" className="btn btn-primary" style={{ background: '#7C3AED' }}>
                 <span style={{ marginRight: '0.5rem' }}>✉️</span> Email Your Submission
               </Link>
             </div>

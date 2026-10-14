@@ -107,7 +107,7 @@ export default function PoliciesPage() {
               <li>Right to opt out of marketing communications</li>
               <li>Right to data portability</li>
             </ul>
-            <p className={styles.policyText}>To exercise your rights, email: <a href="mailto:privacy@elitechub.com" style={{ color: '#c3151c' }}>privacy@elitechub.com</a></p>
+            <p className={styles.policyText}>To exercise your rights, email: <a href="mailto:info@elitechub.com" style={{ color: '#c3151c' }}>info@elitechub.com</a></p>
 
             <div className={styles.highlightBox}>
               <strong>Note:</strong> We comply with Nigeria&apos;s National Data Protection Regulation (NDPR) and, where applicable, the EU General Data Protection Regulation (GDPR).

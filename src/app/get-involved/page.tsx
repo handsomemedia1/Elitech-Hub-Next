@@ -259,7 +259,7 @@ export default function GetInvolvedPage() {
                     <span className={styles.sponsorNumber}>$100</span>
                     <span>sponsors one complete cybersecurity education</span>
                   </div>
-                  <a href="mailto:sponsorship@elitechub.com" className={styles.btnOutline} style={{ display: 'block', textAlign: 'center', marginTop: '1.5rem' }}>
+                  <a href="mailto:info@elitechub.com" className={styles.btnOutline} style={{ display: 'block', textAlign: 'center', marginTop: '1.5rem' }}>
                     Become a Sponsor
                   </a>
                 </div>
