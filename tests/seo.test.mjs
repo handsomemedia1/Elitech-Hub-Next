@@ -46,12 +46,14 @@ describe('Elitech Hub Technical & On-Page SEO Suite', () => {
     assert.match(robotsContent, /https:\/\/www\.elitechub\.com\/sitemap\.xml/);
   });
 
-  test('3. Sitemap Integrity and Exclusions', () => {
+  test('3. Sitemap Integrity, Deduplication, and Exclusions', () => {
     const sitemapPath = path.join(ROOT_DIR, 'src/app/sitemap.ts');
     const sitemapContent = fs.readFileSync(sitemapPath, 'utf8');
 
-    // Confirm static modified date is stable
-    assert.match(sitemapContent, /STATIC_LAST_MODIFIED = '2026-10-14T12:00:00\.000Z'/);
+    // Confirm misleading static lastModified timestamps have been eliminated in favor of reliable dates/omission
+    assert.doesNotMatch(sitemapContent, /STATIC_LAST_MODIFIED/);
+    assert.match(sitemapContent, /parseReliableDate/);
+    assert.match(sitemapContent, /sitemapMap = new Map/);
 
     // Confirm redirected slug is explicitly filtered out from sitemap
     assert.ok(
@@ -59,7 +61,7 @@ describe('Elitech Hub Technical & On-Page SEO Suite', () => {
       'sitemap.ts must contain logic filtering out redirected blog slugs'
     );
 
-    // Confirm key high-intent routes are included
+    // Confirm key high-intent routes and previously missing public routes are included
     const highIntentRoutes = [
       'url: baseUrl',
       'url: `${baseUrl}/programs`',
@@ -67,6 +69,9 @@ describe('Elitech Hub Technical & On-Page SEO Suite', () => {
       'url: `${baseUrl}/programs/professional`',
       'url: `${baseUrl}/consultation`',
       'url: `${baseUrl}/coaching`',
+      'url: `${baseUrl}/before-cybersecurity`',
+      'url: `${baseUrl}/security-check`',
+      'url: `${baseUrl}/research/membership/apply`',
       'url: `${baseUrl}/research/behavioral-cybersecurity`',
       'url: `${baseUrl}/research-paper`',
       'url: `${baseUrl}/researcher-guidelines`',
@@ -209,6 +214,51 @@ describe('Elitech Hub Technical & On-Page SEO Suite', () => {
     assert.ok(layoutContent.includes("email: 'info@elitechub.com'"));
     assert.ok(layoutContent.includes("latitude: 7.3775"));
     assert.ok(layoutContent.includes("longitude: 3.9470"));
+  });
+
+  test('9. Utility and Auth Routes Noindex Directives', () => {
+    const authRoutes = ['login', 'register', 'verify', 'certificate/[id]'];
+
+    for (const route of authRoutes) {
+      const layoutFile = path.join(ROOT_DIR, 'src/app', route, 'layout.tsx');
+      assert.ok(
+        fs.existsSync(layoutFile),
+        `Route /${route} must have a layout.tsx defining metadata`
+      );
+      const content = fs.readFileSync(layoutFile, 'utf8');
+      assert.match(
+        content,
+        /index:\s*false/,
+        `Route /${route}/layout.tsx must specify index: false in robots metadata`
+      );
+    }
+  });
+
+  test('10. Built XML Sitemap Protocol and Deduplication Validation', () => {
+    const sitemapBodyPath = path.join(ROOT_DIR, '.next/server/app/sitemap.xml.body');
+    if (!fs.existsSync(sitemapBodyPath)) {
+      // Build output is optional if running tests prior to npm run build
+      return;
+    }
+
+    const xml = fs.readFileSync(sitemapBodyPath, 'utf8').trim();
+    assert.ok(xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>'), 'Must include valid XML declaration');
+    assert.ok(xml.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'), 'Must define valid sitemaps.org namespace');
+    assert.ok(xml.endsWith('</urlset>'), 'Must terminate with closing </urlset> tag');
+
+    const locMatches = Array.from(xml.matchAll(/<loc>([^<]+)<\/loc>/g)).map(m => m[1]);
+    assert.ok(locMatches.length > 50, 'Sitemap should contain complete set of static + dynamic URLs');
+    assert.ok(locMatches.length <= 50000, 'Sitemap cannot exceed 50,000 URLs per protocol specification');
+
+    // Deduplication assertion
+    const uniqueLocs = new Set(locMatches);
+    assert.equal(uniqueLocs.size, locMatches.length, 'Sitemap must contain zero duplicate URLs');
+
+    // Canonical protocol and domain assertion
+    for (const loc of locMatches) {
+      assert.ok(loc.startsWith('https://www.elitechub.com'), `All URLs must use HTTPS canonical host: ${loc}`);
+      assert.doesNotMatch(loc, /step-by-step-cybersecurity-guide-for-overwhelmed-beginners-moftm94x/, 'Redirected slugs must not be in sitemap');
+    }
   });
 
 });

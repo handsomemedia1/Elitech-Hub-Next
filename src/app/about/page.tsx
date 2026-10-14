@@ -54,7 +54,7 @@ export default function AboutPage() {
       name: 'Elijah Adeyeye',
       jobTitle: 'Founder & CEO',
       worksFor: { '@type': 'Organization', name: 'Elitech Hub', url: 'https://www.elitechub.com' },
-      url: 'https://www.elitechub.com/about',
+      url: 'https://www.elitechub.com/founder',
     },
   ];
 
