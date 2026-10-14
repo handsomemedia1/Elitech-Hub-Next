@@ -7,7 +7,7 @@ import { Globe, CheckCircle2, ChevronDown, ArrowRight, ArrowLeft, Code, Zap, Shi
 import { PricingTiers, PricingTierProps } from '@/components/PricingTiers';
 
 export const metadata = {
-  title: 'Secure Digital Infrastructure & Web Development | Elitech Hub',
+  title: 'Secure Digital Infrastructure & Web Development',
   description: 'Elitech Hub builds premium custom websites, web applications, and secure digital infrastructure for businesses. Fast, secure-by-design, Next.js, and Supabase.',
   keywords: [
     'secure digital infrastructure',
@@ -28,6 +28,8 @@ export const metadata = {
     url: 'https://www.elitechub.com/services/web-development',
     title: 'Secure Digital Infrastructure & Web Development | Elitech Hub',
     description: 'Elitech Hub builds premium custom websites, web applications, and secure digital infrastructure for businesses. Fast, secure-by-design, Next.js, and Supabase.',
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg' }],
+    type: 'website',
   }
 };
 

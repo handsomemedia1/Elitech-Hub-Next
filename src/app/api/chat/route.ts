@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     const { data: prices } = await supabaseAdmin
       .from('course_prices')
       .select('course_id, amount')
-      .eq('currency', 'NGN')
+      .eq('currency_code', 'NGN')
       .eq('active', true)
       .in('course_id', ['ai_training', 'ai_security', 'professional']);
 

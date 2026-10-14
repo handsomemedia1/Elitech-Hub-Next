@@ -15,7 +15,7 @@ import {
 import CountUp from '@/components/CountUp';
 
 export const metadata = {
-  title: 'Best Cybersecurity Bootcamp in Nigeria | 100% Job Guarantee | Elitech Hub',
+  title: 'Cybersecurity Programs & Training in Nigeria | Practical Experience',
   description:
     'Industry-Focused Training in Cybersecurity, Artificial Intelligence, Data Science and Emerging Technologies.',
   keywords: [
@@ -52,15 +52,15 @@ export const metadata = {
     'cybersecurity certification Nigeria cost',
   ],
   openGraph: {
-    title: 'Best Cybersecurity Bootcamp in Nigeria | Internship Experience',
+    title: 'Cybersecurity Programs & Training in Nigeria | Internship Experience',
     description:
-      'Join Nigeria\'s most brutal and effective cybersecurity bootcamp. Live attack simulations, real tools, AI-powered security curriculum. No experience required.',
+      'Join Nigeria\'s premier cybersecurity training platform. Live attack simulations, real tools, AI-powered security curriculum. No experience required.',
     url: 'https://www.elitechub.com/programs',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
     images: [
       {
-        url: 'https://www.elitechub.com/images/programs-og.jpg',
+        url: 'https://www.elitechub.com/images/og-default.jpg',
         width: 1200,
         height: 630,
         alt: 'Elitech Hub Cybersecurity Programs in Nigeria',
@@ -70,10 +70,10 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Best Cybersecurity Bootcamp in Nigeria — Gain Experience',
+    title: 'Cybersecurity Programs in Nigeria — Gain Practical Experience',
     description:
       'The premier cybersecurity bootcamp in Nigeria with practical internship experience. Enroll today.',
-    images: ['https://www.elitechub.com/images/programs-og.jpg'],
+    images: ['https://www.elitechub.com/images/og-default.jpg'],
   },
   alternates: {
     canonical: 'https://www.elitechub.com/programs',
@@ -92,7 +92,7 @@ export default function ProgramsPage() {
       description:
         'Master AI security systems, Python scripting, PowerShell, and Ubuntu in this intensive 6-week live virtual programme in Nigeria.',
       url: 'https://www.elitechub.com/ai-training',
-      image: 'https://www.elitechub.com/images/programs-og.jpg',
+      image: 'https://www.elitechub.com/images/og-default.jpg',
       inLanguage: 'en',
       availableLanguage: ['English'],
       provider: {
@@ -131,11 +131,11 @@ export default function ProgramsPage() {
       '@context': 'https://schema.org',
       '@type': 'Course',
       '@id': 'https://www.elitechub.com/programs#aisecurity',
-      name: 'AI Security and Reverse Vulnerability (8 Weeks)',
+      name: 'AI Security and Reverse Vulnerability',
       description:
         'Advanced 8-week specialization covering AI system security, reverse vulnerability research, prompt-injection defense, and binary security analysis.',
       url: 'https://www.elitechub.com/programs',
-      image: 'https://www.elitechub.com/images/programs-og.jpg',
+      image: 'https://www.elitechub.com/images/og-default.jpg',
       inLanguage: 'en',
       provider: {
         '@type': 'Organization',
@@ -174,7 +174,7 @@ export default function ProgramsPage() {
       description:
         'Nigeria\'s most comprehensive cybersecurity career program with unpaid internship experience, 1-on-1 mentorship, CompTIA Security+, CEH, and OSCP preparation.',
       url: 'https://www.elitechub.com/programs/professional',
-      image: 'https://www.elitechub.com/images/programs-og.jpg',
+      image: 'https://www.elitechub.com/images/og-default.jpg',
       inLanguage: 'en',
       provider: {
         '@type': 'Organization',
@@ -323,6 +323,21 @@ export default function ProgramsPage() {
               </Link>
             </AnimateOnScroll>
 
+            <AnimateOnScroll direction="up" delay={150}>
+              <Link href="#ai-security" className={styles.hubCard}>
+                <div className={styles.hubCardIcon} style={{ background: 'linear-gradient(135deg, #8b5cf6, #6d28d9)' }}><Shield size={28} /></div>
+                <div className={styles.hubCardBadge} style={{ background: '#7c3aed' }}>AI VULNERABILITY</div>
+                <h3>AI Security and Reverse Vulnerability</h3>
+                <p>8 Weeks · Intensive · <PriceDisplay courseId="ai_security" fallback="₦200,000" /></p>
+                <ul className={styles.hubCardFeatures}>
+                  <li><CheckCircle2 size={14} color="#8b5cf6" /> Reverse vulnerability research</li>
+                  <li><CheckCircle2 size={14} color="#8b5cf6" /> LLM &amp; agentic attack defense</li>
+                  <li><CheckCircle2 size={14} color="#8b5cf6" /> Binary analysis &amp; security auditing</li>
+                </ul>
+                <span className={styles.hubCardCta}>View Details &amp; Enroll <ChevronRight size={16} /></span>
+              </Link>
+            </AnimateOnScroll>
+
             <AnimateOnScroll direction="up" delay={200}>
               <Link href="/programs/professional" className={`${styles.hubCard} ${styles.hubCardFeatured}`}>
                 <div className={styles.hubCardMostPopular}>MOST POPULAR</div>
@@ -385,10 +400,10 @@ export default function ProgramsPage() {
 
             {/* AI Security and Reverse Vulnerability */}
             <AnimateOnScroll direction="up" delay={150}>
-              <div className={styles.pricingCard}>
+              <div id="ai-security" className={styles.pricingCard} style={{ scrollMarginTop: '100px' }}>
                 <div className={styles.pricingIcon} style={{ color: '#8b5cf6' }}><Shield size={32} /></div>
                 <div className={styles.pricingHeader}>
-                  <h3>AI Security &amp; Reverse Vulnerability</h3>
+                  <h3>AI Security and Reverse Vulnerability</h3>
                   <p className={styles.pricingSubtitle}>Advanced Vulnerability Research</p>
                 </div>
                 <div className={styles.pricingPrice}>
@@ -1009,7 +1024,7 @@ export default function ProgramsPage() {
                     <select required defaultValue="">
                       <option value="" disabled>Choose a program...</option>
                       <option value="ai6">Learn AI Powered Cybersecurity in 6 Weeks</option>
-                      <option value="ai_security">AI Security and Reverse Vulnerability (8 Weeks)</option>
+                      <option value="ai_security">AI Security and Reverse Vulnerability</option>
                       <option value="prof16">16-Week Professional Programme</option>
                       <option value="corp">Corporate Training</option>
                     </select>

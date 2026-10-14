@@ -5,6 +5,25 @@
  * Missing/blank mode safely defaults to "test". A key must match the selected
  * mode, so setting a live key alone can never silently enable live payments.
  */
+export type PaystackMode = 'test' | 'live';
+
+/**
+ * Returns the explicitly configured Paystack mode ('test' or 'live').
+ * Missing or empty mode safely defaults to 'test'.
+ * Invalid mode strings throw immediately.
+ */
+export function getPaystackMode(): PaystackMode {
+  const rawMode = process.env.PAYSTACK_MODE;
+  if (!rawMode || !rawMode.trim()) {
+    return 'test';
+  }
+  const mode = rawMode.trim().toLowerCase();
+  if (mode !== 'test' && mode !== 'live') {
+    throw new Error('[Paystack Security Lockout] PAYSTACK_MODE must be either "test" or "live".');
+  }
+  return mode;
+}
+
 export function getPaystackSecretKey(): string {
   const rawKey = process.env.PAYSTACK_SECRET_KEY;
   if (!rawKey || !rawKey.trim()) {
@@ -12,11 +31,7 @@ export function getPaystackSecretKey(): string {
   }
 
   const key = rawKey.trim();
-  const configuredMode = process.env.PAYSTACK_MODE?.trim().toLowerCase() || 'test';
-  if (configuredMode !== 'test' && configuredMode !== 'live') {
-    throw new Error('[Paystack Security Lockout] PAYSTACK_MODE must be either "test" or "live".');
-  }
-
+  const configuredMode = getPaystackMode();
   const requiredPrefix = configuredMode === 'live' ? 'sk_live_' : 'sk_test_';
   if (!key.startsWith(requiredPrefix) || key.length <= requiredPrefix.length) {
     throw new Error(
@@ -28,12 +43,67 @@ export function getPaystackSecretKey(): string {
 }
 
 /**
+ * Validates and retrieves the configured Paystack public key if present.
+ * Ensures the public key matches the active PAYSTACK_MODE (pk_test_ vs pk_live_).
+ */
+export function getPaystackPublicKey(): string | null {
+  const rawKey =
+    process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY ||
+    process.env.PAYSTACK_PUBLIC_KEY;
+  if (!rawKey || !rawKey.trim()) {
+    return null;
+  }
+
+  const key = rawKey.trim();
+  const configuredMode = getPaystackMode();
+  const requiredPrefix = configuredMode === 'live' ? 'pk_live_' : 'pk_test_';
+  if (!key.startsWith(requiredPrefix) || key.length <= requiredPrefix.length) {
+    throw new Error(
+      `[Paystack Security Lockout] PAYSTACK_MODE="${configuredMode}" requires a valid ${requiredPrefix} public key.`
+    );
+  }
+
+  return key;
+}
+
+/**
+ * Validates full Paystack configuration consistency.
+ * Throws if secret key is missing, mode is invalid, or keys mismatch the mode.
+ */
+export function validatePaystackConfig(): {
+  mode: PaystackMode;
+  secretKey: string;
+  publicKey: string | null;
+} {
+  const mode = getPaystackMode();
+  const secretKey = getPaystackSecretKey();
+  const publicKey = getPaystackPublicKey();
+  return { mode, secretKey, publicKey };
+}
+
+/**
  * Returns whether the configured Paystack credentials are valid Test Mode
  * credentials. Missing/invalid configuration returns false.
  */
 export function isPaystackTestMode(): boolean {
   try {
-    return getPaystackSecretKey().startsWith('sk_test_');
+    const mode = getPaystackMode();
+    const key = getPaystackSecretKey();
+    return mode === 'test' && key.startsWith('sk_test_');
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Returns whether the configured Paystack credentials are valid Live Mode
+ * credentials. Missing/invalid configuration returns false.
+ */
+export function isPaystackLiveMode(): boolean {
+  try {
+    const mode = getPaystackMode();
+    const key = getPaystackSecretKey();
+    return mode === 'live' && key.startsWith('sk_live_');
   } catch {
     return false;
   }
@@ -59,6 +129,7 @@ export const APPROVED_CALLBACK_PATHS = Object.freeze([
   '/thank-you',
   '/apply',
   '/consultation',
+  '/coaching',
   '/programs',
 ] as const);
 

@@ -7,14 +7,20 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const supabase = getSupabaseServerClient();
   const { data: researcher } = await supabase.from('researchers').select('*').eq('slug', slug).single();
 
-  if (!researcher) return { title: 'Researcher Not Found | Elitech Hub' };
+  if (!researcher) return { title: 'Researcher Not Found' };
 
   return {
-    title: `${researcher.full_name} - Cybersecurity Researcher | Elitech Hub`,
+    title: `${researcher.full_name} - Cybersecurity Researcher`,
     description: researcher.biography || `Research profile and publications by ${researcher.full_name}.`,
     alternates: {
       canonical: `https://www.elitechub.com/researcher/${slug}`
-    }
+    },
+    openGraph: {
+      title: `${researcher.full_name} - Cybersecurity Researcher | Elitech Hub`,
+      description: researcher.biography || `Research profile and publications by ${researcher.full_name}.`,
+      url: `https://www.elitechub.com/researcher/${slug}`,
+      images: [{ url: researcher.profile_image_url || 'https://www.elitechub.com/images/og-default.jpg' }],
+    },
   };
 }
 
@@ -37,7 +43,7 @@ export default async function ResearcherProfilePage({ params }: { params: Promis
       name: researcher.institution || 'Elitech Hub'
     },
     url: `https://www.elitechub.com/researcher/${slug}`,
-    image: researcher.profile_image_url || 'https://www.elitechub.com/images/default-avatar.png',
+    ...(researcher.profile_image_url && { image: researcher.profile_image_url }),
     description: researcher.biography,
     sameAs: [
       researcher.linkedin_url,
@@ -57,8 +63,14 @@ export default async function ResearcherProfilePage({ params }: { params: Promis
           {/* Subtle gradient glow behind the avatar */}
           <div className="absolute top-0 left-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
           
-          <div className="w-40 h-40 rounded-2xl overflow-hidden border border-gray-700 shrink-0 relative z-10">
-            <img src={researcher.profile_image_url || '/images/default-avatar.png'} alt={researcher.full_name} className="w-full h-full object-cover" />
+          <div className="w-40 h-40 rounded-2xl overflow-hidden border border-gray-700 shrink-0 relative z-10 bg-gray-900 flex items-center justify-center">
+            {researcher.profile_image_url ? (
+              <img src={researcher.profile_image_url} alt={researcher.full_name} className="w-full h-full object-cover" />
+            ) : (
+              <div className="text-5xl font-bold text-gray-400">
+                {researcher.full_name?.charAt(0).toUpperCase() || 'R'}
+              </div>
+            )}
           </div>
           
           <div className="relative z-10 w-full">

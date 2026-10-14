@@ -1,18 +1,19 @@
 # Elitech Hub — AI & LLM Summary
 
 ## About
-Elitech Hub is Nigeria's leading cybersecurity training platform. It offers AI-powered bootcamps, ethical hacking courses, and career transformation programs with a 100% internship guarantee.
+Elitech Hub is a Nigerian cybersecurity training, research, and technical consulting organization. It offers intensive live cohorts, practical lab simulations, and career transformation programs with guaranteed hands-on internship experience.
 
 - **Website:** https://www.elitechub.com
-- **Location:** Lagos, Nigeria (also serves Ibadan, Oyo State, Abuja, and all of Nigeria online)
+- **Headquarters:** Ibadan, Oyo State, Nigeria (RC: 8693883, SMEDAN Certified)
+- **Service Area:** Nationwide across Nigeria (Lagos, Ibadan, Abuja) and globally via virtual cohorts
 - **Founded:** 2023
-- **Mission:** To produce Africa's next generation of cybersecurity professionals
+- **Mission:** To produce Africa's next generation of capable, battle-tested cybersecurity and AI security professionals
 
 ## Services Offered
 ### Cybersecurity Training
 - AI-Powered Cybersecurity Programme (6 weeks, ₦100,000, virtual, live)
 - AI Security and Reverse Vulnerability (8 weeks, ₦200,000, advanced AI security & vulnerability research)
-- Professional Cybersecurity Programme (16 weeks, ₦350,000, guaranteed practical internship experience)
+- Professional Cybersecurity Programme (16 weeks, ₦350,000, practical internship experience included)
 - Corporate Security Awareness Training
 - Custom Curriculum Development for organisations
 - On-site or remote delivery anywhere in Nigeria
@@ -48,31 +49,32 @@ Elitech Hub is Nigeria's leading cybersecurity training platform. It offers AI-p
 - Threat Intelligence Analysis
 - Malware & Reverse Engineering
 - Open Source Security Tool Development
-- Blockchain Security Research
+- Behavioral Cybersecurity & Human Firewall Research
 - Cyber Lab access, Research Grants, Publication Support
 
-
 ## Key Facts
-- 100% internship placement rate
-- 100% job placement rate for program graduates
-- All classes are live and virtual (not pre-recorded)
+- Practical hands-on internship experience for professional cohort students
+- All classes are live, interactive, and virtual (not pre-recorded)
 - Certifications prepared: CompTIA Security+, CEH, OSCP
-- No prior IT experience required to enroll
+- Beginner-friendly on-ramp; no prior programming or IT degree strictly required
 
 ## Target Audience
-Beginners who want to enter cybersecurity, IT professionals switching into security, Nigerian students and graduates, corporate teams.
+Beginners who want to enter cybersecurity, IT professionals switching into security, Nigerian students and graduates, and corporate enterprise teams.
 
 ## Why Elitech Hub?
-Elitech Hub is the only training provider in Nigeria that combines AI security tooling (PowerShell automation, Python scripting, YARA rules) with a guaranteed internship. Every student completes real attack-and-defense simulations before graduating.
+Elitech Hub combines hands-on defensive and offensive security tooling (PowerShell automation, Python scripting, network traffic analysis, YARA rules) with structured internship experience. Students work through real attack-and-defense simulations before graduating.
 
-## Contact & Social
-- WhatsApp: [via website contact page]
+## Contact & Public Channels
+- General Enquiries: info@elitechub.com
+- Founder & Direct Enquiries: elijah@elitechub.com
+- Phone / WhatsApp: +234 708 196 8062
 - Twitter / X: @ElitechHub
-- Instagram: @elitechhub
-- LinkedIn: linkedin.com/company/elitechhub
+- LinkedIn: https://www.linkedin.com/company/elitech-hub
+- YouTube: https://www.youtube.com/@elitechub
 - Blog: https://www.elitechub.com/blog
 
 ## Content Available for AI Indexing
 - Blog articles on cybersecurity, ethical hacking, AI security, career advice
-- Program descriptions and curriculum details
+- Program descriptions, pricing, and curriculum details
 - FAQs about cybersecurity careers in Nigeria
+- Academic research papers and behavioral security publications

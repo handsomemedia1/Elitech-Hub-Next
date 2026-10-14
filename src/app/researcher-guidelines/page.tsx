@@ -6,9 +6,15 @@ import AnimateOnScroll from '@/components/AnimateOnScroll';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  alternates: { canonical: '/researcher-guidelines' },
-  title: 'Researcher Guidelines - Elitech Hub',
+  title: 'Researcher Guidelines',
   description: 'Guidelines for researchers submitting papers to Elitech Hub\'s research platform. Learn about submission requirements, review process, and publication standards.',
+  alternates: { canonical: 'https://www.elitechub.com/researcher-guidelines' },
+  openGraph: {
+    title: 'Researcher Guidelines | Elitech Hub',
+    description: 'Guidelines for researchers submitting papers to Elitech Hub\'s research platform.',
+    url: 'https://www.elitechub.com/researcher-guidelines',
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg' }],
+  },
 };
 
 export default function ResearcherGuidelinesPage() {
@@ -180,7 +186,7 @@ export default function ResearcherGuidelinesPage() {
               <p className={styles.ctaText}>
                 Join our community of researchers and share your findings with the world.
               </p>
-              <Link href="mailto:research@elitechub.com" className="btn btn-primary" style={{ background: '#7C3AED' }}>
+              <Link href="mailto:info@elitechub.com" className="btn btn-primary" style={{ background: '#7C3AED' }}>
                 <span style={{ marginRight: '0.5rem' }}>✉️</span> Email Your Submission
               </Link>
             </div>

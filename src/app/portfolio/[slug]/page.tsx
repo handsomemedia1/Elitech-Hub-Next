@@ -24,10 +24,10 @@ export async function generateMetadata(
     .single();
 
   if (!caseStudy) {
-    return { title: 'Case Study Not Found | Elitech Hub' };
+    return { title: 'Case Study Not Found' };
   }
 
-  const title = `${caseStudy.title} | Web Development Case Study | Elitech Hub`;
+  const title = `${caseStudy.title} | Web Development Case Study`;
   const description = caseStudy.problem ? caseStudy.problem.substring(0, 150) + '...' : 'A premium web development case study by Elitech Hub.';
 
   return {

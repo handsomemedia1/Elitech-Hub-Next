@@ -32,6 +32,7 @@ import {
   PricingError,
   DatabaseMigrationRequiredError,
   sanitizeGatewayErrorMessage,
+  PaystackGatewayError,
 } from '@/lib/paystack';
 
 // Strict UUID format: matches Supabase uuid column type
@@ -50,26 +51,37 @@ function isProgramMatch(
   const prod = productId.toLowerCase();
 
   if (prod === 'bootcamp') {
-    return (
-      (combined.includes('bootcamp') || combined.includes('6-week')) &&
-      !combined.includes('16-week')
-    );
+    // 6-Week Cybersecurity Bootcamp is retired from active offerings
+    return false;
   }
   if (prod === 'professional') {
-    return combined.includes('professional') || combined.includes('16-week');
-  }
-  if (prod === 'ai_training') {
-    return (
-      combined.includes('ai_training') ||
-      (combined.includes('ai') && combined.includes('cybersecurity') && !combined.includes('16-week') && !combined.includes('bootcamp') && !combined.includes('security'))
-    );
+    return combined.includes('professional') || combined.includes('16-week') || combined.includes('prof16');
   }
   if (prod === 'ai_security') {
     return (
       combined.includes('ai_security') ||
-      combined.includes('ai security') ||
-      (combined.includes('reverse') && combined.includes('vulnerability')) ||
-      (combined.includes('ai') && combined.includes('security') && !combined.includes('16-week') && !combined.includes('bootcamp'))
+      combined.includes('ai-security') ||
+      combined.includes('reverse') ||
+      combined.includes('vulnerability') ||
+      combined.includes('ai security and reverse') ||
+      combined.includes('ai security & reverse')
+    );
+  }
+  if (prod === 'ai_training') {
+    // Exclude AI Security and Reverse Vulnerability applications
+    const isAiSecurity =
+      combined.includes('reverse') ||
+      combined.includes('vulnerability') ||
+      combined.includes('ai_security') ||
+      combined.includes('ai-security');
+    if (isAiSecurity) return false;
+
+    return (
+      combined.includes('ai_training') ||
+      combined.includes('ai-training') ||
+      combined.includes('ai6') ||
+      combined.includes('ai-powered') ||
+      (combined.includes('ai') && combined.includes('cybersecurity') && !combined.includes('16-week'))
     );
   }
   return false;
@@ -138,14 +150,26 @@ export async function POST(request: Request) {
     price = await resolveAuthoritativePrice(rawProductId, rawProductType, effectiveCountry);
   } catch (err: unknown) {
     if (err instanceof PricingError) {
-      if (err.code === 'FX_UNAVAILABLE') {
+      if (err.code === 'FX_UNAVAILABLE' || err.code === 'PRICING_NOT_CONFIGURED' || err.code === 'PRICE_UNAVAILABLE') {
         return NextResponse.json(
           {
             success: false,
-            code: 'FX_UNAVAILABLE',
+            code: err.code,
             error: err.message,
           },
           { status: 422 } // Unprocessable Entity
+        );
+      }
+      if (err.code === 'PRODUCT_DISCONTINUED' || err.code === 'PRODUCT_UNAVAILABLE') {
+        return NextResponse.json(
+          { success: false, code: err.code, error: err.message },
+          { status: 400 }
+        );
+      }
+      if (err.code === 'PRICE_DATABASE_UNAVAILABLE' || err.code === 'PRICE_LOOKUP_FAILED') {
+        return NextResponse.json(
+          { success: false, code: err.code, error: err.message },
+          { status: 503 } // Service Unavailable
         );
       }
       return NextResponse.json(
@@ -155,6 +179,14 @@ export async function POST(request: Request) {
     }
     return NextResponse.json(
       { success: false, error: 'Failed to resolve authoritative price.' },
+      { status: 500 }
+    );
+  }
+
+  // Explicit safety check: Resolved price must be a finite, positive number
+  if (!Number.isFinite(price.finalAmount) || price.finalAmount <= 0) {
+    return NextResponse.json(
+      { success: false, error: 'Resolved price is invalid.' },
       { status: 500 }
     );
   }
@@ -189,8 +221,8 @@ export async function POST(request: Request) {
   const rawAppId = rawClientMetadata.application_id ?? body.applicationId;
   let validatedApplicationId: string | null = null;
 
-  // Course products strictly require an existing, validated application record
-  const isCourseProduct = price.productType === 'programme' || ['bootcamp', 'professional', 'ai_training', 'ai_security'].includes(price.productId);
+  // Active course products strictly require an existing, validated application record
+  const isCourseProduct = price.productType === 'programme' || ['professional', 'ai_training', 'ai_security'].includes(price.productId);
 
   if (isCourseProduct && (rawAppId === undefined || rawAppId === null || String(rawAppId).trim() === '')) {
     return NextResponse.json(
@@ -393,8 +425,9 @@ export async function POST(request: Request) {
     });
   } catch (err: unknown) {
     const sanitizedError = sanitizeGatewayErrorMessage(err);
+    const correlationId = reference;
     console.error(
-      `[Paystack Init Gateway Error] Reference: ${reference}, Category: ${sanitizedError.category}, Error: ${sanitizedError.message}`
+      `[Paystack Init Gateway Error] Reference: ${correlationId}, Category: ${sanitizedError.category}, Error: ${sanitizedError.message}`
     );
 
     // Update internal transaction to 'failed' state to maintain audit trail
@@ -411,12 +444,53 @@ export async function POST(request: Request) {
       console.error('[Paystack Init] Failed to record failure state:', updateErr);
     }
 
+    if (err instanceof PaystackGatewayError) {
+      if (err.code === 'unsupported_currency' || sanitizedError.message.toLowerCase().includes('currency not supported')) {
+        return NextResponse.json(
+          {
+            success: false,
+            code: 'GATEWAY_CURRENCY_UNSUPPORTED',
+            error: `Currency "${price.finalCurrency}" is not currently enabled for direct checkout on this merchant account. Please select Nigeria (NGN) to complete payment with your card, or contact support.`,
+            correlationId,
+          },
+          { status: 422 }
+        );
+      }
+
+      if (err.category === 'AUTH_ERROR') {
+        return NextResponse.json(
+          {
+            success: false,
+            code: 'GATEWAY_CONFIGURATION_ERROR',
+            error: 'Payment gateway configuration is currently invalid. Please contact support.',
+            correlationId,
+          },
+          { status: 503 }
+        );
+      }
+
+      if (err.category === 'TIMEOUT' || err.category === 'NETWORK') {
+        return NextResponse.json(
+          {
+            success: false,
+            code: 'GATEWAY_UNAVAILABLE',
+            error: 'Payment gateway is temporarily unreachable. Please try again shortly.',
+            correlationId,
+          },
+          { status: 503 }
+        );
+      }
+    }
+
+    // Never return a blanket 502 which causes reverse-proxy HTML replacement
     return NextResponse.json(
       {
         success: false,
-        error: 'Payment gateway initialization failed. Please try again.',
+        code: 'GATEWAY_INITIALIZATION_FAILED',
+        error: sanitizedError.message || 'Payment initialization failed. Please try again.',
+        correlationId,
       },
-      { status: 502 }
+      { status: 400 }
     );
   }
 }

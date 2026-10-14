@@ -22,7 +22,7 @@ import {
   ShieldAlert, Terminal, Lock, ChevronRight, CheckCircle2, 
   BrainCircuit, Database, Network, Building2, Send, Zap,
   ArrowDown, Star, QrCode, Award, Flame, User, Eye, Newspaper,
-  FileText, Globe, Key
+  FileText, Globe, Key, Calendar
 } from "lucide-react";
 
 export default function Home() {
@@ -158,6 +158,9 @@ export default function Home() {
               <Link href="/programs" className="premium-button-outline">
                 View All Programs
               </Link>
+              <Link href="/consultation" className="premium-button-outline">
+                Book Consultation
+              </Link>
             </div>
           </AnimateOnScroll>
 
@@ -183,7 +186,7 @@ export default function Home() {
             <div className={styles.sectionHeader}>
               <p className={styles.sectionLabel}>Our Programs</p>
               <h2 className={styles.sectionTitle}>Choose Your Path</h2>
-            <p className={styles.sectionBody}>Three programs. One goal: Get you a cybersecurity job.</p>
+            <p className={styles.sectionBody}>Industry-led cybersecurity training, AI vulnerability research, and career acceleration.</p>
           </div>
         </AnimateOnScroll>
 
@@ -208,21 +211,42 @@ export default function Home() {
             </div>
           </AnimateOnScroll>
 
+          {/* AI Security and Reverse Vulnerability */}
+          <AnimateOnScroll direction="up" delay={200} className={styles.bentoSecurity}>
+            <div className="glass-panel" style={{ padding: '2.5rem', height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <div className={styles.bentoIconBox}>
+                <ShieldAlert size={30} />
+              </div>
+              <h3 className={styles.bentoTitle} style={{ fontSize: '1.35rem' }}>AI Security and Reverse Vulnerability</h3>
+              <p className={styles.bentoPrice}><PriceDisplay courseId="ai_security" fallback="₦200,000" /></p>
+              <ul className={styles.bentoFeatures}>
+                <li><CheckCircle2 size={16} className="text-accent" /> 8-week advanced engineering</li>
+                <li><CheckCircle2 size={16} className="text-accent" /> Adversarial AI & prompt injection</li>
+                <li><CheckCircle2 size={16} className="text-accent" /> Binary reverse engineering & exploits</li>
+                <li><CheckCircle2 size={16} className="text-accent" /> Hands-on capstone labs</li>
+              </ul>
+              <Link href="/programs#ai-security" className="premium-button-outline" style={{ justifyContent: 'center' }}>
+                Explore Curriculum <ChevronRight size={16} />
+              </Link>
+            </div>
+          </AnimateOnScroll>
+
           {/* AI-Powered Cybersecurity Programme */}
           <AnimateOnScroll direction="right" delay={300} className={styles.bentoBootcamp}>
             <div className="glass-panel" style={{ padding: '2.5rem', height: '100%', display: 'flex', flexDirection: 'column' }}>
               <div className={styles.bentoIconBox}>
                 <Terminal size={30} />
               </div>
-              <h3 className={styles.bentoTitle} style={{ fontSize: '1.6rem' }}>AI-Powered Cybersecurity</h3>
+              <h3 className={styles.bentoTitle} style={{ fontSize: '1.5rem' }}>AI-Powered Cyber</h3>
               <p className={styles.bentoPrice}><PriceDisplay courseId="ai_training" fallback="₦100,000" /></p>
               <ul className={styles.bentoFeatures}>
                 <li><CheckCircle2 size={16} className="text-accent" /> 6-week live virtual bootcamp</li>
                 <li><CheckCircle2 size={16} className="text-accent" /> Python, PowerShell &amp; Linux</li>
                 <li><CheckCircle2 size={16} className="text-accent" /> Autonomous AI security systems</li>
+                <li><CheckCircle2 size={16} className="text-accent" /> Threat detection automation</li>
               </ul>
               <Link href="/ai-training" className="premium-button-outline" style={{ justifyContent: 'center' }}>
-                Learn More
+                Learn More <ChevronRight size={16} />
               </Link>
             </div>
           </AnimateOnScroll>
@@ -249,6 +273,51 @@ export default function Home() {
               </div>
               <Link href="/services" className="premium-button-outline">
                 Contact Sales <ChevronRight size={16} />
+              </Link>
+            </div>
+          </AnimateOnScroll>
+        </div>
+      </section>
+
+      {/* ─── 1-ON-1 ADVISORY & CONSULTATION ────────────────────── */}
+      <section className={styles.section} style={{ paddingTop: '1rem' }}>
+        <AnimateOnScroll direction="fade">
+          <div className={styles.sectionHeader}>
+            <p className={styles.sectionLabel}>Advisory & Career Acceleration</p>
+            <h2 className={styles.sectionTitle}>Need Direct Expert Guidance?</h2>
+            <p className={styles.sectionBody}>
+              Book private 1-on-1 sessions with seasoned cybersecurity specialists and career mentors.
+            </p>
+          </div>
+        </AnimateOnScroll>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: '1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
+          <AnimateOnScroll direction="left" delay={100}>
+            <div className="glass-panel" style={{ padding: '2.5rem', height: '100%', display: 'flex', flexDirection: 'column', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
+              <div className={styles.bentoIconBox}>
+                <Calendar size={28} />
+              </div>
+              <h3 className={styles.bentoTitle} style={{ fontSize: '1.4rem' }}>1-on-1 Technical Consultation</h3>
+              <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '1.5rem', flex: 1 }}>
+                Direct technical advisory, security architecture review, compliance roadmapping, or project guidance with Elitech Hub leadership.
+              </p>
+              <Link href="/consultation" className="premium-button" style={{ justifyContent: 'center' }}>
+                Book Advisory Session <ChevronRight size={16} />
+              </Link>
+            </div>
+          </AnimateOnScroll>
+
+          <AnimateOnScroll direction="right" delay={200}>
+            <div className="glass-panel" style={{ padding: '2.5rem', height: '100%', display: 'flex', flexDirection: 'column', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
+              <div className={styles.bentoIconBox}>
+                <User size={28} />
+              </div>
+              <h3 className={styles.bentoTitle} style={{ fontSize: '1.4rem' }}>Career Coaching & Mentorship</h3>
+              <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '1.5rem', flex: 1 }}>
+                Tailored career coaching, CV & LinkedIn audits, technical mock interviews, and strategic guidance to break into or advance in cybersecurity.
+              </p>
+              <Link href="/coaching" className="premium-button-outline" style={{ justifyContent: 'center' }}>
+                Explore Career Coaching <ChevronRight size={16} />
               </Link>
             </div>
           </AnimateOnScroll>

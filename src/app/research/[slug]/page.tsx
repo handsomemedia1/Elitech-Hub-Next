@@ -24,7 +24,7 @@ export async function generateMetadata(
   const { slug } = await params;
   // Use service client so metadata generation works for all papers
   const supabaseAdmin = createServiceClient();
-  if (!supabaseAdmin) return { title: 'Paper Not Found | Elitech Hub Research' };
+  if (!supabaseAdmin) return { title: 'Paper Not Found' };
 
   const { data: paper } = await supabaseAdmin
     .from('research')
@@ -33,7 +33,7 @@ export async function generateMetadata(
     .single();
 
   if (!paper) {
-    return { title: 'Paper Not Found | Elitech Hub Research' };
+    return { title: 'Paper Not Found' };
   }
 
   const isPublished = paper.published === true || paper.publication_status === 'published';
@@ -47,9 +47,9 @@ export async function generateMetadata(
     paper.seo_description ||
     (paper.abstract ? paper.abstract.substring(0, 200).trim() + '...' : `Read "${paper.title}" — a cybersecurity research paper published by Elitech Hub.`);
 
-  const title = paper.seo_title || `${paper.title} | Elitech Hub Research`;
+  const title = paper.seo_title || paper.title;
 
-  const ogImage = paper.og_image || 'https://www.elitechub.com/images/og-research.jpg';
+  const ogImage = paper.og_image || 'https://www.elitechub.com/images/og-default.jpg';
 
   const publishDate = paper.published_at ? new Date(paper.published_at) : new Date(paper.created_at);
 

@@ -271,91 +271,165 @@ export async function transitionTransactionToSuccessful(
  * Idempotently fulfills a verified successful transaction.
  * 
  * Guarantees:
- * 1. Executes strictly once per transaction reference.
- * 2. Checks and updates metadata with fulfillment audit trail atomically.
+ * 1. Executes strictly once per transaction reference via atomic conditional claim.
+ * 2. Checkpoints progress per dispatch action (customer email, admin notification).
  * 3. Never throws to disrupt the calling webhook or verification HTTP response.
+ * 4. Releases claim on failure so subsequent webhooks or verification attempts can retry.
  */
 export async function fulfillTransaction(
   transaction: TransactionRecord
 ): Promise<{ fulfilled: boolean; alreadyFulfilled: boolean }> {
+  if (transaction.status !== 'successful') {
+    return { fulfilled: false, alreadyFulfilled: false };
+  }
+
+  if (transaction.product_type !== 'consultation') {
+    console.info(
+      `[Fulfillment] Product type "${transaction.product_type}" requires external/manual fulfillment (${transaction.reference}).`
+    );
+    return { fulfilled: false, alreadyFulfilled: false };
+  }
+
+  let workingMetadata = {
+    ...((transaction.metadata || {}) as Record<string, unknown>),
+  };
+
+  if (workingMetadata.fulfilled === true || workingMetadata.fulfillment_dispatched === true) {
+    return { fulfilled: false, alreadyFulfilled: true };
+  }
+
+  const supabase = await getServiceClient();
+  if (!supabase) {
+    console.error('[Fulfillment] Supabase service client unavailable; fulfillment was not claimed.');
+    return { fulfilled: false, alreadyFulfilled: false };
+  }
+
   try {
-    if (transaction.status !== 'successful') {
-      return { fulfilled: false, alreadyFulfilled: false };
-    }
-
-    const metadata = (transaction.metadata || {}) as Record<string, unknown>;
-
-    // 1. Idempotency check: Already fulfilled?
-    if (metadata.fulfilled === true || metadata.fulfillment_dispatched === true) {
-      return { fulfilled: false, alreadyFulfilled: true };
-    }
-
-    const supabase = await getServiceClient();
-    if (!supabase) {
-      console.warn('[Fulfillment] Supabase service client unavailable, skipping fulfillment.');
-      return { fulfilled: false, alreadyFulfilled: false };
-    }
-
-    // 2. Atomic flag update in transactions.metadata to claim fulfillment
-    const updatedMetadata = {
-      ...metadata,
-      fulfillment_dispatched: true,
-      fulfilled: true,
-      fulfilled_at: new Date().toISOString(),
+    // Atomic conditional claim: only one concurrent caller can win.
+    workingMetadata = {
+      ...workingMetadata,
+      fulfillment_claimed: true,
+      fulfillment_claimed_at: new Date().toISOString(),
     };
 
     const { data: claimedRows, error: claimError } = await supabase
       .from('transactions')
       .update({
-        metadata: updatedMetadata,
+        metadata: workingMetadata,
         updated_at: new Date().toISOString(),
       })
       .eq('reference', transaction.reference)
+      .eq('status', 'successful')
+      .or('metadata.is.null,metadata.not.cs.{"fulfilled":true}')
+      .or('metadata.is.null,metadata.not.cs.{"fulfillment_dispatched":true}')
+      .or('metadata.is.null,metadata.not.cs.{"fulfillment_claimed":true}')
       .select('*');
 
-    if (claimError || !claimedRows || claimedRows.length === 0) {
-      // Another worker claimed fulfillment concurrently
-      return { fulfilled: false, alreadyFulfilled: true };
+    if (claimError) throw new Error(`Could not claim fulfillment: ${claimError.message}`);
+
+    if (!claimedRows || claimedRows.length === 0) {
+      const fresh = await getTransactionByReference(transaction.reference);
+      const freshMetadata = (fresh?.metadata || {}) as Record<string, unknown>;
+      return {
+        fulfilled: false,
+        alreadyFulfilled:
+          freshMetadata.fulfilled === true ||
+          freshMetadata.fulfillment_dispatched === true ||
+          freshMetadata.fulfillment_claimed === true,
+      };
     }
 
-    // 3. Dispatch Product-Specific Fulfillment Actions
-    if (transaction.product_type === 'consultation') {
-      try {
-        const { sendConsultationBookingConfirmation, sendConsultationAdminNotification } = await import('@/lib/email');
+    workingMetadata = { ...((claimedRows[0].metadata || {}) as Record<string, unknown>) };
 
-        const duration = (metadata.duration as string) || 'Consultation Session';
-        const goals = (metadata.goals as string) || undefined;
-        const phone = (metadata.phone as string) || undefined;
+    const persistCheckpoint = async (patch: Record<string, unknown>) => {
+      workingMetadata = { ...workingMetadata, ...patch };
+      const { data, error } = await supabase
+        .from('transactions')
+        .update({ metadata: workingMetadata, updated_at: new Date().toISOString() })
+        .eq('reference', transaction.reference)
+        .contains('metadata', { fulfillment_claimed: true })
+        .select('reference');
 
-        // Send customer confirmation
-        await sendConsultationBookingConfirmation({
-          to: transaction.customer_email,
-          name: transaction.customer_name || 'Valued Client',
-          duration,
-          reference: transaction.reference,
-          amount: transaction.amount,
-          currency: transaction.currency,
-        });
-
-        // Send admin notification
-        await sendConsultationAdminNotification({
-          customerName: transaction.customer_name || 'Valued Client',
-          customerEmail: transaction.customer_email,
-          duration,
-          reference: transaction.reference,
-          amount: transaction.amount,
-          currency: transaction.currency,
-          goals,
-          phone,
-        });
-      } catch (emailErr) {
-        console.error(`[Fulfillment] Email dispatch failed for consultation ${transaction.reference}:`, emailErr);
+      if (error || !data || data.length === 0) {
+        throw new Error(error?.message || 'Lost fulfillment claim while saving delivery progress.');
       }
+    };
+
+    const { sendConsultationBookingConfirmation, sendConsultationAdminNotification } =
+      await import('@/lib/email');
+    const duration = (workingMetadata.duration as string) || 'Consultation Session';
+    const goals = (workingMetadata.goals as string) || undefined;
+    const phone = (workingMetadata.phone as string) || undefined;
+
+    if (workingMetadata.customer_confirmation_sent !== true) {
+      await sendConsultationBookingConfirmation({
+        to: transaction.customer_email,
+        name: transaction.customer_name || 'Valued Client',
+        duration,
+        reference: transaction.reference,
+        amount: transaction.amount,
+        currency: transaction.currency,
+      });
+      await persistCheckpoint({ customer_confirmation_sent: true });
+    }
+
+    if (workingMetadata.admin_notification_sent !== true) {
+      await sendConsultationAdminNotification({
+        customerName: transaction.customer_name || 'Valued Client',
+        customerEmail: transaction.customer_email,
+        duration,
+        reference: transaction.reference,
+        amount: transaction.amount,
+        currency: transaction.currency,
+        goals,
+        phone,
+      });
+      await persistCheckpoint({ admin_notification_sent: true });
+    }
+
+    workingMetadata = {
+      ...workingMetadata,
+      fulfillment_claimed: false,
+      fulfilled: true,
+      fulfillment_dispatched: true,
+      fulfilled_at: new Date().toISOString(),
+      fulfillment_last_error: null,
+    };
+
+    const { data: completedRows, error: completionError } = await supabase
+      .from('transactions')
+      .update({ metadata: workingMetadata, updated_at: new Date().toISOString() })
+      .eq('reference', transaction.reference)
+      .contains('metadata', { fulfillment_claimed: true })
+      .select('reference');
+
+    if (completionError || !completedRows || completedRows.length === 0) {
+      throw new Error(completionError?.message || 'Could not finalize fulfillment state.');
     }
 
     return { fulfilled: true, alreadyFulfilled: false };
   } catch (err) {
-    console.error(`[Fulfillment] Error fulfilling transaction ${transaction.reference}:`, err);
+    const message = err instanceof Error ? err.message : 'Unknown fulfillment error';
+    console.error(`[Fulfillment] Failed for ${transaction.reference}:`, err);
+
+    // Release the claim so a later verified callback/webhook can retry.
+    // Confirmed per-email checkpoints remain in metadata to avoid repeat sends.
+    try {
+      workingMetadata = {
+        ...workingMetadata,
+        fulfillment_claimed: false,
+        fulfillment_last_error: message.slice(0, 500),
+        fulfillment_last_attempt_at: new Date().toISOString(),
+      };
+      await supabase
+        .from('transactions')
+        .update({ metadata: workingMetadata, updated_at: new Date().toISOString() })
+        .eq('reference', transaction.reference)
+        .contains('metadata', { fulfillment_claimed: true });
+    } catch (releaseError) {
+      console.error(`[Fulfillment] Could not release claim for ${transaction.reference}:`, releaseError);
+    }
+
     return { fulfilled: false, alreadyFulfilled: false };
   }
 }

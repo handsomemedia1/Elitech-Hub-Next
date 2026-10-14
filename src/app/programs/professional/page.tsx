@@ -7,7 +7,7 @@ import styles from './professional.module.css';
 import { Crown, CheckCircle2, ChevronDown, ArrowRight, ArrowLeft, Award, Shield, Code, Target, Briefcase, Users, UserPlus, Network, FileSearch, Star, Clock, Calendar, BookOpen, Repeat } from 'lucide-react';
 
 export const metadata = {
-  title: '16-Week Professional Cybersecurity Program Nigeria | Internship Experience | Elitech Hub',
+  title: '16-Week Professional Cybersecurity Program Nigeria | Internship Experience',
   description: 'Nigeria\'s most comprehensive cybersecurity career transformation program. 16 weeks of intensive training, unpaid internship experience, CompTIA Security+, CEH preparation, 1-on-1 mentorship, and career support.',
   keywords: ['16 week cybersecurity program Nigeria', 'professional cybersecurity training Nigeria', 'cybersecurity career program Lagos', 'internship experience cybersecurity Nigeria', 'CompTIA Security+ training Nigeria', 'CEH certification Nigeria', 'cybersecurity mentorship Nigeria', 'cybersecurity career support Nigeria'],
   openGraph: {
@@ -17,7 +17,7 @@ export const metadata = {
     siteName: 'Elitech Hub',
     images: [
       {
-        url: 'https://www.elitechub.com/images/professional-og.jpg',
+        url: 'https://www.elitechub.com/images/og-default.jpg',
         width: 1200,
         height: 630,
         alt: '16-Week Professional Cybersecurity Program at Elitech Hub',
@@ -30,7 +30,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: '16-Week Professional Cybersecurity Program Nigeria | Internship Experience | Elitech Hub',
     description: 'Nigeria\'s most comprehensive cybersecurity career transformation program. 16 weeks of intensive training, unpaid internship experience, CompTIA Security+, CEH preparation, 1-on-1 mentorship, and career support.',
-    images: ['https://www.elitechub.com/images/professional-og.jpg'],
+    images: ['https://www.elitechub.com/images/og-default.jpg'],
   },
   alternates: {
     canonical: 'https://www.elitechub.com/programs/professional',

@@ -7,7 +7,7 @@ import styles from '../about/about.module.css';
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Testimonials & Reviews | Elitech Hub',
+  title: 'Testimonials & Student Reviews',
   description: 'See what our students, partners, and clients are saying about Elitech Hub. Read our verified testimonials.',
   keywords: [
     'Elitech Hub reviews',

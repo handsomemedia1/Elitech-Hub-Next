@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 
 export const metadata = {
-  title: 'Apply Now | Start Your Cybersecurity Career | Elitech Hub Nigeria',
+  title: 'Apply Now | Start Your Cybersecurity Career',
   description:
     'Apply to Elitech Hub\'s cybersecurity bootcamp or 16-week professional program in Nigeria. 300+ trained. 100% internship rate. Weekend classes available. No experience required. Enroll today.',
   keywords: [

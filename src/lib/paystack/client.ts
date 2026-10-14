@@ -62,6 +62,32 @@ export function verifyWebhookSignature(
   }
 }
 
+export type GatewayErrorCategory = 'TIMEOUT' | 'NETWORK' | 'AUTH_ERROR' | 'GATEWAY_ERROR' | 'UNKNOWN';
+
+export interface SanitizedGatewayError {
+  category: GatewayErrorCategory;
+  message: string;
+}
+
+export class PaystackGatewayError extends Error {
+  status: number;
+  category: GatewayErrorCategory;
+  code?: string;
+
+  constructor(
+    message: string,
+    status: number,
+    category: GatewayErrorCategory = 'GATEWAY_ERROR',
+    code?: string
+  ) {
+    super(message);
+    this.name = 'PaystackGatewayError';
+    this.status = status;
+    this.category = category;
+    this.code = code;
+  }
+}
+
 /**
  * Initializes a transaction with Paystack.
  * Endpoint: POST https://api.paystack.co/transaction/initialize
@@ -71,22 +97,64 @@ export async function initializePaystackTransaction(
 ): Promise<PaystackInitializeResponse> {
   const secretKey = getPaystackSecretKey();
 
-  const response = await fetch(`${PAYSTACK_API_BASE_URL}/transaction/initialize`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${secretKey}`,
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    },
-    body: JSON.stringify(params),
-    signal: AbortSignal.timeout(15000), // 15-second timeout
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${PAYSTACK_API_BASE_URL}/transaction/initialize`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${secretKey}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify(params),
+      signal: AbortSignal.timeout(15000), // 15-second timeout
+    });
+  } catch (err: unknown) {
+    const isTimeout =
+      err instanceof Error &&
+      (err.name === 'TimeoutError' || err.name === 'AbortError' || err.message.toLowerCase().includes('timeout'));
+    throw new PaystackGatewayError(
+      isTimeout ? 'Paystack gateway connection timed out.' : 'Unable to connect to Paystack gateway.',
+      isTimeout ? 504 : 503,
+      isTimeout ? 'TIMEOUT' : 'NETWORK'
+    );
+  }
 
-  const data = await response.json();
+  let data: Record<string, unknown> | null = null;
+  try {
+    data = await response.json();
+  } catch {
+    throw new PaystackGatewayError(
+      `Paystack returned an invalid non-JSON response (HTTP ${response.status}).`,
+      response.status >= 500 ? 502 : 400,
+      'GATEWAY_ERROR'
+    );
+  }
 
-  if (!response.ok || !data.status) {
-    const message = data.message || `Paystack initialization failed (HTTP ${response.status})`;
-    throw new Error(message);
+  if (!response.ok || !data || !data.status) {
+    const rawMessage =
+      typeof data?.message === 'string'
+        ? data.message
+        : `Paystack initialization failed (HTTP ${response.status})`;
+    const isCurrencyIssue =
+      data?.code === 'unsupported_currency' ||
+      rawMessage.toLowerCase().includes('currency not supported') ||
+      rawMessage.toLowerCase().includes('unsupported currency');
+    const isAuthIssue =
+      response.status === 401 ||
+      response.status === 403 ||
+      rawMessage.toLowerCase().includes('secret key') ||
+      rawMessage.toLowerCase().includes('unauthorized');
+
+    const category: GatewayErrorCategory = isCurrencyIssue
+      ? 'GATEWAY_ERROR'
+      : isAuthIssue
+      ? 'AUTH_ERROR'
+      : 'GATEWAY_ERROR';
+
+    const code = isCurrencyIssue ? 'unsupported_currency' : (typeof data?.code === 'string' ? data.code : undefined);
+
+    throw new PaystackGatewayError(rawMessage, response.status, category, code);
   }
 
   return data as PaystackInitializeResponse;
@@ -102,30 +170,58 @@ export async function verifyPaystackTransaction(
   const secretKey = getPaystackSecretKey();
   const safeReference = encodeURIComponent(reference.trim());
 
-  const response = await fetch(`${PAYSTACK_API_BASE_URL}/transaction/verify/${safeReference}`, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${secretKey}`,
-      'Accept': 'application/json',
-    },
-    signal: AbortSignal.timeout(15000), // 15-second timeout
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${PAYSTACK_API_BASE_URL}/transaction/verify/${safeReference}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${secretKey}`,
+        'Accept': 'application/json',
+      },
+      signal: AbortSignal.timeout(15000), // 15-second timeout
+    });
+  } catch (err: unknown) {
+    const isTimeout =
+      err instanceof Error &&
+      (err.name === 'TimeoutError' || err.name === 'AbortError' || err.message.toLowerCase().includes('timeout'));
+    throw new PaystackGatewayError(
+      isTimeout ? 'Paystack gateway verification timed out.' : 'Unable to connect to Paystack gateway for verification.',
+      isTimeout ? 504 : 503,
+      isTimeout ? 'TIMEOUT' : 'NETWORK'
+    );
+  }
 
-  const data = await response.json();
+  let data: Record<string, unknown> | null = null;
+  try {
+    data = await response.json();
+  } catch {
+    throw new PaystackGatewayError(
+      `Paystack returned an invalid non-JSON response on verification (HTTP ${response.status}).`,
+      response.status >= 500 ? 502 : 400,
+      'GATEWAY_ERROR'
+    );
+  }
 
-  if (!response.ok || !data.status) {
-    const message = data.message || `Paystack verification failed (HTTP ${response.status})`;
-    throw new Error(message);
+  if (!response.ok || !data || !data.status) {
+    const rawMessage =
+      typeof data?.message === 'string'
+        ? data.message
+        : `Paystack verification failed (HTTP ${response.status})`;
+    const isAuthIssue =
+      response.status === 401 ||
+      response.status === 403 ||
+      rawMessage.toLowerCase().includes('secret key') ||
+      rawMessage.toLowerCase().includes('unauthorized');
+
+    throw new PaystackGatewayError(
+      rawMessage,
+      response.status,
+      isAuthIssue ? 'AUTH_ERROR' : 'GATEWAY_ERROR',
+      typeof data?.code === 'string' ? data.code : undefined
+    );
   }
 
   return data as PaystackVerifyResponse;
-}
-
-export type GatewayErrorCategory = 'TIMEOUT' | 'NETWORK' | 'AUTH_ERROR' | 'GATEWAY_ERROR' | 'UNKNOWN';
-
-export interface SanitizedGatewayError {
-  category: GatewayErrorCategory;
-  message: string;
 }
 
 /**

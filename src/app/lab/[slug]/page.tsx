@@ -18,12 +18,12 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
   if (!lab) {
     return {
-      title: 'Lab Not Found | Elitech Hub',
+      title: 'Lab Not Found',
     };
   }
 
   return {
-    title: `${lab.title} | Elitech Hub Lab`,
+    title: lab.title,
     description: lab.short_description || 'Cybersecurity Lab Research by Elitech Hub',
     alternates: {
       canonical: `https://www.elitechub.com/lab/${lab.slug}`,

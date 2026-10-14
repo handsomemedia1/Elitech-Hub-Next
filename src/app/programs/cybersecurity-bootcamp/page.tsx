@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 
 export const metadata = {
-  title: '6-Week Cybersecurity Bootcamp Nigeria | Fast-Track Career | Elitech Hub',
+  title: '6-Week Cybersecurity Bootcamp Nigeria | Fast-Track Career',
   description:
     'Launch your cybersecurity career in 6 weeks. Elitech Hub\'s intensive bootcamp in Nigeria covers ethical hacking, network security, and hands-on labs. Weekend classes, ₦100,000, no experience needed.',
   keywords: [
@@ -36,7 +36,7 @@ export const metadata = {
     locale: 'en_NG',
     images: [
       {
-        url: 'https://www.elitechub.com/images/bootcamp-og.jpg',
+        url: 'https://www.elitechub.com/images/og-default.jpg',
         width: 1200,
         height: 630,
         alt: '6-Week Cybersecurity Bootcamp Nigeria — Elitech Hub',
@@ -48,7 +48,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: '6-Week Cybersecurity Bootcamp in Nigeria — ₦100,000',
     description: 'Weekend classes. Real labs. Certificate. No experience needed. Join Elitech Hub.',
-    images: ['https://www.elitechub.com/images/bootcamp-og.jpg'],
+    images: ['https://www.elitechub.com/images/og-default.jpg'],
   },
   alternates: { canonical: 'https://www.elitechub.com/programs/cybersecurity-bootcamp' },
 };
@@ -72,7 +72,7 @@ export default function BootcampPage() {
       description:
         'A 6-week weekend cybersecurity bootcamp in Nigeria covering ethical hacking, network penetration testing, and hands-on defence labs. No experience required.',
       url: 'https://www.elitechub.com/programs/cybersecurity-bootcamp',
-      image: 'https://www.elitechub.com/images/bootcamp-og.jpg',
+      image: 'https://www.elitechub.com/images/og-default.jpg',
       inLanguage: 'en',
       provider: {
         '@type': 'Organization',

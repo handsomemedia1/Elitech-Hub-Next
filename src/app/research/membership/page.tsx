@@ -4,7 +4,7 @@ import PageLayout from '@/components/PageLayout';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 
 export const metadata: Metadata = {
-  title: 'Research Membership | Elitech Hub',
+  title: 'Research Membership in Behavioral Cybersecurity',
   description:
     'Join the Elitech Hub Research Membership. An exclusive ecosystem for pioneering researchers in Behavioral Cybersecurity. Limited to 30 researchers globally. Applications open for January 2027.',
   keywords: 'behavioral cybersecurity, research membership, cybersecurity researchers, Elitech Hub research, cybersecurity ecosystem, January 2027 cohort',
@@ -12,18 +12,20 @@ export const metadata: Metadata = {
     canonical: 'https://www.elitechub.com/research/membership',
   },
   openGraph: {
-    title: 'Research Membership | Elitech Hub',
+    title: 'Research Membership in Behavioral Cybersecurity | Elitech Hub',
     description:
       'An exclusive ecosystem for pioneering researchers in Behavioral Cybersecurity. Limited to 30 researchers globally. Applications open for January 2027.',
     url: 'https://www.elitechub.com/research/membership',
     siteName: 'Elitech Hub',
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg' }],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Research Membership | Elitech Hub',
+    title: 'Research Membership in Behavioral Cybersecurity | Elitech Hub',
     description:
       'An exclusive ecosystem for pioneering researchers in Behavioral Cybersecurity. Limited to 30 researchers globally.',
+    images: ['https://www.elitechub.com/images/og-default.jpg'],
   },
 };
 

@@ -3,7 +3,7 @@ import styles from './behavioral.module.css';
 import { BookOpen, AlertCircle, Users, Shield, Brain, Target } from 'lucide-react';
 
 export const metadata = {
-  title: 'Behavioral Cybersecurity Research | Elitech Hub',
+  title: 'Behavioral Cybersecurity Research',
   description: 'Conceptual framework for our upcoming research pillar: The Human Firewall. Exploring the intersection of human psychology and technical security systems.',
   keywords: 'behavioral cybersecurity, human firewall, psychological security, cybersecurity research, human-centric security, social engineering research',
   alternates: {
@@ -13,6 +13,7 @@ export const metadata = {
     title: 'Behavioral Cybersecurity Research | Elitech Hub',
     description: 'Conceptual framework for our upcoming research pillar: The Human Firewall.',
     url: 'https://www.elitechub.com/research/behavioral-cybersecurity',
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg' }],
     type: 'website',
   }
 };

@@ -6,8 +6,17 @@ import { ArrowLeft, CheckCircle2, Shield, Code, Server, Database } from 'lucide-
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 
 export const metadata: Metadata = {
-  title: 'Elitech Admin System | Elitech Hub Portfolio',
+  title: 'Elitech Admin System Case Study',
   description: 'A case study on how we built the internal Elitech Admin System for streamlined operations and secure management.',
+  alternates: {
+    canonical: 'https://www.elitechub.com/portfolio/elitech-admin-bot',
+  },
+  openGraph: {
+    title: 'Elitech Admin System Case Study | Elitech Hub',
+    description: 'A case study on how we built the internal Elitech Admin System for streamlined operations and secure management.',
+    url: 'https://www.elitechub.com/portfolio/elitech-admin-bot',
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg' }],
+  },
 };
 
 export default function AdminBotCaseStudy() {

@@ -9,7 +9,7 @@ import { HubCard } from '@/components/HubCard';
 
 
 export const metadata: Metadata = {
-  title: 'Cybersecurity, Web Development & AI Chatbot Services in Nigeria | Elitech Hub',
+  title: 'Cybersecurity, Web Development & AI Chatbot Services in Nigeria',
   description:
     'Professional Technology Solutions for Businesses, Institutions and Government Organizations.',
   keywords: [
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     locale: 'en_NG',
     images: [
       {
-        url: 'https://www.elitechub.com/images/services-og.jpg',
+        url: 'https://www.elitechub.com/images/og-default.jpg',
         width: 1200,
         height: 630,
         alt: 'Elitech Hub Services — Cybersecurity, Web Dev, AI Chatbots Nigeria',
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     title: 'Cybersecurity, Web Dev & AI Chatbot Services in Nigeria',
     description:
       'Pentesting, custom websites, agentic AI apps, and corporate training — all from Elitech Hub.',
-    images: ['https://www.elitechub.com/images/services-og.jpg'],
+    images: ['https://www.elitechub.com/images/og-default.jpg'],
     site: '@ElitechHub',
   },
   alternates: { canonical: 'https://www.elitechub.com/services' },
@@ -348,7 +348,7 @@ export default function ServicesPage() {
                 <h4>For Individuals:</h4>
                 <ul>
                   <li><CheckCircle2 size={16} color="#ef4444" /> AI-Powered Cybersecurity (6 Weeks)</li>
-                  <li><CheckCircle2 size={16} color="#ef4444" /> AI Security &amp; Reverse Vulnerability (8 Weeks)</li>
+                  <li><CheckCircle2 size={16} color="#ef4444" /> AI Security and Reverse Vulnerability</li>
                   <li><CheckCircle2 size={16} color="#ef4444" /> 16-Week Professional Programme</li>
                   <li><CheckCircle2 size={16} color="#ef4444" /> Practical Internship Experience</li>
                   <li><CheckCircle2 size={16} color="#ef4444" /> 1-on-1 Mentorship &amp; Career Support</li>

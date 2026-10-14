@@ -7,7 +7,7 @@ import { getSupabaseServerClient } from '@/lib/supabase';
 import { ChevronRight, Building2, Globe, ArrowRight } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Our Advisors | Elitech Hub',
+  title: 'Our Advisors',
   description: 'Meet the experienced professionals and industry leaders guiding Elitech Hub.',
   keywords: 'Elitech Hub advisors, cybersecurity advisory board, tech industry leaders Nigeria, cybersecurity mentors',
   alternates: { canonical: 'https://www.elitechub.com/advisors' },
@@ -15,6 +15,7 @@ export const metadata: Metadata = {
     title: 'Our Advisors | Elitech Hub',
     description: 'Meet the experienced professionals and industry leaders guiding Elitech Hub.',
     url: 'https://www.elitechub.com/advisors',
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg' }],
     type: 'website',
   }
 };

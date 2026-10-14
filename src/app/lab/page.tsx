@@ -12,7 +12,7 @@ import {
 import CountUp from '@/components/CountUp';
 
 export const metadata = {
-  title: 'Cybersecurity R&D Lab | Threat Intelligence & Tactical Operations | Elitech Hub',
+  title: 'Cybersecurity R&D Lab | Threat Intelligence & Tactical Operations',
   description:
     'Explore the Elitech Hub Cybersecurity Lab. We conduct active research and development in detection engineering, threat analysis, defensive infrastructure, and secure development for Nigerian businesses.',
   keywords: [

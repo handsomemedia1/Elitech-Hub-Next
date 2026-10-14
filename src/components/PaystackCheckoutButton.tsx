@@ -85,17 +85,37 @@ export default function PaystackCheckoutButton({
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
+      let data: Record<string, unknown> | null = null;
+      try {
+        data = await res.json();
+      } catch {
+        let msg = 'Unable to connect to the payment gateway. Please check your connection and try again.';
+        if (res.status === 502 || res.status === 504) {
+          msg = 'The payment service is temporarily unavailable. Please try again shortly or contact support.';
+        } else if (res.status === 503) {
+          msg = 'The payment service is undergoing brief maintenance. Please try again in a few moments.';
+        }
+        setErrorMessage(msg);
+        setIsLoading(false);
+        if (onError) onError(msg);
+        return;
+      }
 
-      if (!res.ok || !data.success) {
-        let displayError = data.error || 'Payment initialization failed. Please try again.';
+      if (!res.ok || !data?.success) {
+        let displayError = (data?.error as string) || 'Payment initialization failed. Please try again.';
 
         if (res.status === 429) {
           displayError = 'Too many attempts. Please wait a moment before trying again.';
-        } else if (data.code === 'FX_UNAVAILABLE') {
-          displayError = data.error || 'Currency exchange rate is currently unavailable. Please select Nigeria or USD.';
-        } else if (data.code === 'UNSUPPORTED_CHECKOUT_CURRENCY') {
-          displayError = data.error || 'This currency is not supported for direct checkout. Please checkout in NGN or USD.';
+        } else if (data?.code === 'DATABASE_MIGRATION_REQUIRED') {
+          displayError = 'Payment system maintenance in progress. Please contact support or try again shortly.';
+        } else if (data?.code === 'GATEWAY_CURRENCY_UNSUPPORTED' || data?.code === 'UNSUPPORTED_CHECKOUT_CURRENCY') {
+          displayError = (data.error as string) || 'This currency is not supported for direct checkout. Please select Nigeria (NGN) to pay in NGN with your card.';
+        } else if (data?.code === 'GATEWAY_UNAVAILABLE') {
+          displayError = (data.error as string) || 'Payment gateway is temporarily unreachable. Please try again shortly.';
+        } else if (data?.code === 'GATEWAY_CONFIGURATION_ERROR') {
+          displayError = (data.error as string) || 'Payment service configuration is currently being updated. Please contact support.';
+        } else if (data?.code === 'FX_UNAVAILABLE') {
+          displayError = (data.error as string) || 'Currency exchange rate is currently unavailable. Please select Nigeria or USD.';
         }
 
         setErrorMessage(displayError);
@@ -104,17 +124,20 @@ export default function PaystackCheckoutButton({
         return;
       }
 
-      // Success: redirect to Paystack Test Mode checkout URL
+      // Success: redirect to Paystack checkout URL
       setIsRedirecting(true);
-      if (onSuccess) {
+      const authUrl = data.authorizationUrl as string | undefined;
+      const txRef = data.reference as string | undefined;
+
+      if (onSuccess && authUrl && txRef) {
         onSuccess({
-          authorizationUrl: data.authorizationUrl,
-          reference: data.reference,
+          authorizationUrl: authUrl,
+          reference: txRef,
         });
       }
 
-      if (data.authorizationUrl) {
-        window.location.href = data.authorizationUrl;
+      if (authUrl) {
+        window.location.href = authUrl;
       } else {
         throw new Error('No authorization URL returned by payment gateway.');
       }
@@ -141,6 +164,8 @@ export default function PaystackCheckoutButton({
     label || children || 'Pay with Paystack'
   );
 
+  const isLiveKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY?.startsWith('pk_live_');
+
   return (
     <div className={styles.checkoutButtonWrapper}>
       <button
@@ -155,8 +180,15 @@ export default function PaystackCheckoutButton({
       </button>
 
       {showTestBadge && (
-        <span className={styles.testBadge} title="Running in Paystack Sandbox Mode — no real charges">
-          🛡️ Paystack Test Mode Sandbox
+        <span
+          className={styles.testBadge}
+          title={
+            isLiveKey
+              ? 'Secured by Paystack Live Checkout'
+              : 'Running in Paystack Sandbox Mode — no real charges'
+          }
+        >
+          {isLiveKey ? '🔒 Paystack Secured' : '🛡️ Paystack Test Mode Sandbox'}
         </span>
       )}
 

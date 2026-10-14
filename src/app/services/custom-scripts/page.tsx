@@ -7,7 +7,7 @@ import { Terminal, CheckCircle2, ChevronDown, ArrowRight, ArrowLeft, Code, Zap, 
 import { PricingTiers } from '@/components/PricingTiers';
 
 export const metadata = {
-  title: 'Custom Script Development for Organisations Nigeria | Python, PowerShell | Elitech Hub',
+  title: 'Custom Script Development for Organisations Nigeria | Python, PowerShell',
   description: 'Elitech Hub writes bespoke Python, PowerShell, and Bash scripts for Nigerian organisations. Security automation, data pipelines, DevOps scripts, and custom tooling. Fast delivery, clean code.',
   keywords: [
     'custom script development',
@@ -31,6 +31,7 @@ export const metadata = {
     url: 'https://www.elitechub.com/services/custom-scripts',
     siteName: 'Elitech Hub',
     locale: 'en_NG',
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg' }],
     type: 'website',
   },
 };

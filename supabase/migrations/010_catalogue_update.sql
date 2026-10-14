@@ -1,3 +1,8 @@
+-- [SUPERSEDED] DO NOT RUN IN PRODUCTION.
+-- Superseded by 011_reconcile_course_prices.sql.
+-- Migration 010 assumed columns (currency, product_type, product_label, etc.) that do not exist
+-- in the actual production course_prices table. Use migration 011 instead.
+--
 -- Migration 010: Course Catalogue Update — October 2026
 -- Implements the revised three-programme catalogue:
 --   1. AI-Powered Cybersecurity Programme  (ai_training)  — 6 weeks,  ₦100,000 [UNCHANGED]

@@ -195,9 +195,9 @@ export default function ApplyForm() {
                     isAiTraining
                       ? 'AI Cybersecurity'
                       : isAiSecurity
-                      ? 'AI Security & Reverse Vulnerability'
+                      ? 'AI Security and Reverse Vulnerability'
                       : 'Professional'
-                  } Tuition (Test Mode)`}
+                  } Tuition`}
                 />
               </div>
 
@@ -310,7 +310,7 @@ export default function ApplyForm() {
                   <select id="program" name="program" value={formData.program} onChange={handleInputChange} required>
                     <option value="">Select a Program</option>
                     <option value="AI-Powered Cybersecurity">AI-Powered Cybersecurity Programme (6 Weeks)</option>
-                    <option value="AI Security and Reverse Vulnerability">AI Security &amp; Reverse Vulnerability (8 Weeks)</option>
+                    <option value="AI Security and Reverse Vulnerability">AI Security and Reverse Vulnerability</option>
                     <option value="16-Week Professional">16-Week Professional Cybersecurity Programme</option>
                     <option value="Not Sure Yet">Not Sure Yet</option>
                   </select>

@@ -4,10 +4,12 @@
  */
 
 import { Resend } from 'resend';
+import { CONTACT_EMAILS } from '@/lib/constants/contact';
 
 const resend = new Resend(process.env.RESEND_API_KEY || '');
 const FROM = process.env.RESEND_FROM_EMAIL || 'Elitech Hub <onboarding@resend.dev>';
-const ADMIN = process.env.ADMIN_EMAIL || 'Elijah@elitechub.com';
+const ADMIN = process.env.ADMIN_EMAIL || CONTACT_EMAILS.DIRECT;
+const REPLY_TO = process.env.RESEND_REPLY_TO || CONTACT_EMAILS.PRIMARY;
 
 export function isEmailConfigured(): boolean {
   const key = process.env.RESEND_API_KEY;
@@ -33,6 +35,7 @@ export async function sendApplicationConfirmation({
     const result = await resend.emails.send({
       from: FROM,
       to: [to],
+      reply_to: REPLY_TO,
       subject: '✅ Application Received — Elitech Hub',
       html: `
         <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;">
@@ -113,6 +116,7 @@ export async function sendContactConfirmation({ to, name }: { to: string; name: 
     await resend.emails.send({
       from: FROM,
       to: [to],
+      reply_to: REPLY_TO,
       subject: '✅ Message Received — Elitech Hub',
       html: `
         <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;">
@@ -173,6 +177,7 @@ export async function sendNewsletterWelcome({ to }: { to: string }) {
     await resend.emails.send({
       from: FROM,
       to: [to],
+      reply_to: REPLY_TO,
       subject: '🛡️ Welcome to the Elitech Hub Newsletter!',
       html: `
         <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;">
@@ -197,6 +202,7 @@ export async function sendVolunteerConfirmation({ to, name, role }: { to: string
     await resend.emails.send({
       from: FROM,
       to: [to],
+      reply_to: REPLY_TO,
       subject: '✅ Volunteer Application Received — Elitech Hub',
       html: `
         <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;">
@@ -262,6 +268,7 @@ export async function sendPasswordResetEmail({
     await resend.emails.send({
       from: FROM,
       to: [to],
+      reply_to: REPLY_TO,
       subject: '🔐 Reset Your Elitech Hub Password',
       html: `
         <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;">
@@ -287,7 +294,7 @@ export async function sendPasswordResetEmail({
             <p style="margin:0;font-size:13px;color:#856404;">
               <strong>⚠️ Security notice:</strong> If you did not request this reset, you can safely ignore
               this email. Your password will not change. If you're concerned about your account security,
-              please contact us immediately at <a href="mailto:security@elitechub.com">security@elitechub.com</a>.
+              please contact us immediately at <a href="mailto:${CONTACT_EMAILS.PRIMARY}">${CONTACT_EMAILS.PRIMARY}</a>.
             </p>
           </div>
 
@@ -371,6 +378,7 @@ export async function sendConsultationBookingConfirmation({
     const result = await resend.emails.send({
       from: FROM,
       to: [to],
+      reply_to: REPLY_TO,
       subject: `🗓️ Consultation Confirmed (${duration}) — Elitech Hub`,
       html: `
         <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#1e293b;">

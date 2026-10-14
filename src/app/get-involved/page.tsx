@@ -6,7 +6,7 @@ import AnimateOnScroll from '@/components/AnimateOnScroll';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Get Involved | Volunteer, Partner & Sponsor - Elitech Hub Nigeria',
+  title: 'Get Involved | Volunteer, Partner & Sponsor',
   description:
     'Partner with Elitech Hub, Africa\'s fastest-growing cybersecurity training platform. Volunteer as a mentor, sponsor a cohort, or collaborate to secure Nigeria\'s digital future.',
   keywords: [
@@ -259,7 +259,7 @@ export default function GetInvolvedPage() {
                     <span className={styles.sponsorNumber}>$100</span>
                     <span>sponsors one complete cybersecurity education</span>
                   </div>
-                  <a href="mailto:sponsorship@elitechub.com" className={styles.btnOutline} style={{ display: 'block', textAlign: 'center', marginTop: '1.5rem' }}>
+                  <a href="mailto:info@elitechub.com" className={styles.btnOutline} style={{ display: 'block', textAlign: 'center', marginTop: '1.5rem' }}>
                     Become a Sponsor
                   </a>
                 </div>

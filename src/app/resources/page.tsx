@@ -7,17 +7,18 @@ import { FileText, Download, Tag, Calendar, User, Search, BookOpen, Clock, File 
 import styles from './resources.module.css';
 
 export const metadata: Metadata = {
-  title: 'Resources | Elitech Hub',
+  title: 'Cybersecurity Resources & Guides',
   description: 'Explore research resources, guides, reports, educational materials, and other useful documents from Elitech Hub.',
   keywords: 'cybersecurity resources, Elitech Hub library, free cybersecurity guides, threat reports, tech educational materials Nigeria',
   alternates: {
     canonical: 'https://www.elitechub.com/resources',
   },
   openGraph: {
-    title: 'Resources | Elitech Hub',
+    title: 'Cybersecurity Resources & Guides | Elitech Hub',
     description: 'Explore research resources, guides, reports, educational materials, and other useful documents from Elitech Hub.',
     type: 'website',
     url: 'https://www.elitechub.com/resources',
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg' }],
   }
 };
 

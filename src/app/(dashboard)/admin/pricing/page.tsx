@@ -25,14 +25,10 @@ export default function PricingAdminPage() {
   
   // New entry state
   const [isAdding, setIsAdding] = useState(false);
-  const [newCourseId, setNewCourseId] = useState('bootcamp');
+  const [newCourseId, setNewCourseId] = useState('ai_training');
   const [newCurrency, setNewCurrency] = useState('USD');
   const [newSymbol, setNewSymbol] = useState('$');
   const [newAmount, setNewAmount] = useState<number | ''>('');
-
-  useEffect(() => {
-    fetchPrices();
-  }, []);
 
   const fetchPrices = async () => {
     setLoading(true);
@@ -46,6 +42,10 @@ export default function PricingAdminPage() {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    fetchPrices();
+  }, []);
 
   const handleEdit = (row: PriceRow) => {
     setEditRowId(row.id);
@@ -127,9 +127,10 @@ export default function PricingAdminPage() {
                 style={{ width: '100%', padding: '0.75rem', background: '#090a0b', border: '1px solid #3f3f46', borderRadius: '4px', color: '#fff' }}
               >
                 <optgroup label="Programs">
-                  <option value="bootcamp">6-Week Bootcamp</option>
-                  <option value="professional">16-Week Professional</option>
-                  <option value="ai_training">AI Training</option>
+                  <option value="ai_training">AI Training (6-Week)</option>
+                  <option value="ai_security">AI Security and Reverse Vulnerability</option>
+                  <option value="professional">16-Week Professional Cybersecurity</option>
+                  <option value="bootcamp">6-Week Bootcamp (Retired)</option>
                 </optgroup>
                 <optgroup label="Web Development">
                   <option value="web-basic">Basic Web Security</option>

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Settings, Save, Globe, Mail, Shield, Calendar } from 'lucide-react';
+import { Save, Globe, Calendar } from 'lucide-react';
 import styles from './settings.module.css';
 
 import { fetchSiteSettingAction, upsertSiteSettingAction } from './actions';
@@ -15,10 +15,6 @@ export default function AdminSettings() {
   const [cohortMonth, setCohortMonth] = useState('June 8');
   const [cohortSeats, setCohortSeats] = useState('10');
 
-  useEffect(() => {
-    fetchSettings();
-  }, []);
-
   const fetchSettings = async () => {
     setLoading(true);
     const { data } = await fetchSiteSettingAction('elitechub_cohort');
@@ -29,6 +25,10 @@ export default function AdminSettings() {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
 
   const handleSave = async () => {
     setSaving(true);
@@ -92,7 +92,7 @@ export default function AdminSettings() {
           </div>
           <div className={styles.formGroup}>
             <label>Support Email</label>
-            <input type="email" className={styles.input} defaultValue="support@elitechub.com" />
+            <input type="email" className={styles.input} defaultValue="info@elitechub.com" />
           </div>
         </div>
       </div>

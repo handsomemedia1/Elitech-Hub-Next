@@ -7,9 +7,16 @@ import { Mail, Phone, ExternalLink, Shield, Database, Award, BookOpen, Briefcase
 import { LinkedinLogo, PhosphorGlobe } from '@/components/PhosphorIcons';
 
 export const metadata: Metadata = {
-  title: 'Elijah Adeyeye - Founder & Lead Instructor | Elitech Hub',
+  title: 'Elijah Adeyeye - Founder & Lead Instructor',
   description: 'Profile of Elijah Adeyeye, Founder of Elitech Hub. Expert in Behavioral Cybersecurity, Data Analysis, and digital security.',
   alternates: { canonical: 'https://www.elitechub.com/founder' },
+  openGraph: {
+    title: 'Elijah Adeyeye - Founder & Lead Instructor | Elitech Hub',
+    description: 'Profile of Elijah Adeyeye, Founder of Elitech Hub. Expert in Behavioral Cybersecurity, Data Analysis, and digital security.',
+    url: 'https://www.elitechub.com/founder',
+    images: [{ url: 'https://www.elitechub.com/images/og-default.jpg' }],
+    type: 'profile',
+  },
 };
 
 export default function FounderPage() {
@@ -66,7 +73,7 @@ export default function FounderPage() {
                   Founder & Lead Instructor
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                  <a href="mailto:Elijahadeyeye@proton.me" className="premium-button" style={{ padding: '0.6rem 1.5rem' }}>
+                  <a href="mailto:elijah@elitechub.com" className="premium-button" style={{ padding: '0.6rem 1.5rem' }}>
                     <Mail size={16} /> Contact
                   </a>
                   <a href="https://elijahadeyeye.vercel.app/" target="_blank" rel="noopener noreferrer" className="premium-button-outline">

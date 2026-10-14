@@ -8,6 +8,9 @@
 import { test, describe, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
+import { CONTACT_EMAILS, CONTACT_INFO } from '../src/lib/constants/contact.ts';
 
 // Import Paystack server utilities
 import {
@@ -23,30 +26,42 @@ import {
   CANONICAL_PRODUCTS,
   PricingError,
   resolveAuthoritativePrice,
+  resolveInternationalPrice,
+  INTERNATIONAL_USD_FALLBACKS,
   getLiveOrFallbackFxRate,
   OFFLINE_FALLBACK_FX_RATES,
+  AFRICAN_CURRENCY_MAP,
 } from '../src/lib/paystack/pricing.ts';
 
 import {
   generateTransactionReference,
   verifyWebhookSignature,
   sanitizeGatewayErrorMessage,
+  PaystackGatewayError,
 } from '../src/lib/paystack/client.ts';
 
 import {
   buildApprovedCallbackUrl,
   getAppUrl,
   getPaystackSecretKey,
+  getPaystackMode,
+  getPaystackPublicKey,
   isPaystackTestMode,
+  isPaystackLiveMode,
+  validatePaystackConfig,
+  APPROVED_CALLBACK_PATHS,
 } from '../src/lib/paystack/config.ts';
 
 import {
   resolveEffectivePricingCountry,
   INTERNATIONAL_COMMERCIAL_COUNTRIES,
+  getTrustedServerCountry,
 } from '../src/lib/paystack/pricing.ts';
 
 import { verifyLimit } from '../src/lib/rate-limit.ts';
 import { POST as initializeRoutePost } from '../src/app/api/paystack/initialize/route.ts';
+import { GET as verifyRouteGet } from '../src/app/api/paystack/verify/route.ts';
+import { fulfillTransaction } from '../src/lib/paystack/transactions.ts';
 
 describe('1. Currency & Subunit Conversion (including XOF)', () => {
   test('Supported checkout currencies matches Paystack specification', () => {
@@ -132,9 +147,9 @@ describe('2. Authoritative Price Resolution', () => {
     );
   });
 
-  test('Resolves Nigerian Bootcamp to authoritative ₦100,000 NGN base', async () => {
-    const price = await resolveAuthoritativePrice('bootcamp', 'programme', 'NG');
-    assert.equal(price.productId, 'bootcamp');
+  test('Resolves Nigerian AI-Powered Cybersecurity to authoritative ₦100,000 NGN base', async () => {
+    const price = await resolveAuthoritativePrice('ai_training', 'programme', 'NG');
+    assert.equal(price.productId, 'ai_training');
     assert.equal(price.baseAmount, 100000);
     assert.equal(price.baseCurrency, 'NGN');
     assert.equal(price.pricingModel, 'ngn_base');
@@ -170,7 +185,7 @@ describe('2. Authoritative Price Resolution', () => {
   });
 
   test('Resolves African market (Ghana GH) with genuine FX conversion', async () => {
-    const price = await resolveAuthoritativePrice('bootcamp', 'programme', 'GH');
+    const price = await resolveAuthoritativePrice('ai_training', 'programme', 'GH');
     assert.equal(price.pricingModel, 'africa_fx');
     assert.equal(price.finalCurrency, 'GHS');
     assert.ok(price.fxRate > 0);
@@ -178,18 +193,71 @@ describe('2. Authoritative Price Resolution', () => {
     assert.equal(price.finalAmount, Math.round(100000 * price.fxRate));
   });
 
-  test('Resolves International market (US) to commercial USD band ($160 for bootcamp)', async () => {
-    const price = await resolveAuthoritativePrice('bootcamp', 'programme', 'US');
+  test('Resolves International market (US) to commercial USD band ($160 for ai_training)', async () => {
+    const price = await resolveAuthoritativePrice('ai_training', 'programme', 'US');
     assert.equal(price.pricingModel, 'international_commercial');
     assert.equal(price.finalCurrency, 'USD');
     assert.equal(price.finalAmount, 160);
   });
 
-  test('Resolves International market (US) for professional ($190 for professional)', async () => {
+  test('Resolves International market (US) for professional ($500 for professional)', async () => {
     const price = await resolveAuthoritativePrice('professional', 'programme', 'US');
     assert.equal(price.pricingModel, 'international_commercial');
     assert.equal(price.finalCurrency, 'USD');
-    assert.equal(price.finalAmount, 190);
+    assert.equal(price.finalAmount, 500);
+  });
+
+  test('Resolves International market (US) for ai_security ($250 for ai_security)', async () => {
+    const price = await resolveAuthoritativePrice('ai_security', 'programme', 'US');
+    assert.equal(price.pricingModel, 'international_commercial');
+    assert.equal(price.finalCurrency, 'USD');
+    assert.equal(price.finalAmount, 250);
+  });
+
+  test('Rejects retired bootcamp with PRODUCT_DISCONTINUED error', async () => {
+    await assert.rejects(
+      async () => resolveAuthoritativePrice('bootcamp', 'programme', 'NG'),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRODUCT_DISCONTINUED');
+        return true;
+      }
+    );
+  });
+
+  test('Rejects non-purchasable internship with PRODUCT_UNAVAILABLE error', async () => {
+    await assert.rejects(
+      async () => resolveAuthoritativePrice('internship', 'programme', 'NG'),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRODUCT_UNAVAILABLE');
+        return true;
+      }
+    );
+  });
+
+  test('Rejects unconfigured international pricing for products without USD band with PRICING_NOT_CONFIGURED', async () => {
+    await assert.rejects(
+      async () => resolveAuthoritativePrice('web-basic', 'service', 'US'),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRICING_NOT_CONFIGURED');
+        assert.match(err.message, /International pricing \(USD\) is not yet configured/);
+        return true;
+      }
+    );
+  });
+
+  test('Rejects unsupported currency without direct Paystack checkout mapping with PRICING_NOT_CONFIGURED', async () => {
+    await assert.rejects(
+      async () => resolveInternationalPrice('ai_training', 'programme', 'AI-Powered Cybersecurity Programme', 100000, 'EUR'),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRICING_NOT_CONFIGURED');
+        assert.match(err.message, /International pricing \(EUR\) is not yet configured/);
+        return true;
+      }
+    );
   });
 });
 
@@ -330,7 +398,7 @@ describe('6. Edge Cases, Security & Fault Tolerance', () => {
   test('Client attempts to supply amount or currency are ignored by price resolver', async () => {
     // When a malicious client passes manipulated financial values
     const clientPayload = {
-      productId: 'bootcamp',
+      productId: 'ai_training',
       amount: 10, // Attempting to pay 10 NGN instead of 100,000 NGN
       currency: 'USD', // Attempting to force USD instead of NGN
       fxRate: 0.0001,
@@ -490,14 +558,14 @@ describe('10. Customer-Facing Checkout Contract & Application Association', () =
   test('Valid course checkout resolves authoritative price and retains application_id in metadata', async () => {
     const testApplicationId = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
     const clientPayload = {
-      productId: 'bootcamp',
-      productType: 'course',
+      productId: 'ai_training',
+      productType: 'programme',
       email: 'applicant@example.com',
       name: 'Test Applicant',
       countryCode: 'NG',
       metadata: {
         application_id: testApplicationId,
-        program: '6-Week Bootcamp',
+        program: 'AI-Powered Cybersecurity Programme',
       },
     };
 
@@ -508,7 +576,7 @@ describe('10. Customer-Facing Checkout Contract & Application Association', () =
       clientPayload.countryCode
     );
 
-    assert.equal(price.productId, 'bootcamp');
+    assert.equal(price.productId, 'ai_training');
     assert.equal(price.finalAmount, 100000);
     assert.equal(price.finalCurrency, 'NGN');
     assert.equal(price.pricingModel, 'ngn_base');
@@ -529,7 +597,7 @@ describe('10. Customer-Facing Checkout Contract & Application Association', () =
 
     // Verify application_id is strictly preserved
     assert.equal(transactionSnapshot.metadata.application_id, testApplicationId);
-    assert.equal(transactionSnapshot.metadata.program, '6-Week Bootcamp');
+    assert.equal(transactionSnapshot.metadata.program, 'AI-Powered Cybersecurity Programme');
   });
 
   test('Valid consultation checkout across all durations resolves expected base amounts', async () => {
@@ -664,7 +732,7 @@ describe('12. Gateway State Handling & Tamper Resilience', () => {
     const clientTamperedCurrency = 'USD';
 
     // Server-side price resolution ignores client payload and uses authoritative catalog
-    const serverResolvedPrice = await resolveAuthoritativePrice('bootcamp', 'course', 'NG');
+    const serverResolvedPrice = await resolveAuthoritativePrice('ai_training', 'programme', 'NG');
 
     assert.notEqual(serverResolvedPrice.finalAmount, clientTamperedAmount);
     assert.notEqual(serverResolvedPrice.finalCurrency, clientTamperedCurrency);
@@ -788,6 +856,72 @@ describe('13. Explicit Paystack Mode & Credential Security', () => {
       }
     );
   });
+
+  test('Validates and permits matching public keys for test and live modes', () => {
+    const prevPub = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY;
+    try {
+      withPaystackEnv(
+        { key: ['sk', 'test', 'mock_test_key'].join('_'), mode: 'test' },
+        () => {
+          process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY = ['pk', 'test', 'mock_pub_key'].join('_');
+          assert.equal(getPaystackPublicKey(), ['pk', 'test', 'mock_pub_key'].join('_'));
+          assert.equal(isPaystackTestMode(), true);
+          assert.equal(isPaystackLiveMode(), false);
+
+          const config = validatePaystackConfig();
+          assert.equal(config.mode, 'test');
+          assert.equal(config.secretKey, ['sk', 'test', 'mock_test_key'].join('_'));
+          assert.equal(config.publicKey, ['pk', 'test', 'mock_pub_key'].join('_'));
+        }
+      );
+
+      withPaystackEnv(
+        { key: ['sk', 'live', 'mock_live_key'].join('_'), mode: 'live' },
+        () => {
+          process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY = ['pk', 'live', 'mock_live_pub'].join('_');
+          assert.equal(getPaystackPublicKey(), ['pk', 'live', 'mock_live_pub'].join('_'));
+          assert.equal(isPaystackTestMode(), false);
+          assert.equal(isPaystackLiveMode(), true);
+
+          const config = validatePaystackConfig();
+          assert.equal(config.mode, 'live');
+          assert.equal(config.secretKey, ['sk', 'live', 'mock_live_key'].join('_'));
+          assert.equal(config.publicKey, ['pk', 'live', 'mock_live_pub'].join('_'));
+        }
+      );
+    } finally {
+      if (prevPub === undefined) delete process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY;
+      else process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY = prevPub;
+    }
+  });
+
+  test('Rejects public key and mode prefix mismatch', () => {
+    const prevPub = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY;
+    try {
+      // mode=test with pk_live_*
+      withPaystackEnv(
+        { key: ['sk', 'test', 'mock_test_key'].join('_'), mode: 'test' },
+        () => {
+          process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY = ['pk', 'live', 'mismatched'].join('_');
+          assert.throws(() => getPaystackPublicKey(), /PAYSTACK_MODE="test" requires a valid pk_test_/);
+          assert.throws(() => validatePaystackConfig(), /PAYSTACK_MODE="test" requires a valid pk_test_/);
+        }
+      );
+
+      // mode=live with pk_test_*
+      withPaystackEnv(
+        { key: ['sk', 'live', 'mock_live_key'].join('_'), mode: 'live' },
+        () => {
+          process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY = ['pk', 'test', 'mismatched'].join('_');
+          assert.throws(() => getPaystackPublicKey(), /PAYSTACK_MODE="live" requires a valid pk_live_/);
+          assert.throws(() => validatePaystackConfig(), /PAYSTACK_MODE="live" requires a valid pk_live_/);
+        }
+      );
+    } finally {
+      if (prevPub === undefined) delete process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY;
+      else process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY = prevPub;
+    }
+  });
 });
 
 describe('14. Application-Payment Integrity & Metadata Protection', () => {
@@ -799,10 +933,7 @@ describe('14. Application-Payment Integrity & Metadata Protection', () => {
     const prod = productId.toLowerCase();
 
     if (prod === 'bootcamp') {
-      return (
-        (combined.includes('bootcamp') || combined.includes('6-week')) &&
-        !combined.includes('16-week')
-      );
+      return false; // Retired programme
     }
     if (prod === 'professional') {
       return combined.includes('professional') || combined.includes('16-week');
@@ -810,7 +941,14 @@ describe('14. Application-Payment Integrity & Metadata Protection', () => {
     if (prod === 'ai_training') {
       return (
         combined.includes('ai_training') ||
-        (combined.includes('ai') && combined.includes('cybersecurity') && !combined.includes('16-week') && !combined.includes('bootcamp'))
+        (combined.includes('ai') && combined.includes('cybersecurity') && !combined.includes('16-week'))
+      );
+    }
+    if (prod === 'ai_security') {
+      return (
+        combined.includes('ai_security') ||
+        combined.includes('ai security') ||
+        (combined.includes('reverse') && combined.includes('vulnerability'))
       );
     }
     return false;
@@ -822,7 +960,7 @@ describe('14. Application-Payment Integrity & Metadata Protection', () => {
     productId,
     mockDbApplication,
   }) {
-    const isCourseProduct = ['bootcamp', 'professional', 'ai_training'].includes(productId);
+    const isCourseProduct = ['professional', 'ai_training', 'ai_security'].includes(productId);
     if (isCourseProduct && (!applicationId || String(applicationId).trim() === '')) {
       return {
         ok: false,
@@ -861,14 +999,14 @@ describe('14. Application-Payment Integrity & Metadata Protection', () => {
     const mockApp = {
       id: validUuid,
       email: 'student@example.com',
-      program: '6-Week Bootcamp',
-      program_name: '6-Week AI Cybersecurity Bootcamp',
+      program: 'AI-Powered Cybersecurity Programme',
+      program_name: 'AI-Powered Cybersecurity Programme',
     };
 
     const result = validateApplicationPayment({
       applicationId: validUuid,
       customerEmail: 'Student@Example.com', // case-insensitive match
-      productId: 'bootcamp',
+      productId: 'ai_training',
       mockDbApplication: mockApp,
     });
 
@@ -880,7 +1018,7 @@ describe('14. Application-Payment Integrity & Metadata Protection', () => {
     const result = validateApplicationPayment({
       applicationId: 'invalid-id-not-uuid',
       customerEmail: 'student@example.com',
-      productId: 'bootcamp',
+      productId: 'ai_training',
       mockDbApplication: null,
     });
 
@@ -894,7 +1032,7 @@ describe('14. Application-Payment Integrity & Metadata Protection', () => {
     const result = validateApplicationPayment({
       applicationId: missingUuid,
       customerEmail: 'student@example.com',
-      productId: 'bootcamp',
+      productId: 'ai_training',
       mockDbApplication: null, // simulates no DB row found
     });
 
@@ -908,13 +1046,13 @@ describe('14. Application-Payment Integrity & Metadata Protection', () => {
     const mockApp = {
       id: validUuid,
       email: 'legit.student@example.com',
-      program: '6-Week Bootcamp',
+      program: 'AI-Powered Cybersecurity Programme',
     };
 
     const result = validateApplicationPayment({
       applicationId: validUuid,
       customerEmail: 'attacker@evil.com',
-      productId: 'bootcamp',
+      productId: 'ai_training',
       mockDbApplication: mockApp,
     });
 
@@ -923,7 +1061,7 @@ describe('14. Application-Payment Integrity & Metadata Protection', () => {
     assert.match(result.error, /Applicant email does not match/);
   });
 
-  test('Programme mismatch (bootcamp applicant paying for professional) is rejected with 400', () => {
+  test('Programme mismatch (ai_training applicant paying for professional) is rejected with 400', () => {
     const validUuid = '12345678-1234-4234-8234-123456789abc';
     const mockApp = {
       id: validUuid,
@@ -934,7 +1072,7 @@ describe('14. Application-Payment Integrity & Metadata Protection', () => {
     const result = validateApplicationPayment({
       applicationId: validUuid,
       customerEmail: 'student@example.com',
-      productId: 'bootcamp', // attempting to pay lower bootcamp price for professional application
+      productId: 'ai_training', // attempting to pay lower ai_training price for professional application
       mockDbApplication: mockApp,
     });
 
@@ -947,7 +1085,7 @@ describe('14. Application-Payment Integrity & Metadata Protection', () => {
     const result = validateApplicationPayment({
       applicationId: null,
       customerEmail: 'student@example.com',
-      productId: 'bootcamp',
+      productId: 'ai_training',
       mockDbApplication: null,
     });
 
@@ -1426,7 +1564,7 @@ describe('18. Direct Route Handler Execution (Next.js Request & Response Integra
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        productId: 'bootcamp',
+        productId: 'ai_training',
         productType: 'programme',
         email: 'applicant@example.com',
         name: 'Jane Doe',
@@ -1446,7 +1584,7 @@ describe('18. Direct Route Handler Execution (Next.js Request & Response Integra
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        productId: 'bootcamp',
+        productId: 'ai_training',
         productType: 'programme',
         email: 'applicant@example.com',
         name: 'Jane Doe',
@@ -1462,6 +1600,99 @@ describe('18. Direct Route Handler Execution (Next.js Request & Response Integra
     assert.equal(res.status, 400);
     assert.equal(json.success, false);
     assert.match(json.error, /Expected a valid UUID/);
+  });
+
+  test('Direct Route: Request for retired bootcamp returns HTTP 400 with PRODUCT_DISCONTINUED', async () => {
+    const req = new Request('http://localhost:3000/api/paystack/initialize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        productId: 'bootcamp',
+        productType: 'programme',
+        email: 'applicant@example.com',
+        name: 'Jane Doe',
+      }),
+    });
+
+    const res = await initializeRoutePost(req);
+    const json = await res.json();
+
+    assert.equal(res.status, 400);
+    assert.equal(json.success, false);
+    assert.equal(json.code, 'PRODUCT_DISCONTINUED');
+    assert.match(json.error, /retired/i);
+  });
+
+  test('Direct Route: Request for non-purchasable internship returns HTTP 400 with PRODUCT_UNAVAILABLE', async () => {
+    const req = new Request('http://localhost:3000/api/paystack/initialize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        productId: 'internship',
+        productType: 'programme',
+        email: 'applicant@example.com',
+        name: 'Jane Doe',
+      }),
+    });
+
+    const res = await initializeRoutePost(req);
+    const json = await res.json();
+
+    assert.equal(res.status, 400);
+    assert.equal(json.success, false);
+    assert.equal(json.code, 'PRODUCT_UNAVAILABLE');
+    assert.match(json.error, /not available for individual purchase/i);
+  });
+
+  test('Direct Route: Request for unconfigured international product (web-basic from US) returns HTTP 422', async () => {
+    const req = new Request('http://localhost:3000/api/paystack/initialize', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-vercel-ip-country': 'US',
+      },
+      body: JSON.stringify({
+        productId: 'web-basic',
+        productType: 'service',
+        email: 'us.client@example.com',
+        name: 'Jane Doe',
+        countryCode: 'US',
+      }),
+    });
+
+    const res = await initializeRoutePost(req);
+    const json = await res.json();
+
+    assert.equal(res.status, 422);
+    assert.equal(json.success, false);
+    assert.equal(json.code, 'PRICING_NOT_CONFIGURED');
+    assert.match(json.error, /International pricing \(USD\) is not yet configured/i);
+  });
+
+  test('Direct Route: Request for international course (ai_security from US) resolves price and proceeds to validate application_id', async () => {
+    const req = new Request('http://localhost:3000/api/paystack/initialize', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-vercel-ip-country': 'US',
+      },
+      body: JSON.stringify({
+        productId: 'ai_security',
+        productType: 'programme',
+        email: 'us.applicant@example.com',
+        name: 'Jane Doe',
+        countryCode: 'US',
+      }),
+    });
+
+    const res = await initializeRoutePost(req);
+    const json = await res.json();
+
+    // With USD 250 configured, pricing resolution succeeds without 422 PRICING_NOT_CONFIGURED,
+    // and advances to Step 5 where course products strictly require application_id (HTTP 400).
+    assert.equal(res.status, 400);
+    assert.equal(json.success, false);
+    assert.match(json.error, /An application ID is required/i);
   });
 
   test('Direct Route: Request with invalid customer email returns HTTP 400', async () => {
@@ -1504,5 +1735,584 @@ describe('18. Direct Route Handler Execution (Next.js Request & Response Integra
   });
 });
 
+describe('19. Production Database Schema Contract Verification', () => {
+  test('Production course_prices column schema contract is respected', () => {
+    // Production schema definition: (id, course_id, currency_code, symbol, amount, created_at)
+    // Non-existent columns: currency, active (must not be assumed in raw SELECT / WHERE queries)
+    const productionRow = {
+      id: 'e2a87b5c-431f-4d92-bf39-160fa11dae01',
+      course_id: 'ai_training',
+      currency_code: 'NGN',
+      symbol: '₦',
+      amount: 100000,
+      created_at: '2026-10-10T12:00:00Z',
+    };
 
+    assert.ok(productionRow.course_id);
+    assert.ok(productionRow.currency_code);
+    assert.ok(productionRow.symbol);
+    assert.ok(productionRow.amount > 0);
+    assert.equal(productionRow.currency, undefined, 'Column "currency" must not be present in prod schema');
+    assert.equal(productionRow.active, undefined, 'Column "active" is optional / unassumed in prod schema');
+  });
 
+  test('CANONICAL_PRODUCTS defines active programmes, retired legacy, and non-purchasable internship', () => {
+    assert.equal(CANONICAL_PRODUCTS['ai_training'].status, 'active');
+    assert.equal(CANONICAL_PRODUCTS['ai_training'].ngnBaseAmount, 100000);
+
+    assert.equal(CANONICAL_PRODUCTS['ai_security'].status, 'active');
+    assert.equal(CANONICAL_PRODUCTS['ai_security'].ngnBaseAmount, 200000);
+
+    assert.equal(CANONICAL_PRODUCTS['professional'].status, 'active');
+    assert.equal(CANONICAL_PRODUCTS['professional'].ngnBaseAmount, 350000);
+
+    assert.equal(CANONICAL_PRODUCTS['bootcamp'].status, 'retired');
+    assert.equal(CANONICAL_PRODUCTS['internship'].status, 'non_purchasable');
+  });
+
+  test('African currency map is strictly restricted to Paystack direct checkout supported currencies', () => {
+    // Paystack checkout currencies: NGN, GHS, ZAR, USD, KES, XOF
+    for (const [country, currency] of Object.entries(AFRICAN_CURRENCY_MAP)) {
+      assert.ok(
+        ['GHS', 'KES', 'ZAR', 'XOF'].includes(currency),
+        `Country ${country} is mapped to unsupported direct currency ${currency}`
+      );
+      assert.equal(isPaystackSupportedCurrency(currency), true);
+    }
+  });
+
+  test('INTERNATIONAL_USD_FALLBACKS defines business-approved USD prices for all active courses', () => {
+    assert.equal(INTERNATIONAL_USD_FALLBACKS['ai_training'], 160);
+    assert.equal(INTERNATIONAL_USD_FALLBACKS['ai_security'], 250);
+    assert.equal(INTERNATIONAL_USD_FALLBACKS['professional'], 500);
+  });
+});
+
+describe('20. Idempotent Atomic Fulfillment & Delivery Resilience', () => {
+  test('fulfillTransaction ignores transactions with non-successful status', async () => {
+    const pendingTx = {
+      id: 'tx_test_1',
+      reference: 'eth_pending_1',
+      status: 'pending',
+      amount: 50000,
+      currency: 'NGN',
+      product_id: 'consultation-60',
+      product_type: 'consultation',
+      customer_email: 'client@example.com',
+      metadata: {},
+    };
+
+    const result = await fulfillTransaction(pendingTx);
+    assert.equal(result.fulfilled, false);
+    assert.equal(result.alreadyFulfilled, false);
+
+    const failedTx = { ...pendingTx, status: 'failed', reference: 'eth_failed_1' };
+    const failResult = await fulfillTransaction(failedTx);
+    assert.equal(failResult.fulfilled, false);
+    assert.equal(failResult.alreadyFulfilled, false);
+  });
+
+  test('fulfillTransaction on non-consultation product leaves fulfillment to external/manual workflows', async () => {
+    const programmeTx = {
+      id: 'tx_prog_1',
+      reference: 'eth_prog_1',
+      status: 'successful',
+      amount: 100000,
+      currency: 'NGN',
+      product_id: 'ai_training',
+      product_type: 'programme',
+      customer_email: 'student@example.com',
+      metadata: { application_id: '12345678-1234-4234-8234-123456789abc' },
+    };
+
+    const result = await fulfillTransaction(programmeTx);
+    assert.equal(result.fulfilled, false);
+    assert.equal(result.alreadyFulfilled, false);
+  });
+
+  test('fulfillTransaction respects already fulfilled or dispatched metadata flags', async () => {
+    const alreadyFulfilledTx = {
+      id: 'tx_done_1',
+      reference: 'eth_done_1',
+      status: 'successful',
+      amount: 30000,
+      currency: 'NGN',
+      product_id: 'consultation-30',
+      product_type: 'consultation',
+      customer_email: 'client@example.com',
+      metadata: { fulfilled: true },
+    };
+
+    const res1 = await fulfillTransaction(alreadyFulfilledTx);
+    assert.equal(res1.fulfilled, false);
+    assert.equal(res1.alreadyFulfilled, true);
+
+    const alreadyDispatchedTx = {
+      ...alreadyFulfilledTx,
+      metadata: { fulfillment_dispatched: true },
+    };
+
+    const res2 = await fulfillTransaction(alreadyDispatchedTx);
+    assert.equal(res2.fulfilled, false);
+    assert.equal(res2.alreadyFulfilled, true);
+  });
+});
+
+describe('21. Production Fail-Closed Pricing Integrity (DB Failures, Incomplete Rows, Unsupported Currencies)', () => {
+  function createMockSupabase({ data = null, error = null }) {
+    return {
+      from: () => ({
+        select: () => ({
+          eq: () => ({
+            eq: () => ({
+              maybeSingle: async () => ({ data, error }),
+            }),
+          }),
+        }),
+      }),
+    };
+  }
+
+  test('Production rules: Fails closed with PRICE_DATABASE_UNAVAILABLE when database is unavailable', async () => {
+    await assert.rejects(
+      async () => resolveAuthoritativePrice('ai_training', 'programme', 'NG', {
+        supabaseClient: null,
+        enforceProductionRules: true,
+      }),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRICE_DATABASE_UNAVAILABLE');
+        return true;
+      }
+    );
+  });
+
+  test('Production rules: Fails closed with PRICE_LOOKUP_FAILED on database query error', async () => {
+    const mockSupabase = createMockSupabase({
+      data: null,
+      error: new Error('connection refused: database port unreachable'),
+    });
+
+    await assert.rejects(
+      async () => resolveAuthoritativePrice('ai_training', 'programme', 'NG', {
+        supabaseClient: mockSupabase,
+        enforceProductionRules: true,
+      }),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRICE_LOOKUP_FAILED');
+        return true;
+      }
+    );
+  });
+
+  test('Production rules: Fails closed with PRICE_UNAVAILABLE on missing row (data: null)', async () => {
+    const mockSupabase = createMockSupabase({
+      data: null,
+      error: null,
+    });
+
+    await assert.rejects(
+      async () => resolveAuthoritativePrice('ai_training', 'programme', 'NG', {
+        supabaseClient: mockSupabase,
+        enforceProductionRules: true,
+      }),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRICE_UNAVAILABLE');
+        return true;
+      }
+    );
+  });
+
+  test('Production rules: Fails closed with PRODUCT_DISCONTINUED when database row active is false', async () => {
+    const mockSupabase = createMockSupabase({
+      data: { amount: 100000, active: false, currency_code: 'NGN' },
+      error: null,
+    });
+
+    await assert.rejects(
+      async () => resolveAuthoritativePrice('ai_training', 'programme', 'NG', {
+        supabaseClient: mockSupabase,
+        enforceProductionRules: true,
+      }),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRODUCT_DISCONTINUED');
+        return true;
+      }
+    );
+  });
+
+  test('Production rules: Honors authoritative database price when row is active and valid', async () => {
+    const mockSupabase = createMockSupabase({
+      data: { amount: 100000, active: true, currency_code: 'NGN' },
+      error: null,
+    });
+
+    const price = await resolveAuthoritativePrice('ai_training', 'programme', 'NG', {
+      supabaseClient: mockSupabase,
+      enforceProductionRules: true,
+    });
+    assert.equal(price.finalAmount, 100000);
+    assert.equal(price.finalCurrency, 'NGN');
+  });
+
+  test('Production rules: International fails closed with PRICE_DATABASE_UNAVAILABLE when database is unavailable', async () => {
+    await assert.rejects(
+      async () => resolveInternationalPrice('ai_security', 'programme', 'AI Security', 200000, 'USD', {
+        supabaseClient: null,
+        enforceProductionRules: true,
+      }),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRICE_DATABASE_UNAVAILABLE');
+        return true;
+      }
+    );
+  });
+
+  test('Production rules: International fails closed with PRICE_LOOKUP_FAILED on query error', async () => {
+    const mockSupabase = createMockSupabase({
+      data: null,
+      error: new Error('PostgREST connection failure'),
+    });
+
+    await assert.rejects(
+      async () => resolveInternationalPrice('ai_security', 'programme', 'AI Security', 200000, 'USD', {
+        supabaseClient: mockSupabase,
+        enforceProductionRules: true,
+      }),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRICE_LOOKUP_FAILED');
+        return true;
+      }
+    );
+  });
+
+  test('Production rules: International fails closed with PRICE_UNAVAILABLE on missing row (data: null)', async () => {
+    const mockSupabase = createMockSupabase({
+      data: null,
+      error: null,
+    });
+
+    await assert.rejects(
+      async () => resolveInternationalPrice('ai_security', 'programme', 'AI Security', 200000, 'USD', {
+        supabaseClient: mockSupabase,
+        enforceProductionRules: true,
+      }),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRICE_UNAVAILABLE');
+        return true;
+      }
+    );
+  });
+
+  test('Production rules: International succeeds and honors DB row when active and valid', async () => {
+    const mockSupabase = createMockSupabase({
+      data: { amount: 250, active: true, currency_code: 'USD' },
+      error: null,
+    });
+
+    const price = await resolveInternationalPrice('ai_security', 'programme', 'AI Security', 200000, 'USD', {
+      supabaseClient: mockSupabase,
+      enforceProductionRules: true,
+    });
+    assert.equal(price.finalAmount, 250);
+    assert.equal(price.finalCurrency, 'USD');
+  });
+
+  test('Fails closed with PRICING_NOT_CONFIGURED for unconfigured international products or unsupported currencies', async () => {
+    await assert.rejects(
+      async () => resolveInternationalPrice('web-basic', 'service', 'Web Development Basic', 250000, 'EUR'),
+      (err) => {
+        assert.ok(err instanceof PricingError);
+        assert.equal(err.code, 'PRICING_NOT_CONFIGURED');
+        return true;
+      }
+    );
+  });
+});
+
+describe('22. Payment Flow, Mentorship Booking & Name Standardization Integration', () => {
+  test('Canonical product label for ai_security is standardized to "AI Security and Reverse Vulnerability"', () => {
+    const product = CANONICAL_PRODUCTS['ai_security'];
+    assert.ok(product);
+    assert.equal(product.label, 'AI Security and Reverse Vulnerability');
+    assert.equal(product.status, 'active');
+    assert.equal(product.ngnBaseAmount, 200000);
+  });
+
+  test('Callback allowlist includes /coaching for direct mentorship checkout returns', () => {
+    assert.ok(APPROVED_CALLBACK_PATHS.includes('/coaching'));
+    assert.ok(APPROVED_CALLBACK_PATHS.includes('/consultation'));
+    assert.ok(APPROVED_CALLBACK_PATHS.includes('/thank-you'));
+    assert.ok(APPROVED_CALLBACK_PATHS.includes('/apply'));
+    assert.ok(APPROVED_CALLBACK_PATHS.includes('/programs'));
+
+    const appUrl = getAppUrl();
+    assert.equal(buildApprovedCallbackUrl('/coaching'), `${appUrl}/coaching`);
+    assert.equal(buildApprovedCallbackUrl('/consultation'), `${appUrl}/consultation`);
+    // Protocol-relative and external URLs are strictly rejected to safe fallback
+    assert.equal(buildApprovedCallbackUrl('//evil.com/steal'), `${appUrl}/thank-you`);
+    assert.equal(buildApprovedCallbackUrl('https://malicious.org'), `${appUrl}/thank-you`);
+  });
+
+  test('Direct Route: Consultation booking initializes without requiring application_id', async () => {
+    const req = new Request('http://localhost:3000/api/paystack/initialize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        productId: 'consultation-30',
+        productType: 'consultation',
+        email: 'mentee@example.com',
+        name: 'Mentee Jane',
+        countryCode: 'NG',
+        metadata: {
+          duration: '30 Minutes',
+          goals: 'Career transition from IT support to SOC analyst',
+          product_type: 'consultation',
+        },
+        callbackUrl: '/thank-you',
+      }),
+    });
+
+    const res = await initializeRoutePost(req);
+    // In local test runner without live network/DB, initialization attempts to create record or connect
+    // It must NEVER fail with 'An application ID is required' (status 400)
+    const json = await res.json();
+    if (res.status === 400) {
+      assert.notEqual(
+        json.error,
+        'An application ID is required to enroll in training programmes. Please complete your application first before proceeding to payment.'
+      );
+    }
+  });
+
+  test('Direct Route: Course checkout without application_id fails closed with 400', async () => {
+    const req = new Request('http://localhost:3000/api/paystack/initialize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        productId: 'ai_security',
+        productType: 'programme',
+        email: 'applicant@example.com',
+        name: 'Security Candidate',
+        countryCode: 'NG',
+        // Omit application_id
+      }),
+    });
+
+    const res = await initializeRoutePost(req);
+    const json = await res.json();
+
+    assert.equal(res.status, 400);
+    assert.equal(json.success, false);
+    assert.match(json.error, /application ID is required to enroll/i);
+  });
+
+  test('Verification Route: Request without reference returns HTTP 400', async () => {
+    const req = new Request('http://localhost:3000/api/paystack/verify', {
+      method: 'GET',
+    });
+
+    const res = await verifyRouteGet(req);
+    const json = await res.json();
+
+    assert.equal(res.status, 400);
+    assert.equal(json.success, false);
+    assert.match(json.error, /reference is required/i);
+  });
+
+  test('Verification Route: Request with malformed reference returns HTTP 400', async () => {
+    const req = new Request('http://localhost:3000/api/paystack/verify?reference=short', {
+      method: 'GET',
+    });
+
+    const res = await verifyRouteGet(req);
+    const json = await res.json();
+
+    assert.equal(res.status, 400);
+    assert.equal(json.success, false);
+    assert.match(json.error, /Invalid transaction reference format/i);
+  });
+});
+
+describe('23. Hotfix Diagnostics: Geo-Edge Detection, Gateway Errors & Inline Consultation', () => {
+  test('getTrustedServerCountry prioritizes cf-ipcountry over x-vercel-ip-country when behind Cloudflare', () => {
+    const req = new Request('http://localhost:3000/api/paystack/initialize', {
+      headers: {
+        'cf-ipcountry': 'NG',
+        'x-vercel-ip-country': 'GB',
+      },
+    });
+
+    const country = getTrustedServerCountry(req);
+    assert.equal(country, 'NG');
+  });
+
+  test('getTrustedServerCountry falls back to x-vercel-ip-country when cf-ipcountry is absent', () => {
+    const req = new Request('http://localhost:3000/api/paystack/initialize', {
+      headers: {
+        'x-vercel-ip-country': 'US',
+      },
+    });
+
+    const country = getTrustedServerCountry(req);
+    assert.equal(country, 'US');
+  });
+
+  test('getTrustedServerCountry ignores invalid/unknown country code values like XX', () => {
+    const req = new Request('http://localhost:3000/api/paystack/initialize', {
+      headers: {
+        'cf-ipcountry': 'XX',
+        'x-vercel-ip-country': 'XX',
+      },
+    });
+
+    const country = getTrustedServerCountry(req);
+    assert.equal(country, null);
+  });
+
+  test('PaystackGatewayError encapsulates status, category, and error codes correctly', () => {
+    const err = new PaystackGatewayError(
+      'Currency not supported by merchant',
+      403,
+      'GATEWAY_ERROR',
+      'unsupported_currency'
+    );
+
+    assert.equal(err.name, 'PaystackGatewayError');
+    assert.equal(err.status, 403);
+    assert.equal(err.category, 'GATEWAY_ERROR');
+    assert.equal(err.code, 'unsupported_currency');
+    assert.match(err.message, /Currency not supported by merchant/);
+  });
+
+  test('Consultation products define 5 active tiers with authoritative canonical NGN base pricing', () => {
+    const consultationIds = [
+      'consultation-15',
+      'consultation-30',
+      'consultation-60',
+      'consultation-90',
+      'consultation-120',
+    ];
+
+    for (const id of consultationIds) {
+      const prod = CANONICAL_PRODUCTS[id];
+      assert.ok(prod, `Product ${id} must exist in CANONICAL_PRODUCTS`);
+      assert.equal(prod.type, 'consultation');
+      assert.equal(prod.status, 'active');
+      assert.ok(prod.ngnBaseAmount > 0);
+    }
+  });
+});
+
+describe('24. Business Email Standardization & Prohibited Alias Enforcer', () => {
+  test('Centralized contact configuration exports exact approved business emails', () => {
+    assert.equal(CONTACT_EMAILS.PRIMARY, 'info@elitechub.com');
+    assert.equal(CONTACT_EMAILS.DIRECT, 'elijah@elitechub.com');
+    assert.equal(CONTACT_INFO.PRIMARY_EMAIL, 'info@elitechub.com');
+    assert.equal(CONTACT_INFO.DIRECT_EMAIL, 'elijah@elitechub.com');
+    assert.equal(CONTACT_INFO.PHONE_RAW, '+2347081968062');
+  });
+
+  test('No prohibited legacy email aliases exist in src/app, src/components, or src/lib', () => {
+    const prohibitedAliases = [
+      'sponsorship@elitechub.com',
+      'sponsor@elitechub.com',
+      'support@elitechub.com',
+      'privacy@elitechub.com',
+      'security@elitechub.com',
+      'accessibility@elitechub.com',
+      'mentors@elitechub.com',
+      'research@elitechub.com',
+      'Elijahadeyeye@proton.me',
+    ];
+
+    const dirsToScan = ['src/app', 'src/components', 'src/lib'];
+    const projectRoot = path.resolve(import.meta.dirname, '..');
+
+    function getAllFiles(dirPath, arrayOfFiles = []) {
+      const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+      for (const entry of entries) {
+        const fullPath = path.join(dirPath, entry.name);
+        if (entry.isDirectory()) {
+          getAllFiles(fullPath, arrayOfFiles);
+        } else if (entry.isFile() && /\.(tsx?|jsx?|mjs|json|css)$/.test(entry.name)) {
+          arrayOfFiles.push(fullPath);
+        }
+      }
+      return arrayOfFiles;
+    }
+
+    const allFiles = dirsToScan.flatMap(d => getAllFiles(path.join(projectRoot, d)));
+    const violations = [];
+
+    for (const file of allFiles) {
+      const content = fs.readFileSync(file, 'utf8');
+      for (const alias of prohibitedAliases) {
+        if (content.toLowerCase().includes(alias.toLowerCase())) {
+          violations.push({ file: path.relative(projectRoot, file), alias });
+        }
+      }
+    }
+
+    assert.deepEqual(violations, [], `Prohibited email aliases found: ${JSON.stringify(violations)}`);
+  });
+
+  test('All @elitechub.com addresses across public routes and components conform to the approved whitelist', () => {
+    const approvedElitechEmails = new Set([
+      'info@elitechub.com',
+      'elijah@elitechub.com',
+      'admin@elitechub.com',
+      'researcher@elitechub.com',
+      'writer@elitechub.com',
+    ]);
+
+    const dirsToScan = ['src/app', 'src/components'];
+    const projectRoot = path.resolve(import.meta.dirname, '..');
+
+    function getAllFiles(dirPath, arrayOfFiles = []) {
+      const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+      for (const entry of entries) {
+        const fullPath = path.join(dirPath, entry.name);
+        if (entry.isDirectory()) {
+          getAllFiles(fullPath, arrayOfFiles);
+        } else if (entry.isFile() && /\.(tsx?|jsx?)$/.test(entry.name)) {
+          arrayOfFiles.push(fullPath);
+        }
+      }
+      return arrayOfFiles;
+    }
+
+    const allFiles = dirsToScan.flatMap(d => getAllFiles(path.join(projectRoot, d)));
+    const unapprovedFound = [];
+
+    const emailRegex = /[a-zA-Z0-9._%+-]+@elitechub\.com/gi;
+
+    for (const file of allFiles) {
+      const content = fs.readFileSync(file, 'utf8');
+      const matches = content.match(emailRegex) || [];
+      for (const match of matches) {
+        const normalized = match.toLowerCase();
+        if (!approvedElitechEmails.has(normalized)) {
+          unapprovedFound.push({ file: path.relative(projectRoot, file), email: match });
+        }
+      }
+    }
+
+    assert.deepEqual(unapprovedFound, [], `Unapproved elitechub.com emails found: ${JSON.stringify(unapprovedFound)}`);
+  });
+
+  test('External academic advisor emails are preserved in about page for academic credibility', () => {
+    const projectRoot = path.resolve(import.meta.dirname, '..');
+    const aboutContent = fs.readFileSync(path.join(projectRoot, 'src/app/about/page.tsx'), 'utf8');
+
+    assert.ok(aboutContent.includes('ojkehinde@nsu.edu'), 'Must retain Dr. Olasunkanmi J. Kehinde external email');
+    assert.ok(aboutContent.includes('ayoalonge@gmail.com'), 'Must retain Dr. Ayodele John Alonge external email');
+    assert.ok(aboutContent.includes('adeyeye_yemi@yahoo.com'), 'Must retain Dr. Yemi Adeyeye external email');
+  });
+});

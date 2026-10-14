@@ -9,7 +9,7 @@ import { Shield, Brain, Network, Award, Lock, ChevronRight, Mail, Phone, Externa
 import { LinkedinLogo, PhosphorGlobe, PhosphorGraduationCap } from '@/components/PhosphorIcons';
 
 export const metadata: Metadata = {
-  title: "About Elitech Hub | Nigeria's Cybersecurity Training Leader | Lagos & Ibadan",
+  title: "About Us — Nigeria's Premier Cybersecurity Training Leader",
   description: "Driving Innovation Through AI, Cybersecurity, Research Excellence and Business Transformation.",
   keywords: ['about Elitech Hub', 'SMEDAN certified cybersecurity', 'CAC registered cybersecurity training', 'Elitech Hub founder', 'Elijah Adeyeye', 'cybersecurity training Nigeria', 'cybersecurity school Lagos'],
   openGraph: {
@@ -54,7 +54,7 @@ export default function AboutPage() {
       name: 'Elijah Adeyeye',
       jobTitle: 'Founder & CEO',
       worksFor: { '@type': 'Organization', name: 'Elitech Hub', url: 'https://www.elitechub.com' },
-      url: 'https://www.elitechub.com/about',
+      url: 'https://www.elitechub.com/founder',
     },
   ];
 
@@ -245,7 +245,7 @@ export default function AboutPage() {
               </div>
 
               <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                <a href="mailto:Elijahadeyeye@proton.me" className="premium-button">
+                <a href="mailto:elijah@elitechub.com" className="premium-button">
                   <Mail size={16} /> Email
                 </a>
                 <a href="https://wa.me/2347081968062" className="premium-button-outline">

@@ -6,14 +6,15 @@ import type { Metadata } from "next";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Writers | Elitech Hub",
+  title: "Contributing Writers & Authors",
   description: "Meet the writers and authors contributing to Elitech Hub — cybersecurity experts, researchers, and technology professionals sharing their knowledge.",
   alternates: { canonical: "https://www.elitechub.com/writers" },
   openGraph: {
-    title: "Writers | Elitech Hub",
+    title: "Contributing Writers & Authors | Elitech Hub",
     description: "Meet the writers and authors contributing to Elitech Hub.",
     url: "https://www.elitechub.com/writers",
     siteName: "Elitech Hub",
+    images: [{ url: "https://www.elitechub.com/images/og-default.jpg" }],
     type: "website",
   },
   robots: { index: true, follow: true },

@@ -19,47 +19,75 @@ async function getServiceClient() {
 }
 
 import type { ProductType, ResolvedPrice } from './types';
+import { isPaystackLiveMode } from './config';
+
+export interface PricingResolutionOptions {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  supabaseClient?: any;
+  enforceProductionRules?: boolean;
+}
+
+export function isProductionPricingEnforced(options?: PricingResolutionOptions): boolean {
+  if (options?.enforceProductionRules !== undefined) {
+    return options.enforceProductionRules;
+  }
+  return process.env.NODE_ENV === 'production' || isPaystackLiveMode();
+}
 
 // ============================================================
 // CANONICAL NIGERIAN BASE PRICES (Fallback if DB is unreachable)
 // Matches migration 008_product_prices.sql & PricingContext.tsx
 // ============================================================
-interface ProductDefinition {
+export type ProductStatus = 'active' | 'retired' | 'non_purchasable';
+
+export interface ProductDefinition {
   id: string;
   type: ProductType;
   label: string;
   ngnBaseAmount: number;
+  status: ProductStatus;
 }
 
 export const CANONICAL_PRODUCTS: Record<string, ProductDefinition> = Object.freeze({
   // Training Programmes
   // NOTE: 'bootcamp' (6-Week Cybersecurity Bootcamp) is retired from active public offerings.
-  // Row preserved for historical transaction integrity only. New checkout is rejected via
-  // resolveAuthoritativePrice when DB returns active=false (DB-driven gate).
-  // Fallback ngnBaseAmount kept so legacy receipt lookups still resolve.
+  // Preserved for historical receipt lookup and transaction audit integrity only.
+  // New checkout is strictly rejected by resolveAuthoritativePrice with PRODUCT_DISCONTINUED.
   'bootcamp': {
     id: 'bootcamp',
     type: 'programme',
     label: '6-Week Cybersecurity Bootcamp',
     ngnBaseAmount: 100000,
+    status: 'retired',
   },
   'professional': {
     id: 'professional',
     type: 'programme',
     label: '16-Week Professional Cybersecurity Programme',
     ngnBaseAmount: 350000, // Updated: was ₦300,000
+    status: 'active',
   },
   'ai_training': {
     id: 'ai_training',
     type: 'programme',
     label: 'AI-Powered Cybersecurity Programme',
     ngnBaseAmount: 100000, // 6 weeks, ₦100,000
+    status: 'active',
   },
   'ai_security': {
     id: 'ai_security',
     type: 'programme',
     label: 'AI Security and Reverse Vulnerability',
     ngnBaseAmount: 200000, // 8 weeks, ₦200,000
+    status: 'active',
+  },
+  // Internship: Part of 16-Week Professional Programme, non-purchasable separately
+  'internship': {
+    id: 'internship',
+    type: 'programme',
+    label: 'Internship Experience',
+    ngnBaseAmount: 0,
+    status: 'non_purchasable',
   },
 
   // Consultations
@@ -68,46 +96,51 @@ export const CANONICAL_PRODUCTS: Record<string, ProductDefinition> = Object.free
     type: 'consultation',
     label: 'Cybersecurity Consultation – 15 Minutes',
     ngnBaseAmount: 15000,
+    status: 'active',
   },
   'consultation-30': {
     id: 'consultation-30',
     type: 'consultation',
     label: 'Cybersecurity Consultation – 30 Minutes',
     ngnBaseAmount: 30000,
+    status: 'active',
   },
   'consultation-60': {
     id: 'consultation-60',
     type: 'consultation',
     label: 'Cybersecurity Consultation – 60 Minutes',
     ngnBaseAmount: 50000,
+    status: 'active',
   },
   'consultation-90': {
     id: 'consultation-90',
     type: 'consultation',
     label: 'Cybersecurity Consultation – 90 Minutes',
     ngnBaseAmount: 70000,
+    status: 'active',
   },
   'consultation-120': {
     id: 'consultation-120',
     type: 'consultation',
     label: 'Cybersecurity Consultation – 120 Minutes',
     ngnBaseAmount: 100000,
+    status: 'active',
   },
 
   // Services
-  'web-basic': { id: 'web-basic', type: 'service', label: 'Web Development – Basic', ngnBaseAmount: 250000 },
-  'web-dynamic': { id: 'web-dynamic', type: 'service', label: 'Web Development – Dynamic', ngnBaseAmount: 350000 },
-  'web-business': { id: 'web-business', type: 'service', label: 'Web Development – Business', ngnBaseAmount: 400000 },
-  'web-ecommerce': { id: 'web-ecommerce', type: 'service', label: 'Web Development – E-Commerce', ngnBaseAmount: 700000 },
-  'chatbot-basic': { id: 'chatbot-basic', type: 'service', label: 'AI Chatbot – Basic', ngnBaseAmount: 300000 },
-  'chatbot-standard': { id: 'chatbot-standard', type: 'service', label: 'AI Chatbot – Standard', ngnBaseAmount: 500000 },
-  'chatbot-premium': { id: 'chatbot-premium', type: 'service', label: 'AI Chatbot – Premium', ngnBaseAmount: 800000 },
-  'script-basic': { id: 'script-basic', type: 'service', label: 'Custom Script – Basic', ngnBaseAmount: 300000 },
-  'script-standard': { id: 'script-standard', type: 'service', label: 'Custom Script – Standard', ngnBaseAmount: 500000 },
-  'script-premium': { id: 'script-premium', type: 'service', label: 'Custom Script – Premium', ngnBaseAmount: 800000 },
-  'pentest-basic': { id: 'pentest-basic', type: 'service', label: 'Penetration Testing – Basic', ngnBaseAmount: 300000 },
-  'pentest-standard': { id: 'pentest-standard', type: 'service', label: 'Penetration Testing – Standard', ngnBaseAmount: 500000 },
-  'pentest-premium': { id: 'pentest-premium', type: 'service', label: 'Penetration Testing – Premium', ngnBaseAmount: 800000 },
+  'web-basic': { id: 'web-basic', type: 'service', label: 'Web Development – Basic', ngnBaseAmount: 250000, status: 'active' },
+  'web-dynamic': { id: 'web-dynamic', type: 'service', label: 'Web Development – Dynamic', ngnBaseAmount: 350000, status: 'active' },
+  'web-business': { id: 'web-business', type: 'service', label: 'Web Development – Business', ngnBaseAmount: 400000, status: 'active' },
+  'web-ecommerce': { id: 'web-ecommerce', type: 'service', label: 'Web Development – E-Commerce', ngnBaseAmount: 700000, status: 'active' },
+  'chatbot-basic': { id: 'chatbot-basic', type: 'service', label: 'AI Chatbot – Basic', ngnBaseAmount: 300000, status: 'active' },
+  'chatbot-standard': { id: 'chatbot-standard', type: 'service', label: 'AI Chatbot – Standard', ngnBaseAmount: 500000, status: 'active' },
+  'chatbot-premium': { id: 'chatbot-premium', type: 'service', label: 'AI Chatbot – Premium', ngnBaseAmount: 800000, status: 'active' },
+  'script-basic': { id: 'script-basic', type: 'service', label: 'Custom Script – Basic', ngnBaseAmount: 300000, status: 'active' },
+  'script-standard': { id: 'script-standard', type: 'service', label: 'Custom Script – Standard', ngnBaseAmount: 500000, status: 'active' },
+  'script-premium': { id: 'script-premium', type: 'service', label: 'Custom Script – Premium', ngnBaseAmount: 800000, status: 'active' },
+  'pentest-basic': { id: 'pentest-basic', type: 'service', label: 'Penetration Testing – Basic', ngnBaseAmount: 300000, status: 'active' },
+  'pentest-standard': { id: 'pentest-standard', type: 'service', label: 'Penetration Testing – Standard', ngnBaseAmount: 500000, status: 'active' },
+  'pentest-premium': { id: 'pentest-premium', type: 'service', label: 'Penetration Testing – Premium', ngnBaseAmount: 800000, status: 'active' },
 });
 
 // Product alias mapping for common synonyms
@@ -127,11 +160,13 @@ export const PRODUCT_ALIASES: Record<string, string> = {
 };
 
 // African Country Code -> ISO Currency Map
+// Strictly mapped to currencies directly supported by Paystack checkout (GHS, KES, ZAR, XOF).
 export const AFRICAN_CURRENCY_MAP: Record<string, string> = {
-  GH: 'GHS', KE: 'KES', ZA: 'ZAR', EG: 'EGP', TZ: 'TZS', UG: 'UGX', RW: 'RWF',
+  GH: 'GHS', // Ghana
+  KE: 'KES', // Kenya
+  ZA: 'ZAR', // South Africa
+  // WAEMU member states using West African CFA franc (XOF)
   SN: 'XOF', CI: 'XOF', BF: 'XOF', ML: 'XOF', NE: 'XOF', TG: 'XOF', BJ: 'XOF', GW: 'XOF',
-  CM: 'XAF', TD: 'XAF', CF: 'XAF', CG: 'XAF', GQ: 'XAF', GA: 'XAF',
-  MA: 'MAD', DZ: 'DZD', TN: 'TND', MZ: 'MZN', ZM: 'ZMW', AO: 'AOA', MG: 'MGA', SO: 'SOS', ET: 'ETB',
 };
 
 export const AFRICAN_COUNTRY_CODES = new Set([
@@ -159,14 +194,16 @@ export const INTERNATIONAL_COMMERCIAL_COUNTRIES = new Set([
  * Returns null if running in an environment without edge geolocation headers.
  */
 export function getTrustedServerCountry(request: Request): string | null {
-  const vercelCountry = request.headers.get('x-vercel-ip-country')?.trim().toUpperCase();
-  if (vercelCountry && vercelCountry.length === 2 && vercelCountry !== 'XX') {
-    return vercelCountry;
-  }
-
+  // 1. Cloudflare CF-IPCountry header represents the real visitor IP's country at the outermost CDN edge
   const cfCountry = request.headers.get('cf-ipcountry')?.trim().toUpperCase();
   if (cfCountry && cfCountry.length === 2 && cfCountry !== 'XX') {
     return cfCountry;
+  }
+
+  // 2. Vercel x-vercel-ip-country header (direct fallback when request bypasses Cloudflare)
+  const vercelCountry = request.headers.get('x-vercel-ip-country')?.trim().toUpperCase();
+  if (vercelCountry && vercelCountry.length === 2 && vercelCountry !== 'XX') {
+    return vercelCountry;
   }
 
   return null;
@@ -233,12 +270,15 @@ export const OFFLINE_FALLBACK_FX_RATES: Record<string, number> = {
   NGN: 1,
 };
 
-// Fallback international commercial pricing bands (USD)
-// NOTE: Preserves existing international pricing. No USD price invented for 'ai_security'.
-const INTERNATIONAL_USD_FALLBACKS: Record<string, number> = {
-  'bootcamp': 160,
-  'professional': 190,
+// Approved international commercial pricing bands (USD)
+// Business-approved prices for active programmes and consultations:
+//   - ai_training:  $160 USD
+//   - ai_security:  $250 USD
+//   - professional: $500 USD
+export const INTERNATIONAL_USD_FALLBACKS: Record<string, number> = {
+  'professional': 500,
   'ai_training': 160,
+  'ai_security': 250,
   'consultation-15': 25,
   'consultation-30': 45,
   'consultation-60': 75,
@@ -310,11 +350,13 @@ export class PricingError extends Error {
 /**
  * Resolves the authoritative product price server-side.
  * Rejects unavailable FX pricing without falling back silently to NGN.
+ * Rejects retired courses (PRODUCT_DISCONTINUED) and non-purchasable items (PRODUCT_UNAVAILABLE).
  */
 export async function resolveAuthoritativePrice(
   rawProductId: string,
   rawProductType?: string,
-  countryCode?: string
+  countryCode?: string,
+  options?: PricingResolutionOptions
 ): Promise<ResolvedPrice> {
   const productId = normalizeProductId(rawProductId);
   const productDef = CANONICAL_PRODUCTS[productId];
@@ -326,33 +368,102 @@ export async function resolveAuthoritativePrice(
     );
   }
 
+  // 1. Enforce product lifecycle gates
+  if (productDef.status === 'retired') {
+    throw new PricingError(
+      `Product "${productDef.label}" (${productId}) has been retired from active offerings and cannot be purchased.`,
+      'PRODUCT_DISCONTINUED'
+    );
+  }
+
+  if (productDef.status === 'non_purchasable') {
+    throw new PricingError(
+      `Product "${productDef.label}" (${productId}) is not available for individual purchase.`,
+      'PRODUCT_UNAVAILABLE'
+    );
+  }
+
   const productType = (rawProductType || productDef.type) as ProductType;
   const productLabel = productDef.label;
+  const mustEnforceProduction = isProductionPricingEnforced(options);
 
-  // 1. Fetch base NGN price (authoritative from DB or fallback)
+  // 2. Fetch base NGN price (authoritative from DB or fallback)
   let baseAmount = productDef.ngnBaseAmount;
   const baseCurrency = 'NGN';
 
-  try {
-    const supabase = await getServiceClient();
-    if (supabase) {
-      const { data, error } = await supabase
-        .from('course_prices')
-        .select('amount')
-        .eq('course_id', productId)
-        .eq('currency', 'NGN')
-        .eq('active', true)
-        .maybeSingle();
+  const supabase = options?.supabaseClient ?? (await getServiceClient());
 
-      if (!error && data?.amount) {
-        baseAmount = Number(data.amount);
-      }
-    }
-  } catch (err) {
-    console.warn('[Pricing] Supabase price lookup failed, using canonical fallback:', err);
+  if (!supabase && mustEnforceProduction) {
+    throw new PricingError(
+      'The pricing database is unavailable. Checkout is temporarily disabled.',
+      'PRICE_DATABASE_UNAVAILABLE'
+    );
   }
 
-  // 2. Determine geographic market
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('course_prices')
+        .select('amount, currency_code, course_id, active')
+        .eq('course_id', productId)
+        .eq('currency_code', 'NGN')
+        .maybeSingle();
+
+      if (error) {
+        console.error('[Pricing] Database query error for NGN price:', error.message);
+        if (mustEnforceProduction) {
+          throw new PricingError(
+            'The authoritative price could not be verified due to a database error. Please try again later.',
+            'PRICE_LOOKUP_FAILED'
+          );
+        }
+      }
+
+      if (data?.active === false) {
+        throw new PricingError(
+          `Product "${productDef.label}" (${productId}) has been retired from active offerings and cannot be purchased.`,
+          'PRODUCT_DISCONTINUED'
+        );
+      }
+
+      if (data?.amount !== undefined && data?.amount !== null) {
+        const parsed = Number(data.amount);
+        if (Number.isFinite(parsed) && parsed > 0) {
+          baseAmount = parsed;
+        } else if (mustEnforceProduction) {
+          throw new PricingError(
+            `Authoritative price data for "${productLabel}" (${productId}) is invalid in the database.`,
+            'INVALID_PRICE_DATA'
+          );
+        }
+      } else if (mustEnforceProduction) {
+        throw new PricingError(
+          `No active NGN price is configured in the database for "${productDef.label}" (${productId}).`,
+          'PRICE_UNAVAILABLE'
+        );
+      }
+    } catch (err) {
+      if (err instanceof PricingError) {
+        throw err;
+      }
+      if (mustEnforceProduction) {
+        throw new PricingError(
+          'The authoritative price could not be verified due to a database error. Please try again later.',
+          'PRICE_LOOKUP_FAILED'
+        );
+      }
+      console.warn('[Pricing] Supabase price lookup failed, using canonical fallback:', err);
+    }
+  }
+
+  if (!Number.isFinite(baseAmount) || baseAmount <= 0) {
+    throw new PricingError(
+      `Authoritative base price for "${productLabel}" (${productId}) is invalid.`,
+      'INVALID_PRICE_DATA'
+    );
+  }
+
+  // 3. Determine geographic market
   const country = (countryCode || 'NG').toUpperCase().trim();
 
   // A. NIGERIA (Canonical NGN base)
@@ -375,8 +486,8 @@ export async function resolveAuthoritativePrice(
     const targetCurrency = AFRICAN_CURRENCY_MAP[country];
 
     if (!targetCurrency) {
-      // African country without a specific local currency mapping uses USD
-      return resolveInternationalPrice(productId, productType, productLabel, baseAmount, 'USD');
+      // African country without a direct Paystack checkout currency mapping routes to USD commercial pricing
+      return resolveInternationalPrice(productId, productType, productLabel, baseAmount, 'USD', options);
     }
 
     // Resolve FX rate
@@ -391,6 +502,12 @@ export async function resolveAuthoritativePrice(
     }
 
     const convertedAmount = Math.round(baseAmount * fxRate);
+    if (!Number.isFinite(convertedAmount) || convertedAmount <= 0) {
+      throw new PricingError(
+        `Calculated amount for "${targetCurrency}" is invalid.`,
+        'INVALID_PRICE_DATA'
+      );
+    }
 
     return {
       productId,
@@ -406,56 +523,103 @@ export async function resolveAuthoritativePrice(
   }
 
   // C. INTERNATIONAL COMMERCIAL PRICING BANDS
-  // Map non-African countries to target commercial currencies
-  let intlCurrency = 'USD';
-  if (country === 'GB' || country === 'UK') intlCurrency = 'GBP';
-  else if (country === 'EU' || ['DE', 'FR', 'IT', 'ES', 'NL', 'BE', 'AT', 'IE', 'FI', 'PT'].includes(country)) intlCurrency = 'EUR';
-  else if (country === 'CA') intlCurrency = 'CAD';
-  else if (country === 'AU') intlCurrency = 'AUD';
-  else if (country === 'KW') intlCurrency = 'KWD';
-
-  return resolveInternationalPrice(productId, productType, productLabel, baseAmount, intlCurrency);
+  // All non-African international checkouts use approved USD commercial pricing
+  return resolveInternationalPrice(productId, productType, productLabel, baseAmount, 'USD', options);
 }
 
 /**
  * Resolves international commercial pricing band from DB or canonical fallbacks.
+ * Enforces business approved prices and fails closed with PRICING_NOT_CONFIGURED
+ * if no international price exists (never invents prices or defaults to generic numbers).
  */
-async function resolveInternationalPrice(
+export async function resolveInternationalPrice(
   productId: string,
   productType: ProductType,
   productLabel: string,
   baseAmount: number,
-  currency: string
+  currency: string = 'USD',
+  options?: PricingResolutionOptions
 ): Promise<ResolvedPrice> {
   let finalAmount: number | null = null;
+  const targetCurrency = currency.toUpperCase().trim();
+  const mustEnforceProduction = isProductionPricingEnforced(options);
 
-  try {
-    const supabase = await getServiceClient();
-    if (supabase) {
-      const { data, error } = await supabase
-        .from('course_prices')
-        .select('amount')
-        .eq('course_id', productId)
-        .eq('currency', currency)
-        .eq('active', true)
-        .maybeSingle();
+  const supabase = options?.supabaseClient ?? (await getServiceClient());
 
-      if (!error && data?.amount) {
-        finalAmount = Number(data.amount);
-      }
-    }
-  } catch (err) {
-    console.warn(`[Pricing] International price query for ${currency} failed:`, err);
+  if (!supabase && mustEnforceProduction) {
+    throw new PricingError(
+      'The pricing database is unavailable. Checkout is temporarily disabled.',
+      'PRICE_DATABASE_UNAVAILABLE'
+    );
   }
 
-  if (finalAmount === null) {
-    if (currency === 'USD' && INTERNATIONAL_USD_FALLBACKS[productId]) {
-      finalAmount = INTERNATIONAL_USD_FALLBACKS[productId];
-    } else {
-      // Default to USD international band if target currency row is not yet seeded
-      finalAmount = INTERNATIONAL_USD_FALLBACKS[productId] || 160;
-      currency = 'USD';
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('course_prices')
+        .select('amount, currency_code, course_id, active')
+        .eq('course_id', productId)
+        .eq('currency_code', targetCurrency)
+        .maybeSingle();
+
+      if (error) {
+        console.error(`[Pricing] International price query for ${targetCurrency} failed:`, error.message);
+        if (mustEnforceProduction) {
+          throw new PricingError(
+            'The authoritative price could not be verified due to a database error. Please try again later.',
+            'PRICE_LOOKUP_FAILED'
+          );
+        }
+      }
+
+      if (data?.active === false) {
+        throw new PricingError(
+          `Product "${productLabel}" (${productId}) has been retired from active offerings and cannot be purchased.`,
+          'PRODUCT_DISCONTINUED'
+        );
+      }
+
+      if (data?.amount !== undefined && data?.amount !== null) {
+        const parsed = Number(data.amount);
+        if (Number.isFinite(parsed) && parsed > 0) {
+          finalAmount = parsed;
+        } else if (mustEnforceProduction) {
+          throw new PricingError(
+            `Authoritative international price data for "${productLabel}" (${productId}) is invalid in the database.`,
+            'INVALID_PRICE_DATA'
+          );
+        }
+      } else if (mustEnforceProduction) {
+        throw new PricingError(
+          `No active ${targetCurrency} price is configured in the database for "${productLabel}" (${productId}).`,
+          'PRICE_UNAVAILABLE'
+        );
+      }
+    } catch (err) {
+      if (err instanceof PricingError) {
+        throw err;
+      }
+      if (mustEnforceProduction) {
+        throw new PricingError(
+          'The authoritative price could not be verified due to a database error. Please try again later.',
+          'PRICE_LOOKUP_FAILED'
+        );
+      }
+      console.warn(`[Pricing] International price query for ${targetCurrency} failed:`, err);
     }
+  }
+
+  if (finalAmount === null && !mustEnforceProduction) {
+    if (targetCurrency === 'USD' && INTERNATIONAL_USD_FALLBACKS[productId] !== undefined) {
+      finalAmount = INTERNATIONAL_USD_FALLBACKS[productId];
+    }
+  }
+
+  if (finalAmount === null || !Number.isFinite(finalAmount) || finalAmount <= 0) {
+    throw new PricingError(
+      `International pricing (${targetCurrency}) is not yet configured for "${productLabel}" (${productId}). Please contact support or register locally.`,
+      'PRICING_NOT_CONFIGURED'
+    );
   }
 
   return {
@@ -467,6 +631,6 @@ async function resolveInternationalPrice(
     pricingModel: 'international_commercial',
     fxRate: null,
     finalAmount,
-    finalCurrency: currency,
+    finalCurrency: targetCurrency,
   };
 }

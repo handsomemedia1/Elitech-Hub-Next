@@ -70,7 +70,7 @@ export default function AdvancedUploadPortal() {
       
       const response = await fetch(`https://api.crossref.org/works/${encodeURIComponent(cleanDoi)}`, {
         headers: {
-          'User-Agent': 'ElitechHub/1.0 (mailto:Elijah@elitechub.com)'
+          'User-Agent': 'ElitechHub/1.0 (mailto:elijah@elitechub.com)'
         }
       });
       
