@@ -17,6 +17,9 @@ function parseReliableDate(dateStr?: string | null): string | undefined {
   }
 }
 
+// Enable Incremental Static Regeneration (hourly) so newly published database records automatically reflect in sitemap.xml
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.elitechub.com';
 
