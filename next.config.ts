@@ -385,6 +385,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "**.supabase.co",
       },
+      {
+        protocol: "https",
+        hostname: "www.elitechub.com",
+      },
+      {
+        protocol: "https",
+        hostname: "elitechub.com",
+      },
     ],
   },
   async headers() {

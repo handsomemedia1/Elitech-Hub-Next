@@ -41,6 +41,11 @@ export const revalidate = 60; // Revalidate every 60 seconds
       authorCanonicalUrl = `https://www.elitechub.com/founder`;
     }
   
+    const rawThumbnail = post.thumbnail || 'https://www.elitechub.com/images/og-default.jpg';
+    const absoluteThumbnail = rawThumbnail.startsWith('http')
+      ? rawThumbnail
+      : `https://www.elitechub.com${rawThumbnail.startsWith('/') ? '' : '/'}${rawThumbnail}`;
+
     return {
       title: post.title,
       description: post.excerpt || "Cybersecurity insights from Elitech Hub.",
@@ -50,7 +55,7 @@ export const revalidate = 60; // Revalidate every 60 seconds
         description: post.excerpt || "",
         images: [
           {
-            url: post.thumbnail || 'https://www.elitechub.com/images/og-default.jpg',
+            url: absoluteThumbnail,
             width: 1200,
             height: 630,
             alt: post.title,
@@ -63,15 +68,15 @@ export const revalidate = 60; // Revalidate every 60 seconds
         authors: authorCanonicalUrl ? [authorCanonicalUrl] : undefined,
         siteName: "Elitech Hub",
       },
-    twitter: {
-      card: "summary_large_image",
-      title: post.title,
-      description: post.excerpt || "",
-      images: [post.thumbnail || 'https://www.elitechub.com/images/og-default.jpg'],
-    },
-    alternates: { canonical: `https://www.elitechub.com/blog/${slug}` },
-  };
-}
+      twitter: {
+        card: "summary_large_image",
+        title: post.title,
+        description: post.excerpt || "",
+        images: [absoluteThumbnail],
+      },
+      alternates: { canonical: `https://www.elitechub.com/blog/${slug}` },
+    };
+  }
 
 function estimateReadTime(wordCount: number | null): string {
   if (!wordCount) return "5 min read";
@@ -101,7 +106,7 @@ export default async function BlogPostPage({
 
   const { data: post, error } = await supabase
     .from("blog_posts")
-    .select("id, title, slug, excerpt, content, category, author, thumbnail, published_at, created_at, updated_at, views, tags, word_count, writer_id, writers(id, display_name, name, slug, avatar_url, professional_title, is_public, status, bio, full_bio)")
+    .select("id, title, slug, excerpt, content, category, author, thumbnail, published_at, created_at, updated_at, views, tags, word_count, status, writer_id, writers(id, display_name, name, slug, avatar_url, professional_title, is_public, status, bio, full_bio)")
     .eq("slug", slug)
     .eq("published", true)
     .single();
@@ -132,12 +137,17 @@ export default async function BlogPostPage({
     url: "https://www.elitechub.com",
   };
 
+  const rawPostThumb = post.thumbnail || 'https://www.elitechub.com/images/og-default.jpg';
+  const absolutePostThumb = rawPostThumb.startsWith('http')
+    ? rawPostThumb
+    : `https://www.elitechub.com${rawPostThumb.startsWith('/') ? '' : '/'}${rawPostThumb}`;
+
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: post.title,
     description: post.excerpt,
-    image: post.thumbnail ? [post.thumbnail] : [],
+    image: absolutePostThumb ? [absolutePostThumb] : [],
     datePublished: post.published_at || post.created_at,
     dateModified: post.updated_at || post.published_at || post.created_at,
     author: {
