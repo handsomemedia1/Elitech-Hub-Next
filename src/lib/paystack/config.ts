@@ -131,6 +131,8 @@ export const APPROVED_CALLBACK_PATHS = Object.freeze([
   '/consultation',
   '/coaching',
   '/programs',
+  '/before-cybersecurity',
+  '/before-cybersecurity/dashboard',
 ] as const);
 
 /**

@@ -214,6 +214,30 @@ describe('2. Authoritative Price Resolution', () => {
     assert.equal(price.finalAmount, 250);
   });
 
+  test('Resolves Nigerian Before Cybersecurity to authoritative ₦25,000 NGN base', async () => {
+    const price = await resolveAuthoritativePrice('before-cybersecurity', 'book', 'NG');
+    assert.equal(price.productId, 'before-cybersecurity');
+    assert.equal(price.productType, 'book');
+    assert.equal(price.baseAmount, 25000);
+    assert.equal(price.baseCurrency, 'NGN');
+    assert.equal(price.pricingModel, 'ngn_base');
+    assert.equal(price.finalAmount, 25000);
+    assert.equal(price.finalCurrency, 'NGN');
+  });
+
+  test('Resolves International market (US) for before-cybersecurity ($29 USD)', async () => {
+    const price = await resolveAuthoritativePrice('before-cybersecurity', 'book', 'US');
+    assert.equal(price.pricingModel, 'international_commercial');
+    assert.equal(price.finalCurrency, 'USD');
+    assert.equal(price.finalAmount, 29);
+  });
+
+  test('Normalizes before-cybersecurity aliases (before_cybersecurity, beforecybersecurity)', () => {
+    assert.equal(normalizeProductId('before_cybersecurity'), 'before-cybersecurity');
+    assert.equal(normalizeProductId('beforecybersecurity'), 'before-cybersecurity');
+    assert.equal(normalizeProductId('before-cybersecurity-book'), 'before-cybersecurity');
+  });
+
   test('Rejects retired bootcamp with PRODUCT_DISCONTINUED error', async () => {
     await assert.rejects(
       async () => resolveAuthoritativePrice('bootcamp', 'programme', 'NG'),
@@ -1855,6 +1879,24 @@ describe('20. Idempotent Atomic Fulfillment & Delivery Resilience', () => {
     const res2 = await fulfillTransaction(alreadyDispatchedTx);
     assert.equal(res2.fulfilled, false);
     assert.equal(res2.alreadyFulfilled, true);
+  });
+
+  test('fulfillTransaction respects already fulfilled or dispatched flags for before-cybersecurity', async () => {
+    const alreadyFulfilledBookTx = {
+      id: 'tx_bc_done_1',
+      reference: 'eth_bc_done_1',
+      status: 'successful',
+      amount: 25000,
+      currency: 'NGN',
+      product_id: 'before-cybersecurity',
+      product_type: 'book',
+      customer_email: 'buyer@example.com',
+      metadata: { fulfilled: true },
+    };
+
+    const res = await fulfillTransaction(alreadyFulfilledBookTx);
+    assert.equal(res.fulfilled, false);
+    assert.equal(res.alreadyFulfilled, true);
   });
 });
 

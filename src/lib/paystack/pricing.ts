@@ -90,6 +90,15 @@ export const CANONICAL_PRODUCTS: Record<string, ProductDefinition> = Object.free
     status: 'non_purchasable',
   },
 
+  // Digital Products & Books
+  'before-cybersecurity': {
+    id: 'before-cybersecurity',
+    type: 'book',
+    label: 'Before Cybersecurity — Complete Interactive System',
+    ngnBaseAmount: 25000,
+    status: 'active',
+  },
+
   // Consultations
   'consultation-15': {
     id: 'consultation-15',
@@ -157,6 +166,9 @@ export const PRODUCT_ALIASES: Record<string, string> = {
   'ai_security_reverse': 'ai_security',
   'ai-security-reverse': 'ai_security',
   'reverse-vulnerability': 'ai_security',
+  'before_cybersecurity': 'before-cybersecurity',
+  'beforecybersecurity': 'before-cybersecurity',
+  'before-cybersecurity-book': 'before-cybersecurity',
 };
 
 // African Country Code -> ISO Currency Map
@@ -284,6 +296,7 @@ export const INTERNATIONAL_USD_FALLBACKS: Record<string, number> = {
   'consultation-60': 75,
   'consultation-90': 105,
   'consultation-120': 140,
+  'before-cybersecurity': 29,
 };
 
 // In-memory cache for live FX rates (1 hour TTL)
@@ -436,6 +449,8 @@ export async function resolveAuthoritativePrice(
             'INVALID_PRICE_DATA'
           );
         }
+      } else if (productId === 'before-cybersecurity' || productType === 'book') {
+        baseAmount = productDef.ngnBaseAmount;
       } else if (mustEnforceProduction) {
         throw new PricingError(
           `No active NGN price is configured in the database for "${productDef.label}" (${productId}).`,
@@ -588,6 +603,10 @@ export async function resolveInternationalPrice(
             `Authoritative international price data for "${productLabel}" (${productId}) is invalid in the database.`,
             'INVALID_PRICE_DATA'
           );
+        }
+      } else if (productId === 'before-cybersecurity' || productType === 'book') {
+        if (targetCurrency === 'USD' && INTERNATIONAL_USD_FALLBACKS[productId] !== undefined) {
+          finalAmount = INTERNATIONAL_USD_FALLBACKS[productId];
         }
       } else if (mustEnforceProduction) {
         throw new PricingError(

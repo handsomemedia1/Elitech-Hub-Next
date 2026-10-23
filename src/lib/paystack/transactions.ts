@@ -283,7 +283,12 @@ export async function fulfillTransaction(
     return { fulfilled: false, alreadyFulfilled: false };
   }
 
-  if (transaction.product_type !== 'consultation') {
+  const isConsultation = transaction.product_type === 'consultation';
+  const isBeforeCybersecurity =
+    transaction.product_id === 'before-cybersecurity' ||
+    transaction.product_type === 'book';
+
+  if (!isConsultation && !isBeforeCybersecurity) {
     console.info(
       `[Fulfillment] Product type "${transaction.product_type}" requires external/manual fulfillment (${transaction.reference}).`
     );
@@ -355,36 +360,96 @@ export async function fulfillTransaction(
       }
     };
 
-    const { sendConsultationBookingConfirmation, sendConsultationAdminNotification } =
-      await import('@/lib/email');
-    const duration = (workingMetadata.duration as string) || 'Consultation Session';
-    const goals = (workingMetadata.goals as string) || undefined;
-    const phone = (workingMetadata.phone as string) || undefined;
+    if (isConsultation) {
+      const { sendConsultationBookingConfirmation, sendConsultationAdminNotification } =
+        await import('@/lib/email');
+      const duration = (workingMetadata.duration as string) || 'Consultation Session';
+      const goals = (workingMetadata.goals as string) || undefined;
+      const phone = (workingMetadata.phone as string) || undefined;
 
-    if (workingMetadata.customer_confirmation_sent !== true) {
-      await sendConsultationBookingConfirmation({
-        to: transaction.customer_email,
-        name: transaction.customer_name || 'Valued Client',
-        duration,
-        reference: transaction.reference,
-        amount: transaction.amount,
-        currency: transaction.currency,
-      });
-      await persistCheckpoint({ customer_confirmation_sent: true });
-    }
+      if (workingMetadata.customer_confirmation_sent !== true) {
+        await sendConsultationBookingConfirmation({
+          to: transaction.customer_email,
+          name: transaction.customer_name || 'Valued Client',
+          duration,
+          reference: transaction.reference,
+          amount: transaction.amount,
+          currency: transaction.currency,
+        });
+        await persistCheckpoint({ customer_confirmation_sent: true });
+      }
 
-    if (workingMetadata.admin_notification_sent !== true) {
-      await sendConsultationAdminNotification({
-        customerName: transaction.customer_name || 'Valued Client',
-        customerEmail: transaction.customer_email,
-        duration,
-        reference: transaction.reference,
-        amount: transaction.amount,
-        currency: transaction.currency,
-        goals,
-        phone,
-      });
-      await persistCheckpoint({ admin_notification_sent: true });
+      if (workingMetadata.admin_notification_sent !== true) {
+        await sendConsultationAdminNotification({
+          customerName: transaction.customer_name || 'Valued Client',
+          customerEmail: transaction.customer_email,
+          duration,
+          reference: transaction.reference,
+          amount: transaction.amount,
+          currency: transaction.currency,
+          goals,
+          phone,
+        });
+        await persistCheckpoint({ admin_notification_sent: true });
+      }
+    } else if (isBeforeCybersecurity) {
+      // 1. Resolve user ID (from transaction.user_id or lookup users table by email)
+      let targetUserId = transaction.user_id;
+      if (!targetUserId && transaction.customer_email) {
+        try {
+          const { data: userRow } = await supabase
+            .from('users')
+            .select('id')
+            .ilike('email', transaction.customer_email.trim())
+            .maybeSingle();
+          if (userRow?.id) {
+            targetUserId = userRow.id;
+          }
+        } catch (uErr) {
+          console.warn('[Fulfillment] Error finding user by email:', uErr);
+        }
+      }
+
+      // 2. Grant product entitlement if user account exists
+      if (targetUserId) {
+        try {
+          const { grantProductEntitlement } = await import('@/lib/before-cybersecurity/entitlements');
+          const grantResult = await grantProductEntitlement({
+            userId: targetUserId,
+            orderId: transaction.reference,
+            productSlug: 'before-cybersecurity',
+          });
+          await persistCheckpoint({
+            entitlement_granted: grantResult.success,
+            entitlement_id: grantResult.entitlementId || null,
+            entitlement_user_id: targetUserId,
+          });
+        } catch (gErr) {
+          console.error('[Fulfillment] Failed to grant Before Cybersecurity entitlement:', gErr);
+        }
+      } else {
+        await persistCheckpoint({
+          pending_account_link: true,
+          entitlement_target_email: transaction.customer_email,
+        });
+      }
+
+      // 3. Dispatch customer receipt email
+      if (workingMetadata.customer_confirmation_sent !== true && transaction.customer_email) {
+        try {
+          const { sendBeforeCybersecurityConfirmation } = await import('@/lib/email');
+          await sendBeforeCybersecurityConfirmation({
+            to: transaction.customer_email,
+            name: transaction.customer_name || 'Reader',
+            reference: transaction.reference,
+            amount: transaction.amount,
+            currency: transaction.currency,
+          });
+          await persistCheckpoint({ customer_confirmation_sent: true });
+        } catch (eErr) {
+          console.error('[Fulfillment] Failed to send Before Cybersecurity receipt email:', eErr);
+        }
+      }
     }
 
     workingMetadata = {

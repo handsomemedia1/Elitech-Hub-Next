@@ -79,6 +79,28 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Failed to create account' }, { status: 500 });
   }
 
+  // Automatic entitlement linking: Check if user previously purchased Before Cybersecurity
+  try {
+    const { data: pastTx } = await supabase
+      .from('transactions')
+      .select('reference')
+      .ilike('customer_email', emailResult.value)
+      .eq('product_id', 'before-cybersecurity')
+      .eq('status', 'successful')
+      .limit(1);
+
+    if (pastTx && pastTx.length > 0) {
+      const { grantProductEntitlement } = await import('@/lib/before-cybersecurity/entitlements');
+      await grantProductEntitlement({
+        userId: user.id,
+        orderId: pastTx[0].reference,
+        productSlug: 'before-cybersecurity',
+      });
+    }
+  } catch (err) {
+    console.warn('[Signup] Before Cybersecurity auto-entitlement check warning:', err);
+  }
+
   const token = signToken({ userId: user.id, email: user.email, tokenVersion: 0 });
 
   return NextResponse.json({

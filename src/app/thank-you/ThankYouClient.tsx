@@ -27,6 +27,7 @@ const PRODUCT_LABELS: Record<string, string> = {
   'consultation-60': 'Cybersecurity Consultation – 60 Minutes',
   'consultation-90': 'Cybersecurity Consultation – 90 Minutes',
   'consultation-120': 'Cybersecurity Consultation – 120 Minutes',
+  'before-cybersecurity': 'Before Cybersecurity — Complete Interactive System',
 };
 
 function formatProductName(id?: string): string {
@@ -243,6 +244,33 @@ function ThankYouContent() {
                 <strong>Onboarding &amp; Orientation:</strong> You will receive class schedules, Discord community invites, and lab setup guides.
               </li>
             </ol>
+          ) : verifiedTx?.product?.id === 'before-cybersecurity' || verifiedTx?.product?.type === 'book' ? (
+            <div>
+              <div style={{
+                background: 'rgba(195, 21, 28, 0.12)',
+                border: '1px solid rgba(195, 21, 28, 0.35)',
+                borderRadius: '8px',
+                padding: '1.25rem',
+                marginBottom: '1.5rem',
+                textAlign: 'left',
+              }}>
+                <h3 style={{ color: '#C3151C', margin: '0 0 0.5rem 0', fontSize: '1.1rem' }}>🎉 Access Unlocked!</h3>
+                <p style={{ color: '#E4E4E7', fontSize: '0.95rem', margin: 0, lineHeight: 1.6 }}>
+                  Your product entitlement for <strong>Before Cybersecurity</strong> has been activated. You now have full access to all 29 chapters, the complete assessment diagnostic, personalized report, 90-day deliverable roadmap, and downloadable PDF edition.
+                </p>
+              </div>
+              <ol className={styles.nextStepsList}>
+                <li>
+                  <strong>Open Workspace:</strong> Access the interactive guide reader and tracking tools on your product dashboard.
+                </li>
+                <li>
+                  <strong>Download Standalone PDF:</strong> Grab your offline PDF copy directly from your product dashboard or account page.
+                </li>
+                <li>
+                  <strong>Receipt Email:</strong> A confirmation receipt with order details has been dispatched to your email address.
+                </li>
+              </ol>
+            </div>
           ) : (
             <ol className={styles.nextStepsList}>
               <li>
@@ -263,9 +291,15 @@ function ThankYouContent() {
           >
             🖨️ Print Receipt
           </button>
-          <Link href="/programs" className={styles.btnPrimary}>
-            View All Programs
-          </Link>
+          {verifiedTx?.product?.id === 'before-cybersecurity' || verifiedTx?.product?.type === 'book' ? (
+            <Link href="/before-cybersecurity/dashboard" className={styles.btnPrimary}>
+              Go to Before Cybersecurity Dashboard →
+            </Link>
+          ) : (
+            <Link href="/programs" className={styles.btnPrimary}>
+              View All Programs
+            </Link>
+          )}
         </div>
 
         <p className={styles.helpText}>

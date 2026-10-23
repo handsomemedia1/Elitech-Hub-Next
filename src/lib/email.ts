@@ -466,3 +466,66 @@ export async function sendConsultationAdminNotification({
     return { success: false, error: err };
   }
 }
+
+// ─── BEFORE CYBERSECURITY PURCHASE CONFIRMATION ─────────────────────────────
+
+export async function sendBeforeCybersecurityConfirmation({
+  to,
+  name,
+  reference,
+  amount,
+  currency,
+}: {
+  to: string;
+  name: string;
+  reference: string;
+  amount: number;
+  currency: string;
+}) {
+  if (!isEmailConfigured()) {
+    console.info('[Email] RESEND_API_KEY is not configured; skipping Before Cybersecurity confirmation dispatch.');
+    return { success: false, skipped: true };
+  }
+  try {
+    const result = await resend.emails.send({
+      from: FROM,
+      to: [to],
+      reply_to: REPLY_TO,
+      subject: `📘 Before Cybersecurity Access Confirmed — Elitech Hub`,
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#1e293b;">
+          <h2 style="color:#c3151c;">Welcome to Before Cybersecurity! 📘</h2>
+          <p>Hi ${name},</p>
+          <p>Thank you for unlocking <strong>Before Cybersecurity — Complete Interactive System</strong>.</p>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;padding:20px;border-radius:10px;margin:20px 0;">
+            <p style="margin:4px 0;"><strong>Product:</strong> Before Cybersecurity (Orientation System)</p>
+            <p style="margin:4px 0;"><strong>Order Reference:</strong> <code style="background:#e2e8f0;padding:2px 6px;border-radius:4px;">${reference}</code></p>
+            <p style="margin:4px 0;"><strong>Amount Paid:</strong> ${currency} ${Number(amount).toLocaleString()}</p>
+          </div>
+          <h3 style="color:#0f172a;">What you have unlocked:</h3>
+          <ul style="padding-left:20px;line-height:1.6;">
+            <li><strong>Complete 29-Chapter Interactive Guide:</strong> Read every chapter with progress tracking.</li>
+            <li><strong>Diagnostic Assessment & Gap Analysis:</strong> Deep dive into your NIST NICE archetype and skill gaps.</li>
+            <li><strong>30/60/90-Day Actionable Roadmap:</strong> Concrete deliverables to execute your first 90 days.</li>
+            <li><strong>Standalone PDF Edition:</strong> Download your offline copy from your product dashboard.</li>
+          </ul>
+          <div style="text-align:center;margin:30px 0;">
+            <a href="https://www.elitechub.com/before-cybersecurity/dashboard" style="background:#c3151c;color:#ffffff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold;display:inline-block;">
+              Open Before Cybersecurity Workspace →
+            </a>
+          </div>
+          <p style="font-size:0.9rem;color:#64748b;">If you don't have an Elitech-Hub login account yet, simply create an account using this same email address (<code>${to}</code>) to link your access permanently.</p>
+          <p>Questions? Reply to this email or reach our team on WhatsApp at <a href="https://wa.me/2347081968062" style="color:#c3151c;">+234 708 196 8062</a>.</p>
+          <hr style="border:none;border-top:1px solid #e5e7eb;margin:20px 0;">
+          <p style="color:#9ca3af;font-size:12px;text-align:center;">
+            Elitech Hub Press — Nigeria's Premier AI Cybersecurity Platform<br>
+            <a href="https://www.elitechub.com" style="color:#c3151c;">elitechub.com</a>
+          </p>
+        </div>`,
+    });
+    return { success: true, id: result.data?.id };
+  } catch (err) {
+    console.error('[Email] Before Cybersecurity confirmation failed:', err);
+    return { success: false, error: err };
+  }
+}
