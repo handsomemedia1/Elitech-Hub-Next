@@ -13,7 +13,16 @@ export default function ScrollNavbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // Hide the public navbar on all dashboard/admin/writer/researcher routes
-  const isDashboard = pathname.startsWith('/admin') || pathname.startsWith('/writer') || pathname.startsWith('/researcher');
+  const isDashboard = 
+    pathname.startsWith('/admin') || 
+    pathname.startsWith('/writer') || 
+    pathname.startsWith('/researcher') ||
+    pathname.startsWith('/before-cybersecurity/dashboard') ||
+    pathname.startsWith('/before-cybersecurity/guide') ||
+    pathname.startsWith('/before-cybersecurity/report') ||
+    pathname.startsWith('/before-cybersecurity/roadmap') ||
+    pathname.startsWith('/before-cybersecurity/resources') ||
+    pathname.startsWith('/before-cybersecurity/account');
   
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
@@ -90,6 +99,7 @@ export default function ScrollNavbar() {
     {
       label: "Resources",
       dropdown: [
+        { href: "/before-cybersecurity", label: "Before Cybersecurity" },
         { href: "/resources", label: "Resources Library" },
         { href: "/laptops", label: "Laptops Catalog" },
         { href: "/about", label: "About Us" },

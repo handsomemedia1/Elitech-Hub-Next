@@ -22,6 +22,7 @@ export default function robots(): MetadataRoute.Robots {
           '/before-cybersecurity/guide',
           '/before-cybersecurity/resources',
           '/before-cybersecurity/assessment',
+          '/before-cybersecurity/results',
           '/testimonials/collect/',
           '/certificate/',
         ],

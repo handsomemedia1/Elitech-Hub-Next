@@ -31,6 +31,7 @@ describe('Elitech Hub Technical & On-Page SEO Suite', () => {
       '/before-cybersecurity/guide',
       '/before-cybersecurity/resources',
       '/before-cybersecurity/assessment',
+      '/before-cybersecurity/results',
       '/testimonials/collect/',
       '/certificate/'
     ];
@@ -320,4 +321,120 @@ describe('Elitech Hub Technical & On-Page SEO Suite', () => {
     assert.match(topicContent, /robots:\s*{\s*index:\s*false,\s*follow:\s*false\s*}/, 'Must set noindex robots on empty topics');
   });
 
+
+  test('13. Before Cybersecurity Product Technical SEO & Structured Data', () => {
+    const layoutPath = path.join(ROOT_DIR, 'src/app/before-cybersecurity/layout.tsx');
+    const layoutContent = fs.readFileSync(layoutPath, 'utf8');
+
+    // 1. Correct Title (without duplicate brand suffix)
+    assert.match(
+      layoutContent,
+      /title:\s*'Before Cybersecurity: What to Know Before Learning'/,
+      'Product layout title must not contain duplicate brand suffix'
+    );
+    assert.doesNotMatch(
+      layoutContent,
+      /title:.*\| Elitech-Hub/,
+      'Product layout title must not hardcode | Elitech-Hub'
+    );
+
+    // 2. Canonical URL consistency
+    assert.match(
+      layoutContent,
+      /canonical:\s*'https:\/\/www\.elitechub\.com\/before-cybersecurity'/,
+      'Canonical URL must target production domain'
+    );
+
+    // 3. Dedicated Social Preview Image
+    assert.match(
+      layoutContent,
+      /https:\/\/www\.elitechub\.com\/images\/og-before-cybersecurity\.jpg/,
+      'Open Graph image must point to dedicated product visual'
+    );
+
+    // 4. Server-rendered JSON-LD (native script, safe serialization, no next/script)
+    assert.doesNotMatch(
+      layoutContent,
+      /from 'next\/script'/,
+      'Must not use next/script for JSON-LD structured data'
+    );
+    assert.match(
+      layoutContent,
+      /<script\s+type="application\/ld\+json"/,
+      'Must use native script tag for server-rendered JSON-LD'
+    );
+    assert.match(
+      layoutContent,
+      /safeJsonLd/,
+      'Must use safe JSON serializer preventing script breakout'
+    );
+
+    // 5. Author attribution
+    assert.match(
+      layoutContent,
+      /name:\s*'Elijah Adegboyega Adeyeye'/,
+      'Author attribution must use Elijah Adegboyega Adeyeye'
+    );
+
+    // 6. Offer omitted until price lock confirmation
+    assert.doesNotMatch(
+      layoutContent,
+      /'@type':\s*'Offer'/,
+      'Unconfirmed commercial Offer schema must be omitted pending price sign-off'
+    );
+
+    // 7. Sitemap exclusion of private sub-routes
+    const sitemapPath = path.join(ROOT_DIR, 'src/app/sitemap.ts');
+    const sitemapContent = fs.readFileSync(sitemapPath, 'utf8');
+    assert.match(
+      sitemapContent,
+      /url:\s*`\${baseUrl}\/before-cybersecurity`/,
+      'Sitemap must include public landing route'
+    );
+    assert.doesNotMatch(
+      sitemapContent,
+      /before-cybersecurity\/assessment/,
+      'Sitemap must not include blocked /assessment'
+    );
+    assert.doesNotMatch(
+      sitemapContent,
+      /before-cybersecurity\/guide/,
+      'Sitemap must not include blocked /guide'
+    );
+
+    // 8. Sub-route noindex enforcement
+    const appLayoutPath = path.join(ROOT_DIR, 'src/app/before-cybersecurity/(app)/layout.tsx');
+    const appLayoutContent = fs.readFileSync(appLayoutPath, 'utf8');
+    assert.match(appLayoutContent, /index:\s*false/);
+
+    const assessmentLayoutPath = path.join(ROOT_DIR, 'src/app/before-cybersecurity/assessment/layout.tsx');
+    const assessmentLayoutContent = fs.readFileSync(assessmentLayoutPath, 'utf8');
+    assert.match(assessmentLayoutContent, /index:\s*false/);
+
+    const resultsLayoutPath = path.join(ROOT_DIR, 'src/app/before-cybersecurity/results/layout.tsx');
+    const resultsLayoutContent = fs.readFileSync(resultsLayoutPath, 'utf8');
+    assert.match(resultsLayoutContent, /index:\s*false/);
+
+    // 9. Navigation and Footer Discoverability
+    const navPath = path.join(ROOT_DIR, 'src/components/ScrollNavbar.tsx');
+    const navContent = fs.readFileSync(navPath, 'utf8');
+    assert.match(
+      navContent,
+      /href:\s*["']\/before-cybersecurity["']/,
+      'ScrollNavbar must link to /before-cybersecurity'
+    );
+    assert.match(
+      navContent,
+      /\/before-cybersecurity\/dashboard/,
+      'ScrollNavbar must exclude product application shell routes'
+    );
+
+    const footerPath = path.join(ROOT_DIR, 'src/components/Footer.tsx');
+    const footerContent = fs.readFileSync(footerPath, 'utf8');
+    assert.match(
+      footerContent,
+      /href=["']\/before-cybersecurity["']/,
+      'Footer must link to /before-cybersecurity'
+    );
+  });
 });
