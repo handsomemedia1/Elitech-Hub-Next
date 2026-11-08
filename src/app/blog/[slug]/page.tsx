@@ -8,6 +8,7 @@ import { getSupabaseServerClient } from "@/lib/supabase";
 import { Send, Briefcase, GraduationCap, MessageCircle, BookOpen } from "lucide-react";
 import { ArticleFeedback } from "@/components/ArticleFeedback";
 import { ViewTracker } from "@/components/ViewTracker";
+import { sanitizeArticleHtml } from "@/lib/sanitize-article";
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
@@ -31,16 +32,8 @@ export const revalidate = 60; // Revalidate every 60 seconds
       };
     }
   
-    const writerData = post.writers as any;
-    const isPublicWriter = writerData?.is_public === true && writerData?.status === "approved" && writerData?.slug;
-    
-    let authorCanonicalUrl: string | undefined;
-    if (isPublicWriter) {
-      authorCanonicalUrl = `https://www.elitechub.com/authors/${writerData.slug}`;
-    } else if (post.author?.toLowerCase().includes("elijah")) {
-      authorCanonicalUrl = `https://www.elitechub.com/founder`;
-    }
-  
+    const authorCanonicalUrl = resolveAuthor(post.author, post.writers).url;
+
     const rawThumbnail = post.thumbnail || 'https://www.elitechub.com/images/og-default.jpg';
     const absoluteThumbnail = rawThumbnail.startsWith('http')
       ? rawThumbnail
@@ -77,6 +70,44 @@ export const revalidate = 60; // Revalidate every 60 seconds
       alternates: { canonical: `https://www.elitechub.com/blog/${slug}` },
     };
   }
+
+const SITE = "https://www.elitechub.com";
+// Bylines that aren't a real person; these are credited to the organization.
+const GENERIC_AUTHORS = new Set(["admin", "writer", "elitech hub", ""]);
+
+type WriterRef = { slug?: string | null; is_public?: boolean | null; status?: string | null; display_name?: string | null; name?: string | null } | null;
+
+/**
+ * One source of truth for article authorship (used by metadata and JSON-LD).
+ * Only link a person to a profile that is actually theirs: a public writer
+ * profile, or /founder for the founder. Previously every non-public writer's
+ * post pointed at /founder, crediting their work to the wrong person.
+ */
+function resolveAuthor(byline: string | null | undefined, writers: unknown) {
+  const w = (Array.isArray(writers) ? writers[0] : writers) as WriterRef;
+  const isPublicWriter = !!(w?.is_public === true && w?.status === "approved" && w?.slug);
+  const name = (isPublicWriter ? w?.display_name || w?.name : null) || byline || "";
+  if (isPublicWriter) {
+    return { name, url: `${SITE}/authors/${w!.slug}`, isPerson: true };
+  }
+  if (name.toLowerCase().includes("elijah")) {
+    return { name, url: `${SITE}/founder`, isPerson: true };
+  }
+  if (GENERIC_AUTHORS.has(name.trim().toLowerCase())) {
+    return { name: "Elitech Hub", url: SITE, isPerson: false };
+  }
+  return { name, url: undefined, isPerson: true };
+}
+
+/** Escape "<" so a title like "</script>" can't break out of the JSON-LD tag. */
+function safeJsonLd(data: unknown): string {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
+function countWords(html: string | null | undefined): number {
+  if (!html) return 0;
+  return html.replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length;
+}
 
 function estimateReadTime(wordCount: number | null): string {
   if (!wordCount) return "5 min read";
@@ -124,12 +155,12 @@ export default async function BlogPostPage({
     .neq("slug", slug)
     .limit(3);
 
-  // Determine canonical author URL — only link to public profile if writer is approved + public
+  // Display logic below still uses writerData; schema authorship uses resolveAuthor.
   const writerData = post.writers as any;
   const isPublicWriter = writerData?.is_public === true && writerData?.status === "approved" && writerData?.slug;
-  const authorCanonicalUrl = isPublicWriter
-    ? `https://www.elitechub.com/authors/${writerData.slug}`
-    : `https://www.elitechub.com/founder`; // fallback for founder/admin-authored posts
+  const author = resolveAuthor(post.author, post.writers);
+  const cleanContent = sanitizeArticleHtml(post.content);
+  const wordCount = post.word_count || countWords(cleanContent);
 
   const elitechHubOrg = {
     "@type": "Organization",
@@ -150,13 +181,17 @@ export default async function BlogPostPage({
     image: absolutePostThumb ? [absolutePostThumb] : [],
     datePublished: post.published_at || post.created_at,
     dateModified: post.updated_at || post.published_at || post.created_at,
-    author: {
-      "@type": "Person",
-      name: isPublicWriter ? writerData.display_name : post.author,
-      url: authorCanonicalUrl,
-      ...(isPublicWriter && writerData.avatar_url ? { image: writerData.avatar_url } : {}),
-      worksFor: elitechHubOrg,
-    },
+    author: author.isPerson
+      ? {
+          "@type": "Person",
+          name: author.name,
+          ...(author.url ? { url: author.url } : {}),
+          ...(isPublicWriter && writerData.avatar_url ? { image: writerData.avatar_url } : {}),
+          worksFor: elitechHubOrg,
+        }
+      : { ...elitechHubOrg },
+    ...(wordCount ? { wordCount } : {}),
+    ...(post.category ? { articleSection: post.category } : {}),
     publisher: {
       "@type": "Organization",
       name: "Elitech Hub",
@@ -167,12 +202,26 @@ export default async function BlogPostPage({
     keywords: post.tags?.join(", "),
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE },
+      { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE}/blog` },
+      { "@type": "ListItem", position: 3, name: post.title, item: `${SITE}/blog/${slug}` },
+    ],
+  };
+
   return (
     <PageLayout>
       <ViewTracker postId={post.id} writerId={post.writer_id} />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(articleJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbJsonLd) }}
       />
 
       {/* ===== ARTICLE HERO ===== */}
@@ -196,7 +245,7 @@ export default async function BlogPostPage({
           </Link>
           <div className={styles.articleMeta}>
             <span className={styles.categoryTag} style={{ background: "#c3151c" }}>{post.category}</span>
-            <span className={styles.readTime}><i className="far fa-clock" /> {estimateReadTime(post.word_count)}</span>
+            <span className={styles.readTime}><i className="far fa-clock" /> {estimateReadTime(wordCount)}</span>
             <span className={styles.postDate}>
               Published {formatDate(post.published_at || post.created_at)}
               {post.updated_at && post.updated_at !== post.published_at && (
@@ -306,7 +355,7 @@ export default async function BlogPostPage({
           {post.content ? (
             <div
               className={styles.richContent}
-              dangerouslySetInnerHTML={{ __html: post.content }}
+              dangerouslySetInnerHTML={{ __html: cleanContent }}
             />
           ) : (
             <p className={styles.articleLead}>{post.excerpt}</p>

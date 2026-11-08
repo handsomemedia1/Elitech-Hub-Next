@@ -97,7 +97,13 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  if (path.startsWith('/researcher') && path !== '/researcher/login') {
+  // Only the researcher dashboard is private. A plain startsWith('/researcher')
+  // also matched /researcher-guidelines and public /researcher/[slug] profiles.
+  const RESEARCHER_DASHBOARD = ['/researcher/profile', '/researcher/submissions', '/researcher/submit'];
+  const isResearcherDashboard =
+    path === '/researcher' ||
+    RESEARCHER_DASHBOARD.some(p => path === p || path.startsWith(`${p}/`));
+  if (isResearcherDashboard) {
     if (!request.cookies.has('elitech_token')) {
       return NextResponse.redirect(new URL('/researcher/login', request.url));
     }

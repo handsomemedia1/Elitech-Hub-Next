@@ -24,7 +24,23 @@ const SYSTEM_PROMPT = `You are Elitech Hub's internal AI Assistant, talking dire
 Be concise, extremely helpful, and professional. You have full awareness of the LMS, CRM, and website programs.
 If asked to summarize stats or write an email, do it perfectly.`;
 
+// Telegram echoes the `secret_token` passed to setWebhook in this header on every
+// update. Without it, anyone could POST a forged update (with a spoofed from.id)
+// and trigger admin commands such as /lockdown. Fail closed if it isn't configured.
+function isFromTelegram(req: Request): boolean {
+    const expected = process.env.TELEGRAM_WEBHOOK_SECRET;
+    const received = req.headers.get('x-telegram-bot-api-secret-token');
+    if (!expected || !received) return false;
+    const a = Buffer.from(expected);
+    const b = Buffer.from(received);
+    return a.length === b.length && crypto.timingSafeEqual(a, b);
+}
+
 export async function POST(req: Request) {
+    if (!isFromTelegram(req)) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     try {
         const update = await req.json();
         

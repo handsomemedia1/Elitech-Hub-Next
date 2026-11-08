@@ -78,3 +78,8 @@ Elitech Hub combines hands-on defensive and offensive security tooling (PowerShe
 - Program descriptions, pricing, and curriculum details
 - FAQs about cybersecurity careers in Nigeria
 - Academic research papers and behavioral security publications
+
+## Machine-Readable Resources
+- Full index of pages and every article: https://www.elitechub.com/llms-full.txt
+- Sitemap: https://www.elitechub.com/sitemap.xml
+- RSS feed: https://www.elitechub.com/rss.xml

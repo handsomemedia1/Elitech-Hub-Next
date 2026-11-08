@@ -1,5 +1,47 @@
 import type { NextConfig } from "next";
 
+// [old path, new path]. Posts with a close equivalent go to that post;
+// retired auto-generated news/tutorial/scholarship posts go to /blog.
+const LEGACY_HTML_MAP: Array<[string, string]> = [
+  ['/ai-training.html', '/ai-training'],
+  ['/mentor-application.html', '/volunteer'],
+  ['/payment.html', '/programs'],
+  ['/portfolio.html', '/portfolio'],
+  ['/researcher-guidelines.html', '/researcher-guidelines'],
+  ['/security.html', '/security'],
+  ['/services.html', '/services'],
+  ['/uk-web.html', '/services/web-development'],
+  ['/volunteer.html', '/volunteer'],
+  // Crawlers and browsers request /favicon.ico by default; it was a 404.
+  ['/favicon.ico', '/images/logo.png'],
+  ['/feed.xml', '/rss.xml'],
+  ['/blog-posts/best-cybersecurity-training-nigeria-2026.html', '/programs'],
+  ['/blog-posts/how-to-start-cybersecurity-career-nigeria-no-experience.html', '/blog/how-to-get-your-first-cybersecurity-job-with-little-or-no-experience'],
+  ['/blog-posts/cybersecurity-salary-nigeria-2026.html', '/blog/can-you-get-a-cybersecurity-job-in-nigeria-or-abroad'],
+  ['/blog-posts/tutorial-home-lab-setup.html', '/blog/how-to-set-up-your-first-cybersecurity-lab-at-home-even-with-zero-it-experience'],
+  ['/blog-posts/tutorial-2026-01-20-mastering-kill-chain-analysis.html', '/blog/the-seven-phases-of-a-cyber-attack-mo1h84pt'],
+  ['/blog-posts/what-is-penetration-testing.html', '/services/penetration-testing'],
+  ['/blog-posts/ceh-vs-comptia-security-plus-nigeria.html', '/blog/can-you-get-a-cybersecurity-job-without-certifications'],
+  ['/blog-posts/career-2026-01-20-building-leadership-skills-in-security.html', '/blog'],
+  ['/blog-posts/ciso-priorities-for-2025.html', '/blog'],
+  ['/blog-posts/cybersecurity-scholarship-template-africa.html', '/blog'],
+  ['/blog-posts/news-2026-01-11-futurism.html', '/blog'],
+  ['/blog-posts/news-2026-01-11-slashdot.org.html', '/blog'],
+  ['/blog-posts/news-2026-01-20-cybersecurity-jobs-available-right-now-january-20-.html', '/blog'],
+  ['/blog-posts/scholarship-roundup-2026-01-11.html', '/blog'],
+  ['/blog-posts/scholarship-roundup-2026-01-20.html', '/blog'],
+  ['/blog-posts/tutorial-2026-01-20-asymmetric-encryption.html', '/blog'],
+  ['/blog-posts/tutorial-2026-01-20-introduction-to-incident-response-plan.html', '/blog'],
+  ['/blog-posts/tutorial-2026-01-20-understanding-and-preventing-sql-injection.html', '/blog'],
+  ['/blog-posts/tutorial-2026-01-21-introduction-to-dast-tools-tutorial.html', '/blog'],
+];
+
+const LEGACY_HTML_REDIRECTS = LEGACY_HTML_MAP.map(([source, destination]) => ({
+  source,
+  destination,
+  permanent: true,
+}));
+
 const nextConfig: NextConfig = {
   async redirects() {
     return [
@@ -367,6 +409,9 @@ const nextConfig: NextConfig = {
         destination: '/programs/cybersecurity-bootcamp',
         permanent: true,
       },
+      // Old static-site URLs that were still listed in the legacy sitemap.xml
+      // but had no redirect, so they returned 404 after the migration.
+      ...LEGACY_HTML_REDIRECTS,
     ];
   },
   images: {

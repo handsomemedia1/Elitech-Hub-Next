@@ -277,18 +277,17 @@ export default function RootLayout({
               publisher: {
                 '@id': 'https://www.elitechub.com/#organization',
               },
-              potentialAction: {
-                '@type': 'SearchAction',
-                target: {
-                  '@type': 'EntryPoint',
-                  urlTemplate:
-                    'https://www.elitechub.com/blog?q={search_term_string}',
-                },
-                'query-input': 'required name=search_term_string',
-              },
+              // SearchAction removed: /blog ignores ?q=, so it advertised a
+              // search URL that didn't work (and Google retired the sitelinks
+              // search box in 2024).
             }),
           }}
         />
+
+        {/* Feeds & AI knowledge files. Set here, not in metadata.alternates:
+            pages define their own alternates (canonical), which would replace it. */}
+        <link rel="alternate" type="application/rss+xml" title="Elitech Hub Blog" href="/rss.xml" />
+        <link rel="alternate" type="text/plain" title="LLM summary" href="/llms.txt" />
 
         {/* Font Awesome */}
         <link

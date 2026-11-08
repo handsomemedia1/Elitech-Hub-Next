@@ -70,13 +70,17 @@ export default function Chatbot() {
       // Add empty bot message we'll update in real-time
       setMessages(prev => [...prev, { id: botMsgId, role: 'assistant', content: '' }]);
 
+      // A network chunk can end mid-line; keep the unfinished tail until the
+      // next chunk arrives, otherwise half a "0:..." line fails to parse.
+      let buffered = '';
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
+        if (done && !buffered) break;
+        buffered += done ? '\n' : decoder.decode(value, { stream: true });
 
         // Vercel AI SDK streams data in lines: "0:\"text chunk\"\n" or plain text
-        const lines = chunk.split('\n');
+        const lines = buffered.split('\n');
+        buffered = lines.pop() ?? '';
         for (const line of lines) {
           if (line.startsWith('0:')) {
             // Extract text from format: 0:"some text"
