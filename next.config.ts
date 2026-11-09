@@ -412,6 +412,19 @@ const nextConfig: NextConfig = {
       // Old static-site URLs that were still listed in the legacy sitemap.xml
       // but had no redirect, so they returned 404 after the migration.
       ...LEGACY_HTML_REDIRECTS,
+      // Catch-alls: order matters, and these must stay after the exact rules above.
+      // Retired auto-generated posts have no equivalent article, so they go to /blog.
+      ...['news', 'scholarship-roundup', 'tutorial-2026', 'career-2026'].map((prefix) => ({
+        source: `/blog-posts/${prefix}-:rest`,
+        destination: '/blog',
+        permanent: true,
+      })),
+      // Every other old static URL for an article maps to the same slug under /blog.
+      {
+        source: '/blog-posts/:slug([^/]+)\\.html',
+        destination: '/blog/:slug',
+        permanent: true,
+      },
     ];
   },
   images: {
