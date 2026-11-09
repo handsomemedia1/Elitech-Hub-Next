@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import { GoogleTagManager } from '@next/third-parties/google';
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import InitialLoader from "@/components/InitialLoader";
@@ -10,8 +9,7 @@ import ScrollProgressBar from "@/components/ScrollProgressBar";
 import ScrollNavbar from "@/components/ScrollNavbar";
 import LeadPopup from "@/components/LeadPopup";
 import PublicWidgets from "@/components/PublicWidgets";
-import CloudflareAnalytics from "@/components/CloudflareAnalytics";
-import { Analytics } from "@vercel/analytics/next";
+import ConsentManager from "@/components/ConsentManager";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -121,7 +119,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en-NG" className={`${inter.variable} ${jetbrains.variable}`} suppressHydrationWarning>
-      <GoogleTagManager gtmId="GTM-KK4JHHMT" />
       <head>
 
         {/* === SCHEMA 1: Organization (Entity Graph) ===
@@ -296,19 +293,6 @@ export default function RootLayout({
           crossOrigin="anonymous"
           referrerPolicy="no-referrer"
         />
-
-        {/* Microsoft Clarity */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function(c,l,a,r,i,t,y){
-                  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-              })(window, document, "clarity", "script", "yfcljkdjxl");
-            `,
-          }}
-        />
       </head>
       <body suppressHydrationWarning>
         
@@ -321,8 +305,8 @@ export default function RootLayout({
           </SmoothScroll>
           <PublicWidgets />
         </PricingProvider>
-        <CloudflareAnalytics />
-        <Analytics />
+        {/* All analytics load from here, and only after the visitor accepts. */}
+        <ConsentManager />
       </body>
     </html>
   );

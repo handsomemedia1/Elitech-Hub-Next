@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { openCookieSettings } from "@/lib/consent";
 import styles from "./Footer.module.css";
 
 export default function Footer() {
@@ -95,6 +96,7 @@ export default function Footer() {
           <Link href="/policies">Privacy Policy</Link>
           <Link href="/policies#terms">Terms of Service</Link>
           <Link href="/policies#cookies">Cookie Policy</Link>
+          <button type="button" onClick={openCookieSettings}>Cookie Settings</button>
         </div>
       </div>
     </footer>
