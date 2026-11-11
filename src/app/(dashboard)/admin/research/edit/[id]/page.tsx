@@ -3,7 +3,7 @@
 import React, { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { CheckCircle2, ArrowLeft, Save } from 'lucide-react';
+import { CheckCircle2, ArrowLeft, Save } from '@/components/icons';
 import Link from 'next/link';
 import styles from '../../upload/upload.module.css';
 

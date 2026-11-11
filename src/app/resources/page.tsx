@@ -3,7 +3,7 @@ import { getSupabaseServerClient } from '@/lib/supabase';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import PageLayout from '@/components/PageLayout';
-import { FileText, Download, Tag, Calendar, User, Search, BookOpen, Clock, File } from 'lucide-react';
+import { FileText, Download, Tag, Calendar, User, Search, BookOpen, Clock, File } from '@/components/icons';
 import styles from './resources.module.css';
 
 export const metadata: Metadata = {

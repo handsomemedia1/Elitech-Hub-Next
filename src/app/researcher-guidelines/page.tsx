@@ -4,6 +4,7 @@ import layoutStyles from '@/components/PageLayout.module.css';
 import styles from './guidelines.module.css';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 import Link from 'next/link';
+import { BookOpen as IconBookOpen, Bot as IconBot, Brain as IconBrain, Database as IconDatabase, FileText as IconFileText, Key as IconKey, Laptop as IconLaptop, Lock as IconLock, Mail as IconMail, Network as IconNetwork, Rocket as IconRocket, Scale as IconScale, Search as IconSearch, Settings as IconSettings, ShieldCheck as IconShieldCheck, Tag as IconTag, TrendingUp as IconTrendingUp } from '@/components/icons';
 
 export const metadata: Metadata = {
   title: 'Researcher Guidelines',
@@ -24,7 +25,7 @@ export default function ResearcherGuidelinesPage() {
       <AnimateOnScroll>
         <div className={layoutStyles.pageHero} style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%)', minHeight: '40vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <h1 className={layoutStyles.pageTitle} style={{ color: 'white' }}>
-            <span style={{ fontSize: '1.2em', marginRight: '0.5rem' }}>📖</span> Researcher Guidelines
+            <IconBookOpen size="1em" className="inline-icon" aria-hidden="true" /> Researcher Guidelines
           </h1>
           <p className={layoutStyles.pageSubtitle} style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
             Everything you need to know about submitting and publishing research papers on Elitech Hub
@@ -39,7 +40,7 @@ export default function ResearcherGuidelinesPage() {
           <AnimateOnScroll>
             <div className={styles.guidelineSection}>
               <h2 className={styles.sectionTitle}>
-                <span>🚀</span> Getting Started
+                <IconRocket size="1em" className="inline-icon" aria-hidden="true" /> Getting Started
               </h2>
               <p className={styles.text}>
                 Welcome to the Elitech Hub Research Platform! We're excited to have you contribute to our growing body of cybersecurity, AI, and technology research.
@@ -64,23 +65,23 @@ export default function ResearcherGuidelinesPage() {
           <AnimateOnScroll>
             <div className={styles.guidelineSection}>
               <h2 className={styles.sectionTitle}>
-                <span>🏷️</span> Research Categories
+                <IconTag size="1em" className="inline-icon" aria-hidden="true" /> Research Categories
               </h2>
               <p className={styles.text}>
                 We accept research papers in the following categories:
               </p>
 
               <div className={styles.categoriesGrid}>
-                <div className={styles.categoryBadge}><span>🛡️</span> Cybersecurity</div>
-                <div className={styles.categoryBadge}><span>🧠</span> Cyberpsychology</div>
-                <div className={styles.categoryBadge}><span>🔒</span> Security Engineering</div>
-                <div className={styles.categoryBadge}><span>🤖</span> Artificial Intelligence</div>
-                <div className={styles.categoryBadge}><span>📈</span> Machine Learning</div>
-                <div className={styles.categoryBadge}><span>💾</span> Data Science</div>
-                <div className={styles.categoryBadge}><span>🕸️</span> Network Security</div>
-                <div className={styles.categoryBadge}><span>🔍</span> Digital Forensics</div>
-                <div className={styles.categoryBadge}><span>🔑</span> Cryptography</div>
-                <div className={styles.categoryBadge}><span>💻</span> Software Engineering</div>
+                <div className={styles.categoryBadge}><IconShieldCheck size="1em" className="inline-icon" aria-hidden="true" /> Cybersecurity</div>
+                <div className={styles.categoryBadge}><IconBrain size="1em" className="inline-icon" aria-hidden="true" /> Cyberpsychology</div>
+                <div className={styles.categoryBadge}><IconLock size="1em" className="inline-icon" aria-hidden="true" /> Security Engineering</div>
+                <div className={styles.categoryBadge}><IconBot size="1em" className="inline-icon" aria-hidden="true" /> Artificial Intelligence</div>
+                <div className={styles.categoryBadge}><IconTrendingUp size="1em" className="inline-icon" aria-hidden="true" /> Machine Learning</div>
+                <div className={styles.categoryBadge}><IconDatabase size="1em" className="inline-icon" aria-hidden="true" /> Data Science</div>
+                <div className={styles.categoryBadge}><IconNetwork size="1em" className="inline-icon" aria-hidden="true" /> Network Security</div>
+                <div className={styles.categoryBadge}><IconSearch size="1em" className="inline-icon" aria-hidden="true" /> Digital Forensics</div>
+                <div className={styles.categoryBadge}><IconKey size="1em" className="inline-icon" aria-hidden="true" /> Cryptography</div>
+                <div className={styles.categoryBadge}><IconLaptop size="1em" className="inline-icon" aria-hidden="true" /> Software Engineering</div>
               </div>
             </div>
           </AnimateOnScroll>
@@ -89,7 +90,7 @@ export default function ResearcherGuidelinesPage() {
           <AnimateOnScroll>
             <div className={styles.guidelineSection}>
               <h2 className={styles.sectionTitle}>
-                <span>📄</span> Submission Requirements
+                <IconFileText size="1em" className="inline-icon" aria-hidden="true" /> Submission Requirements
               </h2>
 
               <h3 className={styles.subTitle}>Paper Format</h3>
@@ -121,7 +122,7 @@ export default function ResearcherGuidelinesPage() {
           <AnimateOnScroll>
             <div className={styles.guidelineSection}>
               <h2 className={styles.sectionTitle}>
-                <span>⚙️</span> Review Process
+                <IconSettings size="1em" className="inline-icon" aria-hidden="true" /> Review Process
               </h2>
               <p className={styles.text}>
                 We maintain a rigorous but fast review process to ensure high-quality research is published promptly.
@@ -164,7 +165,7 @@ export default function ResearcherGuidelinesPage() {
           <AnimateOnScroll>
             <div className={styles.guidelineSection}>
               <h2 className={styles.sectionTitle}>
-                <span>⚖️</span> Ethics & Responsible Disclosure
+                <IconScale size="1em" className="inline-icon" aria-hidden="true" /> Ethics & Responsible Disclosure
               </h2>
               <p className={styles.text}>
                 Research involving vulnerabilities, exploits, or human subjects must adhere to strict ethical guidelines.
@@ -187,7 +188,7 @@ export default function ResearcherGuidelinesPage() {
                 Join our community of researchers and share your findings with the world.
               </p>
               <Link href="mailto:info@elitechub.com" className="btn btn-primary" style={{ background: '#7C3AED' }}>
-                <span style={{ marginRight: '0.5rem' }}>✉️</span> Email Your Submission
+                <IconMail size="1em" className="inline-icon" aria-hidden="true" /> Email Your Submission
               </Link>
             </div>
           </AnimateOnScroll>

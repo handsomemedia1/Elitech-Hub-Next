@@ -8,7 +8,7 @@ import {
   Bug, Server, Code, GitBranch, BookOpen, ChevronRight, 
   Terminal, ShieldCheck, CheckCircle2, ShieldAlert, FileCode2,
   Workflow, CheckSquare, Mail
-} from 'lucide-react';
+} from '@/components/icons';
 import CountUp from '@/components/CountUp';
 
 export const metadata = {

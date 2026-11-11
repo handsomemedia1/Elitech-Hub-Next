@@ -6,7 +6,7 @@ import styles from '../consultation/consultation.module.css';
 import ConsultationBookingSection from '../consultation/ConsultationBookingSection';
 import { 
   Target, ChevronDown, Brain, ShieldCheck, ShieldAlert
-} from 'lucide-react';
+} from '@/components/icons';
 
 export const metadata = {
   title: 'Personalised Cybersecurity Coaching & Mentorship',

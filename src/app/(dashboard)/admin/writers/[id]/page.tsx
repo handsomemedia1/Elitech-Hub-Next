@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Clock, Calendar, CheckCircle2, TrendingUp, BookOpen, PenTool } from 'lucide-react';
+import { ArrowLeft, Clock, Calendar, CheckCircle2, TrendingUp, BookOpen, PenTool } from '@/components/icons';
 import { supabase } from '@/lib/supabase';
 import styles from '../../admin.module.css';
 

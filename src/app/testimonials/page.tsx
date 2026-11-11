@@ -1,7 +1,7 @@
 import React from 'react';
 import PageLayout from '@/components/PageLayout';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
-import { Star, MessageCircle, Heart, Quote } from 'lucide-react';
+import { Star, MessageCircle, Heart, Quote } from '@/components/icons';
 import { getSupabaseServerClient } from '@/lib/supabase';
 import styles from '../about/about.module.css';
 import Link from 'next/link';

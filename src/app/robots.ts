@@ -5,7 +5,9 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: '*',
-        allow: ['/', '/research/', '/lab/', '/authors/', '/writers/'],
+        // /api/research/download is the citation_pdf_url on research papers; Google
+        // Scholar must be able to fetch it, so it is allowed despite /api/ below.
+        allow: ['/', '/research/', '/lab/', '/authors/', '/writers/', '/api/research/download'],
         disallow: [
           '/admin/',
           '/admin',

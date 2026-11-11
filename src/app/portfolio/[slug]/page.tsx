@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata, ResolvingMetadata } from 'next';
 import PageLayout from '@/components/PageLayout';
 import Link from 'next/link';
-import { ArrowLeft, ExternalLink, CheckCircle2, Zap, Shield, Search, Layout } from 'lucide-react';
+import { ArrowLeft, ExternalLink, CheckCircle2, Zap, Shield, Search, Layout } from '@/components/icons';
 
 type Props = {
   params: Promise<{ slug: string }>

@@ -4,8 +4,9 @@ import layoutStyles from '@/components/PageLayout.module.css';
 import styles from './services.module.css';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 import Link from 'next/link';
-import { ShieldCheck, GraduationCap, ArrowRight, Skull, Shield, Microscope, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, GraduationCap, ArrowRight, Skull, Shield, Microscope, CheckCircle2 } from '@/components/icons';
 import { HubCard } from '@/components/HubCard';
+import { Bot as IconBot, Globe as IconGlobe, Laptop as IconLaptop, ShieldCheck as IconShieldCheck } from '@/components/icons';
 
 
 export const metadata: Metadata = {
@@ -206,10 +207,10 @@ export default function ServicesPage() {
         </AnimateOnScroll>
         <AnimateOnScroll direction="up">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', maxWidth: '1100px', margin: '0 auto 1rem' }}>
-            <HubCard href="/services/web-development" icon="🌐" label="Web Development" sub="Custom websites & web apps" color="#3b82f6" />
-            <HubCard href="/services/ai-chatbots" icon="🤖" label="AI Chatbots & Agents" sub="GPT-4, Claude, Gemini apps" color="#a855f7" />
-            <HubCard href="/services/penetration-testing" icon="🛡️" label="Penetration Testing" sub="Web, network, mobile, cloud" color="#ef4444" />
-            <HubCard href="/services/custom-scripts" icon="💻" label="Custom Scripts" sub="Python, PowerShell, Bash" color="#10b981" />
+            <HubCard href="/services/web-development" icon={<IconGlobe size="1em" aria-hidden="true" />} label="Web Development" sub="Custom websites & web apps" color="#3b82f6" />
+            <HubCard href="/services/ai-chatbots" icon={<IconBot size="1em" aria-hidden="true" />} label="AI Chatbots & Agents" sub="GPT-4, Claude, Gemini apps" color="#a855f7" />
+            <HubCard href="/services/penetration-testing" icon={<IconShieldCheck size="1em" aria-hidden="true" />} label="Penetration Testing" sub="Web, network, mobile, cloud" color="#ef4444" />
+            <HubCard href="/services/custom-scripts" icon={<IconLaptop size="1em" aria-hidden="true" />} label="Custom Scripts" sub="Python, PowerShell, Bash" color="#10b981" />
           </div>
         </AnimateOnScroll>
       </section>

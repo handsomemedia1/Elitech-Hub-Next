@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Download, Upload, Printer } from 'lucide-react';
+import { Download, Upload, Printer } from '@/components/icons';
 import styles from './certificates.module.css';
 import { QRCodeSVG } from 'qrcode.react';
 import html2canvas from 'html2canvas';

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { PlusCircle, Search, Edit2, Trash2, BookOpen, Layers } from 'lucide-react';
+import { PlusCircle, Search, Edit2, Trash2, BookOpen, Layers } from '@/components/icons';
 import styles from './courses.module.css';
 
 import { fetchCoursesAction, deleteCourseAction } from './actions';

@@ -14,7 +14,7 @@ import {
   Upload,
   Bold, Italic, Strikethrough, Heading1, Heading2, Heading3, List, ListOrdered, Quote, Undo, Redo,
   Clock, BookOpen, Hash, Calendar, Link2, AlignLeft
-} from 'lucide-react';
+} from '@/components/icons';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import TiptapImage from '@tiptap/extension-image';

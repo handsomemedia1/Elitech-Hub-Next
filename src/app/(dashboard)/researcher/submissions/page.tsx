@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
-import { FileText, PlusCircle, Search } from 'lucide-react';
+import { FileText, PlusCircle, Search } from '@/components/icons';
 import styles from '../researcher.module.css';
 
 export default function ResearcherSubmissions() {

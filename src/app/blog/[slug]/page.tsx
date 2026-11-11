@@ -5,10 +5,11 @@ import { notFound } from "next/navigation";
 import PageLayout from "@/components/PageLayout";
 import styles from "./post.module.css";
 import { getSupabaseServerClient } from "@/lib/supabase";
-import { Send, Briefcase, GraduationCap, MessageCircle, BookOpen } from "lucide-react";
+import { Send, Briefcase, GraduationCap, MessageCircle, BookOpen } from '@/components/icons';
 import { ArticleFeedback } from "@/components/ArticleFeedback";
 import { ViewTracker } from "@/components/ViewTracker";
 import { sanitizeArticleHtml } from "@/lib/sanitize-article";
+import { ArrowLeft as IconArrowLeft, Clock as IconClock, Eye as IconEye, FacebookLogo as IconFacebookLogo, InstagramLogo as IconInstagramLogo, LinkedinLogo as IconLinkedinLogo, ThreadsLogo as IconThreadsLogo, TiktokLogo as IconTiktokLogo, WhatsappLogo as IconWhatsappLogo, XLogo as IconXLogo } from '@/components/icons';
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
@@ -241,11 +242,11 @@ export default async function BlogPostPage({
         )}
         <div className={styles.articleHeroInner}>
           <Link href="/blog" className={styles.backLink}>
-            <i className="fas fa-arrow-left" /> Back to Blog
+            <IconArrowLeft size="1em" aria-hidden="true" /> Back to Blog
           </Link>
           <div className={styles.articleMeta}>
             <span className={styles.categoryTag} style={{ background: "#c3151c" }}>{post.category}</span>
-            <span className={styles.readTime}><i className="far fa-clock" /> {estimateReadTime(wordCount)}</span>
+            <span className={styles.readTime}><IconClock size="1em" aria-hidden="true" /> {estimateReadTime(wordCount)}</span>
             <span className={styles.postDate}>
               Published {formatDate(post.published_at || post.created_at)}
               {post.updated_at && post.updated_at !== post.published_at && (
@@ -255,7 +256,7 @@ export default async function BlogPostPage({
               )}
             </span>
             {post.views > 0 && (
-              <span className={styles.readTime}><i className="fas fa-eye" /> {post.views} views</span>
+              <span className={styles.readTime}><IconEye size="1em" aria-hidden="true" /> {post.views} views</span>
             )}
           </div>
           <h1 className={styles.articleTitle}>{post.title}</h1>
@@ -380,25 +381,25 @@ export default async function BlogPostPage({
             <h4>Share this article</h4>
             <div className={styles.shareButtons}>
               <a href={`https://wa.me/?text=${encodeURIComponent(post.title + " " + `https://www.elitechub.com/blog/${slug}`)}`} target="_blank" rel="noopener noreferrer" className={styles.shareBtn}>
-                <i className="fab fa-whatsapp" /> WhatsApp
+                <IconWhatsappLogo size="1em" aria-hidden="true" /> WhatsApp
               </a>
               <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://www.elitechub.com/blog/${slug}`)}`} target="_blank" rel="noopener noreferrer" className={styles.shareBtn}>
-                <i className="fab fa-twitter" /> X (Twitter)
+                <IconXLogo size="1em" aria-hidden="true" /> X (Twitter)
               </a>
               <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://www.elitechub.com/blog/${slug}`)}`} target="_blank" rel="noopener noreferrer" className={styles.shareBtn}>
-                <i className="fab fa-linkedin" /> LinkedIn
+                <IconLinkedinLogo size="1em" aria-hidden="true" /> LinkedIn
               </a>
               <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://www.elitechub.com/blog/${slug}`)}`} target="_blank" rel="noopener noreferrer" className={styles.shareBtn}>
-                <i className="fab fa-facebook" /> Facebook
+                <IconFacebookLogo size="1em" aria-hidden="true" /> Facebook
               </a>
               <a href="https://www.threads.net/@elitechhub" target="_blank" rel="noopener noreferrer" className={styles.shareBtn}>
-                <i className="fab fa-threads" /> Threads
+                <IconThreadsLogo size="1em" aria-hidden="true" /> Threads
               </a>
               <a href="https://www.instagram.com/elitechhub" target="_blank" rel="noopener noreferrer" className={styles.shareBtn}>
-                <i className="fab fa-instagram" /> Instagram
+                <IconInstagramLogo size="1em" aria-hidden="true" /> Instagram
               </a>
               <a href="https://www.tiktok.com/@elitechhub" target="_blank" rel="noopener noreferrer" className={styles.shareBtn}>
-                <i className="fab fa-tiktok" /> TikTok
+                <IconTiktokLogo size="1em" aria-hidden="true" /> TikTok
               </a>
             </div>
           </div>

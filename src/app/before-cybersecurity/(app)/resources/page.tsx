@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { CURATED_RESOURCES, RESOURCE_CATEGORIES, CuratedResource } from '@/data/beforeCybersecurityResources';
+import { BookOpen as IconBookOpen } from '@/components/icons';
 
 export default function ResourcesPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -148,7 +149,7 @@ export default function ResourcesPage() {
 
               {res.bookChapterRef && (
                 <div style={{ fontSize: '0.8rem', color: '#71717A', marginBottom: '1rem' }}>
-                  📖 Linked: <span style={{ color: '#A1A1AA' }}>{res.bookChapterRef}</span>
+                  <IconBookOpen size="1em" className="inline-icon" aria-hidden="true" /> Linked: <span style={{ color: '#A1A1AA' }}>{res.bookChapterRef}</span>
                 </div>
               )}
             </div>

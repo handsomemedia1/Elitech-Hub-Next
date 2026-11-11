@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle } from '@/components/icons';
 import PageLayout from '@/components/PageLayout';
 
 export default function Error({

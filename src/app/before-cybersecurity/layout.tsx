@@ -62,14 +62,14 @@ export default function BeforeCybersecurityLayout({
         },
       },
       {
-        '@type': 'Product',
+        '@type': 'Book',
         '@id': 'https://www.elitechub.com/before-cybersecurity/#product',
+        bookFormat: 'https://schema.org/EBook',
         name: 'Before Cybersecurity',
         description:
           'Interactive cybersecurity orientation system featuring an authoritative 29-chapter guide, diagnostic archetype assessment, personalized gap analysis report, 30/60/90-day roadmap, and curated resource library.',
-        brand: {
-          '@type': 'Brand',
-          name: 'Elitech-Hub',
+        publisher: {
+          '@id': 'https://www.elitechub.com/#organization',
         },
         author: {
           '@id': 'https://www.elitechub.com/#founder',
@@ -77,7 +77,8 @@ export default function BeforeCybersecurityLayout({
         creator: {
           '@id': 'https://www.elitechub.com/#founder',
         },
-        // Note: Offer schema omitted pending formal business confirmation and approval of the launch price.
+        // Book, not Product: Google requires offers, reviews or ratings on Product,
+        // and no public price is confirmed for this guide.
       },
       {
         '@type': 'Person',
@@ -87,7 +88,11 @@ export default function BeforeCybersecurityLayout({
         worksFor: {
           '@id': 'https://www.elitechub.com/#organization',
         },
-        url: 'https://www.elitechub.com/about',
+        url: 'https://www.elitechub.com/founder',
+        sameAs: [
+          'https://orcid.org/0009-0005-4853-7813',
+          'https://www.quora.com/profile/Elijah-Adeyeye',
+        ],
         description:
           'Founder and lead instructor of Elitech Hub, working at the intersection of cybersecurity education, technical systems, and human behavior.',
       },

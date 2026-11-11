@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { X, ArrowRight, FlaskConical } from 'lucide-react';
+import { X, ArrowRight, FlaskConical } from '@/components/icons';
 import styles from './ResearchBanner.module.css';
 
 type BannerState = 'hidden' | 'expanded' | 'minimized';

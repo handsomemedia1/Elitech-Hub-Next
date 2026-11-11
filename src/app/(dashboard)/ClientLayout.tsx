@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { 
   LayoutDashboard, BookOpen, Users, PenTool, MessageSquare, 
   Settings, LogOut, Menu, X, FileText, FlaskConical, Award, DollarSign, Mail, Laptop, Star, UserCircle
-} from 'lucide-react';
+} from '@/components/icons';
 
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './dashboard.module.css';

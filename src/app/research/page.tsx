@@ -6,6 +6,7 @@ import AnimateOnScroll from '@/components/AnimateOnScroll';
 import Link from 'next/link';
 import ResearchList from '@/components/ResearchList';
 import { getSupabaseServerClient } from '@/lib/supabase';
+import { Microscope as IconMicroscope } from '@/components/icons';
 
 export const metadata: Metadata = {
   title: 'Cybersecurity Research & Publications in Nigeria',
@@ -134,7 +135,7 @@ export default async function ResearchPage() {
       <AnimateOnScroll>
         <div className={layoutStyles.pageHero} style={{ backgroundImage: 'linear-gradient(to bottom, rgba(15, 23, 42, 0.3), rgba(15, 23, 42, 0.8)), url(/assets/images/research-hero-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center', paddingBottom: featuredPaper ? '8rem' : '4rem' }}>
           <div style={{ display: 'inline-block', background: 'rgba(255, 255, 255, 0.1)', padding: '0.5rem 1.5rem', borderRadius: '3rem', marginBottom: '1.5rem', fontSize: '0.875rem', fontWeight: 800, letterSpacing: '0.1em', color: 'white' }}>
-            🔬 RESEARCH REPOSITORY
+            <IconMicroscope size="1em" className="inline-icon" aria-hidden="true" /> RESEARCH REPOSITORY
           </div>
           <h1 className={layoutStyles.pageTitle}>
             Elitech Hub <span className={layoutStyles.accentText}>Research</span>
@@ -254,7 +255,7 @@ export default async function ResearchPage() {
           {/* ── SUBMISSION CTA BANNER ── */}
           <AnimateOnScroll>
             <div className={styles.researchBanner} style={{ marginTop: '3rem' }}>
-              <span className={styles.bannerDecor}>🔬</span>
+              <span className={styles.bannerDecor}><IconMicroscope size="1em" className="inline-icon" aria-hidden="true" /></span>
               <h2 className={styles.researchBannerTitle}>Have Research to Share?</h2>
               <p className={styles.researchBannerText}>
                 Have relevant cybersecurity or technology research to share? Submit your work for consideration in the Elitech Hub Research Repository. Submissions are administratively reviewed before publication.

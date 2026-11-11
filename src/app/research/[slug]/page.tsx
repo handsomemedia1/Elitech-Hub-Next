@@ -5,7 +5,7 @@ import { getSupabaseServerClient } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import type { Metadata, ResolvingMetadata } from 'next';
 import PageLayout from '@/components/PageLayout';
-import { FileText, Download, Clock, ArrowLeft, Quote, User, BookOpen, Tag, Globe, Eye, Share2, Building2, Calendar, Award } from 'lucide-react';
+import { FileText, Download, Clock, ArrowLeft, Quote, User, BookOpen, Tag, Globe, Eye, Share2, Building2, Calendar, Award } from '@/components/icons';
 import Link from 'next/link';
 import styles from './paper.module.css';
 import CiteModal from '@/components/CiteModal';

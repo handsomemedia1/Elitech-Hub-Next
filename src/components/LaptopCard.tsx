@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, Cpu, HardDrive, Monitor, Battery } from 'lucide-react';
+import { ArrowRight, Cpu, HardDrive, Monitor, Battery } from '@/components/icons';
 import { Laptop } from '@/types/laptop';
 
 export function LaptopCard({ laptop }: { laptop: Laptop }) {

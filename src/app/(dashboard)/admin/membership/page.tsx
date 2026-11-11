@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Users, FlaskConical, CheckCircle, XCircle, Clock, Eye } from 'lucide-react';
+import { Users, FlaskConical, CheckCircle, XCircle, Clock, Eye } from '@/components/icons';
 import { fetchMembershipApplications, updateMembershipStatusAction } from './actions';
 
 type Application = {

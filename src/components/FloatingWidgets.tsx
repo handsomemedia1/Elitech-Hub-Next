@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShieldCheck, X } from "lucide-react";
+import { ShieldCheck, X } from '@/components/icons';
 import Image from "next/image";
 import styles from "./FloatingWidgets.module.css";
 import Chatbot from "./Chatbot";

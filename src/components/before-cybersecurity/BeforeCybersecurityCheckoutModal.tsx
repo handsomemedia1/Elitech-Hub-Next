@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ProductPrice } from '@/lib/before-cybersecurity/pricing';
+import { Lock as IconLock } from '@/components/icons';
 
 export interface BeforeCybersecurityCheckoutModalProps {
   isOpen: boolean;
@@ -342,7 +343,7 @@ export default function BeforeCybersecurityCheckoutModal({
             textAlign: 'center',
           }}
         >
-          <div>🔒 256-Bit SSL Encrypted &bull; Direct Paystack Gateway</div>
+          <div><IconLock size="1em" className="inline-icon" aria-hidden="true" /> 256-Bit SSL Encrypted &bull; Direct Paystack Gateway</div>
           <div>Supports Nigerian Debit Cards, Bank Transfer, USSD &amp; International Cards</div>
         </div>
       </div>

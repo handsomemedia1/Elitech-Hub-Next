@@ -4,6 +4,7 @@ import React, { useState, useRef } from 'react';
 import styles from './consultation.module.css';
 import PriceDisplay from '@/components/PriceDisplay';
 import PaystackCheckoutButton from '@/components/PaystackCheckoutButton';
+import { AlertTriangle as IconAlertTriangle } from '@/components/icons';
 
 export interface ConsultationOption {
   id: string;
@@ -239,7 +240,7 @@ export default function ConsultationBookingSection() {
 
           {formError && (
             <div role="alert" className={styles.inlineAlert}>
-              ⚠️ {formError}
+              <IconAlertTriangle size="1em" className="inline-icon" aria-hidden="true" /> {formError}
             </div>
           )}
 

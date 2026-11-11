@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ScoreResult, ARCHETYPES } from '@/data/beforeCybersecurityAssessment';
+import { Compass as IconCompass } from '@/components/icons';
 
 export default function ReportPage() {
   const [assessmentResult, setAssessmentResult] = useState<ScoreResult | null>(null);
@@ -62,7 +63,7 @@ export default function ReportPage() {
           maxWidth: '680px',
           margin: '2rem auto',
         }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🧭</div>
+          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}><IconCompass size="1em" className="inline-icon" aria-hidden="true" /></div>
           <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#fff', marginBottom: '0.75rem' }}>
             Assessment Not Yet Completed
           </h2>

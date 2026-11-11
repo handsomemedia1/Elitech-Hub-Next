@@ -10,7 +10,7 @@ import {
   CreditCard, 
   Check, 
   Quote 
-} from 'lucide-react';
+} from '@/components/icons';
 
 export const metadata = {
   title: 'Apply Now | Start Your Cybersecurity Career',

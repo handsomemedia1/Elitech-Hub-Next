@@ -7,6 +7,7 @@ import Link from '@tiptap/extension-link';
 import Image from '@tiptap/extension-image';
 import { supabase } from '@/lib/supabase';
 import styles from './RichTextEditor.module.css';
+import { Bold as IconBold, Image as IconImage, Italic as IconItalic, Link2 as IconLink2, List as IconList, ListOrdered as IconListOrdered, Minus as IconMinus, Quote as IconQuote, Strikethrough as IconStrikethrough } from '@/components/icons';
 
 interface RichTextEditorProps {
   value: string;
@@ -75,21 +76,21 @@ const MenuBar = ({ editor }: { editor: any }) => {
         onClick={() => editor.chain().focus().toggleBold().run()}
         className={editor.isActive('bold') ? styles.activeTool : styles.toolBtn}
       >
-        <i className="fas fa-bold"></i>
+        <IconBold size="1em" aria-hidden="true" />
       </button>
       <button
         type="button"
         onClick={() => editor.chain().focus().toggleItalic().run()}
         className={editor.isActive('italic') ? styles.activeTool : styles.toolBtn}
       >
-        <i className="fas fa-italic"></i>
+        <IconItalic size="1em" aria-hidden="true" />
       </button>
       <button
         type="button"
         onClick={() => editor.chain().focus().toggleStrike().run()}
         className={editor.isActive('strike') ? styles.activeTool : styles.toolBtn}
       >
-        <i className="fas fa-strikethrough"></i>
+        <IconStrikethrough size="1em" aria-hidden="true" />
       </button>
       <div className={styles.divider} />
       <button
@@ -119,21 +120,21 @@ const MenuBar = ({ editor }: { editor: any }) => {
         onClick={() => editor.chain().focus().toggleBulletList().run()}
         className={editor.isActive('bulletList') ? styles.activeTool : styles.toolBtn}
       >
-        <i className="fas fa-list-ul"></i>
+        <IconList size="1em" aria-hidden="true" />
       </button>
       <button
         type="button"
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
         className={editor.isActive('orderedList') ? styles.activeTool : styles.toolBtn}
       >
-        <i className="fas fa-list-ol"></i>
+        <IconListOrdered size="1em" aria-hidden="true" />
       </button>
       <button
         type="button"
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
         className={editor.isActive('blockquote') ? styles.activeTool : styles.toolBtn}
       >
-        <i className="fas fa-quote-right"></i>
+        <IconQuote size="1em" aria-hidden="true" />
       </button>
       <div className={styles.divider} />
       <button
@@ -141,14 +142,14 @@ const MenuBar = ({ editor }: { editor: any }) => {
         onClick={toggleLink}
         className={editor.isActive('link') ? styles.activeTool : styles.toolBtn}
       >
-        <i className="fas fa-link"></i>
+        <IconLink2 size="1em" aria-hidden="true" />
       </button>
       <button
         type="button"
         onClick={() => editor.chain().focus().setHorizontalRule().run()}
         className={styles.toolBtn}
       >
-        <i className="fas fa-minus"></i>
+        <IconMinus size="1em" aria-hidden="true" />
       </button>
       <button
         type="button"
@@ -156,7 +157,7 @@ const MenuBar = ({ editor }: { editor: any }) => {
         className={styles.toolBtn}
         title="Add Image"
       >
-        <i className="fas fa-image"></i>
+        <IconImage size="1em" aria-hidden="true" />
       </button>
     </div>
   );

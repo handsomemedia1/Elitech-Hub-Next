@@ -3,6 +3,7 @@ import PageLayout from '@/components/PageLayout';
 import layoutStyles from '@/components/PageLayout.module.css';
 import styles from './research-paper.module.css';
 import Link from 'next/link';
+import { BookOpen as IconBookOpen, Calendar as IconCalendar, Download as IconDownload, Eye as IconEye, FilePdf as IconFilePdf, Fingerprint as IconFingerprint, Link2 as IconLink2, LinkedinLogo as IconLinkedinLogo, Quote as IconQuote, XLogo as IconXLogo } from '@/components/icons';
 
 export const metadata: Metadata = {
   title: 'Research Publications & Academic Papers',
@@ -42,13 +43,13 @@ export default function ResearchPaperPage() {
 
             <div className={styles.paperMeta}>
               <div className={styles.metaItem}>
-                <i className="fas fa-calendar"></i> Published: Jan 15, 2026
+                <IconCalendar size="1em" aria-hidden="true" /> Published: Jan 15, 2026
               </div>
               <div className={styles.metaItem}>
-                <i className="fas fa-book"></i> Elitech Hub Research Repository
+                <IconBookOpen size="1em" aria-hidden="true" /> Elitech Hub Research Repository
               </div>
               <div className={styles.metaItem}>
-                <i className="fas fa-fingerprint"></i> DOI: 10.1234/eh.2026.001
+                <IconFingerprint size="1em" aria-hidden="true" /> DOI: 10.1234/eh.2026.001
               </div>
             </div>
           </div>
@@ -60,18 +61,18 @@ export default function ResearchPaperPage() {
             <div className={styles.actionBar}>
               <div className={styles.actionButtons}>
                 <button className={styles.btnPrimary}>
-                  <i className="fas fa-file-pdf"></i> Download PDF
+                  <IconFilePdf size="1em" aria-hidden="true" /> Download PDF
                 </button>
                 <button className={styles.btnSecondary}>
-                  <i className="fas fa-quote-right"></i> Cite
+                  <IconQuote size="1em" aria-hidden="true" /> Cite
                 </button>
               </div>
               <div className={styles.statsBar}>
                 <div className={styles.statItem}>
-                  <i className="fas fa-eye"></i> 1,204 Views
+                  <IconEye size="1em" aria-hidden="true" /> 1,204 Views
                 </div>
                 <div className={styles.statItem}>
-                  <i className="fas fa-download"></i> 342 Downloads
+                  <IconDownload size="1em" aria-hidden="true" /> 342 Downloads
                 </div>
               </div>
             </div>
@@ -127,9 +128,9 @@ export default function ResearchPaperPage() {
             <div className={styles.sidebarCard}>
               <h3 className={styles.sidebarTitle}>Share</h3>
               <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <button className={styles.btnSecondary} style={{ padding: '0.5rem' }}><i className="fab fa-twitter"></i></button>
-                <button className={styles.btnSecondary} style={{ padding: '0.5rem' }}><i className="fab fa-linkedin-in"></i></button>
-                <button className={styles.btnSecondary} style={{ padding: '0.5rem' }}><i className="fas fa-link"></i></button>
+                <button className={styles.btnSecondary} style={{ padding: '0.5rem' }}><IconXLogo size="1em" aria-hidden="true" /></button>
+                <button className={styles.btnSecondary} style={{ padding: '0.5rem' }}><IconLinkedinLogo size="1em" aria-hidden="true" /></button>
+                <button className={styles.btnSecondary} style={{ padding: '0.5rem' }}><IconLink2 size="1em" aria-hidden="true" /></button>
               </div>
             </div>
           </aside>

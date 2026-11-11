@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import styles from "./Chatbot.module.css";
+import { Bot as IconBot, Zap as IconZap, ChatCircleText as IconChatCircleText, Minus as IconMinus, Send as IconSend, X as IconX } from '@/components/icons';
 
 interface Message {
   id: string;
@@ -18,7 +19,7 @@ export default function Chatbot() {
     {
       id: 'msg-0',
       role: 'assistant',
-      content: "Hello! 👋 I'm Elitech's AI assistant. How can I help you jumpstart your cybersecurity career today?",
+      content: "Hello! I'm Elitech's AI assistant. How can I help you jumpstart your cybersecurity career today?",
     }
   ]);
   const [input, setInput] = useState('');
@@ -140,21 +141,25 @@ export default function Chatbot() {
       >
         <AnimatePresence mode="wait">
           {isOpen ? (
-            <motion.i
+            <motion.span
               key="close"
-              className="fas fa-times"
+              style={{ display: "inline-flex" }}
               initial={{ rotate: -90, opacity: 0 }}
               animate={{ rotate: 0, opacity: 1 }}
               exit={{ rotate: 90, opacity: 0 }}
-            />
+            >
+              <IconX size="1em" aria-hidden="true" />
+            </motion.span>
           ) : (
-            <motion.i
+            <motion.span
               key="chat"
-              className="fas fa-comment-dots"
+              style={{ display: "inline-flex" }}
               initial={{ rotate: 90, opacity: 0 }}
               animate={{ rotate: 0, opacity: 1 }}
               exit={{ rotate: -90, opacity: 0 }}
-            />
+            >
+              <IconChatCircleText size="1em" aria-hidden="true" />
+            </motion.span>
           )}
         </AnimatePresence>
       </motion.button>
@@ -172,7 +177,7 @@ export default function Chatbot() {
             <div className={styles.header}>
               <div className={styles.headerInfo}>
                 <div className={styles.avatar}>
-                  <i className="fas fa-robot" />
+                  <IconBot size="1em" aria-hidden="true" />
                   <div className={styles.onlineDot} />
                 </div>
                 <div>
@@ -181,7 +186,7 @@ export default function Chatbot() {
                 </div>
               </div>
               <button className={styles.closeBtn} onClick={handleToggle}>
-                <i className="fas fa-minus" />
+                <IconMinus size="1em" aria-hidden="true" />
               </button>
             </div>
 
@@ -195,7 +200,7 @@ export default function Chatbot() {
                 >
                   {msg.role !== "user" && (
                     <div className={styles.msgAvatar}>
-                      <i className="fas fa-robot" />
+                      <IconBot size="1em" aria-hidden="true" />
                     </div>
                   )}
                   <div className={styles.messageContent}>
@@ -211,7 +216,7 @@ export default function Chatbot() {
                   animate={{ opacity: 1, y: 0 }}
                 >
                   <div className={styles.msgAvatar}>
-                    <i className="fas fa-robot" />
+                    <IconBot size="1em" aria-hidden="true" />
                   </div>
                   <div className={styles.messageContent}>
                     <div className={`${styles.messageBubble} ${styles.typingBubble}`}>
@@ -237,11 +242,11 @@ export default function Chatbot() {
                   autoFocus
                 />
                 <button type="submit" className={styles.sendBtn} disabled={!input.trim() || isLoading}>
-                  <i className="fas fa-paper-plane" />
+                  <IconSend size="1em" aria-hidden="true" />
                 </button>
               </div>
               <div className={styles.footerBranding}>
-                ⚡ Powered by Elitech AI
+                <IconZap size="1em" aria-hidden="true" /> Powered by Elitech AI
               </div>
             </form>
           </motion.div>

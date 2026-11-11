@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import styles from './PaystackCheckoutButton.module.css';
+import { AlertTriangle as IconAlertTriangle } from '@/components/icons';
+import { Lock as IconLock, ShieldCheck as IconShieldCheck } from '@/components/icons';
 
 export interface PaystackCheckoutButtonProps {
   productId: string;
@@ -188,13 +190,13 @@ export default function PaystackCheckoutButton({
               : 'Running in Paystack Sandbox Mode — no real charges'
           }
         >
-          {isLiveKey ? '🔒 Paystack Secured' : '🛡️ Paystack Test Mode Sandbox'}
+          {isLiveKey ? <><IconLock size="1em" aria-hidden="true" /> Paystack Secured</> : <><IconShieldCheck size="1em" aria-hidden="true" /> Paystack Test Mode Sandbox</>}
         </span>
       )}
 
       {errorMessage && (
         <div className={styles.errorBanner} role="alert">
-          <span>⚠️</span>
+          <IconAlertTriangle size="1em" className="inline-icon" aria-hidden="true" />
           <span>{errorMessage}</span>
         </div>
       )}

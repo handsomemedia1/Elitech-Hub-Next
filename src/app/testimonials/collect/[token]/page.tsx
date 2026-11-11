@@ -2,7 +2,7 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import { createServiceClient } from '@/lib/supabase-server';
 import PageLayout from '@/components/PageLayout';
-import { MessageCircle, Shield, CheckCircle } from 'lucide-react';
+import { MessageCircle, Shield, CheckCircle } from '@/components/icons';
 import TestimonialClientForm from './TestimonialClientForm';
 
 export const metadata = {

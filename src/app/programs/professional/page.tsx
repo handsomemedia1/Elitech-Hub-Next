@@ -4,7 +4,7 @@ import AnimateOnScroll from '@/components/AnimateOnScroll';
 import PriceDisplay from '@/components/PriceDisplay';
 import layoutStyles from '@/components/PageLayout.module.css';
 import styles from './professional.module.css';
-import { Crown, CheckCircle2, ChevronDown, ArrowRight, ArrowLeft, Award, Shield, Code, Target, Briefcase, Users, UserPlus, Network, FileSearch, Star, Clock, Calendar, BookOpen, Repeat } from 'lucide-react';
+import { Crown, CheckCircle2, ChevronDown, ArrowRight, ArrowLeft, Award, Shield, Code, Target, Briefcase, Users, UserPlus, Network, FileSearch, Star, Clock, Calendar, BookOpen, Repeat } from '@/components/icons';
 
 export const metadata = {
   title: '16-Week Professional Cybersecurity Program Nigeria | Internship Experience',

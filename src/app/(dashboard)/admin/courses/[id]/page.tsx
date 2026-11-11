@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Save, Trash2, Plus, Layers } from 'lucide-react';
+import { ArrowLeft, Save, Trash2, Plus, Layers } from '@/components/icons';
 import styles from './course-editor.module.css';
 import RichTextEditor from '@/components/RichTextEditor';
 import { fetchCourseAction, fetchCourseModulesAction, createCourseAction, updateCourseAction } from '../actions';

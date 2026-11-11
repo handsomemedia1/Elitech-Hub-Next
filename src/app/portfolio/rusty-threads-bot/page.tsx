@@ -2,7 +2,7 @@ import React from 'react';
 import type { Metadata } from 'next';
 import PageLayout from '@/components/PageLayout';
 import Link from 'next/link';
-import { ArrowLeft, CheckCircle2, Bot, Zap, MessageSquare, Terminal } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Bot, Zap, MessageSquare, Terminal } from '@/components/icons';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 
 export const metadata: Metadata = {

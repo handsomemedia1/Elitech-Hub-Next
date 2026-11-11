@@ -4,7 +4,7 @@ import PageLayout from "@/components/PageLayout";
 import layoutStyles from "@/components/PageLayout.module.css";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
-import { Cpu, HardDrive, Monitor, Battery, CheckCircle, Info, ChevronRight } from 'lucide-react';
+import { Cpu, HardDrive, Monitor, Battery, CheckCircle, Info, ChevronRight } from '@/components/icons';
 import Link from 'next/link';
 
 export const revalidate = 60;

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { BookOpen as IconBookOpen, Compass as IconCompass, FileText as IconFileText, Layers as IconLayers, LayoutDashboard as IconLayoutDashboard, Target as IconTarget, User as IconUser } from '@/components/icons';
 
 export default function BeforeCybersecurityAppShell({
   children,
@@ -13,13 +14,13 @@ export default function BeforeCybersecurityAppShell({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { name: 'Overview', path: '/before-cybersecurity/dashboard', icon: '📊' },
-    { name: 'My Assessment', path: '/before-cybersecurity/assessment', icon: '🧭' },
-    { name: 'My Report', path: '/before-cybersecurity/report', icon: '📑' },
-    { name: 'My Roadmap', path: '/before-cybersecurity/roadmap', icon: '🎯' },
-    { name: 'The Guide', path: '/before-cybersecurity/guide', icon: '📖' },
-    { name: 'Resource Library', path: '/before-cybersecurity/resources', icon: '🧰' },
-    { name: 'Account & Access', path: '/before-cybersecurity/account', icon: '👤' },
+    { name: 'Overview', path: '/before-cybersecurity/dashboard', icon: <IconLayoutDashboard size="1em" aria-hidden="true" /> },
+    { name: 'My Assessment', path: '/before-cybersecurity/assessment', icon: <IconCompass size="1em" aria-hidden="true" /> },
+    { name: 'My Report', path: '/before-cybersecurity/report', icon: <IconFileText size="1em" aria-hidden="true" /> },
+    { name: 'My Roadmap', path: '/before-cybersecurity/roadmap', icon: <IconTarget size="1em" aria-hidden="true" /> },
+    { name: 'The Guide', path: '/before-cybersecurity/guide', icon: <IconBookOpen size="1em" aria-hidden="true" /> },
+    { name: 'Resource Library', path: '/before-cybersecurity/resources', icon: <IconLayers size="1em" aria-hidden="true" /> },
+    { name: 'Account & Access', path: '/before-cybersecurity/account', icon: <IconUser size="1em" aria-hidden="true" /> },
   ];
 
   const closeMobile = () => setMobileMenuOpen(false);

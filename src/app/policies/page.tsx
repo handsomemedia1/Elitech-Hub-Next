@@ -4,6 +4,7 @@ import layoutStyles from '@/components/PageLayout.module.css';
 import styles from './policies.module.css';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 import Link from 'next/link';
+import { Cookie as IconCookie, FileText as IconFileText, Lock as IconLock, Money as IconMoney } from '@/components/icons';
 
 export const metadata: Metadata = {
   alternates: { canonical: 'https://www.elitechub.com/policies' },
@@ -38,7 +39,7 @@ export default function PoliciesPage() {
 
           {/* Terms of Service */}
           <div id="terms" className={styles.policySection}>
-            <h2 className={styles.policyTitle}>📋 Terms of Service</h2>
+            <h2 className={styles.policyTitle}><IconFileText size="1em" className="inline-icon" aria-hidden="true" /> Terms of Service</h2>
             <p className={styles.policyText}>By accessing and using Elitech Hub (&quot;the Platform&quot;), you agree to be bound by these Terms of Service. Please read them carefully before enrolling in any program or using our services.</p>
 
             <h3 className={styles.subTitle}>1. Acceptance of Terms</h3>
@@ -75,7 +76,7 @@ export default function PoliciesPage() {
 
           {/* Privacy Policy */}
           <div id="privacy" className={styles.policySection}>
-            <h2 className={styles.policyTitle}>🔒 Privacy Policy</h2>
+            <h2 className={styles.policyTitle}><IconLock size="1em" className="inline-icon" aria-hidden="true" /> Privacy Policy</h2>
             <p className={styles.policyText}>Elitech Hub Limited (RC: 8693883), based in Ibadan, Oyo State, Nigeria, is the data controller for personal data collected through this website. This policy explains what we collect, why, who receives it, and your rights under the Nigeria Data Protection Act 2023 (NDPA), the GAID 2025 and, where it applies to you, the EU and UK GDPR.</p>
 
             <h3 className={styles.subTitle}>Information We Collect</h3>
@@ -137,7 +138,7 @@ export default function PoliciesPage() {
 
           {/* Cookie Policy */}
           <div id="cookies" className={styles.policySection}>
-            <h2 className={styles.policyTitle}>🍪 Cookie Policy</h2>
+            <h2 className={styles.policyTitle}><IconCookie size="1em" className="inline-icon" aria-hidden="true" /> Cookie Policy</h2>
             <p className={styles.policyText}>We use cookies and similar browser storage. Analytics tools stay off unless you choose Accept in our cookie banner.</p>
             <ul className={styles.policyList}>
               <li><strong>Strictly necessary (always on):</strong> keep you logged in and protect the site, including our login cookies and Cloudflare security cookies.</li>
@@ -149,7 +150,7 @@ export default function PoliciesPage() {
 
           {/* Refund Policy */}
           <div id="refund" className={styles.policySection}>
-            <h2 className={styles.policyTitle}>💰 Payment & Refund Policy</h2>
+            <h2 className={styles.policyTitle}><IconMoney size="1em" className="inline-icon" aria-hidden="true" /> Payment & Refund Policy</h2>
             <p className={styles.policyText}>We strive to provide premium educational content and hands-on experiences.</p>
             <ul className={styles.policyList}>
               <li><strong>All payments are strictly non-refundable.</strong> We encourage students to ask questions and review course details carefully before making a payment.</li>

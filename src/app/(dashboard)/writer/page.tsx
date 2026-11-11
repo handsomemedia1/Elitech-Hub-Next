@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getWriterDashboardAction } from './actions';
-import { PenTool, FileText, Eye, TrendingUp, PlusCircle } from 'lucide-react';
+import { PenTool, FileText, Eye, TrendingUp, PlusCircle } from '@/components/icons';
 import styles from './writer.module.css';
 
 export default function WriterOverview() {

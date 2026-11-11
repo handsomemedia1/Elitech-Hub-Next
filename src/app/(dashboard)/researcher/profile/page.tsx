@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { User, Building, MapPin, CheckCircle2 } from 'lucide-react';
+import { User, Building, MapPin, CheckCircle2 } from '@/components/icons';
 import styles from '../researcher.module.css';
 
 export default function ResearcherProfile() {

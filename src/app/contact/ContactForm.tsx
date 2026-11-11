@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import styles from './ContactForm.module.css';
+import { AlertTriangle as IconAlertTriangle } from '@/components/icons';
 
 interface FormData {
   name: string;
@@ -119,7 +120,7 @@ export default function ContactForm() {
             placeholder="John Doe"
             disabled={isSubmitting}
           />
-          {errors.name && <span className={styles.errorText}>⚠ {errors.name}</span>}
+          {errors.name && <span className={styles.errorText}><IconAlertTriangle size="1em" className="inline-icon" aria-hidden="true" /> {errors.name}</span>}
         </div>
 
         <div className={styles.formGroup}>
@@ -134,7 +135,7 @@ export default function ContactForm() {
             placeholder="john@example.com"
             disabled={isSubmitting}
           />
-          {errors.email && <span className={styles.errorText}>⚠ {errors.email}</span>}
+          {errors.email && <span className={styles.errorText}><IconAlertTriangle size="1em" className="inline-icon" aria-hidden="true" /> {errors.email}</span>}
         </div>
 
         <div className={styles.formGroup}>
@@ -179,12 +180,12 @@ export default function ContactForm() {
             placeholder="How can we help you?"
             disabled={isSubmitting}
           />
-          {errors.message && <span className={styles.errorText}>⚠ {errors.message}</span>}
+          {errors.message && <span className={styles.errorText}><IconAlertTriangle size="1em" className="inline-icon" aria-hidden="true" /> {errors.message}</span>}
         </div>
 
         {serverError && (
           <div className={styles.errorText} style={{ marginBottom: '1rem', display: 'block' }}>
-            ⚠ {serverError}
+            <IconAlertTriangle size="1em" className="inline-icon" aria-hidden="true" /> {serverError}
           </div>
         )}
 

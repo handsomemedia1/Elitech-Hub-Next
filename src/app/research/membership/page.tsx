@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import PageLayout from '@/components/PageLayout';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
+import { Globe as IconGlobe, Handshake as IconHandshake, Lock as IconLock } from '@/components/icons';
 
 export const metadata: Metadata = {
   title: 'Research Membership in Behavioral Cybersecurity',
@@ -31,19 +32,19 @@ export const metadata: Metadata = {
 
 const benefits = [
   {
-    icon: '🤝',
+    icon: <IconHandshake size="1em" aria-hidden="true" />,
     title: 'Collaborative Ecosystem',
     description:
       'Connect with a curated group of 30 top-tier researchers. Share data, co-author papers, and tackle the most pressing behavioral cybersecurity challenges together.',
   },
   {
-    icon: '🔐',
+    icon: <IconLock size="1em" aria-hidden="true" />,
     title: 'Exclusive Resources',
     description:
       'Gain access to proprietary datasets, specialized analytical tools, and early-stage findings from Elitech Hub\u2019s internal research initiatives.',
   },
   {
-    icon: '🌍',
+    icon: <IconGlobe size="1em" aria-hidden="true" />,
     title: 'Global Visibility',
     description:
       'Amplify your work through Elitech Hub\u2019s platform. Feature your research in our publications and present at our exclusive symposiums.',

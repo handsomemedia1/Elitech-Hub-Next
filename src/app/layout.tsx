@@ -161,7 +161,7 @@ export default function RootLayout({
               ],
               sameAs: [
                 'https://twitter.com/ElitechHub',
-                'https://www.linkedin.com/company/elitechhub',
+                'https://www.linkedin.com/company/elitech-hub',
                 'https://www.instagram.com/elitechhub',
               ],
               knowsAbout: [
@@ -285,14 +285,6 @@ export default function RootLayout({
             pages define their own alternates (canonical), which would replace it. */}
         <link rel="alternate" type="application/rss+xml" title="Elitech Hub Blog" href="/rss.xml" />
         <link rel="alternate" type="text/plain" title="LLM summary" href="/llms.txt" />
-
-        {/* Font Awesome */}
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-          crossOrigin="anonymous"
-          referrerPolicy="no-referrer"
-        />
       </head>
       <body suppressHydrationWarning>
         

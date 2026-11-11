@@ -11,8 +11,10 @@ import {
   Network, Search, Server, FileSearch, Flag, Target, Award,
   Database, Code, Brain, ChevronRight, Sparkles, Calendar,
   Globe, Clock, Users, Shield, BookOpen, UserPlus, Check, Send
-} from 'lucide-react';
+} from '@/components/icons';
 import CountUp from '@/components/CountUp';
+import { Crown as IconCrown, Zap as IconZap } from '@/components/icons';
+import { Check as IconCheck } from '@/components/icons';
 
 export const metadata = {
   title: 'Cybersecurity Programs & Training in Nigeria | Practical Experience',
@@ -957,12 +959,12 @@ export default function ProgramsPage() {
             {/* Column headers */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', maxWidth: '900px', margin: '0 auto 1rem' }}>
               <div style={{ background: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.3)', borderRadius: '12px', padding: '1rem', textAlign: 'center' }}>
-                <div style={{ color: '#06b6d4', fontWeight: 800, fontSize: '1rem' }}>⚡ AI-Powered Programme (6 Weeks)</div>
+                <div style={{ color: '#06b6d4', fontWeight: 800, fontSize: '1rem' }}><IconZap size="1em" className="inline-icon" aria-hidden="true" /> AI-Powered Programme (6 Weeks)</div>
                 <div style={{ color: 'var(--color-text-secondary)', fontSize: '0.8rem', marginTop: '0.25rem' }}>Defensive &amp; Offensive AI</div>
               </div>
               <div style={{ background: 'rgba(195,21,28,0.1)', border: '2px solid rgba(195,21,28,0.4)', borderRadius: '12px', padding: '1rem', textAlign: 'center', position: 'relative' }}>
                 <div style={{ position: 'absolute', top: '-10px', left: '50%', transform: 'translateX(-50%)', background: 'var(--color-primary)', color: 'white', fontSize: '0.65rem', fontWeight: 800, padding: '0.2rem 0.75rem', borderRadius: '20px', letterSpacing: '0.08em', whiteSpace: 'nowrap' }}>MOST POPULAR</div>
-                <div style={{ color: '#ef4444', fontWeight: 800, fontSize: '1rem' }}>👑 16-Week Professional</div>
+                <div style={{ color: '#ef4444', fontWeight: 800, fontSize: '1rem' }}><IconCrown size="1em" className="inline-icon" aria-hidden="true" /> 16-Week Professional</div>
                 <div style={{ color: 'var(--color-text-secondary)', fontSize: '0.8rem', marginTop: '0.25rem' }}>Complete Career Transformation</div>
               </div>
             </div>
@@ -972,13 +974,13 @@ export default function ProgramsPage() {
               { label: 'Duration', bootcamp: '6 Weeks', pro: '16 Weeks' },
               { label: 'Class Schedule', bootcamp: 'Weekends Only', pro: '3× per week' },
               { label: 'Price', bootcamp: null, pro: null, isPrice: true },
-              { label: 'Hands-on Labs', bootcamp: '✅', pro: '✅' },
-              { label: 'Industry Project', bootcamp: '✅', pro: '✅' },
-              { label: 'Internship Experience', bootcamp: 'Unpaid Internship', pro: '✅ Yes', proHighlight: true },
-              { label: '1-on-1 Mentorship', bootcamp: '—', pro: '✅', proHighlight: true },
+              { label: 'Hands-on Labs', bootcamp: <IconCheck size="1em" aria-hidden="true" />, pro: <IconCheck size="1em" aria-hidden="true" /> },
+              { label: 'Industry Project', bootcamp: <IconCheck size="1em" aria-hidden="true" />, pro: <IconCheck size="1em" aria-hidden="true" /> },
+              { label: 'Internship Experience', bootcamp: 'Unpaid Internship', pro: <><IconCheck size="1em" aria-hidden="true" /> Yes</>, proHighlight: true },
+              { label: '1-on-1 Mentorship', bootcamp: '—', pro: <IconCheck size="1em" aria-hidden="true" />, proHighlight: true },
               { label: 'Certification Prep', bootcamp: 'Basic', pro: 'Security+, CEH, OSCP', proHighlight: true },
               { label: 'Career Support', bootcamp: 'Basic Resume Help', pro: 'Full Career Services', proHighlight: true },
-              { label: 'Alumni Network', bootcamp: '✅', pro: '✅', proHighlight: true },
+              { label: 'Alumni Network', bootcamp: <IconCheck size="1em" aria-hidden="true" />, pro: <IconCheck size="1em" aria-hidden="true" />, proHighlight: true },
             ].map((row, i) => (
               <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', maxWidth: '900px', margin: '0 auto 0.5rem', alignItems: 'stretch' }}>
                 {/* Feature label spans full width above */}

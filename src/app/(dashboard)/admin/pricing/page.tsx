@@ -12,6 +12,7 @@ type PriceRow = {
 };
 
 import { fetchPricingAction, createPricingAction, updatePricingAction, deletePricingAction } from './actions';
+import { Edit as IconEdit, Trash2 as IconTrash2 } from '@/components/icons';
 
 export default function PricingAdminPage() {
   const [prices, setPrices] = useState<PriceRow[]>([]);
@@ -252,13 +253,13 @@ export default function PricingAdminPage() {
                             className={styles.editBtn} 
                             onClick={() => handleEdit(price)}
                           >
-                            <i className="fas fa-edit" />
+                            <IconEdit size="1em" aria-hidden="true" />
                           </button>
                           <button 
                             className={styles.deleteBtn} 
                             onClick={() => handleDelete(price.id)}
                           >
-                            <i className="fas fa-trash" />
+                            <IconTrash2 size="1em" aria-hidden="true" />
                           </button>
                         </>
                       )}

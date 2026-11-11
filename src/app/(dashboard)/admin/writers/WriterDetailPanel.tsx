@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { X, TrendingUp, Ban, Trash2, Calendar, Clock, CheckCircle2 } from 'lucide-react';
+import { X, TrendingUp, Ban, Trash2, Calendar, Clock, CheckCircle2 } from '@/components/icons';
 import { supabase } from '@/lib/supabase';
 
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];

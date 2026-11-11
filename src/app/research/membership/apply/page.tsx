@@ -3,7 +3,7 @@
 import { useActionState } from 'react';
 import { submitApplication } from './actions';
 import Link from 'next/link';
-import { ArrowLeft, CheckCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle } from '@/components/icons';
 
 const initialState = {
   success: false,

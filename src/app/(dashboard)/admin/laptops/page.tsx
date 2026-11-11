@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Laptop as LaptopIcon, Search, Edit2, Trash2, Check, X, Eye, Plus } from 'lucide-react';
+import { Laptop as LaptopIcon, Search, Edit2, Trash2, Check, X, Eye, Plus } from '@/components/icons';
 import styles from '../users/users.module.css';
 import Link from 'next/link';
 

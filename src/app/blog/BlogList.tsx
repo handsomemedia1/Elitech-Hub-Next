@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import styles from './blog.module.css';
 import type { BlogPost } from '@/lib/supabase';
-import { Search, Clock, Eye, ArrowRight, X, LayoutTemplate, Bug, Network, Coins, Fingerprint, Link as LinkIcon, Scale, Flag, Newspaper } from 'lucide-react';
+import { Search, Clock, Eye, ArrowRight, X, LayoutTemplate, Bug, Network, Coins, Fingerprint, Link as LinkIcon, Scale, Flag, Newspaper } from '@/components/icons';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 
 const categoryColors: Record<string, string> = {

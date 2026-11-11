@@ -3,7 +3,7 @@ import ContactForm from './ContactForm';
 import styles from './contact.module.css';
 import layoutStyles from '@/components/PageLayout.module.css';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
-import { MapPin, MessageCircle, Mail, Send, Clock } from 'lucide-react';
+import { MapPin, MessageCircle, Mail, Send, Clock } from '@/components/icons';
 
 export const metadata = {
   title: 'Contact Us | Cybersecurity Training Enquiries in Nigeria',

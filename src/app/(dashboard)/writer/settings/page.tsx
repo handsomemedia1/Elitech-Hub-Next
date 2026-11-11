@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { User, Link as LinkIcon, Briefcase, MapPin, Upload } from 'lucide-react';
+import { User, Link as LinkIcon, Briefcase, MapPin, Upload } from '@/components/icons';
 import styles from './settings.module.css';
 
 export default function WriterSettings() {

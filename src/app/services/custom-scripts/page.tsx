@@ -3,7 +3,7 @@ import Link from 'next/link';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 import layoutStyles from '@/components/PageLayout.module.css';
 import styles from './custom-scripts.module.css';
-import { Terminal, CheckCircle2, ChevronDown, ArrowRight, ArrowLeft, Code, Zap, Shield, Database, GitBranch, Server, Settings, FileSearch } from 'lucide-react';
+import { Terminal, CheckCircle2, ChevronDown, ArrowRight, ArrowLeft, Code, Zap, Shield, Database, GitBranch, Server, Settings, FileSearch } from '@/components/icons';
 import { PricingTiers } from '@/components/PricingTiers';
 
 export const metadata = {

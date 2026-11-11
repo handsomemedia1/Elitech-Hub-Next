@@ -9,7 +9,7 @@ import {
   Zap, Calendar, Clock, Laptop, Flame, ArrowRight,
   Briefcase, Bot, Award, GraduationCap, Code2, Shield,
   ChevronRight, CheckCircle2
-} from 'lucide-react';
+} from '@/components/icons';
 
 export const metadata: Metadata = {
   title: 'AI Powered Cybersecurity Training Nigeria | 6-Week Online Bootcamp',

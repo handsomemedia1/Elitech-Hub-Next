@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, X, FileText, BookOpen, ExternalLink, Upload } from 'lucide-react';
+import { Plus, Edit, Trash2, X, FileText, BookOpen, ExternalLink, Upload } from '@/components/icons';
 import { saveResource, deleteResource, fetchResourcesAction } from './actions';
 import styles from '../admin.module.css';
 import AdminModal from '@/components/AdminModal';

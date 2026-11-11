@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Mail, Lock, User, ShieldCheck } from 'lucide-react';
+import { Mail, Lock, User, ShieldCheck } from '@/components/icons';
 import styles from '../(dashboard)/admin/login/login.module.css'; // Reuse login styles
 
 export default function RegisterPage() {

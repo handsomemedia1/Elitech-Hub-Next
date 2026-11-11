@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import { Printer, MapPin, Phone, Mail, Globe } from 'lucide-react';
+import { Printer, MapPin, Phone, Mail, Globe } from '@/components/icons';
 import styles from './letterhead.module.css';
 
 export default function LetterheadGenerator() {

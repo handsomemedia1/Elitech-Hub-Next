@@ -23,7 +23,8 @@ import {
   BrainCircuit, Database, Network, Building2, Send, Zap,
   ArrowDown, Star, QrCode, Award, Flame, User, Eye, Newspaper,
   FileText, Globe, Key, Calendar
-} from "lucide-react";
+} from '@/components/icons';
+import { Flame as IconFlame, Star as IconStar } from '@/components/icons';
 
 export default function Home() {
   const [latestPost, setLatestPost] = React.useState<any>(null);
@@ -195,7 +196,7 @@ export default function Home() {
           <AnimateOnScroll direction="left" delay={100} className={styles.bentoPro}>
             <div style={{ padding: '2.5rem', height: '100%', display: 'flex', flexDirection: 'column' }}>
               <div className={styles.promoBadge} style={{ alignSelf: 'flex-start', marginBottom: '1.5rem' }}>
-                ⭐ RECOMMENDED
+                <IconStar size="1em" className="inline-icon" aria-hidden="true" /> RECOMMENDED
               </div>
               <h3 className={styles.bentoTitle}>16-Week Professional</h3>
               <p className={styles.bentoPrice}><PriceDisplay courseId="professional" fallback="₦350,000" /></p>
@@ -494,7 +495,7 @@ export default function Home() {
                 <Flame size={14} color="var(--color-primary)" />
                 <span style={{ color: 'var(--color-primary)', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>This Week</span>
               </div>
-              <h2 className={styles.sectionTitle} style={{ margin: 0 }}>🔥 Most Read Article</h2>
+              <h2 className={styles.sectionTitle} style={{ margin: 0 }}><IconFlame size="1em" className="inline-icon" aria-hidden="true" /> Most Read Article</h2>
             </div>
             <Link href="/blog" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-primary)', fontWeight: 600 }}>
               View All Articles <ChevronRight size={16} />
@@ -594,7 +595,7 @@ export default function Home() {
                   </div>
                   <div style={{ background: 'rgba(56, 189, 248, 0.1)', borderRadius: '0.75rem', padding: '1rem 1.25rem', marginBottom: '1rem', borderLeft: '3px solid #38bdf8' }}>
                     <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.85rem', lineHeight: 1.6, margin: 0, fontStyle: 'italic' }}>
-                      "🔴 BREAKING: Critical RCE vulnerability discovered in widely-used enterprise VPN software. CVSS 9.8. Patch immediately..."
+                      "BREAKING: Critical RCE vulnerability discovered in widely-used enterprise VPN software. CVSS 9.8. Patch immediately..."
                     </p>
                   </div>
                   <div style={{ display: 'flex', gap: '1.5rem', color: 'var(--color-text-muted)', fontSize: '0.8rem' }}>

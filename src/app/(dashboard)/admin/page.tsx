@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { 
   Users, BookOpen, DollarSign, Award, TrendingUp, 
   ArrowUpRight, Clock, FileText 
-} from 'lucide-react';
+} from '@/components/icons';
 import styles from './admin.module.css';
 
 import { fetchAdminStatsAction } from './actions';

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Save, Globe, Calendar } from 'lucide-react';
+import { Save, Globe, Calendar } from '@/components/icons';
 import styles from './settings.module.css';
 
 import { fetchSiteSettingAction, upsertSiteSettingAction } from './actions';

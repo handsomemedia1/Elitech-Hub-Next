@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ChapterItem, PARTS } from '@/data/beforeCybersecurityData';
+import { Lock as IconLock } from '@/components/icons';
 
 export interface LockedChapterViewProps {
   chapter: ChapterItem;
@@ -149,7 +150,7 @@ export default function LockedChapterView({
             margin: '0 auto 1.5rem',
           }}
         >
-          🔒
+          <IconLock size="1em" className="inline-icon" aria-hidden="true" />
         </div>
 
         <div

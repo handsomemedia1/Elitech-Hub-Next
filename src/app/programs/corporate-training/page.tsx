@@ -3,7 +3,7 @@ import Link from 'next/link';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 import layoutStyles from '@/components/PageLayout.module.css';
 import styles from './corporate-training.module.css';
-import { Building2, CheckCircle2, ChevronDown, ArrowRight, ArrowLeft, Shield, Users, Target, Award, Globe, Clock, Briefcase, FileSearch, Network, BookOpen } from 'lucide-react';
+import { Building2, CheckCircle2, ChevronDown, ArrowRight, ArrowLeft, Shield, Users, Target, Award, Globe, Clock, Briefcase, FileSearch, Network, BookOpen } from '@/components/icons';
 
 export const metadata = {
   title: 'Corporate Cybersecurity Training Nigeria | Security Awareness for Teams',

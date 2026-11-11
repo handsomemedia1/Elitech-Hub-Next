@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Save, Clock, CheckCircle2, TrendingUp, AlertCircle } from 'lucide-react';
+import { Save, Clock, CheckCircle2, TrendingUp, AlertCircle } from '@/components/icons';
 import { getProductivitySettingsAction, saveProductivitySettingsAction, getWeeklyActivityAction } from './actions';
 import styles from '../writer.module.css';
 

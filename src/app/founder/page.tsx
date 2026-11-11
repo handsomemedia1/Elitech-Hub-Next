@@ -3,8 +3,9 @@ import PageLayout from '@/components/PageLayout';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Mail, Phone, ExternalLink, Shield, Database, Award, BookOpen, Briefcase, GraduationCap, ChevronLeft } from 'lucide-react';
+import { Mail, Phone, ExternalLink, Shield, Database, Award, BookOpen, Briefcase, GraduationCap, ChevronLeft } from '@/components/icons';
 import { LinkedinLogo, PhosphorGlobe } from '@/components/PhosphorIcons';
+import { ChatCircleText } from '@phosphor-icons/react/ssr';
 
 export const metadata: Metadata = {
   title: 'Elijah Adeyeye - Founder & Lead Instructor',
@@ -35,7 +36,8 @@ export default function FounderPage() {
       url: 'https://www.elitechub.com/founder',
       sameAs: [
         'https://elijahadeyeye.vercel.app/',
-        'https://orcid.org/0009-0005-4853-7813'
+        'https://orcid.org/0009-0005-4853-7813',
+        'https://www.quora.com/profile/Elijah-Adeyeye'
       ],
       description: 'Elijah Adeyeye approaches digital security through a behavioral lens, leveraging his background in Psychology, Cybersecurity, and Data Analysis.',
       knowsAbout: ['Behavioral Cybersecurity', 'Data Analysis', 'Psychology', 'Ethical Hacking']
@@ -78,6 +80,9 @@ export default function FounderPage() {
                   </a>
                   <a href="https://elijahadeyeye.vercel.app/" target="_blank" rel="noopener noreferrer" className="premium-button-outline">
                     <PhosphorGlobe size={16} /> Portfolio
+                  </a>
+                  <a href="https://www.quora.com/profile/Elijah-Adeyeye" target="_blank" rel="noopener noreferrer me" className="premium-button-outline">
+                    <ChatCircleText size={16} weight="duotone" aria-hidden="true" /> Quora
                   </a>
                 </div>
               </div>

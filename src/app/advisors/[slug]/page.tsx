@@ -1,251 +1,146 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import PageLayout from '@/components/PageLayout';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
-import Link from 'next/link';
-import Image from 'next/image';
-import { getSupabaseServerClient } from '@/lib/supabase';
-import { ChevronLeft, Building2, Globe, Award, BookOpen, Star, ShieldCheck, Briefcase } from 'lucide-react';
+import { Building2, ChevronLeft, Globe, GraduationCap, LinkedinLogo } from '@/components/icons';
+import { ADVISORS, getAdvisor } from '@/data/advisors';
+import styles from '../advisors.module.css';
 
-export const revalidate = 3600; // Revalidate every hour
+const SITE = 'https://www.elitechub.com';
 
-async function getAdvisor(slug: string) {
-  const supabase = getSupabaseServerClient();
-  const { data, error } = await supabase
-    .from('advisors')
-    .select('*')
-    .eq('slug', slug)
-    .eq('status', 'active')
-    .single();
+export const dynamicParams = false;
 
-  if (error || !data) return null;
-  return data;
+export function generateStaticParams() {
+  return ADVISORS.map((a) => ({ slug: a.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const advisor = await getAdvisor(slug);
+  const advisor = getAdvisor(slug);
+  if (!advisor) return { title: 'Advisor Not Found' };
 
-  if (!advisor) {
-    return { title: 'Advisor Not Found' };
-  }
-
-  const title = `${advisor.full_name} - ${advisor.professional_title || 'Advisor'}`;
-  const description = advisor.biography ? advisor.biography.substring(0, 160) + '...' : `Profile of ${advisor.full_name}, ${advisor.professional_title} advising at Elitech Hub.`;
-
+  // Short enough for Google not to truncate; the job title is in the description.
+  const title = `${advisor.name}, Advisor`;
+  const url = `${SITE}/advisors/${slug}`;
   return {
     title,
-    description,
-    alternates: { canonical: `https://www.elitechub.com/advisors/${slug}` },
+    description: advisor.summary,
+    alternates: { canonical: url },
     openGraph: {
-      title,
-      description,
+      title: `${title} | Elitech Hub`,
+      description: advisor.summary,
+      url,
       type: 'profile',
-      images: advisor.profile_image_url ? [{ url: advisor.profile_image_url }] : undefined,
-    }
+      images: [{ url: `${SITE}${advisor.image}` }],
+    },
   };
+}
+
+function safeJsonLd(data: unknown): string {
+  return JSON.stringify(data).replace(/</g, '\\u003c');
 }
 
 export default async function AdvisorProfilePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const advisor = await getAdvisor(slug);
+  const advisor = getAdvisor(slug);
+  if (!advisor) notFound();
 
-  if (!advisor) {
-    notFound();
-  }
-
-  // Generate sameAs array for structured data
-  const sameAs = [advisor.linkedin_url, advisor.x_url, advisor.personal_website_url].filter(Boolean) as string[];
-
+  const url = `${SITE}/advisors/${slug}`;
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'ProfilePage',
-    mainEntity: {
-      '@type': 'Person',
-      name: advisor.full_name,
-      jobTitle: advisor.professional_title || 'Advisor',
-      ...(advisor.organization && {
-        worksFor: {
-          '@type': 'Organization',
-          name: advisor.organization,
-        }
-      }),
-      affiliation: {
-        '@type': 'Organization',
-        name: 'Elitech Hub',
-        url: 'https://www.elitechub.com',
+    '@graph': [
+      {
+        '@type': 'ProfilePage',
+        '@id': `${url}#page`,
+        url,
+        name: `${advisor.name} | Elitech Hub Advisor`,
+        isPartOf: { '@id': `${SITE}/#website` },
+        mainEntity: { '@id': `${url}#person` },
       },
-      image: advisor.profile_image_url || undefined,
-      description: advisor.biography || undefined,
-      sameAs: sameAs.length > 0 ? sameAs : undefined,
-      knowsAbout: advisor.expertise || undefined,
-      url: `https://www.elitechub.com/advisors/${slug}`,
-    }
+      {
+        '@type': 'Person',
+        '@id': `${url}#person`,
+        name: advisor.plainName,
+        url,
+        image: `${SITE}${advisor.image}`,
+        jobTitle: advisor.jobTitle,
+        description: advisor.summary,
+        worksFor: { '@type': 'Organization', name: advisor.organization },
+        affiliation: { '@id': `${SITE}/#organization` },
+        hasCredential: { '@type': 'EducationalOccupationalCredential', name: advisor.credential },
+        alumniOf: advisor.alumniOf.map((name) => ({ '@type': 'CollegeOrUniversity', name })),
+        knowsAbout: advisor.knowsAbout,
+        sameAs: [advisor.linkedin, advisor.website].filter(Boolean),
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: SITE },
+          { '@type': 'ListItem', position: 2, name: 'Advisors', item: `${SITE}/advisors` },
+          { '@type': 'ListItem', position: 3, name: advisor.name, item: url },
+        ],
+      },
+    ],
   };
 
   return (
     <PageLayout>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      
-      <section style={{ 
-        paddingTop: '120px', 
-        paddingBottom: '4rem',
-        background: 'linear-gradient(to bottom, var(--color-bg-base), var(--color-bg-main))'
-      }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
+      <section className={styles.section}>
         <div className="container">
-          <Link href="/advisors" className="back-link">
-            <ChevronLeft size={16} /> Back to Advisors
+          <Link href="/advisors" className={styles.back}>
+            <ChevronLeft size={16} aria-hidden="true" /> All advisors
           </Link>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem', alignItems: 'flex-start', marginTop: '2rem' }}>
-            {/* LEFT SIDE: Profile Card */}
+
+          <div className={styles.profile}>
             <AnimateOnScroll direction="left">
-              <div className="glass-panel" style={{ padding: '2.5rem', textAlign: 'center' }}>
-                <div style={{ position: 'relative', width: '220px', height: '220px', margin: '0 auto 2rem', borderRadius: '50%', overflow: 'hidden', border: '4px solid var(--color-border)', boxShadow: 'var(--shadow-glow)', background: 'var(--color-bg-raised)' }}>
-                  {advisor.profile_image_url ? (
-                    <Image 
-                      src={advisor.profile_image_url} 
-                      alt={advisor.full_name} 
-                      fill
-                      style={{ objectFit: 'cover' }}
-                    />
-                  ) : (
-                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '5rem', color: 'var(--color-text-muted)' }}>
-                      {advisor.full_name.charAt(0)}
-                    </div>
-                  )}
+              <aside className={`glass-panel ${styles.profileCard}`}>
+                <div className={styles.profilePhoto}>
+                  <Image src={advisor.image} alt={advisor.name} fill sizes="200px" style={{ objectFit: 'cover' }} priority />
                 </div>
-                
-                <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{advisor.full_name}</h1>
-                <div style={{ color: 'var(--color-accent)', fontWeight: '600', fontSize: '1.1rem', marginBottom: '1rem' }}>
-                  {advisor.professional_title}
-                </div>
-                
-                {advisor.organization && (
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: 'var(--color-text-secondary)', marginBottom: '1.5rem' }}>
-                    <Building2 size={16} /> {advisor.organization}
-                  </div>
-                )}
-
-                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--color-border)' }}>
-                  {advisor.linkedin_url && (
-                    <a href={advisor.linkedin_url} target="_blank" rel="noopener noreferrer" className="premium-button-outline" style={{ padding: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      LinkedIn
+                <h1 className={styles.profileName}>{advisor.name}</h1>
+                <p className={styles.credential}>{advisor.jobTitle}</p>
+                <p className={styles.org} style={{ justifyContent: 'center' }}>
+                  <Building2 size={16} aria-hidden="true" /> {advisor.organization}
+                </p>
+                <p className={styles.org} style={{ justifyContent: 'center' }}>
+                  <GraduationCap size={16} aria-hidden="true" /> {advisor.credential}
+                </p>
+                <div className={styles.links} style={{ justifyContent: 'center' }}>
+                  {advisor.linkedin && (
+                    <a href={advisor.linkedin} target="_blank" rel="noopener noreferrer" className={styles.link}>
+                      <LinkedinLogo size={18} aria-hidden="true" /> LinkedIn
                     </a>
                   )}
-                  {advisor.x_url && (
-                    <a href={advisor.x_url} target="_blank" rel="noopener noreferrer" className="premium-button-outline" style={{ padding: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      X/Twitter
-                    </a>
-                  )}
-                  {advisor.personal_website_url && (
-                    <a href={advisor.personal_website_url} target="_blank" rel="noopener noreferrer" className="premium-button-outline" style={{ padding: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <Globe size={18} />
+                  {advisor.website && (
+                    <a href={advisor.website} target="_blank" rel="noopener noreferrer" className={styles.link}>
+                      <Globe size={18} aria-hidden="true" /> Website
                     </a>
                   )}
                 </div>
-              </div>
+              </aside>
             </AnimateOnScroll>
-            
-            {/* RIGHT SIDE: Bio & Details */}
-            <AnimateOnScroll direction="right" delay={200}>
-              <div>
-                {advisor.role_at_elitech && (
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', background: 'var(--color-accent-dim)', color: 'var(--color-accent-bright)', borderRadius: '50px', fontSize: '0.9rem', fontWeight: 600, marginBottom: '2rem' }}>
-                    <Star size={16} /> {advisor.role_at_elitech}
-                  </div>
-                )}
-                
-                <h2 style={{ fontSize: '1.75rem', marginBottom: '1rem', color: 'var(--color-text-primary)' }}>Biography</h2>
-                <div style={{ color: 'var(--color-text-secondary)', fontSize: '1.05rem', lineHeight: '1.8', marginBottom: '2.5rem', whiteSpace: 'pre-wrap' }}>
-                  {advisor.biography || 'No biography provided.'}
-                </div>
 
-                {advisor.expertise && advisor.expertise.length > 0 && (
-                  <div style={{ marginBottom: '2.5rem' }}>
-                    <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <ShieldCheck size={20} color="var(--color-accent)" /> Expertise
-                    </h3>
-                    <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-                      {advisor.expertise.map((item: string, index: number) => (
-                        <span key={index} className="glass-panel" style={{ padding: '0.4rem 1rem', fontSize: '0.9rem', color: 'var(--color-text-primary)' }}>
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {advisor.areas_of_specialization && advisor.areas_of_specialization.length > 0 && (
-                  <div style={{ marginBottom: '2.5rem' }}>
-                    <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <Briefcase size={20} color="#3b82f6" /> Specializations
-                    </h3>
-                    <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-                      {advisor.areas_of_specialization.map((item: string, index: number) => (
-                        <span key={index} style={{ padding: '0.4rem 1rem', fontSize: '0.9rem', border: '1px solid var(--color-border-light)', borderRadius: '6px', color: 'var(--color-text-secondary)' }}>
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
+            <AnimateOnScroll direction="right" delay={150}>
+              <article className={styles.bioBody}>
+                <span className={styles.eyebrow}>Advisor, Elitech Hub</span>
+                <h2 className={styles.bioTitle}>About {advisor.plainName.split(' ')[0]}</h2>
+                {advisor.bio.map((paragraph, i) => (
+                  <p key={i}>{paragraph}</p>
+                ))}
+                <h3 className={styles.areasTitle}>Areas of expertise</h3>
+                <ul className={styles.areas}>
+                  {advisor.knowsAbout.map((area) => (
+                    <li key={area}>{area}</li>
+                  ))}
+                </ul>
+              </article>
             </AnimateOnScroll>
           </div>
         </div>
       </section>
-
-      {/* ADDITIONAL INFO TABS / SECTIONS */}
-      {(advisor.achievements || advisor.credentials || advisor.publications) && (
-        <section className="container" style={{ paddingBottom: '4rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-            
-            {advisor.achievements && (
-              <AnimateOnScroll direction="up">
-                <div className="glass-panel" style={{ padding: '2rem', height: '100%' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
-                    <Award size={24} color="#f59e0b" />
-                    <h3 style={{ fontSize: '1.3rem' }}>Achievements</h3>
-                  </div>
-                  <div style={{ color: 'var(--color-text-secondary)', lineHeight: '1.7', whiteSpace: 'pre-wrap', fontSize: '0.95rem' }}>
-                    {advisor.achievements}
-                  </div>
-                </div>
-              </AnimateOnScroll>
-            )}
-
-            {advisor.credentials && (
-              <AnimateOnScroll direction="up" delay={150}>
-                <div className="glass-panel" style={{ padding: '2rem', height: '100%' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
-                    <ShieldCheck size={24} color="#10b981" />
-                    <h3 style={{ fontSize: '1.3rem' }}>Credentials</h3>
-                  </div>
-                  <div style={{ color: 'var(--color-text-secondary)', lineHeight: '1.7', whiteSpace: 'pre-wrap', fontSize: '0.95rem' }}>
-                    {advisor.credentials}
-                  </div>
-                </div>
-              </AnimateOnScroll>
-            )}
-
-            {advisor.publications && (
-              <AnimateOnScroll direction="up" delay={300}>
-                <div className="glass-panel" style={{ padding: '2rem', height: '100%' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
-                    <BookOpen size={24} color="#a855f7" />
-                    <h3 style={{ fontSize: '1.3rem' }}>Publications</h3>
-                  </div>
-                  <div style={{ color: 'var(--color-text-secondary)', lineHeight: '1.7', whiteSpace: 'pre-wrap', fontSize: '0.95rem' }}>
-                    {advisor.publications}
-                  </div>
-                </div>
-              </AnimateOnScroll>
-            )}
-            
-          </div>
-        </section>
-      )}
     </PageLayout>
   );
 }

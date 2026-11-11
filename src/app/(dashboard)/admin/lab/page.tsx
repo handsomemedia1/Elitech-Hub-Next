@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FlaskConical, Search, FileText, Edit2, Trash2, ExternalLink, Plus } from 'lucide-react';
+import { FlaskConical, Search, FileText, Edit2, Trash2, ExternalLink, Plus } from '@/components/icons';
 import styles from '../users/users.module.css';
 
 export default function AdminLabList() {

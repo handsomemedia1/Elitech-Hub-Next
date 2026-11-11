@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { submitTestimonial } from './actions';
-import { Star, CheckCircle, Loader2 } from 'lucide-react';
+import { Star, CheckCircle, Loader2 } from '@/components/icons';
 
 export default function TestimonialClientForm({
   token,

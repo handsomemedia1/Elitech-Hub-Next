@@ -5,8 +5,8 @@ import AnimateOnScroll from '@/components/AnimateOnScroll';
 import Link from 'next/link';
 import Image from 'next/image';
 import CountUp from '@/components/CountUp';
-import { Shield, Brain, Network, Award, Lock, ChevronRight, Mail, Phone, ExternalLink, ShieldCheck, Users, Target, Building2, CheckCircle2, ArrowRight, Database } from 'lucide-react';
-import { LinkedinLogo, PhosphorGlobe, PhosphorGraduationCap } from '@/components/PhosphorIcons';
+import { Shield, Brain, Network, Award, Lock, ChevronRight, Mail, Phone, ExternalLink, ShieldCheck, Users, Target, Building2, CheckCircle2, ArrowRight, Database } from '@/components/icons';
+import { LinkedinLogo, PhosphorGlobe } from '@/components/PhosphorIcons';
 
 export const metadata: Metadata = {
   title: "About Us — Nigeria's Premier Cybersecurity Training Leader",
@@ -272,19 +272,18 @@ export default function AboutPage() {
         <div className={styles.advisorsGrid}>
           {[
             { 
-              name: "Dr. Olasunkanmi J. Kehinde", role: "Ph.D., Educational Psychology",
+              slug: "olasunkanmi-kehinde", name: "Dr. Olasunkanmi J. Kehinde", role: "Ph.D., Educational Psychology",
               location: "Norfolk State University", color: "#c3151c", img: "olasunkanmi-kehinde.png",
-              desc: "Assistant Professor specializing in Psychometrics, Machine Learning, and Large-scale Assessment.",
+              desc: "Psychometrician and Assistant Professor of Psychology, using AI and data science to improve how learning is measured.",
               links: [
                 { icon: Mail, url: "mailto:ojkehinde@nsu.edu", label: "Email" },
                 { icon: LinkedinLogo, url: "https://www.linkedin.com/in/olasunkanmi-kehinde", label: "LinkedIn" },
-                { icon: PhosphorGraduationCap, url: "https://scholar.google.com/citations", label: "Scholar" }
               ]
             },
             { 
-              name: "Dr. Ayodele John Alonge", role: "Ph.D., Communication Studies",
-              location: "Digital Society School, Amsterdam", color: "#3b82f6", img: "ayodele-alonge.png",
-              desc: "Digital Transformation Researcher specializing in Library Science, ICT, and digital innovation.",
+              slug: "ayodele-alonge", name: "Dr. Ayodele John Alonge", role: "Ph.D., Communication and Information Studies",
+              location: "University of Ibadan", color: "#3b82f6", img: "ayodele-alonge.png",
+              desc: "Lecturer researching digital libraries, publishing and health communication online, with past posts in the Netherlands and Kenya.",
               links: [
                 { icon: Mail, url: "mailto:ayoalonge@gmail.com", label: "Email" },
                 { icon: LinkedinLogo, url: "https://www.linkedin.com/in/ayodele-john-alonge", label: "LinkedIn" },
@@ -292,9 +291,9 @@ export default function AboutPage() {
               ]
             },
             { 
-              name: "Yemi Adeyeye, Ph.D.", role: "Ph.D., International Forestry",
+              slug: "yemi-adeyeye", name: "Yemi Adeyeye, Ph.D.", role: "Ph.D., Forestry",
               location: "City of Windsor", color: "#10b981", img: "yemi-adeyeye.jpg",
-              desc: "Natural Resource Management expert specializing in forestry, water, and agrifood systems.",
+              desc: "City Forester for Windsor, Ontario, and former Global Director of YPARD, working on environmental governance and urban forestry.",
               links: [
                 { icon: Mail, url: "mailto:adeyeye_yemi@yahoo.com", label: "Email" },
                 { icon: LinkedinLogo, url: "https://www.linkedin.com/in/yemi-adeyeye", label: "LinkedIn" },
@@ -309,7 +308,7 @@ export default function AboutPage() {
                     <img src={`/assets/images/${adv.img}`} alt={adv.name} />
                   </div>
                   <div>
-                    <h3 className={styles.advisorName}>{adv.name}</h3>
+                    <h3 className={styles.advisorName}><Link href={`/advisors/${adv.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}>{adv.name}</Link></h3>
                     <p className={styles.advisorRole} style={{ color: adv.color }}>{adv.role}</p>
                   </div>
                 </div>

@@ -3,6 +3,7 @@ import PageLayout from '@/components/PageLayout';
 import layoutStyles from '@/components/PageLayout.module.css';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 import Link from 'next/link';
+import { Compass as IconCompass } from '@/components/icons';
 
 export const metadata: Metadata = {
   title: 'Volunteer & Mentor',
@@ -44,7 +45,7 @@ export default function VolunteerPage() {
               marginBottom: '2rem',
             }}>
               <h2 style={{ color: 'white', fontWeight: 800, fontSize: '1.5rem', marginBottom: '1rem' }}>
-                🧭 Mentorship Program
+                <IconCompass size="1em" className="inline-icon" aria-hidden="true" /> Mentorship Program
               </h2>
               <p style={{ color: '#94a3b8', lineHeight: 1.8, marginBottom: '1.5rem' }}>
                 As an Elitech Hub mentor, you&apos;ll guide students through their cybersecurity journey — answering questions, reviewing projects, and providing career advice based on your real-world experience.

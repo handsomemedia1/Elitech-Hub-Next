@@ -3,7 +3,7 @@ import Link from 'next/link';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 import layoutStyles from '@/components/PageLayout.module.css';
 import styles from './ai-chatbots.module.css';
-import { Brain, Bot, Code, Database, Globe, MessageSquare, TrendingUp, Users, ArrowRight, ArrowLeft, Shield, CheckCircle2, ChevronDown, Zap, Network } from 'lucide-react';
+import { Brain, Bot, Code, Database, Globe, MessageSquare, TrendingUp, Users, ArrowRight, ArrowLeft, Shield, CheckCircle2, ChevronDown, Zap, Network } from '@/components/icons';
 import { PricingTiers } from '@/components/PricingTiers';
 
 export const metadata = {

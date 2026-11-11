@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import styles from "../app/page.module.css";
+import { AlertTriangle as IconAlertTriangle, CheckCircle as IconCheckCircle } from '@/components/icons';
 
 export default function NewsletterForm() {
   const [email, setEmail] = useState("");
@@ -49,7 +50,7 @@ export default function NewsletterForm() {
         fontWeight: 600,
         fontSize: "0.95rem",
       }}>
-        ✅ You&apos;re subscribed! Watch your inbox for cybersecurity updates.
+        <IconCheckCircle size="1em" className="inline-icon" aria-hidden="true" /> You&apos;re subscribed! Watch your inbox for cybersecurity updates.
       </div>
     );
   }
@@ -73,7 +74,7 @@ export default function NewsletterForm() {
       </button>
       {error && (
         <p style={{ color: "#ef4444", fontSize: "0.8rem", marginTop: "0.5rem", width: "100%" }}>
-          ⚠ {error}
+          <IconAlertTriangle size="1em" className="inline-icon" aria-hidden="true" /> {error}
         </p>
       )}
     </form>

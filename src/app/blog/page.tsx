@@ -5,7 +5,7 @@ import styles from "./blog.module.css";
 import { getSupabaseServerClient, type BlogPost } from "@/lib/supabase";
 import BlogList from "./BlogList";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
-import { Mail, ArrowRight } from "lucide-react";
+import { Mail, ArrowRight } from '@/components/icons';
 import { HubCard } from "@/components/HubCard";
 
 export const revalidate = 60; // Revalidate every 60 seconds

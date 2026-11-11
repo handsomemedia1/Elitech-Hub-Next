@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Plus, CheckCircle, Clock, FileText, Link as LinkIcon } from 'lucide-react';
+import { ArrowLeft, Plus, CheckCircle, Clock, FileText, Link as LinkIcon } from '@/components/icons';
 import { getClusterAction, addClusterArticleAction, updateClusterArticleStatusAction } from '../actions';
 import styles from '../../writer.module.css';
 

@@ -4,6 +4,8 @@ import layoutStyles from '@/components/PageLayout.module.css';
 import styles from './get-involved.module.css';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 import Link from 'next/link';
+import { Building2 as IconBuilding2, GraduationCap as IconGraduationCap, Handshake as IconHandshake, Lightbulb as IconLightbulb, Mail as IconMail, Users as IconUsers } from '@/components/icons';
+import { Books as IconBooks, Briefcase as IconBriefcase, Building as IconBuilding, ChatCircleText as IconChatCircleText, Compass as IconCompass, Settings as IconSettings } from '@/components/icons';
 
 export const metadata: Metadata = {
   title: 'Get Involved | Volunteer, Partner & Sponsor',
@@ -92,7 +94,7 @@ export default function GetInvolvedPage() {
         <section className={`${layoutStyles.section} ${styles.involvementSection}`}>
           <div className={styles.sectionInner}>
             <div className={styles.sectionTag} style={{ borderColor: '#c3151c', color: '#c3151c', background: 'rgba(195,21,28,0.08)' }}>
-              🎓 For Students
+              <IconGraduationCap size="1em" className="inline-icon" aria-hidden="true" /> For Students
             </div>
             <div className={styles.contentGrid}>
               <div className={styles.contentText}>
@@ -146,7 +148,7 @@ export default function GetInvolvedPage() {
         <section className={`${layoutStyles.section} ${styles.involvementSection} ${styles.altSection}`}>
           <div className={styles.sectionInner}>
             <div className={styles.sectionTag} style={{ borderColor: '#0ea5e9', color: '#0ea5e9', background: 'rgba(14,165,233,0.08)' }}>
-              🤝 For Partners
+              <IconHandshake size="1em" className="inline-icon" aria-hidden="true" /> For Partners
             </div>
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>Partner With Excellence</h2>
@@ -154,9 +156,9 @@ export default function GetInvolvedPage() {
             </div>
             <div className={styles.oppGrid}>
               {[
-                { icon: '🏛️', title: 'Academic Partners', color: '#8b5cf6', items: ['Curriculum integration', 'Joint research opportunities', 'Student workshops & hackathons', 'Faculty exchange programs'] },
-                { icon: '💼', title: 'Corporate Partners', color: '#0ea5e9', items: ['Custom employee security training', 'Brand visibility with future professionals', 'CSR opportunities', 'Internship pipeline access'] },
-                { icon: '🛠️', title: 'Technology Partners', color: '#10b981', items: ['Product showcase to cyber students', 'Direct access to future professionals', 'Co-branded certification programs', 'Beta testing opportunities'] },
+                { icon: <IconBuilding size="1em" aria-hidden="true" />, title: 'Academic Partners', color: '#8b5cf6', items: ['Curriculum integration', 'Joint research opportunities', 'Student workshops & hackathons', 'Faculty exchange programs'] },
+                { icon: <IconBriefcase size="1em" aria-hidden="true" />, title: 'Corporate Partners', color: '#0ea5e9', items: ['Custom employee security training', 'Brand visibility with future professionals', 'CSR opportunities', 'Internship pipeline access'] },
+                { icon: <IconSettings size="1em" aria-hidden="true" />, title: 'Technology Partners', color: '#10b981', items: ['Product showcase to cyber students', 'Direct access to future professionals', 'Co-branded certification programs', 'Beta testing opportunities'] },
               ].map(({ icon, title, color, items }) => (
                 <div key={title} className={styles.oppCard} style={{ borderTop: `3px solid ${color}` }}>
                   <div className={styles.oppIcon} style={{ color }}>{icon}</div>
@@ -171,7 +173,7 @@ export default function GetInvolvedPage() {
             </div>
             <div className={styles.partnerCta}>
               <a href="mailto:info@elitechub.com" className={styles.btnOutline}>
-                ✉️ Email Us to Partner
+                <IconMail size="1em" className="inline-icon" aria-hidden="true" /> Email Us to Partner
               </a>
             </div>
           </div>
@@ -183,7 +185,7 @@ export default function GetInvolvedPage() {
         <section className={`${layoutStyles.section} ${styles.involvementSection}`}>
           <div className={styles.sectionInner}>
             <div className={styles.sectionTag} style={{ borderColor: '#f59e0b', color: '#f59e0b', background: 'rgba(245,158,11,0.08)' }}>
-              🤲 Volunteers & Mentors
+              <IconUsers size="1em" className="inline-icon" aria-hidden="true" /> Volunteers & Mentors
             </div>
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>Give Back, Shape the Future</h2>
@@ -191,9 +193,9 @@ export default function GetInvolvedPage() {
             </div>
             <div className={styles.oppGrid}>
               {[
-                { icon: '🧭', title: 'Become a Mentor', color: '#f59e0b', items: ['Guide students through their career journey', '2-4 hours per week, flexible schedule', 'Join 20+ active mentors', '1:1 sessions + group guidance'] },
-                { icon: '📚', title: 'Curriculum Contributor', color: '#c3151c', items: ['Help design and review course material', 'Create lab exercises and CTF challenges', 'Keep curriculum industry-relevant', 'Get credited as a co-author'] },
-                { icon: '💬', title: 'Community Moderator', color: '#8b5cf6', items: ['Manage our Discord community', 'Host virtual study groups', 'Answer student questions', 'Build a thriving cyber community'] },
+                { icon: <IconCompass size="1em" aria-hidden="true" />, title: 'Become a Mentor', color: '#f59e0b', items: ['Guide students through their career journey', '2-4 hours per week, flexible schedule', 'Join 20+ active mentors', '1:1 sessions + group guidance'] },
+                { icon: <IconBooks size="1em" aria-hidden="true" />, title: 'Curriculum Contributor', color: '#c3151c', items: ['Help design and review course material', 'Create lab exercises and CTF challenges', 'Keep curriculum industry-relevant', 'Get credited as a co-author'] },
+                { icon: <IconChatCircleText size="1em" aria-hidden="true" />, title: 'Community Moderator', color: '#8b5cf6', items: ['Manage our Discord community', 'Host virtual study groups', 'Answer student questions', 'Build a thriving cyber community'] },
               ].map(({ icon, title, color, items }) => (
                 <div key={title} className={styles.oppCard} style={{ borderTop: `3px solid ${color}` }}>
                   <div className={styles.oppIcon} style={{ color }}>{icon}</div>
@@ -218,7 +220,7 @@ export default function GetInvolvedPage() {
         <section className={`${layoutStyles.section} ${styles.involvementSection} ${styles.altSection}`}>
           <div className={styles.sectionInner}>
             <div className={styles.sectionTag} style={{ borderColor: '#10b981', color: '#10b981', background: 'rgba(16,185,129,0.08)' }}>
-              🏢 Host Interns / Sponsor Talent
+              <IconBuilding2 size="1em" className="inline-icon" aria-hidden="true" /> Host Interns / Sponsor Talent
             </div>
             <div className={styles.contentGrid}>
               <div className={styles.contentText}>
@@ -228,7 +230,7 @@ export default function GetInvolvedPage() {
                 </p>
                 <div className={styles.twoCards}>
                   <div className={styles.miniCard}>
-                    <h4>🏢 Host an Intern</h4>
+                    <h4><IconBuilding2 size="1em" className="inline-icon" aria-hidden="true" /> Host an Intern</h4>
                     <ul className={styles.benefitsList}>
                       <li>Pre-vetted, trained candidates</li>
                       <li>3 to 6 month internship programs</li>
@@ -237,7 +239,7 @@ export default function GetInvolvedPage() {
                     </ul>
                   </div>
                   <div className={styles.miniCard}>
-                    <h4>🎓 Sponsor a Student</h4>
+                    <h4><IconGraduationCap size="1em" className="inline-icon" aria-hidden="true" /> Sponsor a Student</h4>
                     <ul className={styles.benefitsList}>
                       <li>$100 sponsors one student fully</li>
                       <li>Named scholarship recognition</li>
@@ -252,7 +254,7 @@ export default function GetInvolvedPage() {
               </div>
               <div className={styles.contentCard}>
                 <div className={styles.sponsorCard}>
-                  <div className={styles.sponsorIcon}>💡</div>
+                  <div className={styles.sponsorIcon}><IconLightbulb size="1em" className="inline-icon" aria-hidden="true" /></div>
                   <h3>Why Sponsor?</h3>
                   <p>Nigeria alone needs 50,000+ cybersecurity professionals by 2030. Every dollar you invest builds the talent pipeline your industry needs.</p>
                   <div className={styles.sponsorStat}>

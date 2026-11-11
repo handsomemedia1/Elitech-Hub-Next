@@ -5,6 +5,7 @@ import { getSupabaseServerClient } from "@/lib/supabase";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import { LaptopCard } from "@/components/LaptopCard";
 import { Laptop } from "@/types/laptop";
+import { Brain as IconBrain, Laptop as IconLaptop, Settings as IconSettings } from '@/components/icons';
 
 export const revalidate = 60;
 
@@ -109,7 +110,7 @@ export default async function LaptopsPage(props: { searchParams: Promise<{ [key:
           }}>
             <a href="/blog/what-laptop-do-i-need-to-learn-cybersecurity" style={{ textDecoration: 'none' }}>
               <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(6, 182, 212, 0.2)', borderRadius: '0.75rem', padding: '1.5rem', height: '100%' }}>
-                <div style={{ fontSize: '1.5rem', marginBottom: '0.75rem' }}>💻</div>
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.75rem' }}><IconLaptop size="1em" className="inline-icon" aria-hidden="true" /></div>
                 <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'white', marginBottom: '0.5rem' }}>
                   What Laptop Do I Need for Cybersecurity?
                 </h3>
@@ -122,7 +123,7 @@ export default async function LaptopsPage(props: { searchParams: Promise<{ [key:
 
             <a href="/blog/how-much-ram-do-i-need-for-cybersecurity" style={{ textDecoration: 'none' }}>
               <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(6, 182, 212, 0.2)', borderRadius: '0.75rem', padding: '1.5rem', height: '100%' }}>
-                <div style={{ fontSize: '1.5rem', marginBottom: '0.75rem' }}>🧠</div>
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.75rem' }}><IconBrain size="1em" className="inline-icon" aria-hidden="true" /></div>
                 <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'white', marginBottom: '0.5rem' }}>
                   How Much RAM Do I Need for Cybersecurity?
                 </h3>
@@ -135,7 +136,7 @@ export default async function LaptopsPage(props: { searchParams: Promise<{ [key:
 
             <a href="/blog/best-laptop-for-virtualization-cybersecurity" style={{ textDecoration: 'none' }}>
               <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(6, 182, 212, 0.2)', borderRadius: '0.75rem', padding: '1.5rem', height: '100%' }}>
-                <div style={{ fontSize: '1.5rem', marginBottom: '0.75rem' }}>⚙️</div>
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.75rem' }}><IconSettings size="1em" className="inline-icon" aria-hidden="true" /></div>
                 <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'white', marginBottom: '0.5rem' }}>
                   Best Laptop for Virtualization in Cybersecurity
                 </h3>

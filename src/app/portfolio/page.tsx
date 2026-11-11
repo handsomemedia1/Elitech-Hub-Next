@@ -3,7 +3,7 @@ import PageLayout from '@/components/PageLayout';
 import styles from './portfolio.module.css';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 import Link from 'next/link';
-import { ExternalLink, Lock } from 'lucide-react';
+import { ExternalLink, Lock } from '@/components/icons';
 
 export const metadata = {
   title: 'Portfolio | Web Development, AI Chatbots & Cybersecurity Projects',

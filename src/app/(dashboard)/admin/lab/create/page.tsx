@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Save, ChevronLeft } from 'lucide-react';
+import { Save, ChevronLeft } from '@/components/icons';
 import Link from 'next/link';
 
 export default function LabForm() {

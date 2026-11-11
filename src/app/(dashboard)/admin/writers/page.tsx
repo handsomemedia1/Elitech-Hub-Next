@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import { PenTool, Search, TrendingUp, Check, X, Trash2, Plus, Ban, CheckCircle, Clock } from 'lucide-react';
+import { PenTool, Search, TrendingUp, Check, X, Trash2, Plus, Ban, CheckCircle, Clock } from '@/components/icons';
 import styles from '../users/users.module.css';
 import AdminModal from '@/components/AdminModal';
 

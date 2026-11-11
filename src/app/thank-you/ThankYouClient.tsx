@@ -4,6 +4,7 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import styles from './thank-you.module.css';
 import Link from 'next/link';
+import { AlertTriangle as IconAlertTriangle, Clock as IconClock, Confetti as IconConfetti, Printer as IconPrinter, Repeat as IconRepeat, ShieldCheck as IconShieldCheck } from '@/components/icons';
 
 interface VerifiedTransaction {
   reference: string;
@@ -160,7 +161,7 @@ function ThankYouContent() {
           <p className={styles.subtitle} style={{ marginBottom: 0 }}>
             Confirming your transaction securely with the Paystack gateway. Please do not close this window.
           </p>
-          <span className={styles.badgeTest}>🛡️ Paystack Test Mode Verification</span>
+          <span className={styles.badgeTest}><IconShieldCheck size="1em" className="inline-icon" aria-hidden="true" /> Paystack Test Mode Verification</span>
         </div>
       </div>
     );
@@ -175,8 +176,8 @@ function ThankYouContent() {
       <div className={styles.container}>
         <div className={styles.successIcon}>✓</div>
 
-        <span className={styles.badgeTest}>🛡️ Paystack Test Mode Verified</span>
-        <h1 className={styles.title}>Payment Verified! 🎉</h1>
+        <span className={styles.badgeTest}><IconShieldCheck size="1em" className="inline-icon" aria-hidden="true" /> Paystack Test Mode Verified</span>
+        <h1 className={styles.title}>Payment Verified! <IconConfetti size="1em" className="inline-icon" aria-hidden="true" /></h1>
         <p className={styles.subtitle}>
           Thank you! Your transaction has been securely confirmed by the payment gateway.
         </p>
@@ -254,7 +255,7 @@ function ThankYouContent() {
                 marginBottom: '1.5rem',
                 textAlign: 'left',
               }}>
-                <h3 style={{ color: '#C3151C', margin: '0 0 0.5rem 0', fontSize: '1.1rem' }}>🎉 Access Unlocked!</h3>
+                <h3 style={{ color: '#C3151C', margin: '0 0 0.5rem 0', fontSize: '1.1rem' }}><IconConfetti size="1em" className="inline-icon" aria-hidden="true" /> Access Unlocked!</h3>
                 <p style={{ color: '#E4E4E7', fontSize: '0.95rem', margin: 0, lineHeight: 1.6 }}>
                   Your product entitlement for <strong>Before Cybersecurity</strong> has been activated. You now have full access to all 29 chapters, the complete assessment diagnostic, personalized report, 90-day deliverable roadmap, and downloadable PDF edition.
                 </p>
@@ -289,7 +290,7 @@ function ThankYouContent() {
             onClick={() => window.print()}
             className={styles.btnSecondary}
           >
-            🖨️ Print Receipt
+            <IconPrinter size="1em" className="inline-icon" aria-hidden="true" /> Print Receipt
           </button>
           {verifiedTx?.product?.id === 'before-cybersecurity' || verifiedTx?.product?.type === 'book' ? (
             <Link href="/before-cybersecurity/dashboard" className={styles.btnPrimary}>
@@ -318,7 +319,7 @@ function ThankYouContent() {
       <div className={styles.container}>
         <div className={styles.statusSpinner} style={{ borderColor: '#f59e0b', borderTopColor: 'transparent' }} />
 
-        <span className={styles.badgeWarning}>⏳ Payment Pending</span>
+        <span className={styles.badgeWarning}><IconClock size="1em" className="inline-icon" aria-hidden="true" /> Payment Pending</span>
         <h1 className={styles.title}>Payment Awaiting Confirmation</h1>
         <p className={styles.subtitle}>
           {errorMessage || 'Your payment is currently being processed. If you completed a transfer or card payment, confirmation may take a few moments.'}
@@ -339,7 +340,7 @@ function ThankYouContent() {
             onClick={handleRetryVerification}
             className={styles.retryBtn}
           >
-            🔄 Check Status Again
+            <IconRepeat size="1em" className="inline-icon" aria-hidden="true" /> Check Status Again
           </button>
           <Link href="/programs" className={styles.btnSecondary}>
             View Programs
@@ -364,7 +365,7 @@ function ThankYouContent() {
       <div className={styles.container}>
         <div className={styles.failedIcon}>✕</div>
 
-        <span className={styles.badgeWarning}>🛡️ Paystack Test Mode</span>
+        <span className={styles.badgeWarning}><IconShieldCheck size="1em" className="inline-icon" aria-hidden="true" /> Paystack Test Mode</span>
         <h1 className={styles.title}>
           {isCancelled ? 'Payment Incomplete' : 'Payment Failed'}
         </h1>
@@ -404,7 +405,7 @@ function ThankYouContent() {
   if (verificationState === 'error') {
     return (
       <div className={styles.container}>
-        <div className={styles.failedIcon}>⚠️</div>
+        <div className={styles.failedIcon}><IconAlertTriangle size="1em" className="inline-icon" aria-hidden="true" /></div>
 
         <span className={styles.badgeWarning}>Verification Notice</span>
         <h1 className={styles.title}>Unable to Verify Payment</h1>
@@ -426,7 +427,7 @@ function ThankYouContent() {
               onClick={handleRetryVerification}
               className={styles.retryBtn}
             >
-              🔄 Retry Verification
+              <IconRepeat size="1em" className="inline-icon" aria-hidden="true" /> Retry Verification
             </button>
           )}
           <Link href="/" className={styles.btnSecondary}>
@@ -449,7 +450,7 @@ function ThankYouContent() {
     <div className={styles.container}>
       <div className={styles.successIcon}>✓</div>
 
-      <h1 className={styles.title}>Application Received! 🎉</h1>
+      <h1 className={styles.title}>Application Received! <IconConfetti size="1em" className="inline-icon" aria-hidden="true" /></h1>
       <p className={styles.subtitle}>
         Thank you for applying. Our admissions team will review your application and get back to you shortly.
       </p>

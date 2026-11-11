@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import styles from './apply.module.css';
 import PriceDisplay from '@/components/PriceDisplay';
 import PaystackCheckoutButton from '@/components/PaystackCheckoutButton';
+import { AlertTriangle as IconAlertTriangle } from '@/components/icons';
 
 interface FormData {
   fullName: string;
@@ -388,7 +389,7 @@ export default function ApplyForm() {
                 </div>
 
                 {serverError && (
-                  <p style={{ color: '#ef4444', marginBottom: '1rem', fontSize: '0.9rem' }}>⚠ {serverError}</p>
+                  <p style={{ color: '#ef4444', marginBottom: '1rem', fontSize: '0.9rem' }}><IconAlertTriangle size="1em" className="inline-icon" aria-hidden="true" /> {serverError}</p>
                 )}
 
                 <div className={styles.buttonGroup}>

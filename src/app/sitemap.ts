@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import { getSupabaseServerClient } from '@/lib/supabase';
 import { createServiceClient } from '@/lib/supabase-server';
+import { ADVISORS } from '@/data/advisors';
 
 // Safely format and validate ISO modification timestamps from genuine database records.
 // According to Google Search Central sitemap guidelines, <lastmod> should be omitted
@@ -392,25 +393,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }
     }
 
-    // 8. Dynamic Advisors (Defensively queried)
-    const { data: advisors, error: advError } = await supabase
-      .from('advisors')
-      .select('slug, updated_at')
-      .eq('status', 'active');
-
-    if (advError) {
-      console.warn('[sitemap] advisors query notice:', advError.message);
-    } else if (Array.isArray(advisors)) {
-      for (const advisor of advisors) {
-        if (!advisor.slug) continue;
-        const lastMod = parseReliableDate(advisor.updated_at);
-        registerRoute({
-          url: `${baseUrl}/advisors/${advisor.slug}`,
-          ...(lastMod && { lastModified: lastMod }),
-          changeFrequency: 'monthly',
-          priority: 0.7,
-        });
-      }
+    // 8. Advisors (static data in src/data/advisors.ts)
+    for (const advisor of ADVISORS) {
+      registerRoute({
+        url: `${baseUrl}/advisors/${advisor.slug}`,
+        changeFrequency: 'monthly',
+        priority: 0.7,
+      });
     }
 
     // 9. Dynamic Resources (Defensively queried)

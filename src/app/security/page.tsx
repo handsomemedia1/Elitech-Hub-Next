@@ -3,6 +3,7 @@ import PageLayout from '@/components/PageLayout';
 import layoutStyles from '@/components/PageLayout.module.css';
 import styles from './security.module.css';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
+import { Bug as IconBug, Database as IconDatabase, Eye as IconEye, Lock as IconLock, ShieldCheck as IconShieldCheck, Smartphone as IconSmartphone } from '@/components/icons';
 
 export const metadata: Metadata = {
   title: 'Security & Trust | Verified Certifications',
@@ -42,7 +43,7 @@ export default function SecurityPage() {
           <AnimateOnScroll>
             <div className={styles.policyCard} style={{ borderLeftColor: '#c3151c' }}>
               <div className={styles.cardHeader}>
-                <span className={styles.icon} style={{ color: '#c3151c' }}>🐞</span>
+                <span className={styles.icon} style={{ color: '#c3151c' }}><IconBug size="1em" className="inline-icon" aria-hidden="true" /></span>
                 <h2 className={styles.cardTitle}>Responsible Disclosure Policy</h2>
               </div>
               <p className={styles.cardText}>
@@ -72,7 +73,7 @@ export default function SecurityPage() {
           <AnimateOnScroll>
             <div className={styles.policyCard} style={{ borderLeftColor: '#0ea5e9' }}>
               <div className={styles.cardHeader}>
-                <span className={styles.icon} style={{ color: '#0ea5e9' }}>🛡️</span>
+                <span className={styles.icon} style={{ color: '#0ea5e9' }}><IconShieldCheck size="1em" className="inline-icon" aria-hidden="true" /></span>
                 <h2 className={styles.cardTitle}>Our Security Practices</h2>
               </div>
               <p className={styles.cardText}>
@@ -80,13 +81,13 @@ export default function SecurityPage() {
               </p>
               <div className={styles.badgeGrid}>
                 <div className={styles.securityBadge}>
-                  <span style={{ color: '#10b981' }}>🔒</span> SSL/TLS Encryption
+                  <IconLock size="1em" className="inline-icon" aria-hidden="true" /> SSL/TLS Encryption
                 </div>
                 <div className={styles.securityBadge}>
-                  <span style={{ color: '#8b5cf6' }}>🗄️</span> Encrypted Data Storage
+                  <IconDatabase size="1em" className="inline-icon" aria-hidden="true" /> Encrypted Data Storage
                 </div>
                 <div className={styles.securityBadge}>
-                  <span style={{ color: '#f59e0b' }}>📱</span> 2FA / MFA Enabled
+                  <IconSmartphone size="1em" className="inline-icon" aria-hidden="true" /> 2FA / MFA Enabled
                 </div>
               </div>
             </div>
@@ -96,7 +97,7 @@ export default function SecurityPage() {
           <AnimateOnScroll>
             <div className={styles.policyCard} style={{ borderLeftColor: '#10b981' }}>
               <div className={styles.cardHeader}>
-                <span className={styles.icon} style={{ color: '#10b981' }}>👁️</span>
+                <span className={styles.icon} style={{ color: '#10b981' }}><IconEye size="1em" className="inline-icon" aria-hidden="true" /></span>
                 <h2 className={styles.cardTitle}>Accessibility Statement (WCAG 2.1)</h2>
               </div>
               <p className={styles.cardText}>

@@ -1,7 +1,7 @@
 import PageLayout from '@/components/PageLayout';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 import Link from 'next/link';
-import { ChevronDown, ArrowRight } from 'lucide-react';
+import { ChevronDown, ArrowRight } from '@/components/icons';
 import styles from './faq.module.css';
 
 export const metadata = {

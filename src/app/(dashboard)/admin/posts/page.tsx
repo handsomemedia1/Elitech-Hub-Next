@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { FileText, Search, Edit2, Trash2, Check, X, Eye } from 'lucide-react';
+import { FileText, Search, Edit2, Trash2, Check, X, Eye } from '@/components/icons';
 import styles from '../users/users.module.css';
 import Link from 'next/link';
 

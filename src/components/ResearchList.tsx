@@ -3,10 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
-import { Search, Download, Clock } from 'lucide-react';
+import { Search, Download, Clock, Loader2 } from '@/components/icons';
 import styles from '@/app/research/research.module.css';
 
 import { RESEARCH_CATEGORIES } from '@/lib/constants';
+import { Search as IconSearch } from '@/components/icons';
 
 export default function ResearchList() {
   const [papers, setPapers] = useState<any[]>([]);
@@ -78,7 +79,7 @@ export default function ResearchList() {
               </select>
               
               <div className={styles.searchWrapper}>
-                <span className={styles.searchIcon}>🔍</span>
+                <span className={styles.searchIcon}><IconSearch size="1em" className="inline-icon" aria-hidden="true" /></span>
                 <input 
                   type="text" 
                   className={styles.searchInput} 
@@ -95,7 +96,7 @@ export default function ResearchList() {
       <div className={styles.researchGrid} style={{ marginTop: '2rem', minHeight: '300px' }}>
         {loading ? (
           <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#94a3b8', padding: '3rem' }}>
-            <div className="fas fa-circle-notch fa-spin" style={{ fontSize: '2rem', marginBottom: '1rem' }}></div>
+            <Loader2 size="2rem" className="icon-spin" style={{ marginBottom: '1rem' }} aria-hidden="true" />
             <p>Loading repository...</p>
           </div>
         ) : filteredPapers.length === 0 ? (

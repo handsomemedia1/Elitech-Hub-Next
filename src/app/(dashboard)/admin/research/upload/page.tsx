@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Upload, Plus, Trash2, CheckCircle2, ArrowLeft, FileText } from 'lucide-react';
+import { Upload, Plus, Trash2, CheckCircle2, ArrowLeft, FileText } from '@/components/icons';
 import Link from 'next/link';
 import { submitResearchAction } from '../actions';
 import { RESEARCH_CATEGORIES } from '@/lib/constants';

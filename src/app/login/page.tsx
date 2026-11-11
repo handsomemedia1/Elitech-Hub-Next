@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Mail, Lock, ShieldCheck } from 'lucide-react';
+import { Mail, Lock, ShieldCheck } from '@/components/icons';
 import styles from '../(dashboard)/admin/login/login.module.css';
 
 export default function LoginPage() {

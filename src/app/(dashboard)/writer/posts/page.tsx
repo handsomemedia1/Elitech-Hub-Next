@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getWriterPostsAction, deleteWriterPostAction } from '../actions';
-import { FileText, PlusCircle, Search, Filter, MoreVertical, Edit2, Trash2 } from 'lucide-react';
+import { FileText, PlusCircle, Search, Filter, MoreVertical, Edit2, Trash2 } from '@/components/icons';
 import styles from './posts.module.css';
 
 export default function PostsManager() {

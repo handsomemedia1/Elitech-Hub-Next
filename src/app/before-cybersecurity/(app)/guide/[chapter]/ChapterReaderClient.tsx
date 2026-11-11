@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ChapterItem, CHAPTERS, PARTS, BOOK_METADATA } from '@/data/beforeCybersecurityData';
+import { BookOpen as IconBookOpen } from '@/components/icons';
 
 export interface ChapterReaderClientProps {
   chapter: ChapterItem;
@@ -79,7 +80,7 @@ export default function ChapterReaderClient({
           }}
         >
           <div>
-            <span style={{ color: '#FF5A60', fontWeight: 700 }}>📖 Free Preview Chapter:</span>{' '}
+            <span style={{ color: '#FF5A60', fontWeight: 700 }}><IconBookOpen size="1em" className="inline-icon" aria-hidden="true" /> Free Preview Chapter:</span>{' '}
             <span style={{ color: '#D4D4D8' }}>
               Enjoy this sample chapter from Before Cybersecurity.
             </span>

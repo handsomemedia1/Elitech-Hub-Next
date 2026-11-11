@@ -3,7 +3,7 @@ import Link from 'next/link';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 import layoutStyles from '@/components/PageLayout.module.css';
 import styles from './web-development.module.css';
-import { Globe, CheckCircle2, ChevronDown, ArrowRight, ArrowLeft, Code, Zap, Shield, Star, Layout, Smartphone, Search, TrendingUp, Lock } from 'lucide-react';
+import { Globe, CheckCircle2, ChevronDown, ArrowRight, ArrowLeft, Code, Zap, Shield, Star, Layout, Smartphone, Search, TrendingUp, Lock } from '@/components/icons';
 import { PricingTiers, PricingTierProps } from '@/components/PricingTiers';
 
 export const metadata = {

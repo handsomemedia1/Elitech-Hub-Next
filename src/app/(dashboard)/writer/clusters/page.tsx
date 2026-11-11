@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { PlusCircle, Folder, LayoutGrid, BookOpen, X, ChevronRight } from 'lucide-react';
+import { PlusCircle, Folder, LayoutGrid, BookOpen, X, ChevronRight } from '@/components/icons';
 import { getClustersAction, createClusterAction } from './actions';
 import styles from '../writer.module.css';
 

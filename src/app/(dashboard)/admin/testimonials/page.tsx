@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { MessageSquare, Star, Link as LinkIcon, Check, X, ShieldAlert, Plus, Copy } from 'lucide-react';
+import { MessageSquare, Star, Link as LinkIcon, Check, X, ShieldAlert, Plus, Copy } from '@/components/icons';
 import { createCollectionRequestAction, revokeCollectionRequestAction, updateTestimonialStatusAction, toggleTestimonialFeaturedAction, fetchAdminTestimonialsData } from './actions';
 
 

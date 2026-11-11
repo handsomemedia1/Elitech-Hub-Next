@@ -2,7 +2,7 @@ import PageLayout from '@/components/PageLayout';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 import ConsultationBookingSection from './ConsultationBookingSection';
 import styles from './consultation.module.css';
-import { Target, Crosshair, Map, ShieldAlert, ChevronDown } from 'lucide-react';
+import { Target, Crosshair, Map, ShieldAlert, ChevronDown } from '@/components/icons';
 
 export const metadata = {
   title: 'Cybersecurity Career & Transition Consultation',

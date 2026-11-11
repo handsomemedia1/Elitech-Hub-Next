@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './behavioral.module.css';
-import { BookOpen, AlertCircle, Users, Shield, Brain, Target } from 'lucide-react';
+import { BookOpen, AlertCircle, Users, Shield, Brain, Target } from '@/components/icons';
 
 export const metadata = {
   title: 'Behavioral Cybersecurity Research',

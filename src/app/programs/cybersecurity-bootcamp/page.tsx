@@ -7,7 +7,8 @@ import styles from './bootcamp.module.css';
 import {
   Zap, CheckCircle2, ChevronDown, ArrowRight, ArrowLeft, Shield, Terminal,
   Clock, Calendar, Globe, Award, Target, Code, Network, ShieldCheck, Repeat, Briefcase
-} from 'lucide-react';
+} from '@/components/icons';
+import { CheckCircle as IconCheckCircle, XCircle as IconXCircle } from '@/components/icons';
 
 export const metadata = {
   title: '6-Week Cybersecurity Bootcamp Nigeria | Fast-Track Career',
@@ -336,7 +337,7 @@ export default function BootcampPage() {
         <AnimateOnScroll direction="up">
           <div className={styles.forYouGrid}>
             <div className={styles.forYouBox}>
-              <h3 className={styles.forYouTitle} style={{ color: '#10b981' }}>✅ This is for you if...</h3>
+              <h3 className={styles.forYouTitle} style={{ color: '#10b981' }}><IconCheckCircle size="1em" className="inline-icon" aria-hidden="true" /> This is for you if...</h3>
               <ul className={styles.forYouList}>
                 {[
                   <span key="1">You want a solid entry point into cybersecurity</span>,
@@ -348,7 +349,7 @@ export default function BootcampPage() {
               </ul>
             </div>
             <div className={styles.forYouBox}>
-              <h3 className={styles.forYouTitle} style={{ color: '#ef4444' }}>❌ Consider the 16-week if...</h3>
+              <h3 className={styles.forYouTitle} style={{ color: '#ef4444' }}><IconXCircle size="1em" className="inline-icon" aria-hidden="true" /> Consider the 16-week if...</h3>
               <ul className={styles.forYouList}>
                 {[
                   'You want a deeper career transformation',

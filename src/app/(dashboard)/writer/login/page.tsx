@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { PenTool, Mail, Lock, User } from 'lucide-react';
+import { PenTool, Mail, Lock, User } from '@/components/icons';
 import styles from '../../admin/login/login.module.css';
 
 export default function WriterLogin() {

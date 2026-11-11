@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
-import { BookOpen, FileText, Eye, TrendingUp, PlusCircle } from 'lucide-react';
+import { BookOpen, FileText, Eye, TrendingUp, PlusCircle } from '@/components/icons';
 import styles from './researcher.module.css';
 
 export default function ResearcherOverview() {

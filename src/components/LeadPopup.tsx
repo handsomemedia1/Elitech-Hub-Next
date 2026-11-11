@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import styles from './LeadPopup.module.css';
-import { X } from 'lucide-react';
+import { X } from '@/components/icons';
 
 export default function LeadPopup() {
   const [isOpen, setIsOpen] = useState(false);

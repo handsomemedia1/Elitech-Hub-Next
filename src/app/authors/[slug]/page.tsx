@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import PageLayout from "@/components/PageLayout";
 import type { Metadata } from "next";
+import { MapPin as IconMapPin, Trophy as IconTrophy } from '@/components/icons';
 
 export const revalidate = 3600;
 
@@ -121,7 +122,7 @@ export default async function AuthorProfilePage({ params }: { params: Promise<{ 
           <div className="flex-1 text-center md:text-left">
             <h1 className="text-3xl md:text-4xl font-bold text-white mb-1">{writer.display_name}</h1>
             <p className="text-[#C3151C] font-semibold mb-1">{writer.professional_title || "Writer"} at Elitech Hub</p>
-            {writer.location && <p className="text-gray-500 text-sm mb-4">📍 {writer.location}</p>}
+            {writer.location && <p className="text-gray-500 text-sm mb-4"><IconMapPin size="1em" className="inline-icon" aria-hidden="true" /> {writer.location}</p>}
             {writer.level && writer.level !== "Newcomer" && (
               <span className="inline-block text-xs font-semibold bg-yellow-900/40 text-yellow-400 border border-yellow-800 px-3 py-1 rounded-full mb-4">
                 {writer.level}
@@ -156,7 +157,7 @@ export default async function AuthorProfilePage({ params }: { params: Promise<{ 
                 <h4 className="text-xs text-gray-500 uppercase tracking-wider mb-2 font-semibold">Achievements</h4>
                 <div className="flex flex-wrap gap-2 justify-center md:justify-start">
                   {writer.badges.map((badge: string) => (
-                    <span key={badge} className="text-xs bg-indigo-900/40 text-indigo-300 border border-indigo-800 px-3 py-1 rounded-full">🏆 {badge}</span>
+                    <span key={badge} className="text-xs bg-indigo-900/40 text-indigo-300 border border-indigo-800 px-3 py-1 rounded-full"><IconTrophy size="1em" className="inline-icon" aria-hidden="true" /> {badge}</span>
                   ))}
                 </div>
               </div>

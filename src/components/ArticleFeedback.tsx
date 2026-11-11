@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { ThumbsUp, ThumbsDown, CheckCircle } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, CheckCircle } from '@/components/icons';
 
 export function ArticleFeedback({ slug }: { slug: string }) {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');

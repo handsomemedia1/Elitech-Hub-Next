@@ -1,4 +1,6 @@
 'use client';
+
+import type React from 'react';
 import Link from 'next/link';
 import { CSSProperties } from 'react';
 
@@ -7,7 +9,7 @@ interface HubCardProps {
   label: string;
   sub: string;
   color: string;
-  icon?: string;
+  icon?: React.ReactNode;
   cta?: string;
   features?: string[];
 }
@@ -40,7 +42,7 @@ export function HubCard({ href, label, sub, color, icon, cta = 'View details →
         el.style.boxShadow = 'none';
       }}
     >
-      {icon && <span style={{ fontSize: '1.75rem' }}>{icon}</span>}
+      {icon && <span style={{ display: 'inline-flex', fontSize: '1.75rem', color }}>{icon}</span>}
       <span style={{ color: 'white', fontWeight: 800, fontSize: '0.95rem' }}>{label}</span>
       <span style={{ color: 'var(--color-text-secondary)', fontSize: '0.8rem' }}>{sub}</span>
       {features && (

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Lock, Mail } from 'lucide-react';
+import { Lock, Mail } from '@/components/icons';
 import styles from './login.module.css';
 
 export default function AdminLogin() {

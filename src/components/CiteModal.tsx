@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Quote, X, Copy, Check } from 'lucide-react';
+import { Quote, X, Copy, Check } from '@/components/icons';
 
 interface Props {
   title: string;

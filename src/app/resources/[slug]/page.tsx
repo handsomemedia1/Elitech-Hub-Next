@@ -4,7 +4,7 @@ import { createServiceClient } from '@/lib/supabase-server';
 import { notFound } from 'next/navigation';
 import type { Metadata, ResolvingMetadata } from 'next';
 import PageLayout from '@/components/PageLayout';
-import { FileText, Download, ArrowLeft, User, Tag, Calendar, Eye } from 'lucide-react';
+import { FileText, Download, ArrowLeft, User, Tag, Calendar, Eye } from '@/components/icons';
 import Link from 'next/link';
 
 type Props = {

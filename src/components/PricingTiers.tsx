@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { usePricing } from '@/context/PricingContext';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2 } from '@/components/icons';
 import styles from './PricingTiers.module.css';
 
 export interface PricingTierProps {

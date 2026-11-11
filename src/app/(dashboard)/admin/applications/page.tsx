@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Search, Filter, MoreVertical, Check, X, FileText } from 'lucide-react';
+import { Search, Filter, MoreVertical, Check, X, FileText } from '@/components/icons';
 import styles from './applications.module.css';
 
 import { fetchApplicationsAction, updateApplicationStatusAction } from './actions';

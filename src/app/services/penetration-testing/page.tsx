@@ -3,7 +3,7 @@ import Link from 'next/link';
 import AnimateOnScroll from '@/components/AnimateOnScroll';
 import layoutStyles from '@/components/PageLayout.module.css';
 import styles from './penetration-testing.module.css';
-import { Shield, CheckCircle2, ChevronDown, ArrowRight, ArrowLeft, Terminal, Network, Smartphone, Cloud, FileText, Lock, AlertTriangle, FileSearch, Target, ShieldAlert } from 'lucide-react';
+import { Shield, CheckCircle2, ChevronDown, ArrowRight, ArrowLeft, Terminal, Network, Smartphone, Cloud, FileText, Lock, AlertTriangle, FileSearch, Target, ShieldAlert } from '@/components/icons';
 import { PricingTiers } from '@/components/PricingTiers';
 
 export const metadata = {

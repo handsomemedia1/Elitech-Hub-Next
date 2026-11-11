@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, UploadCloud, X, ArrowLeft } from 'lucide-react';
+import { Save, UploadCloud, X, ArrowLeft } from '@/components/icons';
 import styles from '../../users/users.module.css'; // Reuse basic styles
 import Link from 'next/link';
 import { Laptop } from '@/types/laptop';

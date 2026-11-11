@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import styles from './security-check.module.css';
-import { Shield, Mail, Globe, CheckCircle, AlertTriangle, Loader2 } from 'lucide-react';
+import { Shield, Mail, Globe, CheckCircle, AlertTriangle, Loader2 } from '@/components/icons';
 
 export default function SecurityCheckPage() {
   const [domain, setDomain] = useState('');

@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import { getSupabaseServerClient } from '@/lib/supabase';
 import PageLayout from '@/components/PageLayout';
 import Link from 'next/link';
-import { ChevronLeft, Calendar, User, Tag, BookOpen, Layers, ShieldCheck, Crosshair, Terminal, Code } from 'lucide-react';
+import { ChevronLeft, Calendar, User, Tag, BookOpen, Layers, ShieldCheck, Crosshair, Terminal, Code } from '@/components/icons';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import styles from './lab-detail.module.css';

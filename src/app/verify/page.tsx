@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import styles from './verify.module.css';
 import Image from 'next/image';
+import { AlertTriangle as IconAlertTriangle, CheckCircle as IconCheckCircle, Loader2 as IconLoader2, XCircle as IconXCircle } from '@/components/icons';
 
 function VerifyContent() {
   const searchParams = useSearchParams();
@@ -49,7 +50,7 @@ function VerifyContent() {
 
       {status === 'loading' && (
         <div className={styles.stateBlock}>
-          <i className="fas fa-circle-notch fa-spin status-icon" style={{ fontSize: '4rem', color: '#64748b', marginBottom: '20px' }}></i>
+          <IconLoader2 size="4rem" className="icon-spin status-icon" style={{ color: '#64748b', marginBottom: '20px' }} aria-hidden="true" />
           <h1 className={styles.stateTitle}>VERIFYING<span className={styles.cursor}></span></h1>
           <p style={{ color: '#64748b', marginTop: '10px' }}>Querying certificate database...</p>
         </div>
@@ -57,7 +58,7 @@ function VerifyContent() {
 
       {status === 'valid' && certData && (
         <div className={styles.stateBlock}>
-          <i className="fas fa-check-circle" style={{ fontSize: '4rem', color: '#00ff41', marginBottom: '20px' }}></i>
+          <IconCheckCircle size="4rem" style={{ color: '#00ff41', marginBottom: '20px' }} aria-hidden="true" />
           <h1 className={styles.stateTitle} style={{ color: '#00ff41' }}>CERTIFICATE VALID</h1>
           
           <div className={styles.certDetails}>
@@ -93,7 +94,7 @@ function VerifyContent() {
 
       {status === 'invalid' && (
         <div className={styles.stateBlock}>
-          <i className="fas fa-times-circle" style={{ fontSize: '4rem', color: '#c3151c', marginBottom: '20px' }}></i>
+          <IconXCircle size="4rem" style={{ color: '#c3151c', marginBottom: '20px' }} aria-hidden="true" />
           <h1 className={styles.stateTitle} style={{ color: '#c3151c' }}>INVALID RECORD</h1>
           <p className={styles.errorMessage}>
             We could not find a matching certificate in our secure database. 
@@ -104,7 +105,7 @@ function VerifyContent() {
 
       {status === 'missing_id' && (
         <div className={styles.stateBlock}>
-          <i className="fas fa-exclamation-triangle" style={{ fontSize: '4rem', color: '#f59e0b', marginBottom: '20px' }}></i>
+          <IconAlertTriangle size="4rem" style={{ color: '#f59e0b', marginBottom: '20px' }} aria-hidden="true" />
           <h1 className={styles.stateTitle} style={{ color: '#f59e0b' }}>NO ID PROVIDED</h1>
           <p className={styles.errorMessage}>
             No Certificate ID provided in the URL.<br/>Please scan the QR code directly.
