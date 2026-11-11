@@ -5,12 +5,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import styles from './page.module.css';
 import BeforeCybersecurityCheckoutModal from '@/components/before-cybersecurity/BeforeCybersecurityCheckoutModal';
-import { PARTS, BOOK_METADATA } from '@/data/beforeCybersecurityData';
+import { PARTS, BOOK_METADATA } from '@/data/beforeCybersecurityToc';
 import { ARCHETYPES } from '@/data/beforeCybersecurityAssessment';
-import { BC_PRICING_CONFIG, getPriceForCurrency } from '@/lib/before-cybersecurity/pricing';
+import type { LocalPrice } from '@/components/before-cybersecurity/BeforeCybersecurityCheckoutModal';
 
 export default function BeforeCybersecurityLandingPage() {
-  const [selectedCurrency, setSelectedCurrency] = useState<string>('NGN');
+  // Price for the visitor's country, worked out on the server (same logic as checkout).
+  const [localPrice, setLocalPrice] = useState<LocalPrice | null>(null);
+  const [priceError, setPriceError] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [user, setUser] = useState<{ id?: string; email?: string; name?: string } | null>(null);
@@ -30,7 +32,14 @@ export default function BeforeCybersecurityLandingPage() {
       .catch(() => {});
   }, []);
 
-  const currentPrice = getPriceForCurrency(selectedCurrency);
+  useEffect(() => {
+    fetch('/api/before-cybersecurity/price')
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((p: LocalPrice) => setLocalPrice(p))
+      .catch(() => setPriceError(true));
+  }, []);
+
+  const priceLabel = localPrice ? localPrice.formatted : priceError ? 'See price at checkout' : '...';
 
   const toggleFaq = (index: number) => {
     setOpenFaq(openFaq === index ? null : index);
@@ -89,8 +98,11 @@ export default function BeforeCybersecurityLandingPage() {
             <Link href="#pricing" className={styles.navLink}>
               Pricing
             </Link>
+            <Link href="#faq" className={styles.navLink}>
+              FAQ
+            </Link>
             <Link href="/before-cybersecurity/dashboard" className={styles.appLink}>
-              App Dashboard
+              {isEntitled ? 'Open my guide' : 'My dashboard'}
             </Link>
             <Link href="/before-cybersecurity/assessment" className={styles.navCta}>
               Free Assessment
@@ -735,7 +747,7 @@ export default function BeforeCybersecurityLandingPage() {
       </section>
 
       {/* 15. FREQUENTLY ASKED QUESTIONS */}
-      <section className={styles.section}>
+      <section id="faq" className={styles.section}>
         <div className={styles.narrowContainer}>
           <div className={styles.sectionHeader}>
             <span className={styles.sectionTag}>Clarity & FAQ</span>
@@ -773,19 +785,11 @@ export default function BeforeCybersecurityLandingPage() {
           </div>
 
           <div className={styles.pricingWrapper}>
-            {/* Currency selector */}
-            <div className={styles.pricingCurrencySelector}>
-              <span style={{ fontSize: '0.85rem', color: '#71717A', marginRight: '0.5rem' }}>Select Currency:</span>
-              {(['NGN', 'USD', 'GBP', 'EUR', 'CAD'] as const).map((curr) => (
-                <button
-                  key={curr}
-                  onClick={() => setSelectedCurrency(curr)}
-                  className={`${styles.currencyBtn} ${selectedCurrency === curr ? styles.currencyBtnActive : ''}`}
-                >
-                  {curr}
-                </button>
-              ))}
-            </div>
+            <p style={{ margin: '0 0 1.5rem', textAlign: 'center', color: '#71717A', fontSize: '0.85rem' }}>
+              {localPrice?.detected
+                ? `Prices shown in ${localPrice.currency} for your location.`
+                : 'Prices are shown in your local currency where available.'}
+            </p>
 
             <div className={styles.pricingCardsContainer}>
               {/* Free Tier */}
@@ -830,8 +834,7 @@ export default function BeforeCybersecurityLandingPage() {
                 </div>
 
                 <div className={styles.pricingAmount}>
-                  {currentPrice.symbol}
-                  {currentPrice.amount.toLocaleString()} <sub>One-time</sub>
+                  {priceLabel} <sub>One-time</sub>
                 </div>
 
                 <ul className={styles.pricingFeatures}>
@@ -870,7 +873,7 @@ export default function BeforeCybersecurityLandingPage() {
                   className={styles.btnPrimary}
                   style={{ width: '100%', textAlign: 'center', cursor: 'pointer', border: 'none', font: 'inherit' }}
                 >
-                  {isEntitled ? 'Access Your Dashboard →' : `Unlock Full Experience — ${currentPrice.formatted}`}
+                  {isEntitled ? 'Access Your Dashboard →' : `Unlock Full Experience — ${priceLabel}`}
                 </button>
 
                 <div className={styles.providersNote}>
@@ -1031,8 +1034,7 @@ export default function BeforeCybersecurityLandingPage() {
       <BeforeCybersecurityCheckoutModal
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
-        selectedCurrency={selectedCurrency}
-        currentPrice={currentPrice}
+        localPrice={localPrice}
         initialUser={user}
       />
     </div>

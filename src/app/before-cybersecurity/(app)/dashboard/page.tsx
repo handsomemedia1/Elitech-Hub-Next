@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { CHAPTERS, BOOK_METADATA } from '@/data/beforeCybersecurityData';
+import { CHAPTER_TOC as CHAPTERS, BOOK_METADATA } from '@/data/beforeCybersecurityToc';
 import { ScoreResult } from '@/data/beforeCybersecurityAssessment';
 
 export default function DashboardPage() {

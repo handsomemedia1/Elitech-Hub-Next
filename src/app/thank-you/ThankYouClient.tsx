@@ -255,9 +255,9 @@ function ThankYouContent() {
                 marginBottom: '1.5rem',
                 textAlign: 'left',
               }}>
-                <h3 style={{ color: '#C3151C', margin: '0 0 0.5rem 0', fontSize: '1.1rem' }}><IconConfetti size="1em" className="inline-icon" aria-hidden="true" /> Access Unlocked!</h3>
+                <h3 style={{ color: '#C3151C', margin: '0 0 0.5rem 0', fontSize: '1.1rem' }}><IconConfetti size="1em" className="inline-icon" aria-hidden="true" /> Payment confirmed</h3>
                 <p style={{ color: '#E4E4E7', fontSize: '0.95rem', margin: 0, lineHeight: 1.6 }}>
-                  Your product entitlement for <strong>Before Cybersecurity</strong> has been activated. You now have full access to all 29 chapters, the complete assessment diagnostic, personalized report, 90-day deliverable roadmap, and downloadable PDF edition.
+                  Your payment for <strong>Before Cybersecurity</strong> is confirmed. Sign in with the email you paid with to open all 29 chapters, your personalised report, the roadmap and the PDF. No account yet? Create one with that same email and your access unlocks automatically.
                 </p>
               </div>
               <ol className={styles.nextStepsList}>
@@ -293,8 +293,8 @@ function ThankYouContent() {
             <IconPrinter size="1em" className="inline-icon" aria-hidden="true" /> Print Receipt
           </button>
           {verifiedTx?.product?.id === 'before-cybersecurity' || verifiedTx?.product?.type === 'book' ? (
-            <Link href="/before-cybersecurity/dashboard" className={styles.btnPrimary}>
-              Go to Before Cybersecurity Dashboard →
+            <Link href="/login?redirect=/before-cybersecurity/dashboard" className={styles.btnPrimary}>
+              Sign in to open Before Cybersecurity →
             </Link>
           ) : (
             <Link href="/programs" className={styles.btnPrimary}>

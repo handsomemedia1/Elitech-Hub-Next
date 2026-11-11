@@ -1,3 +1,4 @@
+import 'server-only';
 // ============================================================
 // Before Cybersecurity — Complete Manuscript Data & Structure
 // Author: Elijah Adeyeye (Founder & Lead Instructor, Elitech Hub)
@@ -33,123 +34,12 @@ export interface Chapter {
   discussionQuestions: string[];
 }
 
-export interface Part {
-  number: number;
-  title: string;
-  slug: string;
-  theme: string;
-  description: string;
-  chapters: number[]; // Chapter numbers
-}
+// Book metadata, parts and the table of contents live in the browser-safe file.
+export { BOOK_METADATA, PARTS, CHAPTER_TOC } from './beforeCybersecurityToc';
+export type { Part, ChapterSummary } from './beforeCybersecurityToc';
 
-export const BOOK_METADATA = {
-  title: 'Before Cybersecurity',
-  subtitle: 'What Nobody Tells You Before You Start Learning Cybersecurity',
-  author: 'Elijah Adegboyega Adeyeye',
-  authorTitle: 'Founder & Lead Instructor, Elitech Hub',
-  publisher: 'Elitech Hub Press',
-  year: 2026,
-  edition: '2026 Revised Interactive Edition',
-  canonicalUrl: 'https://www.elitechub.com/before-cybersecurity',
-  corePremise: 'You do not need to know everything before you start cybersecurity. You need to understand what you are starting.',
-  summary: 'A practical, technically grounded orientation system designed to help you understand systems, evaluate your starting resources, build safe home laboratories, navigate Nigerian and international cyber law, and develop real capability before chasing tools or certificates.',
-  stats: {
-    partsCount: 10,
-    chaptersCount: 29,
-    exercisesCount: 9,
-  },
-  frameworksReferenced: [
-    { name: 'NIST NICE Framework', version: 'SP 800-181 Rev. 1 (2020)', org: 'National Institute of Standards and Technology' },
-    { name: 'NIST CSF', version: '2.0 (2024)', org: 'National Institute of Standards and Technology' },
-    { name: 'OWASP', version: 'Top 10 & AppSec Guidance (2024)', org: 'Open Worldwide Application Security Project' },
-    { name: 'ISC2 Cybersecurity Workforce Study', version: '2025 Edition', org: 'ISC2' },
-    { name: 'Cybercrimes (Prohibition, Prevention, etc.) (Amendment) Act', version: '2024 Amendment', org: 'Federal Republic of Nigeria' },
-    { name: 'Nigeria Data Protection Act (NDPA)', version: '2023', org: 'Nigeria Data Protection Commission (NDPC)' },
-  ],
-};
-
-export const PARTS: Part[] = [
-  {
-    number: 1,
-    title: 'Before You Enter',
-    slug: 'before-you-enter',
-    theme: 'Motivation, Expectations & Starting Resources',
-    description: 'An honest audit of why you are entering the field and the transferable skills you already bring.',
-    chapters: [1, 2],
-  },
-  {
-    number: 2,
-    title: 'The Landscape',
-    slug: 'the-landscape',
-    theme: 'Landscape vs. Ladder, Teamwork & Real-World Contexts',
-    description: 'Understanding cybersecurity as an interconnected terrain, a multi-disciplinary team sport, and an organizational reality.',
-    chapters: [3, 4, 5, 6],
-  },
-  {
-    number: 3,
-    title: 'Your First Lab',
-    slug: 'your-first-lab',
-    theme: 'Your Computer Classroom, System Layers & RAM Realities',
-    description: 'Mastering the machine on your desk, understanding layered computing architecture, and sizing home virtualization labs.',
-    chapters: [7, 8],
-  },
-  {
-    number: 4,
-    title: 'Learn to Think',
-    slug: 'learn-to-think',
-    theme: 'System Vocabulary, Problem-First Thinking & Defense',
-    description: 'Learning the language of computing, solving problems rather than collecting tools, analyzing anomalies, and defending through understanding.',
-    chapters: [9, 10, 11, 12],
-  },
-  {
-    number: 5,
-    title: 'Learn Without Wasting Your Time',
-    slug: 'learn-without-wasting-time',
-    theme: 'Fundamentals, Compounding & Interdisciplinary Range',
-    description: 'Why the basics are not a detour, debunking the 3-month mastery myth, embracing depth, collaborating with peers, and learning beyond security.',
-    chapters: [13, 14, 15, 16, 17],
-  },
-  {
-    number: 6,
-    title: 'Protect Yourself',
-    slug: 'protect-yourself',
-    theme: 'Cyber Law, Ethics & Personal Operational Security',
-    description: 'Understanding statutory legal rules (Nigerian Cybercrimes Act 2024 & NDPA 2023), written authorization, and establishing personal security hygiene.',
-    chapters: [18, 19],
-  },
-  {
-    number: 7,
-    title: 'Turn Learning Into Capability',
-    slug: 'turn-learning-into-capability',
-    theme: 'Certifications, Hiring Pipeline & Portfolio Evidence',
-    description: 'What certifications actually prove, navigating the 4-stage employability pipeline, building project evidence, and shaping a T-shaped profile.',
-    chapters: [20, 21, 22, 23],
-  },
-  {
-    number: 8,
-    title: 'The Future',
-    slug: 'the-future',
-    theme: 'Cybersecurity in the Age of AI & Continuous Change',
-    description: 'Distinguishing AI-powered cybersecurity from securing AI models, and preparing for an industry that never stops moving.',
-    chapters: [24, 25],
-  },
-  {
-    number: 9,
-    title: 'Find Your Direction',
-    slug: 'find-your-direction',
-    theme: 'Work-Style Compass & 30-60-90 Day Deliverable Plan',
-    description: 'Aligning your problem preferences with real roles (Builder, Defender, Investigator, Researcher, Communicator), and executing your first 90 days.',
-    chapters: [26, 27, 28],
-  },
-  {
-    number: 10,
-    title: 'The Journey',
-    slug: 'the-journey',
-    theme: 'Cybersecurity as a Way of Seeing & You Are Not Late',
-    description: 'Developing the five investigative questions, shifting your perception of systems, and beginning with confidence.',
-    chapters: [29],
-  },
-];
+/** Alias kept for components that refer to a chapter as ChapterItem. */
+export type ChapterItem = Chapter;
 
 export const CHAPTERS: Chapter[] = [
   // PART I

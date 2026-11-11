@@ -254,7 +254,7 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
                       <div className={styles.blogCardBody}>
                         <div className={styles.blogMeta}>
                           <span className={styles.metaItem}><Clock size={14} /> {estimateReadTime(post.word_count)}</span>
-                          <span className={styles.metaItem}><Eye size={14} /> {post.views}</span>
+                          <span className={styles.metaItem}><Eye size={14} /> {(post.views ?? 0).toLocaleString()} reads</span>
                         </div>
                         <h3 className={styles.blogCardTitle}>{post.title}</h3>
                         <p className={styles.blogCardExcerpt}>{post.excerpt}</p>

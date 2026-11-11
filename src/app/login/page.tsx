@@ -28,13 +28,20 @@ export default function LoginPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Login failed');
 
+      // Return people to the page that sent them here (e.g. a locked chapter).
+      // Only same-site paths are accepted, so this can't redirect off-site.
+      const requested = new URLSearchParams(window.location.search).get('redirect') || '';
+      const safeRedirect = /^\/(?!\/)/.test(requested) ? requested : null;
+
       if (data.user.role === 'admin') {
-        router.push('/admin');
+        router.push(safeRedirect || '/admin');
       } else if (data.user.role === 'writer') {
-        router.push('/writer');
+        router.push(safeRedirect || '/writer');
       } else {
-        router.push('/dashboard');
+        // There is no student /dashboard route; the student area is Before Cybersecurity.
+        router.push(safeRedirect || '/before-cybersecurity/dashboard');
       }
+      router.refresh();
     } catch (err: any) {
       setError(err.message);
     } finally {

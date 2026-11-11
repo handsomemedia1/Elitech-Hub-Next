@@ -272,7 +272,7 @@ export default async function BlogPostPage({
               )}
             </span>
             {post.views > 0 && (
-              <span className={styles.readTime}><IconEye size="1em" aria-hidden="true" /> {post.views} views</span>
+              <span className={styles.readTime}><IconEye size="1em" aria-hidden="true" /> {Number(post.views).toLocaleString()} reads</span>
             )}
           </div>
           <h1 className={styles.articleTitle}>{post.title}</h1>

@@ -49,7 +49,9 @@ export default async function BlogPage() {
     .select("id, title, slug, excerpt, category, author, thumbnail, published_at, created_at, views, tags, word_count")
     .eq("published", true)
     .order("published_at", { ascending: false })
-    .limit(24);
+    // All published articles. A previous limit of 24 hid most of the archive,
+    // because the list has no "load more" (filtering and search run in the browser).
+    .limit(500);
 
   const blogPosts = (posts || []) as BlogPost[];
 

@@ -1,22 +1,29 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ProductPrice } from '@/lib/before-cybersecurity/pricing';
 import { Lock as IconLock } from '@/components/icons';
+
+/** Price for the visitor's country, from /api/before-cybersecurity/price. */
+export interface LocalPrice {
+  country: string;
+  detected: boolean;
+  amount: number;
+  currency: string;
+  formatted: string;
+}
 
 export interface BeforeCybersecurityCheckoutModalProps {
   isOpen: boolean;
   onClose: () => void;
-  selectedCurrency: string;
-  currentPrice: ProductPrice;
+  /** null while the price is loading or if it could not be fetched. */
+  localPrice: LocalPrice | null;
   initialUser?: { id?: string; email?: string; name?: string } | null;
 }
 
 export default function BeforeCybersecurityCheckoutModal({
   isOpen,
   onClose,
-  selectedCurrency,
-  currentPrice,
+  localPrice,
   initialUser,
 }: BeforeCybersecurityCheckoutModalProps) {
   const [name, setName] = useState(initialUser?.name || '');
@@ -62,7 +69,9 @@ export default function BeforeCybersecurityCheckoutModal({
         email: trimmedEmail,
         name: name.trim() || undefined,
         userId: initialUser?.id || undefined,
-        countryCode: selectedCurrency === 'NGN' ? 'NG' : 'US',
+        // The server prices the order from the visitor's location; this is the
+        // same country the displayed price was worked out for.
+        countryCode: localPrice?.country,
         callbackUrl: '/thank-you',
       };
 
@@ -199,10 +208,9 @@ export default function BeforeCybersecurityCheckoutModal({
           </div>
           <div style={{ textAlign: 'right' }}>
             <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#FFFFFF' }}>
-              {currentPrice.symbol}
-              {currentPrice.amount.toLocaleString()}
+              {localPrice ? localPrice.formatted : '...'}
             </div>
-            <div style={{ fontSize: '0.75rem', color: '#C3151C', fontWeight: 600 }}>{selectedCurrency}</div>
+            <div style={{ fontSize: '0.75rem', color: '#C3151C', fontWeight: 600 }}>{localPrice?.currency || ''}</div>
           </div>
         </div>
 
@@ -324,7 +332,7 @@ export default function BeforeCybersecurityCheckoutModal({
                 Connecting to Paystack...
               </>
             ) : (
-              `Pay ${currentPrice.symbol}${currentPrice.amount.toLocaleString()} with Paystack →`
+              localPrice ? `Pay ${localPrice.formatted} with Paystack →` : 'Continue to secure payment →'
             )}
           </button>
         </form>
@@ -344,7 +352,7 @@ export default function BeforeCybersecurityCheckoutModal({
           }}
         >
           <div><IconLock size="1em" className="inline-icon" aria-hidden="true" /> 256-Bit SSL Encrypted &bull; Direct Paystack Gateway</div>
-          <div>Supports Nigerian Debit Cards, Bank Transfer, USSD &amp; International Cards</div>
+          <div>Cards, bank transfer and USSD. You will see the final amount on the Paystack page.</div>
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import { ChapterItem, PARTS } from '@/data/beforeCybersecurityData';
+import type { ChapterItem } from '@/data/beforeCybersecurityData';
+import { PARTS } from '@/data/beforeCybersecurityToc';
 import { Lock as IconLock } from '@/components/icons';
 
 export interface LockedChapterViewProps {

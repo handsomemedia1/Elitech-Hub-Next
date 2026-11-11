@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { PARTS, CHAPTERS, BOOK_METADATA } from '@/data/beforeCybersecurityData';
+import { PARTS, CHAPTER_TOC as CHAPTERS, BOOK_METADATA } from '@/data/beforeCybersecurityToc';
 
 export default function GuideIndexPage() {
   const [readChapters, setReadChapters] = useState<number[]>([]);
@@ -292,7 +292,7 @@ export default function GuideIndexPage() {
                       </div>
 
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
-                        {ch.exercise && (
+                        {ch.hasExercise && (
                           <span style={{
                             background: 'rgba(195, 21, 28, 0.12)',
                             color: '#FF5A60',
@@ -301,7 +301,7 @@ export default function GuideIndexPage() {
                             borderRadius: '4px',
                             fontWeight: 600,
                           }}>
-                            Ex. 0{ch.exercise.number}
+                            Ex. 0{ch.exerciseNumber}
                           </span>
                         )}
                         <span style={{ fontSize: '0.8rem', color: '#71717A', fontFamily: 'monospace' }}>

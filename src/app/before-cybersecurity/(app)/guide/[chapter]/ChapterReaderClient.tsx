@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ChapterItem, CHAPTERS, PARTS, BOOK_METADATA } from '@/data/beforeCybersecurityData';
+import type { ChapterItem } from '@/data/beforeCybersecurityData';
+import { CHAPTER_TOC as CHAPTERS, PARTS, BOOK_METADATA } from '@/data/beforeCybersecurityToc';
 import { BookOpen as IconBookOpen } from '@/components/icons';
 
 export interface ChapterReaderClientProps {

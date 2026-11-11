@@ -156,12 +156,15 @@ export function PricingProvider({ children }: { children: React.ReactNode }) {
   const regionToCurrency = (region: PricingRegion, countryCode: string): string => {
     switch (region) {
       case 'NG':     return 'NGN';
-      case 'US':     return 'USD';
-      case 'UK':     return 'GBP';
-      case 'EU':     return 'EUR';
-      case 'KW':     return 'KWD';
-      case 'AU':     return 'AUD';
-      case 'CA':     return 'CAD';
+      // Checkout (lib/paystack/pricing.ts) charges every non-African international
+      // market in USD, and course_prices only holds USD and NGN rows, so these
+      // regions display USD to match what is actually charged.
+      case 'US':
+      case 'UK':
+      case 'EU':
+      case 'KW':
+      case 'AU':
+      case 'CA':     return 'USD';
       case 'AFRICA': return AFRICAN_CURRENCY_MAP[countryCode] || 'USD'; // Genuine FX conversion targets this currency
       case 'INTL':   return 'USD'; // All other international markets use USD
       default:       return 'NGN';

@@ -36,6 +36,25 @@ export function middleware(request: NextRequest) {
 
   const response = NextResponse.next();
 
+  // ── Visitor country for local pricing ──────────────────────────
+  // PricingContext reads `detected_country` to show prices in the visitor's
+  // currency, but nothing was setting it, so every visitor saw naira while
+  // checkout charged overseas visitors in dollars. Taken from the edge
+  // headers the checkout itself trusts.
+  if (!path.startsWith('/api/')) {
+    const country = (request.headers.get('cf-ipcountry') || request.headers.get('x-vercel-ip-country') || '')
+      .trim()
+      .toUpperCase();
+    if (/^[A-Z]{2}$/.test(country) && country !== 'XX' && request.cookies.get('detected_country')?.value !== country) {
+      response.cookies.set('detected_country', country, {
+        path: '/',
+        maxAge: 60 * 60 * 24,
+        sameSite: 'lax',
+        secure: IS_PROD,
+      });
+    }
+  }
+
   // ── Security headers (applied to every route) ──────────────────
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('X-Frame-Options', 'DENY');

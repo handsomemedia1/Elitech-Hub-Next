@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BookOpen as IconBookOpen, Compass as IconCompass, FileText as IconFileText, Layers as IconLayers, LayoutDashboard as IconLayoutDashboard, Target as IconTarget, User as IconUser } from '@/components/icons';
+import { BookOpen as IconBookOpen, Compass as IconCompass, FileText as IconFileText, Layers as IconLayers, LayoutDashboard as IconLayoutDashboard, Lock as IconLock, Target as IconTarget, User as IconUser } from '@/components/icons';
 
 export default function BeforeCybersecurityAppShell({
   children,
@@ -12,14 +12,23 @@ export default function BeforeCybersecurityAppShell({
 }) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  // null while loading; used only to show which sections need the full edition.
+  const [hasAccess, setHasAccess] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    fetch('/api/before-cybersecurity/entitlement')
+      .then((r) => r.json())
+      .then((res) => setHasAccess(!!res.hasAccess))
+      .catch(() => setHasAccess(null));
+  }, []);
 
   const navItems = [
     { name: 'Overview', path: '/before-cybersecurity/dashboard', icon: <IconLayoutDashboard size="1em" aria-hidden="true" /> },
     { name: 'My Assessment', path: '/before-cybersecurity/assessment', icon: <IconCompass size="1em" aria-hidden="true" /> },
-    { name: 'My Report', path: '/before-cybersecurity/report', icon: <IconFileText size="1em" aria-hidden="true" /> },
-    { name: 'My Roadmap', path: '/before-cybersecurity/roadmap', icon: <IconTarget size="1em" aria-hidden="true" /> },
+    { name: 'My Report', paid: true, path: '/before-cybersecurity/report', icon: <IconFileText size="1em" aria-hidden="true" /> },
+    { name: 'My Roadmap', paid: true, path: '/before-cybersecurity/roadmap', icon: <IconTarget size="1em" aria-hidden="true" /> },
     { name: 'The Guide', path: '/before-cybersecurity/guide', icon: <IconBookOpen size="1em" aria-hidden="true" /> },
-    { name: 'Resource Library', path: '/before-cybersecurity/resources', icon: <IconLayers size="1em" aria-hidden="true" /> },
+    { name: 'Resource Library', paid: true, path: '/before-cybersecurity/resources', icon: <IconLayers size="1em" aria-hidden="true" /> },
     { name: 'Account & Access', path: '/before-cybersecurity/account', icon: <IconUser size="1em" aria-hidden="true" /> },
   ];
 
@@ -107,6 +116,9 @@ export default function BeforeCybersecurityAppShell({
               >
                 <span style={{ fontSize: '1.05rem' }}>{item.icon}</span>
                 <span>{item.name}</span>
+                {'paid' in item && item.paid && hasAccess === false && (
+                  <IconLock size={14} aria-label="Full edition" style={{ marginLeft: 'auto', color: '#71717A' }} />
+                )}
               </Link>
             );
           })}

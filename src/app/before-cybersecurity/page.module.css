@@ -988,8 +988,28 @@
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
+  /* The section menu used to be hidden on phones, leaving no way to jump
+     around this long page. It now wraps under the brand and scrolls sideways. */
+  .headerInner {
+    flex-direction: column;
+    align-items: stretch;
+    height: auto;
+    gap: 0.6rem;
+    padding: 0.7rem 1rem;
+  }
   .headerNav {
+    display: flex;
+    gap: 0.4rem;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .headerNav::-webkit-scrollbar {
     display: none;
+  }
+  .headerNav a {
+    flex-shrink: 0;
   }
   .heroActions {
     flex-direction: column;
