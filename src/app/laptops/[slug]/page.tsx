@@ -13,17 +13,35 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
   const params = await props.params;
   const slug = params.slug;
   const supabase = getSupabaseServerClient();
-  const { data } = await supabase.from('laptops').select('name, seo_title, seo_description, laptop_images(image_url)').eq('slug', slug).single();
-  
+  const { data } = await supabase
+    .from('laptops')
+    .select('name, price, condition, cpu, ram_gb, storage_gb, storage_type, seo_title, seo_description, laptop_images(image_url)')
+    .eq('slug', slug)
+    .single();
+
   if (!data) return { title: 'Laptop Not Found' };
-  
+
+  // When the admin leaves the SEO fields empty, build a descriptive title and
+  // description from the specs instead of using just the model name.
+  const specs = [
+    data.cpu,
+    data.ram_gb ? `${data.ram_gb}GB RAM` : null,
+    data.storage_gb ? `${data.storage_gb}GB ${data.storage_type || 'storage'}` : null,
+  ].filter(Boolean).join(', ');
+  const price = typeof data.price === 'number' ? `₦${data.price.toLocaleString('en-NG')}` : '';
+  const condition = data.condition === 'uk-used' ? 'UK-used' : 'brand new';
+  const title = data.seo_title || `${data.name} Price in Nigeria for Cybersecurity`;
+  const description =
+    data.seo_description ||
+    `${data.name}${price ? ` at ${price}` : ''}, ${condition}${specs ? `. ${specs}` : ''}. See whether it can run virtual machines and security labs, with full specs and availability.`;
+
   return {
-    title: data.seo_title || data.name,
-    description: data.seo_description || `View specifications and pricing for ${data.name} at Elitech Hub Nigeria.`,
+    title,
+    description,
     alternates: { canonical: `https://www.elitechub.com/laptops/${slug}` },
     openGraph: {
-      title: data.seo_title || data.name,
-      description: data.seo_description,
+      title,
+      description,
       images: data.laptop_images?.[0]?.image_url ? [{ url: data.laptop_images[0].image_url }] : undefined,
     }
   };

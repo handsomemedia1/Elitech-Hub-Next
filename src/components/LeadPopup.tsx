@@ -13,15 +13,35 @@ export default function LeadPopup() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    // Check if the user has already seen or closed the popup
-    const hasSeenPopup = localStorage.getItem('elitech_popup_seen');
-    if (!hasSeenPopup) {
-      const timer = setTimeout(() => {
-        setIsOpen(true);
-      }, 10000); // 10 seconds
-
-      return () => clearTimeout(timer);
+    let hasSeenPopup = false;
+    try {
+      hasSeenPopup = !!localStorage.getItem('elitech_popup_seen');
+    } catch {
+      return;
     }
+    if (hasSeenPopup) return;
+
+    // Only interrupt people who are clearly engaged: they have read most of
+    // the page, or stayed a full minute. Popping up after 10 seconds covered
+    // the page for visitors who had only just arrived, and many left.
+    let opened = false;
+    const open = () => {
+      if (opened) return;
+      opened = true;
+      setIsOpen(true);
+      cleanup();
+    };
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      if (max > 0 && window.scrollY / max >= 0.6) open();
+    };
+    const timer = window.setTimeout(open, 60000);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    const cleanup = () => {
+      window.clearTimeout(timer);
+      window.removeEventListener('scroll', onScroll);
+    };
+    return cleanup;
   }, []);
 
   const handleClose = () => {

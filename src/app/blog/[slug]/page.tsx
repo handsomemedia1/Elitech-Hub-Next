@@ -9,6 +9,7 @@ import { Send, Briefcase, GraduationCap, MessageCircle, BookOpen } from '@/compo
 import { ArticleFeedback } from "@/components/ArticleFeedback";
 import { ViewTracker } from "@/components/ViewTracker";
 import { sanitizeArticleHtml } from "@/lib/sanitize-article";
+import { ArticleNextStep } from "./ArticleNextStep";
 import { ArrowLeft as IconArrowLeft, Clock as IconClock, Eye as IconEye, FacebookLogo as IconFacebookLogo, InstagramLogo as IconInstagramLogo, LinkedinLogo as IconLinkedinLogo, ThreadsLogo as IconThreadsLogo, TiktokLogo as IconTiktokLogo, WhatsappLogo as IconWhatsappLogo, XLogo as IconXLogo } from '@/components/icons';
 
 export const revalidate = 60; // Revalidate every 60 seconds
@@ -147,14 +148,29 @@ export default async function BlogPostPage({
     notFound();
   }
 
-  // Also fetch related posts
-  const { data: related } = await supabase
+  // Related posts: same category first, topped up with the latest articles.
+  // Categories are inconsistent (e.g. "Cybersecurity, News"), so an exact
+  // category match alone often returned nothing and left readers at a dead end.
+  const RELATED_FIELDS = "id, title, slug, thumbnail, category, published_at, word_count";
+  const { data: sameCategory } = await supabase
     .from("blog_posts")
-    .select("id, title, slug, thumbnail, category, published_at, word_count")
+    .select(RELATED_FIELDS)
     .eq("published", true)
     .eq("category", post.category)
     .neq("slug", slug)
     .limit(3);
+  let related = sameCategory || [];
+  if (related.length < 3) {
+    const { data: latest } = await supabase
+      .from("blog_posts")
+      .select(RELATED_FIELDS)
+      .eq("published", true)
+      .neq("slug", slug)
+      .order("published_at", { ascending: false })
+      .limit(6);
+    const seen = new Set(related.map((r) => r.slug));
+    related = [...related, ...(latest || []).filter((r) => !seen.has(r.slug))].slice(0, 3);
+  }
 
   // Display logic below still uses writerData; schema authorship uses resolveAuthor.
   const writerData = post.writers as any;
@@ -362,6 +378,8 @@ export default async function BlogPostPage({
             <p className={styles.articleLead}>{post.excerpt}</p>
           )}
 
+          <ArticleNextStep post={post} />
+
           {/* Tags */}
           {post.tags && post.tags.length > 0 && (
             <div className={styles.tagsSection}>
@@ -483,7 +501,7 @@ export default async function BlogPostPage({
       {related && related.length > 0 && (
         <section className={styles.relatedSection}>
           <div className={styles.relatedInner}>
-            <h2 className={styles.relatedTitle}>Related Articles</h2>
+            <h2 className={styles.relatedTitle}>Keep reading</h2>
             <div className={styles.relatedGrid}>
               {related.map((r) => (
                 <Link key={r.slug} href={`/blog/${r.slug}`} className={styles.relatedCard}>

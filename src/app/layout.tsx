@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
-import InitialLoader from "@/components/InitialLoader";
 import { FloatingChatbot, TrustBadge } from "@/components/FloatingWidgets";
 import { PricingProvider } from "@/context/PricingContext";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
@@ -289,7 +288,6 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         
         <ScrollProgressBar />
-        <InitialLoader />
         <PricingProvider>
           <ScrollNavbar />
           <SmoothScroll>

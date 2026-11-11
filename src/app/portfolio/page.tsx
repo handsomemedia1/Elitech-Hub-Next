@@ -6,9 +6,9 @@ import Link from 'next/link';
 import { ExternalLink, Lock } from '@/components/icons';
 
 export const metadata = {
-  title: 'Portfolio | Web Development, AI Chatbots & Cybersecurity Projects',
+  title: 'Portfolio: Websites, AI Chatbots & Security Projects',
   description:
-    'View Elitech Hub\'s portfolio of premium custom websites, agentic AI applications, and cybersecurity projects built for Nigerian and international businesses. Based in Ibadan, Lagos, Nigeria.',
+    'Custom websites, AI chatbots and cybersecurity projects built by Elitech Hub for businesses in Nigeria and abroad. See the work and the results.',
   keywords: [
     'web development portfolio Nigeria',
     'AI chatbot portfolio Nigeria',
